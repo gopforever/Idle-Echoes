@@ -3,9 +3,12 @@
   "framework": null,
   "installCommand": "pnpm install --no-frozen-lockfile",
   "buildCommand": "pnpm run build",
-  "outputDirectory": "dist",
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "dist/**"
+    }
+  },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/index.mjs" },
-    { "source": "/(.*)", "destination": "/index.mjs" }
+    { "source": "/(.*)", "destination": "/api" }
   ]
 }
