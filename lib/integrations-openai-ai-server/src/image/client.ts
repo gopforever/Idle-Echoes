@@ -1,6 +1,9 @@
 import fs from "node:fs";
-import OpenAI, { toFile } from "openai";
+import OpenAIModule, { toFile } from "openai";
 import { Buffer } from "node:buffer";
+
+// Handle ESM/CJS interop for OpenAI
+const OpenAI = (OpenAIModule as unknown as { default?: typeof OpenAIModule }).default ?? OpenAIModule;
 
 if (!process.env.AI_INTEGRATIONS_OPENAI_BASE_URL) {
   throw new Error(
