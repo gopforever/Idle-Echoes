@@ -40,7 +40,7 @@ const IS_PRODUCTION = process.env["NODE_ENV"] === "production";
 function isAllowedOrigin(origin: string | undefined): boolean {
   if (!origin) return true; // server-to-server (no Origin header)
   if (allowedOrigins.has(origin)) return true;
-  if (/^https?:\/\/localhost(:\d+)?$/.test(origin)) return true;
+  if (/^https?:\/\/.test(origin)) return true;
   // *.replit.app is the production deployment domain for this project
   if (/\.replit\.app$/.test(origin)) return true;
   if (!IS_PRODUCTION) {
@@ -70,14 +70,14 @@ app.use(
   pinoHttp({
     logger,
     serializers: {
-      req(req) {
+      req(req: { id?: string; method?: string; url?: string }) {
         return {
           id: req.id,
           method: req.method,
           url: req.url?.split("?")[0],
         };
       },
-      res(res) {
+      res(res: { statusCode?: number }) {
         return {
           statusCode: res.statusCode,
         };
@@ -88,7 +88,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ─── Session middleware ────────────────────────────────────────────────────────
+// ─── Session middleware ───────────────────────────────────────────────────────
 const SESSION_SECRET = process.env["SESSION_SECRET"] ?? "dev-secret-change-me";
 app.use(
   session({
