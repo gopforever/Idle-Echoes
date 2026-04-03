@@ -40,7 +40,7 @@ const IS_PRODUCTION = process.env["NODE_ENV"] === "production";
 function isAllowedOrigin(origin: string | undefined): boolean {
   if (!origin) return true; // server-to-server (no Origin header)
   if (allowedOrigins.has(origin)) return true;
-  if (/^https?:\/\/.test(origin)) return true;
+  if (/^https?:\/\/localhost(:\d+)?$/.test(origin)) return true;
   // *.replit.app is the production deployment domain for this project
   if (/\.replit\.app$/.test(origin)) return true;
   if (!IS_PRODUCTION) {
