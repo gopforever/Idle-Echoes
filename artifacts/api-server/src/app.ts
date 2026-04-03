@@ -1,12 +1,10 @@
-import express, { type Express } from "express";
+import express, { type Express, type RequestHandler } from "express";
 import cors from "cors";
+import pinoHttp from "pino-http";
 import session from "express-session";
 import router from "./routes";
 import { logger } from "./lib/logger";
 import "./types/session.js";
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const pinoHttp = require("pino-http") as (options: unknown) => express.RequestHandler;
 
 const app: Express = express();
 
@@ -68,25 +66,25 @@ app.use(
   }),
 );
 
-app.use(
-  pinoHttp({
-    logger,
-    serializers: {
-      req(req: { id?: string; method?: string; url?: string }) {
-        return {
-          id: req.id,
-          method: req.method,
-          url: req.url?.split("?")[0],
-        };
-      },
-      res(res: { statusCode?: number }) {
-        return {
-          statusCode: res.statusCode,
-        };
-      },
+// @ts-expect-error pino-http types are incompatible with ESM default export
+const pinoMiddleware: RequestHandler = pinoHttp({
+  logger,
+  serializers: {
+    req(req: { id?: string; method?: string; url?: string }) {
+      return {
+        id: req.id,
+        method: req.method,
+        url: req.url?.split("?")[0],
+      };
     },
-  }),
-);
+    res(res: { statusCode?: number }) {
+      return {
+        statusCode: res.statusCode,
+      };
+    },
+  },
+});
+app.use(pinoMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
