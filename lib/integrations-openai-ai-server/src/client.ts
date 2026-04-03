@@ -1,8 +1,11 @@
-import OpenAI from "openai";
+import OpenAIDefault from "openai";
 
-let _openai: OpenAI | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type OpenAIClient = any;
 
-export function getOpenAI(): OpenAI {
+let _openai: OpenAIClient | null = null;
+
+export function getOpenAI(): OpenAIClient {
   if (_openai) return _openai;
 
   if (!process.env.AI_INTEGRATIONS_OPENAI_BASE_URL) {
@@ -18,7 +21,7 @@ export function getOpenAI(): OpenAI {
   }
 
   // @ts-expect-error OpenAI types are incompatible with ESM default export
-  _openai = new OpenAI({
+  _openai = new OpenAIDefault({
     apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
     baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
   });
@@ -27,7 +30,7 @@ export function getOpenAI(): OpenAI {
 }
 
 // Lazy proxy for backwards compatibility - only throws when actually used
-export const openai = new Proxy({} as OpenAI, {
+export const openai = new Proxy({} as OpenAIClient, {
   get(_target, prop) {
     return (getOpenAI() as Record<string | symbol, unknown>)[prop];
   },
