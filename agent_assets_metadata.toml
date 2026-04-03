@@ -1,0 +1,404 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "jdjazwo_HV60lzBM0Q5G8"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/sword_common.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "X5RCHOXVkljI2kFWXuNND"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/sword_iron.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "_cf2LiZCqHhb8Vtid299R"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/sword_steel.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "iFnnBCb-FXbEykTDnBp-i"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/sword_mithril.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "0v6sqx2IeDf28d_FavJ36"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/sword_dark.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "dEIhoSVyWAz38l7grC2EF"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/sword_fabled.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "W85vfIerXmweTzm65XNUl"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/shield_wood.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "MD9ZvKjLDqO-3E2Vors51"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/shield_iron.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "-xpsOViebNRzN2nS3AOLT"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/shield_mithril.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "sFaekGHZMWW7jo_HitHC4"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/helm_leather.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "8SMfWo33lsPlzL35o4D2W"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/helm_chain.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "wUijtv2qVWXjb4gRJUQY7"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/helm_iron.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "7eTcoYja0baQnSA7a2SjI"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/helm_steel.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "fdh94a5xZnihDPIxx-iyN"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/helm_legendary.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "AkmAtLFg1hWHXunwYkCYJ"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/chest_cloth.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "vILht5EVVn9ayVaVO0yIB"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/chest_leather.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "JjbYn8fRsD7MnxsRvoxpK"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/chest_chain.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "BWKQvWTTv55sf0zmDc89f"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/chest_iron.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "9graJtMwoX2LcuKNcLuM-"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/chest_steel.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "2jxVfME4tks09Mksw_VYY"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/chest_legendary.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "XrQR2EHt3vjPybgV7hevC"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/chest_fabled.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "NXJXhri02e0giydX_lWjj"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/legs_cloth.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "jui44dsfKECDHQd1rpPZ6"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/legs_leather.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "lXFRMdCcwaK36K2jb8Xl3"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/legs_iron.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "sTSnjVXzd8Zh3ejwTT0Gg"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/legs_steel.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "CH3Ek1Ys0Vs2LzUmuUFse"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/hands_cloth.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "0LMHaETrUTw4SQOnUrUnQ"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/hands_leather.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "aK0wXhT-VnpUZ5cxdDD3X"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/hands_iron.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "9RJnyqKsAi5DCFumxTwlm"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/hands_fabled.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "RBI__i5MOx8vs_PnSRCXj"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/feet_leather.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "xm328rWFJMFMemF8Osvxt"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/feet_iron.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "6HeUKtBcesWzWCHFfgabl"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/feet_enchanted.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "RfgPf8r5PoUUIBVPz9Mwk"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/neck_stone.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "Pkr38stAT7GvLuTe5qQxu"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/neck_silver.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "9pAN9Nlq4Qe65jO53nrRK"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/neck_legendary.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "GLOnWsSr3g8vWTre1GQge"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/ring_copper.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "1yK5EKTvIJzUF1_K-h3oM"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/ring_strength.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "PW-ksZRxs0vo8DcmhHM7h"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/ring_arcane.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "OBeIphRcAtCcaeORz-tyD"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/ring_fabled.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "Kiw_e3rSGQhwsXswFJpar"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/ear_simple.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "z2Z2jxwz1eMhTlsowyvEa"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/ear_magi.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "gwt5TY6e6PvD4LfDPtOv6"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/back_cloak.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "r_nfDAq3DuceMPr3QXPMK"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/back_shadow.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "jSU6Atr19VBz-VvOIxeqb"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/shoulder_leather.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "8MfTGM4I2Z6qWiphy0wXF"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/shoulder_steel.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "lP-ORZCZFVizOnxdN8qmU"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/waist_rope.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "LKVt6bkQnm0mTw_gPiTcv"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/waist_iron.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "WG9Ed2pv4XbX0EFBJEbAc"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/wrist_leather.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "uyjkl-C21pUtHlLWRkgBq"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/wrist_arcane.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "Rvq99b85rUBWs-AeFYQM-"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/charm_horseshoe.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "EmLrDjiJE5R3R-YiRo5vH"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/charm_oracle.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "b6P01KTbMgTZWt0DuENKj"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/ranged_bow.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "y5Zxpdp1Yjn8G_wtoiePk"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/ranged_elven.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "PzlHgVBNVevCzboYzsH2l"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/mat_iron_ore.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "o0BejnhQA5ohfSUSMwKr3"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/mat_coal.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "_b9_q-AB9rLeLCzv035N0"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/mat_iron_bar.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "pZmJ2Pyvt0S2o6wIb5Z6q"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/mat_steel_bar.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "RWonyYNXcSuzLTMqMiB2N"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/mat_mithril_ore.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "UqqPJ98o2WLcFuh1GOLVT"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/mat_hide.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "JKlBpuj9qYN5j6HYoVOkt"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/mat_silk.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "bvvKnB6CAg1_ToYtkEIkh"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/mat_gem.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "TqDl7agv1dwqDiRnwyI_L"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/potion_health.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "sqYY9gndlXt_PWe832IYK"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/potion_mana.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "HSSSOPxzxzDBKjVD9GwJ7"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/mount_horse_brown.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "Ysrc84pEPKra4Rq4vziTv"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/mount_horse_black.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "GvEvCvYIIxtxLAznuDjwc"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/mount_wolf_grey.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "Zmzuj-MmZbeE9IsOI4l-Y"
+uri = "file://artifacts/melvor-eq2/public/sprites/items/mount_carpet.png"
+type = "image"
+title = "generated_image"
