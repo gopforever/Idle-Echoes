@@ -1,0 +1,31 @@
+VERDICT: REJECTED
+
+The task is not fully complete because core game-state scoping is still broken in quest flows, causing cross-character/cross-account data leakage and ownership bypass.
+
+Critical findings:
+1) **Quest state is not scoped to active VERDICT: REJECTED
+character** (blocking): `questsTable` has no `character_id`, and quest routes in `artifact
+s/api-server/src/routes/gm.ts` still query/update by quest ID globally (`GET /quThe task is not fully complete because core game-state scoping is still broken in quest flows, causing cross-character/cross-account data leakage and ownership bypass.
+ests`, `PATCH /quests/:id/complete`, `POST /quests/:id/progress`) wit
+hout ownership checks. This violates the requirement that Critical findings:
+game state be scoped to the active character.
+2) **Global reads remain in scoped tables** (blocking): `generateQuestBatch()` reads factions with `.from(factionsTable).limit(4)` (no `characterId` filter), so one character’s generated quest context can be based on another character/account’s faction data.
+3) **Character-select UI requirement mismatch** (non-blocking but notable): the "Create New Character" control is hidden when at cap, not shown as disabled at 3 as specified in done criteria.
+
+Security: serious violation observed.
+- **Broken access control / IDOR class issue** in quest endpoints: because quests are global and operations are by ID without ownership scoping, an authenticated user can potentially mutate quests not belonging to their active character (and likely not belonging to their account once multi-user is in play).
+
+Next actions:
+1) Add `character_id` to `quests` schema/migration and backfill existing quest rows to a seed character (consistent with other migrated state).
+2) Update all quest route queries/mutations to enforce `character_id = req.characterId` and reject non-owned IDs.
+3) Re-run character-switch smoke tests specifically for quests/factions to confirm no cross-character bleed and that rewards/progress remain isolated.1) **Quest state is not scoped to active character** (blocking): `questsTable` has no `character_id`, and quest routes in `artifacts/api-server/src/routes/gm.ts` still query/update by quest ID globally (`GET /quests`, `PATCH /quests/:id/complete`, `POST /quests/:id/progress`) without ownership checks. This violates the requirement that game state be scoped to the active character.
+2) **Global reads remain in scoped tables** (blocking): `generateQuestBatch()` reads factions with `.from(factionsTable).limit(4)` (no `characterId` filter), so one character’s generated quest context can be based on another character/account’s faction data.
+3) **Character-select UI requirement mismatch** (non-blocking but notable): the "Create New Character" control is hidden when at cap, not shown as disabled at 3 as specified in done criteria.
+
+Security: serious violation observed.
+- **Broken access control / IDOR class issue** in quest endpoints: because quests are global and operations are by ID without ownership scoping, an authenticated user can potentially mutate quests not belonging to their active character (and likely not belonging to their account once multi-user is in play).
+
+Next actions:
+1) Add `character_id` to `quests` schema/migration and backfill existing quest rows to a seed character (consistent with other migrated state).
+2) Update all quest route queries/mutations to enforce `character_id = req.characterId` and reject non-owned IDs.
+3) Re-run character-switch smoke tests specifically for quests/factions to confirm no cross-character bleed and that rewards/progress remain isolated.

@@ -1,0 +1,45 @@
+VERDICT: REJECTED
+The diff does not fully satisfy the multi-user/active-character scoping requirement because key game routes still operate on global/shared data and can cross-account mutate state.
+
+Critical findings:
+1) **Auction routes are not scoVERDICT: REJECTED
+ped to active character/account (blocking).**
+   - `artifacts/api-server/src/routes/auction.ts` stiThe diff does not fully satisfy the multi-user/active-character scoping requirement because key game routes still operate on global/shared data and can cross-account mutate state.
+ll uses global seller identity (`sellerId = "player"`) and unscoped inventory querie
+s (e.g., listing/buy/cancel paths query/update `inventoryTable` by `iteCritical findings:
+mId` only, without `characterId`).
+   - This violates “all game sta1) **Auction routes are not scoped to active character/account (blocking).**
+te scoped to active character” and causes incorrect behavior: one character can consume/modify another character’s inventory rows, and inserts during buy/cancel omit `characterId` (creating orphan/null ownership rows).
+   - `GET /auction/my-listings`    - `artifacts/api-server/src/routes/auction.ts` still uses global seller identity (`sellerId = "player"`) and unscoped inventory queries (e.g., listing/buy/cancel paths query/update `inventoryTable` by `itemId` only, without `characterId`).
+is effectively global for all players because it filters by static sellerId only.
+   - This violates “all game state scoped to active character” and causes incorrect behavior: one character can consume/modify another character’s inventory rows, and inserts during buy/cancel omit `characterId` (creating orphan/null ownership rows).
+
+2) **Broken ownership enforcement in auction cancellation (blocking/   - `GET /auction/my-listings` is effectively global for all players because it filters by static sellerId only.
+security).**
+   - `DELETE /auction/:listingId` auth
+orizes only by `sellerId === "player"`, not by actual session user/char2) **Broken ownership enforcement in auction cancellation (blocking/security).**
+acter ownership. Any authenticated player can cancel another player’s listing.
+   - This is direct cross-user access-control failure introduced/exposed by multi-user support.
+
+3) **Character-select route is not login-gated on frontend (functional gap).**
+   - In `artifacts/melvor-eq2/src/App.tsx`, `/character-select` is public (no auth gate), conflicting with required flow (“login/register screen shown to anyone who isn’t logged in”).
+   - `character-select.tsx` also assumes successful auth response and may mis-handle 401 payloads.
+
+Security: serious broken access control observed in auction ownership/cancellation path (cross-user state manipulation).
+
+Next actions:
+1) Refactor auction persistence/auth model to include real owner identity (`userId` and/or `characterId`) on listings; remove static `"player"` seller id.
+2) Add `characterId` filters (and inserts with `characterId`) on all inventory/bank/auction mutations; ensure transactions scope by active character.
+3) Gate `/character-select` behind authenticated-user check and handle unauthenticated `/auth/characters` responses explicitly with redirect to `/login`.   - `DELETE /auction/:listingId` authorizes only by `sellerId === "player"`, not by actual session user/character ownership. Any authenticated player can cancel another player’s listing.
+   - This is direct cross-user access-control failure introduced/exposed by multi-user support.
+
+3) **Character-select route is not login-gated on frontend (functional gap).**
+   - In `artifacts/melvor-eq2/src/App.tsx`, `/character-select` is public (no auth gate), conflicting with required flow (“login/register screen shown to anyone who isn’t logged in”).
+   - `character-select.tsx` also assumes successful auth response and may mis-handle 401 payloads.
+
+Security: serious broken access control observed in auction ownership/cancellation path (cross-user state manipulation).
+
+Next actions:
+1) Refactor auction persistence/auth model to include real owner identity (`userId` and/or `characterId`) on listings; remove static `"player"` seller id.
+2) Add `characterId` filters (and inserts with `characterId`) on all inventory/bank/auction mutations; ensure transactions scope by active character.
+3) Gate `/character-select` behind authenticated-user check and handle unauthenticated `/auth/characters` responses explicitly with redirect to `/login`.

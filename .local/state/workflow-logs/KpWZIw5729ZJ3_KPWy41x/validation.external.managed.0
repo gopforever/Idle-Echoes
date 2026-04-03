@@ -1,0 +1,41 @@
+VERDICT: REJECTED
+The diff makes meaningful progress, but it does not fully implement key task requirements and introduces at least one likely deployment blocker.
+
+Critical findings:
+- **Dungeon tab requirement is not implemented**: `/leaderboard/dVERDICT: REJECTED
+ungeons` still returns only aggregate totals (`dungeonsCompleted`, `floorsCleared`, `heroicCompletions`) and doeThe diff makes meaningful progress, but it does not fully implement key task requirements and introduces at least one likely deployment blocker.
+s **not** include per-dungeon clear counts by difficulty. Frontend Dungeon tab also
+ remains aggregate-only. This is a direct miss against “Dungeon tab … also shCritical findings:
+ows per-dungeon clear counts.”
+- **Ranking formula deviates from required formula**: overall score now removes GS (good), but includes an extra `+ maxPhase * 30` term not in the specified formula (`level*1000 + kills*0.5 + bossKills*10 + dungeons*50 + heroic*100 + raids*200`). If formula is contractual, this is incorrect behavior.
+- **Schema change likely incomplete operationally**: `zoneKills` was added to Drizzle schema and used in combat updates/profile reads, but no migration file is included in the diff. On existing DBs, combat tick updates may fail with missing column errors unless migration is applied elsewhere.
+- **Ghost profile type contract mismatch**: frontend types `fetchGhostProfile` as `PlayerProfile` (expects `characterId`) but endpoint returns `ghostId` and a different shape. It may not crash current UI but is an API/type inconsistency that should be corrected.
+
+What is correctly done:
+- GS column removed from overall UI and API payload.
+- Row expansion/profile panel added with zone kills, dungeon/raid clears, gear list, and computed stats.
+- Zone kill tracking is incremented on enemy death in combat tick.
+
+Security:
+- No serious security violations observed in the submitted diff.
+
+Next actions:
+1. Update `/leaderboard/dungeons` response to include per-dungeon clear counts grouped by difficulty, and render that breakdown in the Dungeon tab UI.
+2. Align overall ranking formula exactly to the specified expression (remove `maxPhase * 30` unless explicitly re-approved).
+3. Add and commit DB migration for `characters.zone_kills` (with default/backfill), and align ghost profile API/types to a consistent contract.- **Dungeon tab requirement is not implemented**: `/leaderboard/dungeons` still returns only aggregate totals (`dungeonsCompleted`, `floorsCleared`, `heroicCompletions`) and does **not** include per-dungeon clear counts by difficulty. Frontend Dungeon tab also remains aggregate-only. This is a direct miss against “Dungeon tab … also shows per-dungeon clear counts.”
+- **Ranking formula deviates from required formula**: overall score now removes GS (good), but includes an extra `+ maxPhase * 30` term not in the specified formula (`level*1000 + kills*0.5 + bossKills*10 + dungeons*50 + heroic*100 + raids*200`). If formula is contractual, this is incorrect behavior.
+- **Schema change likely incomplete operationally**: `zoneKills` was added to Drizzle schema and used in combat updates/profile reads, but no migration file is included in the diff. On existing DBs, combat tick updates may fail with missing column errors unless migration is applied elsewhere.
+- **Ghost profile type contract mismatch**: frontend types `fetchGhostProfile` as `PlayerProfile` (expects `characterId`) but endpoint returns `ghostId` and a different shape. It may not crash current UI but is an API/type inconsistency that should be corrected.
+
+What is correctly done:
+- GS column removed from overall UI and API payload.
+- Row expansion/profile panel added with zone kills, dungeon/raid clears, gear list, and computed stats.
+- Zone kill tracking is incremented on enemy death in combat tick.
+
+Security:
+- No serious security violations observed in the submitted diff.
+
+Next actions:
+1. Update `/leaderboard/dungeons` response to include per-dungeon clear counts grouped by difficulty, and render that breakdown in the Dungeon tab UI.
+2. Align overall ranking formula exactly to the specified expression (remove `maxPhase * 30` unless explicitly re-approved).
+3. Add and commit DB migration for `characters.zone_kills` (with default/backfill), and align ghost profile API/types to a consistent contract.

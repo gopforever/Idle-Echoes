@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1775103164663,
+      "tag": "0000_boss_encounters",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1775104800000,
+      "tag": "0001_auction_listings",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1743573600000,
+      "tag": "0002_meditation_regen",
+      "breakpoints": true
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+VERDICT: APPROVED_WITH_COMMENTS
+
+The diff implements the core task end-to-end: GS is removed from overall leaderboard display and response, ranking logic now uses the requested non-GS formula, zone kill tracking is persisted on characters and incrementVERDICT: APPROVED_WITH_COMMENTS
+ed on enemy kill, the new player/ghost profile endpoints exist, and f
+rontend row expansion renders zone kills, dungeon/raid clears, gear, and computed stats.
+
+Critical findings:
+- Backend requirements are substantially met:
+  - `zone_kills` support added via schema + migration (`zone_kills` JSONB).
+  - Combat tick increments per-zone kill counts on kill.
+  - `/leaderboard/overall` no longer computes/returns `gearScore` and now scores with `level*1000 + kills*0.5 + bossKills*10 + dungeons*50 + heroic*100 + raids*200`.
+  - `/leaderboard/dungeons` now returns per-dungeon/difficulty clear counts (`dungeonBreakdown`).
+  - New profile endpoints return zone kills, dungeon clears with counts/difficulty, gear list, and computed stats for players; ghost profile support added with available data.
+- Frontend requirements are substantially met:
+  - Overall table GS column removed.
+  - Expandable rows added with lazy profile fetch.
+  - Expanded profile includes zone kills panel, dungeon/raid clears panel, and 18-slot gear + stats view with rarity colors.
+  - Dungeon tab now exposes per-dungeon clear-count breakdown.
+
+Comments (non-blocking):
+- `DungeonBreakdownRow` uses `colSpan={5}` while the dungeon table now has 6 columns (expand + 5 data columns), causing minor table alignment/layout inconsistency.
+- Gear display is implemented as a compact slot list rather than a visual “grid” layout; functionally complete, but slightly off from the wording of “18-slot grid.”
+
+Security: none observed (no serious authz/injection/secrets issues introduced in this diff).
+
+Next actions:
+1. Fix dungeon breakdown expansion row `colSpan` to 6 for correct table structure.
+2. (Optional polish) Render gear slots in an actual grid layout to match requested presentation language more precisely.
+3. Add a small regression test/assertion for overall leaderboard payload schema to prevent `gearScore` reintroduction.The diff implements the core task end-to-end: GS is removed from overall leaderboard display and response, ranking logic now uses the requested non-GS formula, zone kill tracking is persisted on characters and incremented on enemy kill, the new player/ghost profile endpoints exist, and frontend row expansion renders zone kills, dungeon/raid clears, gear, and computed stats.
+
+Critical findings:
+- Backend requirements are substantially met:
+  - `zone_kills` support added via schema + migration (`zone_kills` JSONB).
+  - Combat tick increments per-zone kill counts on kill.
+  - `/leaderboard/overall` no longer computes/returns `gearScore` and now scores with `level*1000 + kills*0.5 + bossKills*10 + dungeons*50 + heroic*100 + raids*200`.
+  - `/leaderboard/dungeons` now returns per-dungeon/difficulty clear counts (`dungeonBreakdown`).
+  - New profile endpoints return zone kills, dungeon clears with counts/difficulty, gear list, and computed stats for players; ghost profile support added with available data.
+- Frontend requirements are substantially met:
+  - Overall table GS column removed.
+  - Expandable rows added with lazy profile fetch.
+  - Expanded profile includes zone kills panel, dungeon/raid clears panel, and 18-slot gear + stats view with rarity colors.
+  - Dungeon tab now exposes per-dungeon clear-count breakdown.
+
+Comments (non-blocking):
+- `DungeonBreakdownRow` uses `colSpan={5}` while the dungeon table now has 6 columns (expand + 5 data columns), causing minor table alignment/layout inconsistency.
+- Gear display is implemented as a compact slot list rather than a visual “grid” layout; functionally complete, but slightly off from the wording of “18-slot grid.”
+
+Security: none observed (no serious authz/injection/secrets issues introduced in this diff).
+
+Next actions:
+1. Fix dungeon breakdown expansion row `colSpan` to 6 for correct table structure.
+2. (Optional polish) Render gear slots in an actual grid layout to match requested presentation language more precisely.
+3. Add a small regression test/assertion for overall leaderboard payload schema to prevent `gearScore` reintroduction.

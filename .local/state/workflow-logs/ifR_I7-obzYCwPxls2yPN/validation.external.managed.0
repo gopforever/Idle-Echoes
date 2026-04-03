@@ -1,0 +1,31 @@
+VERDICT: REJECTED
+
+The diff does not meet the task’s “data preserved + character-scoped state” requirement in a deployable way because the database migration set is incomplete for the schema/code changes.
+
+Critical findings:
+- The API/server VERDICT: REJECTED
+code now relies heavily on `character_id` across many existin
+g tables (e.g., `inventory`, `skills`, `combat_state`,The diff does not meet the task’s “data preserved + character-scoped state” requirement in a deployable way because the database migration set is incomplete for the schema/code changes.
+ `combat_log`, `achievements`, `factions`
+, `aa_points`, `adornments`, `collections`Critical findings:
+, `mounts`, `heroic_state`, `ability_cooldowns`, `bank_items`, `auction_listings`).
+- However, the committed migrations only add users/ownership (`0011_user_accounts.sql`, `0012_backfill_character_ownership.sql`). They do not add `character_id` to those pre-existing tables.
+- Evidence: older migrations and meta snapshot show those tables were created without `character_id` (only a few newer systems had it). With current code, queries like `where(eq(inventoryTable.characterId, ...))` will fail at runtime on migrated DBs where the column does not exist.
+- This is blocking for core requirements: login + character select may work, but core gameplay endpoints will error, and old game state cannot be correctly preserved/scoped per active character.
+
+Security: none observed at serious/blocking level specific to this task.
+
+Next actions:
+1) Add a follow-up migration to introduce `character_id` (and appropriate indexes/uniques) on all affected legacy tables now referenced by scoped queries.
+2) Backfill those new `character_id` columns for existing rows to the migrated seed character (or deterministic character mapping), so existing progress is actually preserved.
+3) Re-run end-to-end smoke tests after migration on an existing DB snapshot (auth, select character, inventory/combat/skills/leaderboard) to validate no runtime SQL errors and correct scoping.- The API/server code now relies heavily on `character_id` across many existing tables (e.g., `inventory`, `skills`, `combat_state`, `combat_log`, `achievements`, `factions`, `aa_points`, `adornments`, `collections`, `mounts`, `heroic_state`, `ability_cooldowns`, `bank_items`, `auction_listings`).
+- However, the committed migrations only add users/ownership (`0011_user_accounts.sql`, `0012_backfill_character_ownership.sql`). They do not add `character_id` to those pre-existing tables.
+- Evidence: older migrations and meta snapshot show those tables were created without `character_id` (only a few newer systems had it). With current code, queries like `where(eq(inventoryTable.characterId, ...))` will fail at runtime on migrated DBs where the column does not exist.
+- This is blocking for core requirements: login + character select may work, but core gameplay endpoints will error, and old game state cannot be correctly preserved/scoped per active character.
+
+Security: none observed at serious/blocking level specific to this task.
+
+Next actions:
+1) Add a follow-up migration to introduce `character_id` (and appropriate indexes/uniques) on all affected legacy tables now referenced by scoped queries.
+2) Backfill those new `character_id` columns for existing rows to the migrated seed character (or deterministic character mapping), so existing progress is actually preserved.
+3) Re-run end-to-end smoke tests after migration on an existing DB snapshot (auth, select character, inventory/combat/skills/leaderboard) to validate no runtime SQL errors and correct scoping.

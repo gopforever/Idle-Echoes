@@ -1,0 +1,29 @@
+VERDICT: REJECTED
+The diff is close, but it has at least one blocking delivery issue that prevents approval for this task.
+
+Critical findings:
+- **Blocking: schema change without migration**. `charactersTable` adds `zoneKills` (`zone_kills` JSONB),VERDICT: REJECTED
+ but no corresponding Drizzle migration/snapshot update is included. In this repo, schema The diff is close, but it has at least one blocking delivery issue that prevents approval for this task.
+is migration-driven; without migration, existing DBs will not 
+have `zone_kills`, causing runtime query/update failures wherCritical findings:
+e the new code reads/writes `character.zoneKills`.
+- Core functional requirements are otherwise largely implemented: GS removed from overall leaderboard output/UI, overall score formula updated to kills/boss/dungeon/heroic/raids/level, row expansion and profile fetch added, zone kill increments on combat kills, and dungeons endpoint now returns per-dungeon/per-difficulty clear counts.
+- Minor requirement gap: gear panel shows slot labels and rarity text, but not actual **slot icons** as specified (“matching in-game character sheet style”). This is non-blocking alone, but still incomplete against the stated “Done looks like.”
+
+Security:
+- None observed at serious level. Route params are parsed/validated to numbers; queries remain parameterized through Drizzle.
+
+Next actions:
+1. Add and commit a DB migration for `characters.zone_kills` (JSONB NOT NULL DEFAULT '{}') and update Drizzle metadata accordingly.
+2. Run/verify end-to-end against a pre-existing DB to confirm `/combat/tick` and `/leaderboard/player/:id/profile` work after migration.
+3. Add slot icon rendering in the leaderboard gear grid (reuse in-game slot/icon mapping) to fully satisfy the UI acceptance criteria.- **Blocking: schema change without migration**. `charactersTable` adds `zoneKills` (`zone_kills` JSONB), but no corresponding Drizzle migration/snapshot update is included. In this repo, schema is migration-driven; without migration, existing DBs will not have `zone_kills`, causing runtime query/update failures where the new code reads/writes `character.zoneKills`.
+- Core functional requirements are otherwise largely implemented: GS removed from overall leaderboard output/UI, overall score formula updated to kills/boss/dungeon/heroic/raids/level, row expansion and profile fetch added, zone kill increments on combat kills, and dungeons endpoint now returns per-dungeon/per-difficulty clear counts.
+- Minor requirement gap: gear panel shows slot labels and rarity text, but not actual **slot icons** as specified (“matching in-game character sheet style”). This is non-blocking alone, but still incomplete against the stated “Done looks like.”
+
+Security:
+- None observed at serious level. Route params are parsed/validated to numbers; queries remain parameterized through Drizzle.
+
+Next actions:
+1. Add and commit a DB migration for `characters.zone_kills` (JSONB NOT NULL DEFAULT '{}') and update Drizzle metadata accordingly.
+2. Run/verify end-to-end against a pre-existing DB to confirm `/combat/tick` and `/leaderboard/player/:id/profile` work after migration.
+3. Add slot icon rendering in the leaderboard gear grid (reuse in-game slot/icon mapping) to fully satisfy the UI acceptance criteria.

@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/leaderboard/"
+title = "Leaderboard"
+version = "1.0.0"
+id = "artifacts/leaderboard"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/leaderboard/" ]
+localPort = 23453
+
+[services.development]
+run = "pnpm --filter @workspace/leaderboard run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/leaderboard", "run", "build" ]
+publicDir = "artifacts/leaderboard/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23453"
+BASE_PATH = "/leaderboard/"

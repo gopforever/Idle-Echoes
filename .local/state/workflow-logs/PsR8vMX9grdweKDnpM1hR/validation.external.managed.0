@@ -1,0 +1,43 @@
+VERDICT: APPROVED_WITH_COMMENTS
+
+The diff substantially implements the multi-user auth + character selection objective end-to-end, with non-blocking gaps.
+
+Critical findings / analysis:
+- Core backend requirements are in place: `users` table + charVERDICT: APPROVED_WITH_COMMENTS
+acter ownership migrations, session auth (`express-session`), register/login/logout/me routes, charact
+er list/select routes, and auth middleware enforcement on game routes.
+-The diff substantially implements the multi-user auth + character selection objective end-to-end, with non-blocking gaps.
+ Character creation was correctly reworked to require l
+ogin, enforce 3-character cap server-side, attach Critical findings / analysis:
+`userId`, and avoid wiping other characters.
+- Game-state scoping - Core backend requirements are in place: `users` table + character ownership migrations, session auth (`express-session`), register/login/logout/me routes, character list/select routes, and auth middleware enforcement on game routes.
+appears comprehensively addressed: many previously global reads/writes n- Character creation was correctly reworked to require login, enforce 3-character cap server-side, attach `userId`, and avoid wiping other characters.
+ow include `characterId` filters and inserts include `characterId`; `getOrCreateCharacter()` now resolves the session-selected character.
+- Public leaderboard behavior is preserved (routes remain public and aggregate across all characters).
+- Frontend auth flow is implemented: login/register screens, auth gate, character selection page, switch/logout entry points.
+
+Non-blocking issues worth noting:
+1) UI requirement mismatch: character-select currently hides “Create New Character” at cap (3) instead of rendering it disabled as specified.
+2) Migration seed account uses a placeholder bcrypt hash (`0012_backfill_character_ownership.sql`). Data is preserved and assigned, but seeded legacy account login may be impractical without a documented credential/reset path.
+
+Security:
+- No direct serious authz/IDOR regressions observed in reviewed changes; route-level scoping and ownership checks are broadly present.
+
+Next actions:
+1) Update character-select UI to always show “Create New Character” and disable it at 3 characters (with explanatory text).
+2) Define/document a deterministic seed-account credential/reset flow for migrated legacy characters (or avoid reserving an inaccessible account).
+3) Optionally add an integration test matrix for auth + character scoping (two users, multiple characters each) to prevent cross-character regressions.- Game-state scoping appears comprehensively addressed: many previously global reads/writes now include `characterId` filters and inserts include `characterId`; `getOrCreateCharacter()` now resolves the session-selected character.
+- Public leaderboard behavior is preserved (routes remain public and aggregate across all characters).
+- Frontend auth flow is implemented: login/register screens, auth gate, character selection page, switch/logout entry points.
+
+Non-blocking issues worth noting:
+1) UI requirement mismatch: character-select currently hides “Create New Character” at cap (3) instead of rendering it disabled as specified.
+2) Migration seed account uses a placeholder bcrypt hash (`0012_backfill_character_ownership.sql`). Data is preserved and assigned, but seeded legacy account login may be impractical without a documented credential/reset path.
+
+Security:
+- No direct serious authz/IDOR regressions observed in reviewed changes; route-level scoping and ownership checks are broadly present.
+
+Next actions:
+1) Update character-select UI to always show “Create New Character” and disable it at 3 characters (with explanatory text).
+2) Define/document a deterministic seed-account credential/reset flow for migrated legacy characters (or avoid reserving an inaccessible account).
+3) Optionally add an integration test matrix for auth + character scoping (two users, multiple characters each) to prevent cross-character regressions.

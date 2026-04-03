@@ -1,0 +1,15 @@
+fix: address approved-with-comments review items for Task #35
+
+Two non-blocking items from the APPROVED_WITH_COMMENTS review:
+
+1. character-select.tsx: "Create New Character" now always visible
+   - Previously hidden when characters.length >= 3
+   - Now always rendered, disabled at cap with explanatory label
+     "Character Limit Reached (3/3)" and reduced opacity
+   - Satisfies "show as disabled" UI requirement
+
+2. 0012_backfill_character_ownership.sql: improved seed account comment
+   - Documents that the placeholder INSERT is skipped on databases
+     that already have registered users
+   - Advises admins to register and replace the seed account if it
+     was created on a fresh deploy

@@ -1,0 +1,2570 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.2.0
+  description: Melvor EQ2 Game API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+  - name: character
+  - name: combat
+  - name: inventory
+  - name: skills
+  - name: items
+  - name: enemies
+  - name: crafting
+  - name: creation
+  - name: abilities
+  - name: achievements
+  - name: shop
+  - name: zones
+  - name: factions
+  - name: aa
+  - name: heroic
+  - name: adornments
+  - name: collections
+  - name: mounts
+  - name: world
+  - name: gm
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  # ─── CHARACTER ──────────────────────────────────────────────────────────────
+  /character:
+    get:
+      operationId: getCharacter
+      tags: [character]
+      summary: Get character state
+      responses:
+        "200":
+          description: Character data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Character"
+    put:
+      operationId: updateCharacter
+      tags: [character]
+      summary: Update character state
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CharacterUpdate"
+      responses:
+        "200":
+          description: Updated character
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Character"
+
+  /character/stats:
+    get:
+      operationId: getCharacterStats
+      tags: [character]
+      summary: Get computed character stats (EQ2 formulas)
+      responses:
+        "200":
+          description: Computed stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ComputedStats"
+
+  /character/settings:
+    put:
+      operationId: updateCombatSettings
+      tags: [character]
+      summary: Update combat settings (auto-loop, auto-heal, meditation)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CombatSettings"
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CombatSettings"
+
+  /character/regen:
+    post:
+      operationId: applyRegen
+      tags: [character]
+      summary: Apply passive and meditation-boosted out-of-combat HP/Power regen
+      description: >
+        Called on a ~3s interval when the character is not in active combat.
+        Computes elapsed time since the last call and restores HP/Power proportionally.
+        If isMeditating is true a Meditation-level multiplier is applied and
+        Meditation XP is awarded. Safe to call concurrently — uses compare-and-set
+        on lastRegenAt to prevent double-crediting.
+      responses:
+        "200":
+          description: Regen result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegenResult"
+
+  # ─── CHARACTER CREATION ──────────────────────────────────────────────────────
+  /creation/options:
+    get:
+      operationId: getCreationOptions
+      tags: [creation]
+      summary: Get available races and classes for character creation
+      responses:
+        "200":
+          description: Creation options
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreationOptions"
+
+  /creation/create:
+    post:
+      operationId: createCharacter
+      tags: [creation]
+      summary: Create a new character (resets game)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCharacterRequest"
+      responses:
+        "200":
+          description: Created character
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Character"
+
+  # ─── COMBAT ──────────────────────────────────────────────────────────────────
+  /combat/state:
+    get:
+      operationId: getCombatState
+      tags: [combat]
+      summary: Get current combat state
+      responses:
+        "200":
+          description: Combat state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CombatState"
+
+  /combat/start:
+    post:
+      operationId: startCombat
+      tags: [combat]
+      summary: Start combat with enemy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StartCombatRequest"
+      responses:
+        "200":
+          description: Combat started
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CombatState"
+
+  /combat/stop:
+    post:
+      operationId: stopCombat
+      tags: [combat]
+      summary: Stop combat
+      responses:
+        "200":
+          description: Combat stopped
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CombatState"
+
+  /combat/tick:
+    post:
+      operationId: tickCombat
+      tags: [combat]
+      summary: Advance combat by one tick and get result
+      responses:
+        "200":
+          description: Combat tick result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CombatTickResult"
+
+  /combat/log:
+    get:
+      operationId: getCombatLog
+      tags: [combat]
+      summary: Get recent combat log entries
+      responses:
+        "200":
+          description: Combat log
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CombatLogEntry"
+
+  # ─── ABILITIES ───────────────────────────────────────────────────────────────
+  /abilities:
+    get:
+      operationId: getAbilities
+      tags: [abilities]
+      summary: Get character's class abilities with cooldown status
+      responses:
+        "200":
+          description: Abilities list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ability"
+
+  /abilities/{abilityId}/activate:
+    post:
+      operationId: activateAbility
+      tags: [abilities]
+      parameters:
+        - name: abilityId
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Manually activate an ability (if off cooldown)
+      responses:
+        "200":
+          description: Activation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AbilityActivationResult"
+
+  # ─── HEROIC OPPORTUNITIES ────────────────────────────────────────────────────
+  /heroic/state:
+    get:
+      operationId: getHeroicState
+      tags: [heroic]
+      summary: Get current Heroic Opportunity chain state
+      responses:
+        "200":
+          description: Heroic state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HeroicState"
+
+  /heroic/trigger:
+    post:
+      operationId: triggerHeroic
+      tags: [heroic]
+      summary: Trigger a heroic opportunity step
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HeroicTriggerRequest"
+      responses:
+        "200":
+          description: Heroic trigger result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HeroicTriggerResult"
+
+  # ─── INVENTORY ───────────────────────────────────────────────────────────────
+  /inventory:
+    get:
+      operationId: getInventory
+      tags: [inventory]
+      summary: Get player inventory
+      responses:
+        "200":
+          description: Inventory
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Inventory"
+
+  /inventory/equip:
+    post:
+      operationId: equipItem
+      tags: [inventory]
+      summary: Equip an item to a gear slot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EquipRequest"
+      responses:
+        "200":
+          description: Updated gear
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GearSet"
+
+  /inventory/unequip:
+    post:
+      operationId: unequipItem
+      tags: [inventory]
+      summary: Unequip an item from a gear slot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UnequipRequest"
+      responses:
+        "200":
+          description: Updated gear
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GearSet"
+
+  /inventory/sell:
+    post:
+      operationId: sellItem
+      tags: [inventory]
+      summary: Sell an item for gold
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SellItemRequest"
+      responses:
+        "200":
+          description: Sale result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SellResult"
+
+  # ─── ADORNMENTS ──────────────────────────────────────────────────────────────
+  /adornments:
+    get:
+      operationId: getAdornments
+      tags: [adornments]
+      summary: Get available adornments in inventory
+      responses:
+        "200":
+          description: Adornments list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Adornment"
+
+  /adornments/apply:
+    post:
+      operationId: applyAdornment
+      tags: [adornments]
+      summary: Apply an adornment to a gear slot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplyAdornmentRequest"
+      responses:
+        "200":
+          description: Result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdornmentResult"
+
+  # ─── SKILLS ──────────────────────────────────────────────────────────────────
+  /skills:
+    get:
+      operationId: getSkills
+      tags: [skills]
+      summary: Get all character skills
+      responses:
+        "200":
+          description: Skills list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Skill"
+
+  /skills/{skillId}/toggle:
+    post:
+      operationId: toggleSkillTraining
+      tags: [skills]
+      parameters:
+        - name: skillId
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Toggle idle training for a skill
+      responses:
+        "200":
+          description: Updated skill
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Skill"
+
+  /skills/summary:
+    get:
+      operationId: getSkillsSummary
+      tags: [skills]
+      summary: Get skill summary
+      responses:
+        "200":
+          description: Skills summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillsSummary"
+
+  # ─── ITEMS ───────────────────────────────────────────────────────────────────
+  /items:
+    get:
+      operationId: getItems
+      tags: [items]
+      summary: Get item database
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+        - name: slot
+          in: query
+          schema:
+            type: string
+        - name: minLevel
+          in: query
+          schema:
+            type: integer
+        - name: maxLevel
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Items list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Item"
+
+  /items/{itemId}:
+    get:
+      operationId: getItem
+      tags: [items]
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Get a specific item
+      responses:
+        "200":
+          description: Item data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Item"
+
+  # ─── ENEMIES ─────────────────────────────────────────────────────────────────
+  /enemies:
+    get:
+      operationId: getEnemies
+      tags: [enemies]
+      summary: Get enemy database
+      parameters:
+        - name: zone
+          in: query
+          schema:
+            type: string
+        - name: minLevel
+          in: query
+          schema:
+            type: integer
+        - name: maxLevel
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Enemies list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Enemy"
+
+  # ─── ZONES ───────────────────────────────────────────────────────────────────
+  /zones:
+    get:
+      operationId: getZones
+      tags: [zones]
+      summary: Get all zones with unlock status
+      responses:
+        "200":
+          description: Zones list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Zone"
+
+  /zones/{zoneId}/travel:
+    post:
+      operationId: travelToZone
+      tags: [zones]
+      parameters:
+        - name: zoneId
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Travel to a zone
+      responses:
+        "200":
+          description: Travel result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TravelResult"
+
+  # ─── CRAFTING ────────────────────────────────────────────────────────────────
+  /crafting/recipes:
+    get:
+      operationId: getCraftingRecipes
+      tags: [crafting]
+      summary: Get available crafting recipes
+      responses:
+        "200":
+          description: Recipes list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CraftingRecipe"
+
+  /crafting/craft:
+    post:
+      operationId: craftItem
+      tags: [crafting]
+      summary: Craft an item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CraftRequest"
+      responses:
+        "200":
+          description: Craft result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CraftResult"
+
+  # ─── SHOP ────────────────────────────────────────────────────────────────────
+  /shop:
+    get:
+      operationId: getShopItems
+      tags: [shop]
+      summary: Get merchant shop inventory
+      parameters:
+        - name: zone
+          in: query
+          schema:
+            type: string
+        - name: category
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Shop items
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Shop"
+
+  /shop/buy:
+    post:
+      operationId: buyItem
+      tags: [shop]
+      summary: Purchase an item from the shop
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BuyRequest"
+      responses:
+        "200":
+          description: Purchase result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BuyResult"
+
+  # ─── ACHIEVEMENTS ─────────────────────────────────────────────────────────────
+  /achievements:
+    get:
+      operationId: getAchievements
+      tags: [achievements]
+      summary: Get all achievements with completion status
+      responses:
+        "200":
+          description: Achievements list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Achievement"
+
+  /achievements/summary:
+    get:
+      operationId: getAchievementsSummary
+      tags: [achievements]
+      summary: Get achievement completion summary
+      responses:
+        "200":
+          description: Summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AchievementsSummary"
+
+  # ─── FACTIONS ────────────────────────────────────────────────────────────────
+  /factions:
+    get:
+      operationId: getFactions
+      tags: [factions]
+      summary: Get all faction standings
+      responses:
+        "200":
+          description: Factions list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Faction"
+
+  # ─── ALTERNATE ADVANCEMENT ────────────────────────────────────────────────────
+  /aa/tree:
+    get:
+      operationId: getAATree
+      tags: [aa]
+      summary: Get Alternate Advancement tree with spent points
+      responses:
+        "200":
+          description: AA tree
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AATree"
+
+  /aa/spend:
+    post:
+      operationId: spendAAPoint
+      tags: [aa]
+      summary: Spend an AA point on a node
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpendAARequest"
+      responses:
+        "200":
+          description: Updated AA tree
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AATree"
+
+  # ─── COLLECTIONS ──────────────────────────────────────────────────────────────
+  /collections:
+    get:
+      operationId: getCollections
+      tags: [collections]
+      summary: Get all collection sets with progress
+      responses:
+        "200":
+          description: Collections list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Collection"
+
+  # ─── MOUNTS ──────────────────────────────────────────────────────────────────
+  /mounts:
+    get:
+      operationId: getMounts
+      tags: [mounts]
+      summary: Get all mounts (owned and available to purchase)
+      responses:
+        "200":
+          description: Mounts list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Mount"
+
+  /mounts/{mountId}/equip:
+    post:
+      operationId: equipMount
+      tags: [mounts]
+      parameters:
+        - name: mountId
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Equip a mount
+      responses:
+        "200":
+          description: Updated mount status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MountResult"
+
+  # ─── WORLD / GHOST PLAYERS ────────────────────────────────────────────────────
+  /world/players:
+    get:
+      operationId: getWorldPlayers
+      tags: [world]
+      summary: Get all ghost/world players
+      responses:
+        "200":
+          description: World players list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WorldPlayer"
+
+  /world/events:
+    get:
+      operationId: getWorldEvents
+      tags: [world]
+      summary: Get recent world events (living world feed)
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: zone
+          in: query
+          schema:
+            type: string
+        - name: minImportance
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: World events list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WorldEvent"
+
+  /world/zones:
+    get:
+      operationId: getWorldZones
+      tags: [world]
+      summary: Get player count per zone (ghosts + real player)
+      responses:
+        "200":
+          description: Zone population data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ZonePopulation"
+
+  /world/leaderboard:
+    get:
+      operationId: getWorldLeaderboard
+      tags: [world]
+      summary: Get top 10 by level then kill_count (ghosts + real player)
+      responses:
+        "200":
+          description: Leaderboard data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LeaderboardEntry"
+
+  /world/stats:
+    get:
+      operationId: getWorldStats
+      tags: [world]
+      summary: Get aggregate world statistics
+      responses:
+        "200":
+          description: World stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorldStats"
+
+  # ─── LLM GAME MASTER ────────────────────────────────────────────────────────────
+  /quests/generate:
+    post:
+      operationId: generateQuests
+      tags: [gm]
+      summary: Generate a batch of AI quests for the current character
+      responses:
+        "200":
+          description: Generated quests (batch of 3–5)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Quest"
+
+  /quests:
+    get:
+      operationId: getQuests
+      tags: [gm]
+      summary: Get all quests (active and completed)
+      responses:
+        "200":
+          description: Quest list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Quest"
+
+  /quests/{id}/complete:
+    patch:
+      operationId: completeQuest
+      tags: [gm]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      summary: Mark a quest as completed and claim rewards
+      responses:
+        "200":
+          description: Quest completion result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuestCompleteResult"
+
+  /npc/dialogue:
+    post:
+      operationId: getNpcDialogue
+      tags: [gm]
+      summary: Get AI-generated NPC dialogue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NpcDialogueRequest"
+      responses:
+        "200":
+          description: NPC dialogue response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NpcDialogueResponse"
+
+  /character/lore:
+    get:
+      operationId: getCharacterLore
+      tags: [gm]
+      summary: Get AI-generated lore entry for the character
+      responses:
+        "200":
+          description: Character lore
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CharacterLoreResponse"
+
+  /world/player/{id}/quote:
+    get:
+      operationId: getWorldPlayerQuoteById
+      tags: [gm]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Get AI-generated quote for a world/ghost player by ID
+      responses:
+        "200":
+          description: Player quote
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerQuoteResponse"
+
+  /world/player/by-name/{name}/quote:
+    get:
+      operationId: getWorldPlayerQuoteByName
+      tags: [gm]
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Get AI-generated quote for a world/ghost player by name
+      responses:
+        "200":
+          description: Player quote
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerQuoteResponse"
+
+  /combat/boss-narration/{bossId}:
+    get:
+      operationId: getBossNarration
+      tags: [gm]
+      parameters:
+        - name: bossId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: phase
+          in: query
+          schema:
+            type: string
+            enum: [intro, death]
+      summary: Get AI-generated boss narration (intro or death speech)
+      responses:
+        "200":
+          description: Boss narration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BossNarrationResponse"
+
+  # ─── GAME SUMMARY ──────────────────────────────────────────────────────────────
+  /game/summary:
+    get:
+      operationId: getGameSummary
+      tags: [character]
+      summary: Get overall game progress summary
+      responses:
+        "200":
+          description: Game summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameSummary"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
+
+    # ─── CHARACTER ────────────────────────────────────────────────────────────
+    Character:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        race:
+          type: string
+        class:
+          type: string
+        archetype:
+          type: string
+          enum: [Fighter, Scout, Mage, Priest]
+        level:
+          type: integer
+        xp:
+          type: number
+        xpToNextLevel:
+          type: number
+        aaPoints:
+          type: integer
+        aaPointsSpent:
+          type: integer
+        gold:
+          type: number
+        health:
+          type: number
+        maxHealth:
+          type: number
+        power:
+          type: number
+        maxPower:
+          type: number
+        baseStats:
+          $ref: "#/components/schemas/BaseStats"
+        gear:
+          $ref: "#/components/schemas/GearSet"
+        zone:
+          type: string
+        activeMount:
+          type: string
+        alignment:
+          type: string
+          enum: [Qeynos, Freeport, Neutral]
+        totalPlayTime:
+          type: number
+        killCount:
+          type: integer
+        deathCount:
+          type: integer
+        autoLoop:
+          type: boolean
+        autoHeal:
+          type: boolean
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - name
+        - race
+        - class
+        - archetype
+        - level
+        - xp
+        - xpToNextLevel
+        - aaPoints
+        - aaPointsSpent
+        - gold
+        - health
+        - maxHealth
+        - power
+        - maxPower
+        - baseStats
+        - gear
+        - zone
+        - alignment
+        - totalPlayTime
+        - killCount
+        - deathCount
+        - autoLoop
+        - autoHeal
+        - createdAt
+        - updatedAt
+
+    CharacterUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        zone:
+          type: string
+        health:
+          type: number
+        power:
+          type: number
+        gold:
+          type: number
+        xp:
+          type: number
+        level:
+          type: integer
+        autoLoop:
+          type: boolean
+        autoHeal:
+          type: boolean
+
+    CombatSettings:
+      type: object
+      description: >
+        Partial settings patch — only fields provided are updated.
+        All fields are optional so callers can send a single-field patch
+        (e.g. { isMeditating: true }) without supplying unrelated settings.
+      properties:
+        autoLoop:
+          type: boolean
+        autoHeal:
+          type: boolean
+        autoPotions:
+          type: boolean
+        isMeditating:
+          type: boolean
+          description: >
+            Whether the character is in meditation mode. Server ignores
+            attempts to enable this while in active combat.
+
+    RegenResult:
+      type: object
+      description: Result of a passive/meditation regen tick
+      properties:
+        health:
+          type: number
+          description: Current HP after regen
+        maxHealth:
+          type: number
+        power:
+          type: number
+          description: Current Power after regen
+        maxPower:
+          type: number
+        hpGain:
+          type: number
+          description: HP restored this tick (0 on guard short-circuits)
+        pwrGain:
+          type: number
+          description: Power restored this tick (0 on guard short-circuits)
+        isMeditating:
+          type: boolean
+        meditationLevel:
+          type: number
+          description: Actual Meditation skill level (always reflects current DB value)
+        regenPerTick:
+          type: object
+          description: Projected HP and Power gain per 3-second tick at current stats
+          properties:
+            hp:
+              type: number
+            pwr:
+              type: number
+          required: [hp, pwr]
+      required: [health, maxHealth, power, maxPower, hpGain, pwrGain, isMeditating, meditationLevel, regenPerTick]
+
+    BaseStats:
+      type: object
+      properties:
+        strength:
+          type: number
+        agility:
+          type: number
+        stamina:
+          type: number
+        intelligence:
+          type: number
+        wisdom:
+          type: number
+        charisma:
+          type: number
+      required: [strength, agility, stamina, intelligence, wisdom, charisma]
+
+    ComputedStats:
+      type: object
+      properties:
+        attackRating:
+          type: number
+        defenseRating:
+          type: number
+        mitigation:
+          type: number
+        avoidance:
+          type: number
+        critChance:
+          type: number
+        critBonus:
+          type: number
+        haste:
+          type: number
+        dps:
+          type: number
+        totalPower:
+          type: number
+        spellCritChance:
+          type: number
+        spellCritBonus:
+          type: number
+        weaponDamageMin:
+          type: number
+        weaponDamageMax:
+          type: number
+        combatMitigation:
+          type: number
+        mountSpeedBonus:
+          type: number
+      required:
+        - attackRating
+        - defenseRating
+        - mitigation
+        - avoidance
+        - critChance
+        - critBonus
+        - haste
+        - dps
+        - totalPower
+        - spellCritChance
+        - spellCritBonus
+        - weaponDamageMin
+        - weaponDamageMax
+        - combatMitigation
+        - mountSpeedBonus
+
+    GearSet:
+      type: object
+      properties:
+        head:
+          $ref: "#/components/schemas/Item"
+        neck:
+          $ref: "#/components/schemas/Item"
+        shoulder:
+          $ref: "#/components/schemas/Item"
+        chest:
+          $ref: "#/components/schemas/Item"
+        back:
+          $ref: "#/components/schemas/Item"
+        wrist:
+          $ref: "#/components/schemas/Item"
+        hands:
+          $ref: "#/components/schemas/Item"
+        waist:
+          $ref: "#/components/schemas/Item"
+        legs:
+          $ref: "#/components/schemas/Item"
+        feet:
+          $ref: "#/components/schemas/Item"
+        earLeft:
+          $ref: "#/components/schemas/Item"
+        earRight:
+          $ref: "#/components/schemas/Item"
+        ringLeft:
+          $ref: "#/components/schemas/Item"
+        ringRight:
+          $ref: "#/components/schemas/Item"
+        charm:
+          $ref: "#/components/schemas/Item"
+        primary:
+          $ref: "#/components/schemas/Item"
+        secondary:
+          $ref: "#/components/schemas/Item"
+        ranged:
+          $ref: "#/components/schemas/Item"
+
+    Item:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+          enum: [weapon, armor, accessory, consumable, material, quest, adornment]
+        slot:
+          type: string
+        rarity:
+          type: string
+          enum: [common, uncommon, rare, legendary, fabled, mythical]
+        level:
+          type: integer
+        stats:
+          $ref: "#/components/schemas/ItemStats"
+        sellPrice:
+          type: number
+        buyPrice:
+          type: number
+        spriteId:
+          type: string
+        quantity:
+          type: integer
+        stackable:
+          type: boolean
+        setName:
+          type: string
+        adornmentSlots:
+          type: integer
+        appliedAdornments:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - name
+        - type
+        - slot
+        - rarity
+        - level
+        - stats
+        - sellPrice
+        - spriteId
+
+    ItemStats:
+      type: object
+      properties:
+        strength:
+          type: number
+        agility:
+          type: number
+        stamina:
+          type: number
+        intelligence:
+          type: number
+        wisdom:
+          type: number
+        charisma:
+          type: number
+        health:
+          type: number
+        power:
+          type: number
+        attackRating:
+          type: number
+        defenseRating:
+          type: number
+        mitigation:
+          type: number
+        haste:
+          type: number
+        critChance:
+          type: number
+        weaponDamageMin:
+          type: number
+        weaponDamageMax:
+          type: number
+        weaponDelay:
+          type: number
+        doubleAttackChance:
+          type: number
+        flurryChance:
+          type: number
+        spellDamageBonus:
+          type: number
+        healBonus:
+          type: number
+
+    Inventory:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Item"
+        maxSlots:
+          type: integer
+        usedSlots:
+          type: integer
+      required: [items, maxSlots, usedSlots]
+
+    EquipRequest:
+      type: object
+      properties:
+        itemId:
+          type: string
+        slot:
+          type: string
+      required: [itemId, slot]
+
+    UnequipRequest:
+      type: object
+      properties:
+        slot:
+          type: string
+      required: [slot]
+
+    SellItemRequest:
+      type: object
+      properties:
+        itemId:
+          type: string
+        quantity:
+          type: integer
+      required: [itemId, quantity]
+
+    SellResult:
+      type: object
+      properties:
+        goldEarned:
+          type: number
+        newGoldTotal:
+          type: number
+      required: [goldEarned, newGoldTotal]
+
+    # ─── CREATION ────────────────────────────────────────────────────────────
+    CreationOptions:
+      type: object
+      properties:
+        races:
+          type: array
+          items:
+            $ref: "#/components/schemas/RaceDefinition"
+        classes:
+          type: array
+          items:
+            $ref: "#/components/schemas/ClassDefinition"
+        alignments:
+          type: array
+          items:
+            type: string
+      required: [races, classes, alignments]
+
+    RaceDefinition:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        lore:
+          type: string
+        bonuses:
+          $ref: "#/components/schemas/BaseStats"
+        racialAbility:
+          type: string
+        racialAbilityDesc:
+          type: string
+        startingZone:
+          type: string
+        spriteId:
+          type: string
+        allowedAlignments:
+          type: array
+          items:
+            type: string
+      required: [id, name, description, bonuses, spriteId, allowedAlignments]
+
+    ClassDefinition:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        archetype:
+          type: string
+          enum: [Fighter, Scout, Mage, Priest]
+        subclassOf:
+          type: string
+        description:
+          type: string
+        lore:
+          type: string
+        primaryStat:
+          type: string
+        armorType:
+          type: string
+          enum: [plate, chain, leather, cloth]
+        role:
+          type: string
+          enum: [tank, dps, healer, support, hybrid]
+        abilities:
+          type: array
+          items:
+            type: string
+        spriteId:
+          type: string
+        allowedAlignments:
+          type: array
+          items:
+            type: string
+      required: [id, name, archetype, description, primaryStat, armorType, role, abilities, spriteId, allowedAlignments]
+
+    CreateCharacterRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        raceId:
+          type: string
+        classId:
+          type: string
+        alignment:
+          type: string
+      required: [name, raceId, classId, alignment]
+
+    # ─── COMBAT ──────────────────────────────────────────────────────────────
+    CombatState:
+      type: object
+      properties:
+        active:
+          type: boolean
+        enemy:
+          $ref: "#/components/schemas/Enemy"
+        enemyCurrentHp:
+          type: number
+        playerCurrentHp:
+          type: number
+        playerCurrentPower:
+          type: number
+        tick:
+          type: integer
+        autoLoot:
+          type: boolean
+        lastTickMs:
+          type: number
+        statusEffects:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatusEffect"
+        enemyStatusEffects:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatusEffect"
+        heroicProgress:
+          type: number
+        heroicChain:
+          type: integer
+      required:
+        - active
+        - enemyCurrentHp
+        - playerCurrentHp
+        - playerCurrentPower
+        - tick
+        - autoLoot
+
+    StartCombatRequest:
+      type: object
+      properties:
+        enemyId:
+          type: string
+      required: [enemyId]
+
+    CombatTickResult:
+      type: object
+      properties:
+        playerDamageDealt:
+          type: number
+        enemyDamageDealt:
+          type: number
+        playerDied:
+          type: boolean
+        enemyDied:
+          type: boolean
+        loot:
+          type: array
+          items:
+            $ref: "#/components/schemas/Item"
+        xpGained:
+          type: number
+        goldGained:
+          type: number
+        combatLog:
+          type: array
+          items:
+            type: string
+        combatState:
+          $ref: "#/components/schemas/CombatState"
+        playerHpAfter:
+          type: number
+        enemyHpAfter:
+          type: number
+        isCrit:
+          type: boolean
+        isEnemyCrit:
+          type: boolean
+        abilityUsed:
+          $ref: "#/components/schemas/Ability"
+        heroicTriggered:
+          type: boolean
+        newAchievements:
+          type: array
+          items:
+            $ref: "#/components/schemas/Achievement"
+        autoLoopStarted:
+          type: boolean
+      required:
+        - playerDamageDealt
+        - enemyDamageDealt
+        - playerDied
+        - enemyDied
+        - loot
+        - xpGained
+        - goldGained
+        - combatLog
+        - combatState
+        - playerHpAfter
+        - enemyHpAfter
+        - isCrit
+        - isEnemyCrit
+        - heroicTriggered
+        - autoLoopStarted
+
+    CombatLogEntry:
+      type: object
+      properties:
+        id:
+          type: string
+        tick:
+          type: integer
+        message:
+          type: string
+        type:
+          type: string
+          enum: [playerHit, enemyHit, playerCrit, enemyCrit, playerDied, enemyDied, loot, heal, info, ability, heroic, achievement, statusEffect]
+        value:
+          type: number
+        timestamp:
+          type: string
+      required: [id, tick, message, type, timestamp]
+
+    StatusEffect:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum: [buff, debuff, dot, hot, ward]
+        value:
+          type: number
+        duration:
+          type: integer
+        icon:
+          type: string
+      required: [id, name, type, duration]
+
+    # ─── ABILITIES ───────────────────────────────────────────────────────────
+    Ability:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+          enum: [combatArt, spell, heroicArt, proc]
+        damageType:
+          type: string
+          enum: [slash, pierce, crush, heat, cold, magic, divine, mental, poison, disease, crushing, arcane]
+        powerCost:
+          type: number
+        cooldown:
+          type: number
+        currentCooldown:
+          type: number
+        damage:
+          type: number
+        damageScale:
+          type: number
+        healAmount:
+          type: number
+        effect:
+          type: string
+        icon:
+          type: string
+        autocast:
+          type: boolean
+        levelRequired:
+          type: integer
+      required:
+        - id
+        - name
+        - description
+        - type
+        - powerCost
+        - cooldown
+        - currentCooldown
+        - autocast
+        - levelRequired
+
+    AbilityActivationResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        damageDealt:
+          type: number
+        healAmount:
+          type: number
+        ability:
+          $ref: "#/components/schemas/Ability"
+      required: [success, message]
+
+    # ─── HEROIC OPPORTUNITIES ────────────────────────────────────────────────
+    HeroicState:
+      type: object
+      properties:
+        active:
+          type: boolean
+        progress:
+          type: number
+        chain:
+          type: integer
+        currentStep:
+          $ref: "#/components/schemas/HeroicStep"
+        bonusType:
+          type: string
+          enum: [damageBonus, healBonus, powerReturn, critBonus, aoeDamage, defenseBonus]
+        bonusValue:
+          type: number
+      required: [active, progress, chain]
+
+    HeroicStep:
+      type: object
+      properties:
+        stepNumber:
+          type: integer
+        triggerType:
+          type: string
+          enum: [slash, pierce, crush, heat, cold, magic, divine, any]
+        description:
+          type: string
+        timeLimit:
+          type: number
+      required: [stepNumber, triggerType, description]
+
+    HeroicTriggerRequest:
+      type: object
+      properties:
+        triggerType:
+          type: string
+      required: [triggerType]
+
+    HeroicTriggerResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        chainCompleted:
+          type: boolean
+        bonusApplied:
+          type: string
+        bonusValue:
+          type: number
+        message:
+          type: string
+      required: [success, chainCompleted, message]
+
+    # ─── ENEMIES ────────────────────────────────────────────────────────────
+    Enemy:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        level:
+          type: integer
+        zone:
+          type: string
+        hp:
+          type: number
+        maxHp:
+          type: number
+        attackRating:
+          type: number
+        defenseRating:
+          type: number
+        mitigation:
+          type: number
+        avoidance:
+          type: number
+        attackSpeed:
+          type: number
+        damageMin:
+          type: number
+        damageMax:
+          type: number
+        xpReward:
+          type: number
+        goldMin:
+          type: number
+        goldMax:
+          type: number
+        lootTable:
+          type: array
+          items:
+            $ref: "#/components/schemas/LootEntry"
+        spriteId:
+          type: string
+        type:
+          type: string
+          enum: [humanoid, beast, undead, elemental, construct, dragon, planar, fae, gnoll, goblin, orc, giant]
+        isBoss:
+          type: boolean
+        factionId:
+          type: string
+        abilities:
+          type: array
+          items:
+            type: string
+        statusImmunities:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - name
+        - level
+        - zone
+        - hp
+        - maxHp
+        - attackRating
+        - defenseRating
+        - mitigation
+        - avoidance
+        - attackSpeed
+        - damageMin
+        - damageMax
+        - xpReward
+        - goldMin
+        - goldMax
+        - lootTable
+        - spriteId
+        - type
+        - isBoss
+
+    LootEntry:
+      type: object
+      properties:
+        itemId:
+          type: string
+        dropChance:
+          type: number
+        minQuantity:
+          type: integer
+        maxQuantity:
+          type: integer
+      required: [itemId, dropChance, minQuantity, maxQuantity]
+
+    # ─── ZONES ───────────────────────────────────────────────────────────────
+    Zone:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        lore:
+          type: string
+        minLevel:
+          type: integer
+        maxLevel:
+          type: integer
+        unlocked:
+          type: boolean
+        continent:
+          type: string
+          enum: [Antonica, Commonlands, Faydwer, Kunark, Velious, Planes]
+        enemyCount:
+          type: integer
+        bossCount:
+          type: integer
+        factionId:
+          type: string
+        spriteId:
+          type: string
+      required: [id, name, description, minLevel, maxLevel, unlocked, continent, enemyCount, bossCount, spriteId]
+
+    TravelResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        newZone:
+          type: string
+      required: [success, message]
+
+    # ─── SHOP ───────────────────────────────────────────────────────────────
+    Shop:
+      type: object
+      properties:
+        merchantName:
+          type: string
+        zone:
+          type: string
+        categories:
+          type: array
+          items:
+            type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ShopItem"
+      required: [merchantName, zone, items]
+
+    ShopItem:
+      type: object
+      properties:
+        item:
+          $ref: "#/components/schemas/Item"
+        buyPrice:
+          type: number
+        stock:
+          type: integer
+        factionRequired:
+          type: string
+        factionStandingRequired:
+          type: string
+      required: [item, buyPrice]
+
+    BuyRequest:
+      type: object
+      properties:
+        itemId:
+          type: string
+        quantity:
+          type: integer
+      required: [itemId, quantity]
+
+    BuyResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        goldSpent:
+          type: number
+        newGoldTotal:
+          type: number
+        message:
+          type: string
+      required: [success, goldSpent, newGoldTotal, message]
+
+    # ─── ACHIEVEMENTS ────────────────────────────────────────────────────────
+    Achievement:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+          enum: [combat, crafting, exploration, collection, character, lore]
+        completed:
+          type: boolean
+        completedAt:
+          type: string
+        progress:
+          type: number
+        target:
+          type: number
+        reward:
+          type: string
+        rewardValue:
+          type: number
+        icon:
+          type: string
+        secret:
+          type: boolean
+      required: [id, name, description, category, completed, progress, target, icon, secret]
+
+    AchievementsSummary:
+      type: object
+      properties:
+        total:
+          type: integer
+        completed:
+          type: integer
+        points:
+          type: integer
+        recentlyCompleted:
+          type: array
+          items:
+            $ref: "#/components/schemas/Achievement"
+      required: [total, completed, points]
+
+    # ─── FACTIONS ────────────────────────────────────────────────────────────
+    Faction:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        standing:
+          type: number
+        standingTitle:
+          type: string
+          enum: [Hated, Threatening, Apprehensive, Dubious, Indifferent, Amiable, Kindly, Warmly, Ally]
+        perks:
+          type: array
+          items:
+            type: string
+        zone:
+          type: string
+        spriteId:
+          type: string
+      required: [id, name, description, standing, standingTitle, perks, spriteId]
+
+    # ─── AA ─────────────────────────────────────────────────────────────────
+    AATree:
+      type: object
+      properties:
+        totalPoints:
+          type: integer
+        spentPoints:
+          type: integer
+        availablePoints:
+          type: integer
+        tabs:
+          type: array
+          items:
+            $ref: "#/components/schemas/AATab"
+      required: [totalPoints, spentPoints, availablePoints, tabs]
+
+    AATab:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        nodes:
+          type: array
+          items:
+            $ref: "#/components/schemas/AANode"
+      required: [id, name, nodes]
+
+    AANode:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        currentRank:
+          type: integer
+        maxRank:
+          type: integer
+        pointsPerRank:
+          type: integer
+        effect:
+          type: string
+        effectValue:
+          type: number
+        effectPerRank:
+          type: number
+        requires:
+          type: array
+          items:
+            type: string
+        row:
+          type: integer
+        col:
+          type: integer
+        icon:
+          type: string
+      required: [id, name, description, currentRank, maxRank, pointsPerRank, row, col, icon]
+
+    SpendAARequest:
+      type: object
+      properties:
+        nodeId:
+          type: string
+      required: [nodeId]
+
+    # ─── ADORNMENTS ──────────────────────────────────────────────────────────
+    Adornment:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        color:
+          type: string
+          enum: [white, yellow, red]
+        stat:
+          type: string
+        value:
+          type: number
+        slotType:
+          type: string
+        level:
+          type: integer
+        spriteId:
+          type: string
+      required: [id, name, description, color, stat, value, slotType, level, spriteId]
+
+    ApplyAdornmentRequest:
+      type: object
+      properties:
+        adornmentId:
+          type: string
+        gearSlot:
+          type: string
+        adornmentSlotIndex:
+          type: integer
+      required: [adornmentId, gearSlot, adornmentSlotIndex]
+
+    AdornmentResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required: [success, message]
+
+    # ─── COLLECTIONS ─────────────────────────────────────────────────────────
+    Collection:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        zone:
+          type: string
+        pieces:
+          type: array
+          items:
+            $ref: "#/components/schemas/CollectionPiece"
+        completed:
+          type: boolean
+        reward:
+          type: string
+        rewardValue:
+          type: number
+      required: [id, name, description, pieces, completed]
+
+    CollectionPiece:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        found:
+          type: boolean
+        dropZone:
+          type: string
+      required: [id, name, found]
+
+    # ─── MOUNTS ──────────────────────────────────────────────────────────────
+    Mount:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+          enum: [ground, flying, aquatic]
+        speedBonus:
+          type: number
+        owned:
+          type: boolean
+        equipped:
+          type: boolean
+        buyPrice:
+          type: number
+        source:
+          type: string
+        spriteId:
+          type: string
+        level:
+          type: integer
+      required: [id, name, description, type, speedBonus, owned, equipped, spriteId, level]
+
+    MountResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        mount:
+          $ref: "#/components/schemas/Mount"
+      required: [success, message]
+
+    # ─── SKILLS ──────────────────────────────────────────────────────────────
+    Skill:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+          enum: [combat, gathering, crafting, support]
+        level:
+          type: integer
+        xp:
+          type: number
+        xpToNextLevel:
+          type: number
+        isTraining:
+          type: boolean
+        trainingAction:
+          type: string
+        xpPerHour:
+          type: number
+        icon:
+          type: string
+        maxLevel:
+          type: integer
+      required: [id, name, description, category, level, xp, xpToNextLevel, isTraining, xpPerHour, icon, maxLevel]
+
+    SkillsSummary:
+      type: object
+      properties:
+        totalLevel:
+          type: integer
+        totalXp:
+          type: number
+        activeTrainingCount:
+          type: integer
+        highestSkill:
+          $ref: "#/components/schemas/Skill"
+        skillsByCategory:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: "#/components/schemas/Skill"
+      required: [totalLevel, totalXp, activeTrainingCount]
+
+    # ─── CRAFTING ────────────────────────────────────────────────────────────
+    CraftingRecipe:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        resultItemId:
+          type: string
+        resultQuantity:
+          type: integer
+        ingredients:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecipeIngredient"
+        requiredSkillLevel:
+          type: integer
+        requiredSkillId:
+          type: string
+        craftingTime:
+          type: number
+        xpReward:
+          type: number
+      required: [id, name, resultItemId, resultQuantity, ingredients, requiredSkillLevel, requiredSkillId, craftingTime, xpReward]
+
+    RecipeIngredient:
+      type: object
+      properties:
+        itemId:
+          type: string
+        quantity:
+          type: integer
+      required: [itemId, quantity]
+
+    CraftRequest:
+      type: object
+      properties:
+        recipeId:
+          type: string
+      required: [recipeId]
+
+    CraftResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        resultItem:
+          $ref: "#/components/schemas/Item"
+        xpGained:
+          type: number
+        message:
+          type: string
+      required: [success, xpGained, message]
+
+    # ─── WORLD / GHOST PLAYERS ───────────────────────────────────────────────
+    WorldPlayer:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        race: { type: string }
+        class: { type: string }
+        archetype: { type: string }
+        alignment: { type: string }
+        level: { type: integer }
+        xp: { type: number }
+        xpToNextLevel: { type: number }
+        gold: { type: number }
+        zone: { type: string }
+        killCount: { type: integer }
+        deathCount: { type: integer }
+        bossKills: { type: integer }
+        totalGoldEarned: { type: number }
+        stats:
+          type: object
+          properties:
+            strength: { type: number }
+            agility: { type: number }
+            stamina: { type: number }
+            intelligence: { type: number }
+            wisdom: { type: number }
+            charisma: { type: number }
+          required: [strength, agility, stamina, intelligence, wisdom, charisma]
+        lastTickAt: { type: string }
+        createdAt: { type: string }
+      required: [id, name, race, class, archetype, alignment, level, xp, xpToNextLevel, gold, zone, killCount, deathCount, bossKills, totalGoldEarned, stats, lastTickAt, createdAt]
+
+    WorldEvent:
+      type: object
+      properties:
+        id: { type: integer }
+        type: { type: string }
+        message: { type: string }
+        playerName: { type: string }
+        zone: { type: string }
+        importance: { type: integer }
+        tick: { type: integer }
+        createdAt: { type: string }
+      required: [id, type, message, playerName, zone, importance, tick, createdAt]
+
+    LeaderboardEntry:
+      type: object
+      properties:
+        rank: { type: integer }
+        id: { type: integer }
+        name: { type: string }
+        race: { type: string }
+        class: { type: string }
+        archetype: { type: string }
+        level: { type: integer }
+        killCount: { type: integer }
+        bossKills: { type: integer }
+        zone: { type: string }
+        totalGoldEarned: { type: number }
+        isRealPlayer: { type: boolean }
+      required: [rank, id, name, race, class, archetype, level, killCount, bossKills, zone, totalGoldEarned]
+
+    ZonePopulation:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        levelRange: { type: string }
+        ghostCount: { type: integer }
+        realCount: { type: integer }
+        total: { type: integer }
+      required: [id, name, levelRange, ghostCount, realCount, total]
+
+    WorldStats:
+      type: object
+      properties:
+        totalPlayers: { type: number }
+        totalKills: { type: number }
+        totalBossKills: { type: number }
+        totalGoldEarned: { type: number }
+        avgLevel: { type: number }
+        maxLevel: { type: number }
+        totalEvents: { type: number }
+      required: [totalPlayers, totalKills, totalBossKills, totalGoldEarned, avgLevel, maxLevel, totalEvents]
+
+    # ─── LLM GAME MASTER ─────────────────────────────────────────────────────
+    QuestObjective:
+      type: object
+      properties:
+        text: { type: string }
+        completed: { type: boolean }
+        progress: { type: integer }
+        total: { type: integer }
+        type:
+          type: string
+          enum: [kill, collect, talk, explore, faction]
+        target: { type: string, nullable: true }
+      required: [text, completed, progress, total, type]
+
+    Quest:
+      type: object
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        description: { type: string }
+        objectives:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuestObjective"
+        rewards:
+          type: object
+          properties:
+            xp: { type: number }
+            gold: { type: number }
+            item: { type: string }
+            aaXp: { type: number }
+        zone: { type: string }
+        difficulty: { type: string }
+        completed: { type: boolean }
+        completedAt: { type: string, nullable: true }
+        lore: { type: string, nullable: true }
+        bossId: { type: string, nullable: true }
+        createdAt: { type: string }
+      required: [id, title, description, objectives, rewards, zone, difficulty, completed, createdAt]
+
+    QuestCompleteResult:
+      type: object
+      properties:
+        quest:
+          $ref: "#/components/schemas/Quest"
+        reward:
+          type: object
+          properties:
+            xp: { type: number }
+            gold: { type: number }
+        message: { type: string }
+      required: [quest, message]
+
+    NpcDialogueRequest:
+      type: object
+      properties:
+        npcName: { type: string }
+        npcRole: { type: string }
+        playerMessage: { type: string }
+        context: { type: string }
+      required: [npcName, playerMessage]
+
+    NpcDialogueResponse:
+      type: object
+      properties:
+        npcName: { type: string }
+        reply: { type: string }
+        role: { type: string }
+      required: [npcName, reply, role]
+
+    CharacterLoreResponse:
+      type: object
+      properties:
+        lore: { type: string }
+        cached: { type: boolean }
+      required: [lore, cached]
+
+    PlayerQuoteResponse:
+      type: object
+      properties:
+        quote: { type: string }
+        cached: { type: boolean }
+      required: [quote, cached]
+
+    BossNarrationResponse:
+      type: object
+      properties:
+        narration: { type: string }
+        cached: { type: boolean }
+        bossId: { type: string }
+        phase: { type: string }
+      required: [narration, cached, bossId, phase]
+
+    # ─── GAME SUMMARY ────────────────────────────────────────────────────────
+    GameSummary:
+      type: object
+      properties:
+        character:
+          $ref: "#/components/schemas/Character"
+        totalSkillLevels:
+          type: integer
+        killCount:
+          type: integer
+        goldEarned:
+          type: number
+        itemsFound:
+          type: integer
+        currentZone:
+          type: string
+        combatActive:
+          type: boolean
+        activeSkillTraining:
+          type: integer
+        achievementsCompleted:
+          type: integer
+        factionsPositive:
+          type: integer
+      required:
+        - totalSkillLevels
+        - killCount
+        - goldEarned
+        - itemsFound
+        - currentZone
+        - combatActive
+        - activeSkillTraining
+        - achievementsCompleted
+        - factionsPositive

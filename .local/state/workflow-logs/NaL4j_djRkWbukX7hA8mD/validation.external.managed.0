@@ -1,0 +1,49 @@
+VERDICT: APPROVED_WITH_COMMENTS
+The diff delivers the core task objective: leaderboard no longer exposes Gear Score, overall ranking uses the new non-GS formula, zone kills are tracked in combat and exposed via profile APIs, rows are expandable with riVERDICT: APPROVED_WITH_COMMENTS
+ch profile data, and dungeon leaderboard now includes per-dungeon/per-difficulty clear counts.
+
+Critical findings / analysis:
+- Backend requirements are largely implemented correctly:
+  - `zoneKills` JSONB added to `characters` schema and incremented on enemy kill in `/combat/tick`.
+  - `/leaderboard/overall` removed GS and now scores by level/kills/boss/dungeons/heroic/raids.
+  - `/leaderboard/dungeons` now returns `dungeonBreakdown` grouped by dungeon+difficulty with clear counts.
+  - New profile endpoints for player and ghost provide zone/dungeon/raid clears, gear list, and computed stats.
+- Frontend requirements are mostly implemented:
+  - Overall rows are expandable and fetch per-row profile data.
+  - Expanded panel shows zone kills, dungeon/raid clears, and gear+stats.
+  - Dungeon tab supports expandable per-dungeon breakdown.
+
+Non-blocking gaps to note:
+1) Gear panel does not show item level and slot icon as specified; it currently renders slot label + colored item name only.
+2) Profile load failure path is silent and can leave an expanded row without feedback; user-visible error/empty-state would improve robustness.
+3) If your deployment relies on checked-in DB migrations (not drizzle push), ensure `zone_kills` schema change is actually applied in all environments.
+
+Security: none observed (no serious authz/injection/secret-handling regression in this diff).
+
+Next actions:
+1) Add item level + slot icon rendering in the gear panel to fully match acceptance criteria.
+2) Add explicit profile fetch error UI for expanded rows.
+3) Confirm/ship DB schema rollout for `zone_kills` in production migration flow.The diff delivers the core task objective: leaderboard no longer exposes Gear Score, overall ranking uses the new non-GS formula, zone kills are tracked in combat and exposed via profile APIs, rows are expandable with rich profile data, and dungeon leaderboard now includes per-dungeon/per-difficulty clear counts.
+
+Critical findings / analysis:
+- Backend requirements are largely implemented correctly:
+  - `zoneKills` JSONB added to `characters` schema and incremented on enemy kill in `/combat/tick`.
+  - `/leaderboard/overall` removed GS and now scores by level/kills/boss/dungeons/heroic/raids.
+  - `/leaderboard/dungeons` now returns `dungeonBreakdown` grouped by dungeon+difficulty with clear counts.
+  - New profile endpoints for player and ghost provide zone/dungeon/raid clears, gear list, and computed stats.
+- Frontend requirements are mostly implemented:
+  - Overall rows are expandable and fetch per-row profile data.
+  - Expanded panel shows zone kills, dungeon/raid clears, and gear+stats.
+  - Dungeon tab supports expandable per-dungeon breakdown.
+
+Non-blocking gaps to note:
+1) Gear panel does not show item level and slot icon as specified; it currently renders slot label + colored item name only.
+2) Profile load failure path is silent and can leave an expanded row without feedback; user-visible error/empty-state would improve robustness.
+3) If your deployment relies on checked-in DB migrations (not drizzle push), ensure `zone_kills` schema change is actually applied in all environments.
+
+Security: none observed (no serious authz/injection/secret-handling regression in this diff).
+
+Next actions:
+1) Add item level + slot icon rendering in the gear panel to fully match acceptance criteria.
+2) Add explicit profile fetch error UI for expanded rows.
+3) Confirm/ship DB schema rollout for `zone_kills` in production migration flow.

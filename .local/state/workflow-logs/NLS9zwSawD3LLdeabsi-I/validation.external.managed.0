@@ -1,0 +1,67 @@
+VERDICT: REJECTED
+The diff does not meet the task’s core requirement that game state be reliably scoped to the authenticated active character; there are blocking cross-character data integrity issues.
+
+Critical findings:
+- **Global destructive deVERDICT: REJECTED
+lete remains in multi-user mode**: `DELETE /character` in `routes/character.ts` still deletesThe diff does not meet the task’s core requirement that game state be reliably scoped to the authenticated active character; there are blocking cross-character data integrity issues.
+ entire tables without `characterId` filters (`inventory`, `sk
+ills`, `characters`, etc.). Any one user can wipe all playersCritical findings:
+’ data.
+- **State leakage across characters still present**- **Global destructive delete remains in multi-user mode**: `DELETE /character` in `routes/character.ts` still deletes entire tables without `characterId` filters (`inventory`, `skills`, `characters`, etc.). Any one user can wipe all players’ data.
+:
+  - `routes/character.ts` uses unscoped reads like `combatS- **State leakage across characters still present**:
+tateTable.limit(1)`, `heroicStateTable.limit(1)`, and AA node load (`aaPointsTable` by rank only) instead of filtering by active character.
+  - `lib/skillXp.ts` still applies XP by `skillId` only (no `characterId`), so meditation XP can land on the wrong character/account.
+- **Shop inventory writes are not character-scoped** (`routes/shop.ts`): selects/updates/inserts in `inventoryTable` use only `itemId` or `id` and omit `characterId`; some inserts omit `characterId` entirely. This causes cross-account inventory contamination.
+- **Session auth transport gap for cross-origin deployments**: game API client calls use `customFetch` without guaranteed `credentials: "include"`. Auth pages do include credentials, but generated game requests may not send session cookie when `VITE_API_BASE_URL` is a different origin.
+
+Security: serious multi-tenant isolation violation observed (cross-user data deletion and cross-user state bleed). No new secret leakage observed.
+
+Next actions:
+1. Make all per-player queries/mutations character-scoped (`where character_id = req.characterId`) across touched routes/helpers, especially `character.ts`, `shop.ts`, and `skillXp.ts`.
+2. Fix `DELETE /character` to delete only the active character’s records (or remove endpoint until safe); never run table-wide deletes in authenticated player routes.
+3. Ensure session cookie is always sent by game API client (`credentials: "include"` in shared fetch wrapper) for cross-origin frontend/API deployments.
+VERDICT: REJECTED
+The diff does not meet the task’s core requirement that game state be reliably scoped to the authenticated active character; there are blocking cross-character data integrity issues.
+
+Critical findings:
+- **Global destructive delete remains in multi-user mode**: `DELETE /character` in `routes/character.ts` still deletes entire tables without `characterId` filters (`inventory`, `skills`, `characters`, etc.). Any one user can wipe all players’ data.
+- **State leakage across characters still present**:
+  - `routes/character.ts` uses unscoped reads like `combatStateTable.limit(1)`, `heroicStateTable.limit(1)`, and AA node load (`aaPointsTable` by rank only) instead of filtering by active character.
+  - `lib/skillXp.ts` still applies XP by `skillId` only (no `characterId`), so meditation XP can land on the wrong character/account.
+- **Shop inventory writes are not character-scoped** (`routes/shop.ts`): selects/updates/inserts in `inventoryTable` use only `itemId` or `id` and omit `characterId`; some inserts omit `characterId` entirely. This causes cross-account inventory contamination.
+- **Session auth transport gap for cross-origin deployments**: game API client calls use `customFetch` without guaranteed `credentials: "include"`. Auth pages do include credentials, but generated game requests may not send session cookie when `VITE_API_BASE_URL` is a different origin.
+
+Security: serious multi-tenant isolation violation observed (cross-user data deletion and cross-user state bleed). No new secret leakage observed.
+
+Next actions:
+1. Make all per-player queries/mutations character-scoped (`where character_id = req.characterId`) across touched routes/helpers, especially `character.ts`, `shop.ts`, and `skillXp.ts`.
+2. Fix `DELETE /character` to delete only the active character’s records (or remove endpoint until safe); never run table-wide deletes in authenticated player routes.
+3. Ensure session cookie is always sent by game API client (`credentials: "include"` in shared fetch wrapper) for cross-origin frontend/API deployments.  - `routes/character.ts` uses unscoped reads like `combatStateTable.limit(1)`, `heroicStateTable.limit(1)`, and AA node load (`aaPointsTable` by rank only) instead of filtering by active character.
+  - `lib/skillXp.ts` still applies XP by `skillId` only (no `characterId`), so meditation XP can land on the wrong character/account.
+- **Shop inventory writes are not character-scoped** (`routes/shop.ts`): selects/updates/inserts in `inventoryTable` use only `itemId` or `id` and omit `characterId`; some inserts omit `characterId` entirely. This causes cross-account inventory contamination.
+- **Session auth transport gap for cross-origin deployments**: game API client calls use `customFetch` without guaranteed `credentials: "include"`. Auth pages do include credentials, but generated game requests may not send session cookie when `VITE_API_BASE_URL` is a different origin.
+
+Security: serious multi-tenant isolation violation observed (cross-user data deletion and cross-user state bleed). No new secret leakage observed.
+
+Next actions:
+1. Make all per-player queries/mutations character-scoped (`where character_id = req.characterId`) across touched routes/helpers, especially `character.ts`, `shop.ts`, and `skillXp.ts`.
+2. Fix `DELETE /character` to delete only the active character’s records (or remove endpoint until safe); never run table-wide deletes in authenticated player routes.
+3. Ensure session cookie is always sent by game API client (`credentials: "include"` in shared fetch wrapper) for cross-origin frontend/API deployments.
+VERDICT: REJECTED
+The diff does not meet the task’s core requirement that game state be reliably scoped to the authenticated active character; there are blocking cross-character data integrity issues.
+
+Critical findings:
+- **Global destructive delete remains in multi-user mode**: `DELETE /character` in `routes/character.ts` still deletes entire tables without `characterId` filters (`inventory`, `skills`, `characters`, etc.). Any one user can wipe all players’ data.
+- **State leakage across characters still present**:
+  - `routes/character.ts` uses unscoped reads like `combatStateTable.limit(1)`, `heroicStateTable.limit(1)`, and AA node load (`aaPointsTable` by rank only) instead of filtering by active character.
+  - `lib/skillXp.ts` still applies XP by `skillId` only (no `characterId`), so meditation XP can land on the wrong character/account.
+- **Shop inventory writes are not character-scoped** (`routes/shop.ts`): selects/updates/inserts in `inventoryTable` use only `itemId` or `id` and omit `characterId`; some inserts omit `characterId` entirely. This causes cross-account inventory contamination.
+- **Session auth transport gap for cross-origin deployments**: game API client calls use `customFetch` without guaranteed `credentials: "include"`. Auth pages do include credentials, but generated game requests may not send session cookie when `VITE_API_BASE_URL` is a different origin.
+
+Security: serious multi-tenant isolation violation observed (cross-user data deletion and cross-user state bleed). No new secret leakage observed.
+
+Next actions:
+1. Make all per-player queries/mutations character-scoped (`where character_id = req.characterId`) across touched routes/helpers, especially `character.ts`, `shop.ts`, and `skillXp.ts`.
+2. Fix `DELETE /character` to delete only the active character’s records (or remove endpoint until safe); never run table-wide deletes in authenticated player routes.
+3. Ensure session cookie is always sent by game API client (`credentials: "include"` in shared fetch wrapper) for cross-origin frontend/API deployments.
