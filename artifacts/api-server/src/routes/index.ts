@@ -28,6 +28,8 @@ import auctionRouter from "./auction.js";
 import leaderboardRouter from "./leaderboard.js";
 import bankRouter from "./bank.js";
 import gatheringRouter from "./gathering.js";
+import bestiaryRouter from "./bestiary.js";
+import settingsRouter from "./settings.js";
 import { requireAuth } from "../middleware/auth.js";
 
 const router: IRouter = Router();
@@ -69,6 +71,8 @@ gameRoutes.use(portraitRouter);
 gameRoutes.use(auctionRouter);
 gameRoutes.use(bankRouter);
 gameRoutes.use(gatheringRouter);
+gameRoutes.use(bestiaryRouter);
+gameRoutes.use(settingsRouter);
 
 router.use(gameRoutes);
 

@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import {
   Shield, Sword, Backpack, GraduationCap, Hammer, LayoutDashboard,
   Map, Users, Star, Layers, Zap, Award, ShoppingBag, Gem, Globe2, ScrollText, Castle, Landmark, Pickaxe,
-  LogOut, UserRound
+  BookOpen, Settings, LogOut, UserRound
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useGetCharacter, useGetCombatState } from "@workspace/api-client-react";
@@ -33,6 +33,8 @@ const NAV_EQ2 = [
   { href: "/mounts", label: "Mounts", icon: Star },
   { href: "/world", label: "Living World", icon: Globe2 },
   { href: "/quests", label: "Quests (GM)", icon: ScrollText },
+  { href: "/bestiary", label: "Bestiary", icon: BookOpen },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 function NavLink({ href, label, icon: Icon, active, eq2 }: {

@@ -26,6 +26,8 @@ import DungeonsPage from "@/pages/dungeons";
 import DungeonsRunPage from "@/pages/dungeons-run";
 import RaidsPage from "@/pages/raids";
 import RaidsRunPage from "@/pages/raids-run";
+import BestiaryPage from "@/pages/bestiary";
+import SettingsPage from "@/pages/settings";
 import NotFound from "@/pages/not-found";
 import LoginPage from "@/pages/login";
 import RegisterPage from "@/pages/register";
@@ -123,6 +125,8 @@ function Router() {
                 <Route path="/collections" component={CollectionsPage} />
                 <Route path="/world" component={WorldPage} />
                 <Route path="/quests" component={QuestsPage} />
+                <Route path="/bestiary" component={BestiaryPage} />
+                <Route path="/settings" component={SettingsPage} />
                 <Route path="/dungeons/run" component={DungeonsRunPage} />
                 <Route path="/dungeons/raids/run" component={RaidsRunPage} />
                 <Route path="/dungeons/raids" component={RaidsPage} />
