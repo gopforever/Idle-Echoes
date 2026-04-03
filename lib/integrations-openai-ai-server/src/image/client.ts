@@ -1,9 +1,6 @@
 import fs from "node:fs";
-import OpenAIModule, { toFile } from "openai";
+import OpenAI, { toFile } from "openai";
 import { Buffer } from "node:buffer";
-
-// Handle ESM/CJS interop for OpenAI
-const OpenAI = (OpenAIModule as unknown as { default?: typeof OpenAIModule }).default ?? OpenAIModule;
 
 if (!process.env.AI_INTEGRATIONS_OPENAI_BASE_URL) {
   throw new Error(
@@ -17,6 +14,7 @@ if (!process.env.AI_INTEGRATIONS_OPENAI_API_KEY) {
   );
 }
 
+// @ts-expect-error OpenAI types are incompatible with ESM default export
 export const openai = new OpenAI({
   apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
