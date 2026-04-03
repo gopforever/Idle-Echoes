@@ -12,6 +12,7 @@ interface BestiaryEntry {
   name: string;
   level: number;
   zone: string;
+  type: string;
   killCount: number;
   firstKillAt: string;
   lastKillAt: string;
@@ -383,7 +384,7 @@ export default function BestiaryPage() {
                 <CardContent className="p-3 space-y-2">
                   {/* Enemy icon / type */}
                   <div className="flex items-start justify-between">
-                    <span className="text-2xl">{TYPE_ICONS["beast"]}</span>
+                    <span className="text-2xl">{TYPE_ICONS[entry.type] ?? TYPE_ICONS["beast"]}</span>
                     {entry.loreUnlocked && (
                       <span className="text-[9px] text-amber-500 font-bold">LORE</span>
                     )}

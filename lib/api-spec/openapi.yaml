@@ -2679,6 +2679,8 @@ components:
           type: integer
         zone:
           type: string
+        type:
+          type: string
         killCount:
           type: integer
         firstKillAt:
@@ -2689,7 +2691,7 @@ components:
           format: date-time
         loreUnlocked:
           type: boolean
-      required: [enemyId, name, level, zone, killCount, firstKillAt, lastKillAt, loreUnlocked]
+      required: [enemyId, name, level, zone, type, killCount, firstKillAt, lastKillAt, loreUnlocked]
 
     BestiaryResponse:
       type: object

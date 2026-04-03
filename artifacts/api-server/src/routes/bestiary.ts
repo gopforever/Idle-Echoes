@@ -28,6 +28,7 @@ router.get("/bestiary", async (req, res) => {
       name: enemy?.name ?? e.enemyId,
       level: enemy?.level ?? 0,
       zone: enemy?.zone ?? "",
+      type: enemy?.type ?? "humanoid",
       killCount: e.killCount,
       firstKillAt: e.firstKillAt,
       lastKillAt: e.lastKillAt,
@@ -98,7 +99,8 @@ export default router;
 
 /**
  * Upsert a bestiary entry for the given character + enemy.
- * Called fire-and-forget from combat.ts on every enemy kill.
+ * Used both as a fire-and-forget helper called from combat.ts on enemy death
+ * and as the implementation backing the POST /bestiary/:enemyId/kill endpoint.
  */
 export async function recordBestiaryKill(
   characterId: number,
