@@ -13,6 +13,7 @@ import { generateBossNarration, generateBossClosingLine, generateNamedItem, inva
 import { rollLootDrop, serializeForDb } from "../lib/proceduralItems.js";
 import { checkAndUnlockAchievements } from "./achievements.js";
 import { progressDungeonKill } from "../lib/dungeonProgress.js";
+import { recordBestiaryKill } from "./bestiary.js";
 import { calculateContributions, applyPartyDamage, updateGhostStats, fetchGhostInfo } from "../lib/partyEngine.js";
 import type { PartyMember } from "../lib/partyEngine.js";
 
@@ -750,6 +751,9 @@ router.post("/combat/tick", async (req, res) => {
 
       // Auto-progress dungeon run kills (fire-and-forget)
       progressDungeonKill(enemy.id, characterId).catch(() => {});
+
+      // Record bestiary kill (fire-and-forget)
+      recordBestiaryKill(character.id, enemy.id).catch(() => {});
 
       // Auto-progress quest kill objectives (fire-and-forget with log insertion)
       progressKillObjectives(enemy.name).then(async (progressResults) => {

@@ -1,4 +1,4 @@
-import { pgTable, text, serial, real, integer, jsonb, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, real, integer, jsonb, timestamp, boolean, uniqueIndex } from "drizzle-orm/pg-core";
 
 export const achievementsTable = pgTable("achievements", {
   id: serial("id").primaryKey(),
@@ -78,6 +78,33 @@ export const loreCacheTable = pgTable("lore_cache", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const bestiaryTable = pgTable("bestiary", {
+  id: serial("id").primaryKey(),
+  characterId: integer("character_id").notNull(),
+  enemyId: text("enemy_id").notNull(),
+  killCount: integer("kill_count").notNull().default(0),
+  firstKillAt: timestamp("first_kill_at").defaultNow().notNull(),
+  lastKillAt: timestamp("last_kill_at").defaultNow().notNull(),
+  loreUnlocked: boolean("lore_unlocked").notNull().default(false),
+}, (t) => [uniqueIndex("bestiary_character_enemy_unique").on(t.characterId, t.enemyId)]);
+
+export const settingsTable = pgTable("settings", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().unique(),
+  combatSpeed: text("combat_speed").notNull().default("normal"),
+  autoSell: boolean("auto_sell").notNull().default(false),
+  autoSellRarity: text("auto_sell_rarity").notNull().default("common"),
+  showDamageNumbers: boolean("show_damage_numbers").notNull().default(true),
+  showWorldEvents: boolean("show_world_events").notNull().default(true),
+  compactMode: boolean("compact_mode").notNull().default(false),
+  soundEnabled: boolean("sound_enabled").notNull().default(true),
+  musicEnabled: boolean("music_enabled").notNull().default(true),
+  notificationsEnabled: boolean("notifications_enabled").notNull().default(true),
+  theme: text("theme").notNull().default("dark"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export type Achievement = typeof achievementsTable.$inferSelect;
 export type Faction = typeof factionsTable.$inferSelect;
 export type AAPoint = typeof aaPointsTable.$inferSelect;
@@ -87,3 +114,5 @@ export type Mount = typeof mountsTable.$inferSelect;
 export type HeroicState = typeof heroicStateTable.$inferSelect;
 export type AbilityCooldown = typeof abilityCooldownsTable.$inferSelect;
 export type LoreCache = typeof loreCacheTable.$inferSelect;
+export type BestiaryEntry = typeof bestiaryTable.$inferSelect;
+export type Settings = typeof settingsTable.$inferSelect;

@@ -28,6 +28,8 @@ tags:
   - name: mounts
   - name: world
   - name: gm
+  - name: bestiary
+  - name: settings
 
 paths:
   /healthz:
@@ -1020,6 +1022,102 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GameSummary"
+
+  # ─── BESTIARY ────────────────────────────────────────────────────────────────
+  /bestiary:
+    get:
+      operationId: getBestiary
+      tags: [bestiary]
+      summary: Get all discovered enemies with kill counts
+      responses:
+        "200":
+          description: Bestiary entries
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BestiaryResponse"
+
+  /bestiary/{enemyId}:
+    get:
+      operationId: getBestiaryEntry
+      tags: [bestiary]
+      parameters:
+        - name: enemyId
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Get detailed bestiary entry for one enemy
+      responses:
+        "200":
+          description: Bestiary entry detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BestiaryEntryDetail"
+
+  /bestiary/{enemyId}/kill:
+    post:
+      operationId: recordBestiaryKill
+      tags: [bestiary]
+      parameters:
+        - name: enemyId
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Record a kill for an enemy
+      responses:
+        "200":
+          description: Updated bestiary entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BestiaryKillResult"
+
+  # ─── SETTINGS ────────────────────────────────────────────────────────────────
+  /settings:
+    get:
+      operationId: getSettings
+      tags: [settings]
+      summary: Get user settings
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
+    put:
+      operationId: updateSettings
+      tags: [settings]
+      summary: Update user settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SettingsUpdate"
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
+
+  /settings/reset:
+    post:
+      operationId: resetSettings
+      tags: [settings]
+      summary: Reset settings to defaults
+      responses:
+        "200":
+          description: Default settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
 
 components:
   schemas:
@@ -2568,3 +2666,152 @@ components:
         - activeSkillTraining
         - achievementsCompleted
         - factionsPositive
+
+    # ─── BESTIARY ─────────────────────────────────────────────────────────────
+    BestiaryEntry:
+      type: object
+      properties:
+        enemyId:
+          type: string
+        name:
+          type: string
+        level:
+          type: integer
+        zone:
+          type: string
+        type:
+          type: string
+        killCount:
+          type: integer
+        firstKillAt:
+          type: string
+          format: date-time
+        lastKillAt:
+          type: string
+          format: date-time
+        loreUnlocked:
+          type: boolean
+      required: [enemyId, name, level, zone, type, killCount, firstKillAt, lastKillAt, loreUnlocked]
+
+    BestiaryResponse:
+      type: object
+      properties:
+        entries:
+          type: array
+          items:
+            $ref: "#/components/schemas/BestiaryEntry"
+        totalDiscovered:
+          type: integer
+        totalEnemies:
+          type: integer
+      required: [entries, totalDiscovered, totalEnemies]
+
+    BestiaryEntryDetail:
+      type: object
+      properties:
+        enemyId:
+          type: string
+        name:
+          type: string
+        level:
+          type: integer
+        zone:
+          type: string
+        killCount:
+          type: integer
+        firstKillAt:
+          type: string
+          format: date-time
+          nullable: true
+        lastKillAt:
+          type: string
+          format: date-time
+          nullable: true
+        loreUnlocked:
+          type: boolean
+        description:
+          type: string
+          nullable: true
+        abilities:
+          type: array
+          items:
+            type: object
+          nullable: true
+        resistances:
+          type: object
+          nullable: true
+        lootTable:
+          type: array
+          items:
+            type: object
+          nullable: true
+      required: [enemyId, name, level, zone, killCount, loreUnlocked]
+
+    BestiaryKillResult:
+      type: object
+      properties:
+        enemyId:
+          type: string
+        killCount:
+          type: integer
+        loreUnlocked:
+          type: boolean
+        newlyUnlocked:
+          type: boolean
+      required: [enemyId, killCount, loreUnlocked, newlyUnlocked]
+
+    # ─── SETTINGS ─────────────────────────────────────────────────────────────
+    Settings:
+      type: object
+      properties:
+        combatSpeed:
+          type: string
+          enum: [slow, normal, fast]
+        autoSell:
+          type: boolean
+        autoSellRarity:
+          type: string
+          enum: [common, uncommon]
+        showDamageNumbers:
+          type: boolean
+        showWorldEvents:
+          type: boolean
+        compactMode:
+          type: boolean
+        soundEnabled:
+          type: boolean
+        musicEnabled:
+          type: boolean
+        notificationsEnabled:
+          type: boolean
+        theme:
+          type: string
+          enum: [dark, light, system]
+      required: [combatSpeed, autoSell, autoSellRarity, showDamageNumbers, showWorldEvents, compactMode, soundEnabled, musicEnabled, notificationsEnabled, theme]
+
+    SettingsUpdate:
+      type: object
+      properties:
+        combatSpeed:
+          type: string
+          enum: [slow, normal, fast]
+        autoSell:
+          type: boolean
+        autoSellRarity:
+          type: string
+          enum: [common, uncommon]
+        showDamageNumbers:
+          type: boolean
+        showWorldEvents:
+          type: boolean
+        compactMode:
+          type: boolean
+        soundEnabled:
+          type: boolean
+        musicEnabled:
+          type: boolean
+        notificationsEnabled:
+          type: boolean
+        theme:
+          type: string
+          enum: [dark, light, system]
