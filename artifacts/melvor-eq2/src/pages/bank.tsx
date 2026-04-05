@@ -49,8 +49,12 @@ async function fetchBank(): Promise<BankData> {
 
 // ── Item card ─────────────────────────────────────────────────────────────────
 
-function BankItemCard({ item, onWithdraw, pending }: {
-  item: BankItem; onWithdraw: () => void; pending: boolean;
+function BankItemCard({ item, onWithdraw, onWithdrawAll, pending, pendingAll }: {
+  item: BankItem;
+  onWithdraw: () => void;
+  onWithdrawAll: () => void;
+  pending: boolean;
+  pendingAll: boolean;
 }) {
   const rs = RARITY_STYLES[item.rarity] ?? RARITY_STYLES.common;
   return (
@@ -77,14 +81,27 @@ function BankItemCard({ item, onWithdraw, pending }: {
           )}
         </div>
       </div>
-      <Button
-        size="sm"
-        onClick={onWithdraw}
-        disabled={pending}
-        className="h-7 text-[10px] px-2.5 shrink-0 bg-amber-800 hover:bg-amber-700 text-white border-0"
-      >
-        {pending ? "…" : <><ArrowUpFromLine className="w-3 h-3 mr-1" />Take</>}
-      </Button>
+      <div className="flex gap-1.5 shrink-0">
+        {item.quantity > 1 && (
+          <Button
+            size="sm"
+            onClick={onWithdrawAll}
+            disabled={pendingAll || pending}
+            className="h-7 text-[10px] px-2.5 bg-amber-700 hover:bg-amber-600 text-white border-0"
+            title={`Take all ${item.quantity}`}
+          >
+            {pendingAll ? "…" : <><ArrowUpFromLine className="w-3 h-3 mr-1" />All</>}
+          </Button>
+        )}
+        <Button
+          size="sm"
+          onClick={onWithdraw}
+          disabled={pending || pendingAll}
+          className="h-7 text-[10px] px-2.5 shrink-0 bg-amber-800 hover:bg-amber-700 text-white border-0"
+        >
+          {pending ? "…" : <><ArrowUpFromLine className="w-3 h-3 mr-1" />Take</>}
+        </Button>
+      </div>
     </motion.div>
   );
 }
@@ -99,6 +116,7 @@ export default function BankPage() {
   const [activeTab, setActiveTab] = React.useState<"items" | "gold">("items");
   const [search, setSearch] = React.useState("");
   const [pendingId, setPendingId] = React.useState<string | null>(null);
+  const [pendingAllId, setPendingAllId] = React.useState<string | null>(null);
   const [goldAmount, setGoldAmount] = React.useState("");
   const [goldPending, setGoldPending] = React.useState(false);
   const [toast, setToast] = React.useState<string | null>(null);
@@ -131,6 +149,23 @@ export default function BankPage() {
         showToast(d.error ?? "Could not withdraw item");
       }
     } finally { setPendingId(null); }
+  };
+
+  const handleWithdrawAll = async (item: BankItem) => {
+    setPendingAllId(item.id);
+    try {
+      const r = await fetch(apiUrl("/api/bank/withdraw-item"), {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ itemId: item.id, quantity: item.quantity }),
+      });
+      const d = await r.json();
+      if (r.ok) {
+        showToast(`Took all ${item.quantity}× ${item.name}`);
+        invalidate();
+      } else {
+        showToast(d.error ?? "Could not withdraw items");
+      }
+    } finally { setPendingAllId(null); }
   };
 
   const handleGoldAction = async (action: "deposit" | "withdraw") => {
@@ -238,7 +273,9 @@ export default function BankPage() {
                     key={item.id}
                     item={item}
                     onWithdraw={() => handleWithdraw(item)}
+                    onWithdrawAll={() => handleWithdrawAll(item)}
                     pending={pendingId === item.id}
+                    pendingAll={pendingAllId === item.id}
                   />
                 ))
               )}
