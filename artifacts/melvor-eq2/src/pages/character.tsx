@@ -146,6 +146,10 @@ const SKILL_ICONS: Record<string, string> = {
   hammer: "🔨", anvil: "⚒️", needle: "🧵", flask: "⚗️",
   book: "📖", lute: "🎵", scroll: "📜", pot: "🫙",
   lotus: "🧘",
+  dual_swords: "⚔️", parry: "🗡️", lightning: "⚡", paw: "🐾",
+  mushroom: "🍄", hide: "🦌", map: "🗺️", shovel: "🪛",
+  enchant: "✨", saw: "🪚", leather: "🧥",
+  bandage: "🩹", eye: "👁️", coin: "🪙", rune: "🔷",
 };
 const CAT_LABELS: Record<string, string> = {
   combat: "⚔️ Combat", gathering: "⛏️ Gathering", crafting: "🔨 Crafting", support: "✨ Support",
