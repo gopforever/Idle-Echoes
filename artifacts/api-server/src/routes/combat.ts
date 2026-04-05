@@ -584,6 +584,8 @@ router.post("/combat/tick", async (req, res) => {
         if (ability.type === "spell") {
           const magicXp = 20 + Math.floor(character.level * 0.5);
           applySkillXp("magic", magicXp, character.id).catch(() => {});
+          const evocationXp = 15 + Math.floor(character.level * 0.4);
+          applySkillXp("evocation", evocationXp, character.id).catch(() => {});
         }
       }
     }
@@ -672,6 +674,7 @@ router.post("/combat/tick", async (req, res) => {
             combatMessages.push(da2Msg);
             await db.insert(combatLogTable).values({ characterId, tick: newTick, message: da2Msg, type: "playerCrit", value: dmg2 });
             aaProcs.push("double_attack");
+            applySkillXp("dual_wield", 15, character.id).catch(() => {});
           }
         }
 
@@ -996,6 +999,10 @@ router.post("/combat/tick", async (req, res) => {
         const killSkillId = rangedClasses.includes((character.class ?? "").toLowerCase()) ? "archery" : "combat";
         const killSkillXp = 40 + enemy.level * 3;
         applySkillXp(killSkillId, killSkillXp, character.id).catch(() => {});
+        if (enemy.type === "beast") {
+          const beastXp = 25 + enemy.level * 2;
+          applySkillXp("beastmastery", beastXp, character.id).catch(() => {});
+        }
       }
 
       const factionImpact: Record<string, number> = {
@@ -1284,6 +1291,8 @@ router.post("/combat/tick", async (req, res) => {
         const msg = `You evade ${enemy.name}'s attack!`;
         combatMessages.push(msg);
         await db.insert(combatLogTable).values({ characterId, tick: newTick, message: msg, type: "info" });
+        const parryXp = 8 + Math.floor(enemy.level * 0.5);
+        applySkillXp("parry", parryXp, character.id).catch(() => {});
       } else {
         enemyActuallyHit = true;
         enemyDamageDealt += enemyAttack.damage;

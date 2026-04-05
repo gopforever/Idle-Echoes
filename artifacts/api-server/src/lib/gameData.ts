@@ -1148,6 +1148,88 @@ export const ITEMS: Item[] = [
     type: "material", slot: "none", rarity: "rare", level: 90,
     stats: {}, sellPrice: 210, spriteId: "material_herb", stackable: true,
   },
+
+  // ── GATHERING MATERIALS — FORAGING ────────────────────────────────────────
+  { id: "wild_mushroom", name: "Wild Mushroom", description: "A wild mushroom found in the forest", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 4, spriteId: "material_herb", stackable: true },
+  { id: "forest_berry", name: "Forest Berry", description: "Small berries found growing in forest undergrowth", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 3, spriteId: "material_herb", stackable: true },
+  { id: "wild_onion", name: "Wild Onion", description: "A pungent wild onion growing in forest clearings", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 2, spriteId: "material_herb", stackable: true },
+  { id: "thornbush_fruit", name: "Thornbush Fruit", description: "Bitter fruit from a hardy thornbush", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 5, spriteId: "material_herb", stackable: true },
+  { id: "deepwood_truffle", name: "Deepwood Truffle", description: "A rare truffle found deep in ancient forests", type: "material", slot: "none", rarity: "uncommon", level: 1, stats: {}, sellPrice: 25, spriteId: "material_herb", stackable: true },
+
+  // ── GATHERING MATERIALS — SKINNING ────────────────────────────────────────
+  { id: "scraggly_hide", name: "Scraggly Hide", description: "A rough, worn hide of poor quality", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 3, spriteId: "material_leather", stackable: true },
+  { id: "sturdy_hide", name: "Sturdy Hide", description: "A solid, durable hide suitable for crafting", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 8, spriteId: "material_leather", stackable: true },
+  { id: "thick_pelt", name: "Thick Pelt", description: "A thick, warm pelt from a large beast", type: "material", slot: "none", rarity: "uncommon", level: 1, stats: {}, sellPrice: 18, spriteId: "material_leather", stackable: true },
+  { id: "pristine_pelt", name: "Pristine Pelt", description: "A flawless pelt of exceptional quality", type: "material", slot: "none", rarity: "rare", level: 1, stats: {}, sellPrice: 55, spriteId: "material_leather", stackable: true },
+
+  // ── GATHERING MATERIALS — PROSPECTING ─────────────────────────────────────
+  { id: "raw_gemstone", name: "Raw Gemstone", description: "An unpolished gemstone found while surveying", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 15, spriteId: "mat_iron_ore", stackable: true },
+  { id: "uncut_diamond", name: "Uncut Diamond", description: "A rough diamond waiting to be cut and polished", type: "material", slot: "none", rarity: "rare", level: 1, stats: {}, sellPrice: 80, spriteId: "mat_iron_ore", stackable: true },
+  { id: "survey_map_fragment", name: "Survey Map Fragment", description: "A torn piece of an old survey map", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 10, spriteId: "mat_iron_ore", stackable: true },
+
+  // ── GATHERING MATERIALS — ARCHAEOLOGY ─────────────────────────────────────
+  { id: "ancient_shard", name: "Ancient Shard", description: "A fragment of ancient pottery or stone", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 12, spriteId: "mat_iron_ore", stackable: true },
+  { id: "relic_fragment", name: "Relic Fragment", description: "A broken piece of an ancient relic", type: "material", slot: "none", rarity: "uncommon", level: 1, stats: {}, sellPrice: 20, spriteId: "mat_iron_ore", stackable: true },
+  { id: "engraved_tablet", name: "Engraved Tablet", description: "A stone tablet covered in ancient engravings", type: "material", slot: "none", rarity: "rare", level: 1, stats: {}, sellPrice: 75, spriteId: "mat_iron_ore", stackable: true },
+
+  // ── CRAFTING MATERIALS — WOODWORKING ──────────────────────────────────────
+  { id: "lumber", name: "Lumber", description: "Rough-cut lumber suitable for woodworking", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 4, spriteId: "material_wood", stackable: true },
+  { id: "hardwood_plank", name: "Hardwood Plank", description: "A smoothed plank of hardwood ready for construction", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 8, spriteId: "material_wood", stackable: true },
+
+  // ── COOKING CONSUMABLES ───────────────────────────────────────────────────
+  { id: "roasted_mushroom", name: "Roasted Mushroom", description: "Mushrooms roasted over an open flame", type: "consumable", slot: "none", rarity: "common", level: 1, stats: { health: 40 }, sellPrice: 10, spriteId: "material_herb", stackable: true },
+  { id: "berry_pie", name: "Berry Pie", description: "A hearty pie baked with wild forest berries", type: "consumable", slot: "none", rarity: "common", level: 1, stats: { health: 80 }, sellPrice: 22, spriteId: "material_herb", stackable: true },
+  { id: "hearty_stew", name: "Hearty Stew", description: "A warming stew of foraged mushrooms and vegetables", type: "consumable", slot: "none", rarity: "common", level: 1, stats: { health: 150, power: 30 }, sellPrice: 45, spriteId: "material_herb", stackable: true },
+  { id: "truffle_feast", name: "Truffle Feast", description: "A lavish feast centered on rare deepwood truffles", type: "consumable", slot: "none", rarity: "uncommon", level: 1, stats: { health: 300, power: 60 }, sellPrice: 90, spriteId: "material_herb", stackable: true },
+
+  // ── ENCHANTING MATERIALS & CONSUMABLES ───────────────────────────────────
+  { id: "enchanting_dust", name: "Enchanting Dust", description: "Fine dust imbued with arcane energy", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 12, spriteId: "mat_iron_ore", stackable: true },
+  { id: "scroll_of_swiftness", name: "Scroll of Swiftness", description: "A scroll that grants a burst of speed", type: "consumable", slot: "none", rarity: "common", level: 1, stats: { haste: 15 }, sellPrice: 35, spriteId: "mat_iron_ore", stackable: true },
+  { id: "scroll_of_fortitude", name: "Scroll of Fortitude", description: "A scroll that temporarily fortifies the body", type: "consumable", slot: "none", rarity: "uncommon", level: 1, stats: { health: 200 }, sellPrice: 50, spriteId: "mat_iron_ore", stackable: true },
+
+  // ── WOODWORKING WEAPONS ───────────────────────────────────────────────────
+  {
+    id: "wooden_bow",
+    name: "Wooden Bow",
+    description: "A simple but effective bow crafted from sturdy wood",
+    type: "weapon", slot: "mainhand", rarity: "common", level: 5,
+    stats: { weaponDamageMin: 8, weaponDamageMax: 16, weaponDelay: 2.5, attackRating: 10 },
+    sellPrice: 40,
+  },
+  {
+    id: "ash_staff",
+    name: "Ash Staff",
+    description: "A smooth staff carved from ash wood, favoured by spellcasters",
+    type: "weapon", slot: "mainhand", rarity: "uncommon", level: 15,
+    stats: { weaponDamageMin: 14, weaponDamageMax: 28, weaponDelay: 3.0, attackRating: 18, intelligence: 5 },
+    sellPrice: 90,
+  },
+
+  // ── LEATHERWORKING ARMOR ──────────────────────────────────────────────────
+  {
+    id: "leather_bracers",
+    name: "Leather Bracers",
+    description: "Simple leather bracers offering basic wrist protection",
+    type: "armor", slot: "wrists", rarity: "common", level: 5,
+    stats: { defenseRating: 8, mitigation: 4, agility: 2 },
+    sellPrice: 30,
+  },
+  {
+    id: "supple_leather_gloves",
+    name: "Supple Leather Gloves",
+    description: "Soft, well-fitted gloves crafted from supple leather",
+    type: "armor", slot: "hands", rarity: "common", level: 10,
+    stats: { defenseRating: 10, mitigation: 5, agility: 3 },
+    sellPrice: 40,
+  },
+  {
+    id: "reinforced_leather_vest",
+    name: "Reinforced Leather Vest",
+    description: "A leather vest reinforced with additional hide panels for greater protection",
+    type: "armor", slot: "chest", rarity: "uncommon", level: 20,
+    stats: { defenseRating: 22, mitigation: 12, stamina: 5, agility: 5 },
+    sellPrice: 85,
+  },
 ];
 
 /**
@@ -4133,6 +4215,26 @@ export const CRAFTING_RECIPES: CraftingRecipe[] = [
     tier: "mythic" as RecipeTier,
     oneOfAKind: true,
   },
+
+  // ── COOKING RECIPES ───────────────────────────────────────────────────────
+  { id: "recipe_roasted_mushroom", name: "Cook Roasted Mushroom", resultItemId: "roasted_mushroom", resultQuantity: 2, ingredients: [{ itemId: "wild_mushroom", quantity: 2 }], requiredSkillLevel: 1, requiredSkillId: "cooking", craftingTime: 5, xpReward: 15, tier: "journeyman" as RecipeTier },
+  { id: "recipe_berry_pie", name: "Bake Berry Pie", resultItemId: "berry_pie", resultQuantity: 1, ingredients: [{ itemId: "forest_berry", quantity: 3 }, { itemId: "wild_onion", quantity: 1 }], requiredSkillLevel: 8, requiredSkillId: "cooking", craftingTime: 10, xpReward: 35, tier: "journeyman" as RecipeTier },
+  { id: "recipe_hearty_stew", name: "Brew Hearty Stew", resultItemId: "hearty_stew", resultQuantity: 1, ingredients: [{ itemId: "wild_mushroom", quantity: 2 }, { itemId: "thornbush_fruit", quantity: 1 }, { itemId: "wild_onion", quantity: 2 }], requiredSkillLevel: 20, requiredSkillId: "cooking", craftingTime: 18, xpReward: 80, tier: "expert" as RecipeTier },
+  { id: "recipe_truffle_feast", name: "Prepare Truffle Feast", resultItemId: "truffle_feast", resultQuantity: 1, ingredients: [{ itemId: "deepwood_truffle", quantity: 2 }, { itemId: "wild_mushroom", quantity: 3 }, { itemId: "forest_berry", quantity: 2 }], requiredSkillLevel: 40, requiredSkillId: "cooking", craftingTime: 30, xpReward: 180, tier: "expert" as RecipeTier },
+
+  // ── ENCHANTING RECIPES ────────────────────────────────────────────────────
+  { id: "recipe_scroll_of_swiftness", name: "Enchant Scroll of Swiftness", resultItemId: "scroll_of_swiftness", resultQuantity: 1, ingredients: [{ itemId: "enchanting_dust", quantity: 3 }, { itemId: "spider_silk", quantity: 1 }], requiredSkillLevel: 5, requiredSkillId: "enchanting", craftingTime: 12, xpReward: 45, tier: "journeyman" as RecipeTier },
+  { id: "recipe_scroll_of_fortitude", name: "Enchant Scroll of Fortitude", resultItemId: "scroll_of_fortitude", resultQuantity: 1, ingredients: [{ itemId: "enchanting_dust", quantity: 5 }, { itemId: "fay_blossom", quantity: 1 }], requiredSkillLevel: 20, requiredSkillId: "enchanting", craftingTime: 20, xpReward: 90, tier: "expert" as RecipeTier },
+
+  // ── WOODWORKING RECIPES ───────────────────────────────────────────────────
+  { id: "recipe_hardwood_plank", name: "Cut Hardwood Plank", resultItemId: "hardwood_plank", resultQuantity: 2, ingredients: [{ itemId: "lumber", quantity: 3 }], requiredSkillLevel: 1, requiredSkillId: "woodworking", craftingTime: 6, xpReward: 18, tier: "journeyman" as RecipeTier },
+  { id: "recipe_wooden_bow", name: "Craft Wooden Bow", resultItemId: "wooden_bow", resultQuantity: 1, ingredients: [{ itemId: "lumber", quantity: 3 }, { itemId: "hardwood_plank", quantity: 1 }], requiredSkillLevel: 5, requiredSkillId: "woodworking", craftingTime: 12, xpReward: 40, tier: "journeyman" as RecipeTier },
+  { id: "recipe_ash_staff", name: "Craft Ash Staff", resultItemId: "ash_staff", resultQuantity: 1, ingredients: [{ itemId: "lumber", quantity: 4 }, { itemId: "hardwood_plank", quantity: 2 }, { itemId: "spider_silk", quantity: 1 }], requiredSkillLevel: 15, requiredSkillId: "woodworking", craftingTime: 20, xpReward: 85, tier: "expert" as RecipeTier },
+
+  // ── LEATHERWORKING RECIPES ────────────────────────────────────────────────
+  { id: "recipe_leather_bracers", name: "Craft Leather Bracers", resultItemId: "leather_bracers", resultQuantity: 1, ingredients: [{ itemId: "scraggly_hide", quantity: 2 }], requiredSkillLevel: 1, requiredSkillId: "leatherworking", craftingTime: 6, xpReward: 20, tier: "journeyman" as RecipeTier },
+  { id: "recipe_supple_leather_gloves", name: "Craft Supple Leather Gloves", resultItemId: "supple_leather_gloves", resultQuantity: 1, ingredients: [{ itemId: "sturdy_hide", quantity: 2 }, { itemId: "scraggly_hide", quantity: 1 }], requiredSkillLevel: 10, requiredSkillId: "leatherworking", craftingTime: 12, xpReward: 50, tier: "journeyman" as RecipeTier },
+  { id: "recipe_reinforced_leather_vest", name: "Craft Reinforced Leather Vest", resultItemId: "reinforced_leather_vest", resultQuantity: 1, ingredients: [{ itemId: "thick_pelt", quantity: 3 }, { itemId: "sturdy_hide", quantity: 2 }], requiredSkillLevel: 20, requiredSkillId: "leatherworking", craftingTime: 22, xpReward: 100, tier: "expert" as RecipeTier },
 ].map(r => ({ tier: "journeyman" as RecipeTier, ...r }));
 
 export const INITIAL_SKILLS = [
@@ -4169,7 +4271,7 @@ export interface GatheringNode {
   id: string;
   name: string;
   description: string;
-  skillId: "mining" | "woodcutting" | "fishing" | "herbalism";
+  skillId: "mining" | "woodcutting" | "fishing" | "herbalism" | "foraging" | "skinning" | "prospecting" | "archaeology";
   requiredLevel: number;
   xpPerGather: number;
   gatherTimeSeconds: number;
@@ -4390,6 +4492,27 @@ export const GATHERING_NODES: GatheringNode[] = [
     yields: [{ itemId: "growth_spore", baseQuantity: 1, weight: 1 }],
     rareYield: { itemId: "enchanted_pixie_dust", quantity: 2 },
   },
+
+  // ── FORAGING ──────────────────────────────────────────────────────────────
+  { id: "wild_brush", name: "Wild Brush", icon: "🫐", description: "Scraggly bushes at the edge of the forest", skillId: "foraging", requiredLevel: 1, xpPerGather: 12, gatherTimeSeconds: 6, yields: [{ itemId: "forest_berry", baseQuantity: 1, weight: 1 }, { itemId: "wild_onion", baseQuantity: 1, weight: 1 }] },
+  { id: "mushroom_ring", name: "Mushroom Ring", icon: "🍄", description: "A fairy ring of wild mushrooms", skillId: "foraging", requiredLevel: 5, xpPerGather: 20, gatherTimeSeconds: 8, yields: [{ itemId: "wild_mushroom", baseQuantity: 1, weight: 1 }] },
+  { id: "thornbush_patch", name: "Thornbush Patch", icon: "🌾", description: "Hardy thornbushes laden with bitter fruit", skillId: "foraging", requiredLevel: 15, xpPerGather: 40, gatherTimeSeconds: 12, yields: [{ itemId: "thornbush_fruit", baseQuantity: 1, weight: 1 }], rareYield: { itemId: "deepwood_truffle", quantity: 1 } },
+  { id: "deepwood_grove", name: "Deepwood Grove", icon: "🌲", description: "Ancient grove where rare truffles grow", skillId: "foraging", requiredLevel: 35, xpPerGather: 90, gatherTimeSeconds: 22, yields: [{ itemId: "deepwood_truffle", baseQuantity: 1, weight: 1 }], rareYield: { itemId: "wild_mushroom", quantity: 2 } },
+
+  // ── SKINNING ──────────────────────────────────────────────────────────────
+  { id: "gnoll_camp", name: "Gnoll Camp Scraps", icon: "🐺", description: "Hides left behind at gnoll camps", skillId: "skinning", requiredLevel: 1, xpPerGather: 14, gatherTimeSeconds: 7, yields: [{ itemId: "scraggly_hide", baseQuantity: 1, weight: 1 }] },
+  { id: "wolf_hunting_ground", name: "Wolf Hunting Ground", icon: "🐾", description: "Trails where wolf pelts can be gathered", skillId: "skinning", requiredLevel: 10, xpPerGather: 32, gatherTimeSeconds: 10, yields: [{ itemId: "sturdy_hide", baseQuantity: 1, weight: 1 }] },
+  { id: "bear_territory", name: "Bear Territory", icon: "🐻", description: "Dense woodland where bear pelts are prized", skillId: "skinning", requiredLevel: 30, xpPerGather: 80, gatherTimeSeconds: 20, yields: [{ itemId: "thick_pelt", baseQuantity: 1, weight: 1 }], rareYield: { itemId: "pristine_pelt", quantity: 1 } },
+
+  // ── PROSPECTING ───────────────────────────────────────────────────────────
+  { id: "hillside_survey", name: "Hillside Survey", icon: "🔍", description: "Survey hillsides for gem deposits", skillId: "prospecting", requiredLevel: 1, xpPerGather: 18, gatherTimeSeconds: 10, yields: [{ itemId: "raw_gemstone", baseQuantity: 1, weight: 1 }] },
+  { id: "karst_survey", name: "Karst Formation Survey", icon: "💎", description: "Limestone karst riddled with gem pockets", skillId: "prospecting", requiredLevel: 20, xpPerGather: 55, gatherTimeSeconds: 18, yields: [{ itemId: "survey_map_fragment", baseQuantity: 1, weight: 1 }, { itemId: "raw_gemstone", baseQuantity: 1, weight: 1 }], rareYield: { itemId: "uncut_diamond", quantity: 1 } },
+  { id: "deep_vein_survey", name: "Deep Vein Survey", icon: "🌑", description: "Prospecting deep fissures for precious stones", skillId: "prospecting", requiredLevel: 45, xpPerGather: 130, gatherTimeSeconds: 28, yields: [{ itemId: "uncut_diamond", baseQuantity: 1, weight: 1 }], rareYield: { itemId: "raw_gemstone", quantity: 3 } },
+
+  // ── ARCHAEOLOGY ───────────────────────────────────────────────────────────
+  { id: "commonlands_ruins", name: "Commonlands Ruins", icon: "🏛️", description: "Crumbled ruins from an ancient civilization", skillId: "archaeology", requiredLevel: 1, xpPerGather: 16, gatherTimeSeconds: 9, yields: [{ itemId: "ancient_shard", baseQuantity: 1, weight: 1 }] },
+  { id: "antonica_dig_site", name: "Antonica Dig Site", icon: "⛏️", description: "A formal dig site uncovering buried relics", skillId: "archaeology", requiredLevel: 15, xpPerGather: 42, gatherTimeSeconds: 14, yields: [{ itemId: "relic_fragment", baseQuantity: 1, weight: 1 }] },
+  { id: "feerrott_temple", name: "Feerrott Temple Excavation", icon: "🗿", description: "An overgrown temple filled with ancient tablets", skillId: "archaeology", requiredLevel: 40, xpPerGather: 110, gatherTimeSeconds: 25, yields: [{ itemId: "relic_fragment", baseQuantity: 1, weight: 1 }, { itemId: "ancient_shard", baseQuantity: 1, weight: 1 }], rareYield: { itemId: "engraved_tablet", quantity: 1 } },
 ];
 
 export function getGatheringNodeById(id: string): GatheringNode | undefined {
