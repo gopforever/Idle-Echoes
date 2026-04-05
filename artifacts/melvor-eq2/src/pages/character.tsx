@@ -816,7 +816,8 @@ export default function CharacterSheet() {
     const intelligence = bs.intelligence ?? 10;
     const baseHpPerSec = 0.5 + wisdom * 0.03 + stamina * 0.02;
     const basePwrPerSec = 0.3 + intelligence * 0.03 + wisdom * 0.02;
-    const medLevel = skillsQ.data?.find((s: Skill) => s.id === "meditation")?.level ?? 1;
+    const skillsArr: Skill[] = Array.isArray(skillsQ.data) ? skillsQ.data : [];
+    const medLevel = skillsArr.find((s: Skill) => s.id === "meditation")?.level ?? 1;
     const medMult = isMeditating ? (1 + medLevel * 0.05) : 1;
     return {
       hp:  parseFloat((baseHpPerSec  * medMult * 3).toFixed(1)),
@@ -892,12 +893,12 @@ export default function CharacterSheet() {
   const p = profileQ.data;
   const stats = statsQ.data as (ComputedStats & { gearScore?: number }) | undefined;
 
-  const skillsList: Skill[] = skillsQ.data ?? [];
-  const factions: Faction[] = factionsQ.data ?? [];
-  const achievements: Achievement[] = achQ.data ?? [];
+  const skillsList: Skill[] = Array.isArray(skillsQ.data) ? skillsQ.data : [];
+  const factions: Faction[] = Array.isArray(factionsQ.data) ? factionsQ.data : [];
+  const achievements: Achievement[] = Array.isArray(achQ.data) ? achQ.data : [];
   const aaTree: AATree | undefined = aaQ.data;
 
-  const dungeonKillStats: DungeonKillStat[] = dungeonStatsQ.data ?? [];
+  const dungeonKillStats: DungeonKillStat[] = Array.isArray(dungeonStatsQ.data) ? dungeonStatsQ.data : [];
 
   const earnedCount = achievements.filter(a => a.completed).length;
   const kdr = p.deathCount > 0 ? (p.killCount / p.deathCount).toFixed(2) : p.killCount.toFixed(2);

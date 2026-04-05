@@ -307,13 +307,13 @@ export default function QuestsPage() {
   const [completeMsg, setCompleteMsg] = React.useState<string | null>(null);
   const bootstrapped = React.useRef(false);
 
-  const quests: Quest[] = questsQ.data ?? [];
+  const quests: Quest[] = Array.isArray(questsQ.data) ? questsQ.data : [];
   const active = quests.filter(q => !q.completed);
 
   // Auto-bootstrap: generate quests on first load if fewer than 3 active
   React.useEffect(() => {
     if (bootstrapped.current) return;
-    if (!questsQ.data) return;
+    if (!Array.isArray(questsQ.data)) return;
     bootstrapped.current = true;
     const activeCount = questsQ.data.filter(q => !q.completed).length;
     if (activeCount < 3) {
