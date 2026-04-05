@@ -623,7 +623,7 @@ router.post("/dungeons/run/advance", async (req, res) => {
       return res.status(400).json({ error: "Final floor not cleared: main boss not yet defeated" });
     }
 
-    const loot = generateDungeonLoot(character.level, run.currentFloor, run.difficulty);
+    const loot = generateDungeonLoot(character.level, run.currentFloor, run.difficulty, dungeon.minLevel, dungeon.maxLevel);
     await awardItemsToInventory(loot, character.id);
     const existingLoot = (run.lootEarned as Array<{ floor: number; items: string[] }>) ?? [];
     const newLoot = [...existingLoot, { floor: run.currentFloor, items: loot }];
