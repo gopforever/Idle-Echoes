@@ -332,7 +332,7 @@ function IdentityHeader({
   const xpPct  = Math.min(100, (p.xp / Math.max(1, p.xpToNextLevel)) * 100);
   const hpPct  = Math.min(100, (p.health / Math.max(1, p.maxHealth)) * 100);
   const pwrPct = Math.min(100, (p.power / Math.max(1, p.maxPower)) * 100);
-  const kdr    = p.deathCount > 0 ? (p.killCount / p.deathCount).toFixed(2) : p.killCount.toFixed(2);
+  const kdr    = (p.deathCount ?? 0) > 0 ? ((p.killCount ?? 0) / (p.deathCount ?? 0)).toFixed(2) : (p.killCount ?? 0).toFixed(2);
   const archStyle = ARCHETYPE_STYLE[p.archetype] ?? "text-slate-300 border-slate-700";
 
   return (
@@ -416,11 +416,11 @@ function IdentityHeader({
             {[
               { label: "Level",    val: String(p.level),             color: "text-slate-200" },
               { label: "Gold",     val: p.gold.toLocaleString(),      color: "text-amber-400" },
-              { label: "AA",       val: String(p.aaPoints),           color: "text-purple-400" },
-              { label: "Kills",    val: p.killCount.toLocaleString(), color: "text-red-400" },
-              { label: "Deaths",   val: p.deathCount.toLocaleString(),color: "text-slate-500" },
-              { label: "K/D",      val: kdr,                          color: "text-orange-300" },
-              { label: "Playtime", val: fmtTime(p.totalPlayTime),     color: "text-slate-300" },
+              { label: "AA",       val: String(p.aaPoints ?? 0),           color: "text-purple-400" },
+              { label: "Kills",    val: (p.killCount ?? 0).toLocaleString(), color: "text-red-400" },
+              { label: "Deaths",   val: (p.deathCount ?? 0).toLocaleString(),color: "text-slate-500" },
+              { label: "K/D",      val: kdr,                                  color: "text-orange-300" },
+              { label: "Playtime", val: fmtTime(p.totalPlayTime ?? 0),        color: "text-slate-300" },
             ].map(({ label, val, color }) => (
               <div key={label} className="text-center min-w-[48px]">
                 <div className={cn("text-lg font-bold", color)}>{val}</div>
@@ -901,7 +901,9 @@ export default function CharacterSheet() {
   const dungeonKillStats: DungeonKillStat[] = Array.isArray(dungeonStatsQ.data) ? dungeonStatsQ.data : [];
 
   const earnedCount = achievements.filter(a => a.completed).length;
-  const kdr = p.deathCount > 0 ? (p.killCount / p.deathCount).toFixed(2) : p.killCount.toFixed(2);
+  const kdr = (p.deathCount ?? 0) > 0 
+    ? ((p.killCount ?? 0) / (p.deathCount ?? 0)).toFixed(2) 
+    : (p.killCount ?? 0).toFixed(2);
   const totalAA = (p.aaPoints ?? 0) + (p.aaPointsSpent ?? 0);
 
   const skillsByCategory: Record<string, Skill[]> = {};
@@ -1326,12 +1328,12 @@ export default function CharacterSheet() {
               <div className="grid grid-cols-2 gap-4">
                 <Card className="bg-card/40 border-slate-800">
                   <CardContent className="p-4 text-center">
-                    <div className="text-3xl font-bold text-purple-400">{p.aaPoints}</div>
+                    <div className="text-3xl font-bold text-purple-400">{p.aaPoints ?? 0}</div>
                     <div className="text-xs text-slate-500 mt-1">AA Points</div>
-                    <div className="text-xs text-slate-600 mt-1">{p.aaPointsSpent} spent · {totalAA} total</div>
+                    <div className="text-xs text-slate-600 mt-1">{p.aaPointsSpent ?? 0} spent · {totalAA} total</div>
                     {totalAA > 0 && (
                       <div className="mt-2 h-1.5 rounded-full bg-slate-800">
-                        <div className="h-full rounded-full bg-purple-600" style={{ width: `${(p.aaPointsSpent / Math.max(1, totalAA)) * 100}%` }} />
+                        <div className="h-full rounded-full bg-purple-600" style={{ width: `${((p.aaPointsSpent ?? 0) / Math.max(1, totalAA)) * 100}%` }} />
                       </div>
                     )}
                   </CardContent>
@@ -1550,11 +1552,11 @@ export default function CharacterSheet() {
               <CardContent className="p-4 space-y-3">
                 <div className="flex gap-3">
                   <div className="flex-1 text-center p-3 rounded-lg bg-slate-800/40 border border-slate-700/40">
-                    <div className="text-2xl font-bold text-red-400">{p.killCount.toLocaleString()}</div>
+                    <div className="text-2xl font-bold text-red-400">{(p.killCount ?? 0).toLocaleString()}</div>
                     <div className="text-xs text-slate-500">Total Kills</div>
                   </div>
                   <div className="flex-1 text-center p-3 rounded-lg bg-slate-800/40 border border-slate-700/40">
-                    <div className="text-2xl font-bold text-slate-500">{p.deathCount.toLocaleString()}</div>
+                    <div className="text-2xl font-bold text-slate-500">{(p.deathCount ?? 0).toLocaleString()}</div>
                     <div className="text-xs text-slate-500">Deaths</div>
                   </div>
                 </div>
@@ -1564,7 +1566,7 @@ export default function CharacterSheet() {
                 </div>
                 <div className="flex justify-between text-sm pt-2 border-t border-slate-800">
                   <span className="text-slate-500">Heroic Opportunities</span>
-                  <span className="text-amber-400 font-medium">{p.heroicCompletions} completed</span>
+                  <span className="text-amber-400 font-medium">{p.heroicCompletions ?? 0} completed</span>
                 </div>
               </CardContent>
             </Card>
@@ -1586,7 +1588,7 @@ export default function CharacterSheet() {
                   </div>
                 </div>
                 <div className="text-center p-3 rounded-lg bg-slate-800/40 border border-slate-700/40">
-                  <div className="text-2xl font-bold text-slate-300">{fmtTime(p.totalPlayTime)}</div>
+                  <div className="text-2xl font-bold text-slate-300">{fmtTime(p.totalPlayTime ?? 0)}</div>
                   <div className="text-xs text-slate-500">Total Playtime</div>
                 </div>
                 <div className="flex justify-between text-sm pt-2 border-t border-slate-800">
@@ -1609,7 +1611,7 @@ export default function CharacterSheet() {
                   { label: "Archetype",    val: p.archetype },
                   { label: "Alignment",    val: p.alignment },
                   { label: "Level",        val: String(p.level) },
-                  { label: "AA Spent",     val: String(p.aaPointsSpent) },
+                  { label: "AA Spent",     val: String(p.aaPointsSpent ?? 0) },
                   { label: "Zone",         val: p.zone },
                   { label: "Created",      val: fmtDate(p.createdAt) },
                 ].map(({ label, val }) => (
