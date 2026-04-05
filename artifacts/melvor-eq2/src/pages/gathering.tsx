@@ -49,13 +49,17 @@ interface GatheringStatus {
 }
 
 const SKILL_META: Record<string, { label: string; icon: string; color: string }> = {
-  mining:      { label: "Mining",      icon: "⛏️",  color: "text-orange-400" },
-  woodcutting: { label: "Woodcutting", icon: "🪓",  color: "text-green-400"  },
-  fishing:     { label: "Fishing",     icon: "🎣",  color: "text-blue-400"   },
-  herbalism:   { label: "Herbalism",   icon: "🌿",  color: "text-emerald-400" },
+  mining:       { label: "Mining",       icon: "⛏️",  color: "text-orange-400"  },
+  woodcutting:  { label: "Woodcutting",  icon: "🪓",  color: "text-green-400"   },
+  fishing:      { label: "Fishing",      icon: "🎣",  color: "text-blue-400"    },
+  herbalism:    { label: "Herbalism",    icon: "🌿",  color: "text-emerald-400" },
+  foraging:     { label: "Foraging",     icon: "🫐",  color: "text-lime-400"    },
+  skinning:     { label: "Skinning",     icon: "🐾",  color: "text-amber-600"   },
+  prospecting:  { label: "Prospecting",  icon: "🔍",  color: "text-cyan-400"    },
+  archaeology:  { label: "Archaeology",  icon: "🏛️",  color: "text-yellow-600"  },
 };
 
-const SKILL_ORDER = ["mining", "woodcutting", "fishing", "herbalism"];
+const SKILL_ORDER = ["mining", "woodcutting", "fishing", "herbalism", "foraging", "skinning", "prospecting", "archaeology"];
 
 // ─── API Hooks ─────────────────────────────────────────────────────────────────
 
