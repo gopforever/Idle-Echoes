@@ -4153,6 +4153,22 @@ export const INITIAL_SKILLS = [
   { skillId: "tracking", name: "Tracking", description: "Following the trails of beasts and enemies", category: "support", icon: "footprint", xpPerHour: 35 },
   { skillId: "lore", name: "Lore & Legend", description: "Knowledge of the world, its history and secrets", category: "support", icon: "book", xpPerHour: 28 },
   { skillId: "meditation", name: "Meditation", description: "Calming the mind and body to accelerate out-of-combat recovery", category: "combat", icon: "lotus", xpPerHour: 0 },
+  { skillId: "dual_wield", name: "Dual Wield", description: "Mastery of fighting with two weapons simultaneously", category: "combat", icon: "dual_swords", xpPerHour: 0 },
+  { skillId: "parry", name: "Parry", description: "Advanced technique for deflecting and countering attacks", category: "combat", icon: "parry", xpPerHour: 0 },
+  { skillId: "evocation", name: "Evocation", description: "Channeling raw elemental magic for devastating spells", category: "combat", icon: "lightning", xpPerHour: 0 },
+  { skillId: "beastmastery", name: "Beastmastery", description: "Commanding and bonding with wild creatures in battle", category: "combat", icon: "paw", xpPerHour: 0 },
+  { skillId: "foraging", name: "Foraging", description: "Gathering fruits, mushrooms, and wild food from the land", category: "gathering", icon: "mushroom", xpPerHour: 32 },
+  { skillId: "skinning", name: "Skinning", description: "Harvesting hides and pelts from slain beasts", category: "gathering", icon: "hide", xpPerHour: 36 },
+  { skillId: "prospecting", name: "Prospecting", description: "Surveying terrain to find rare mineral deposits", category: "gathering", icon: "map", xpPerHour: 28 },
+  { skillId: "archaeology", name: "Archaeology", description: "Unearthing ancient relics and buried treasures", category: "gathering", icon: "shovel", xpPerHour: 25 },
+  { skillId: "cooking", name: "Cooking", description: "Preparing food and feasts that grant temporary stat buffs", category: "crafting", icon: "pot", xpPerHour: 44 },
+  { skillId: "enchanting", name: "Enchanting", description: "Imbuing items with magical properties and enhancements", category: "crafting", icon: "enchant", xpPerHour: 52 },
+  { skillId: "woodworking", name: "Woodworking", description: "Crafting bows, staves, and wooden structures", category: "crafting", icon: "saw", xpPerHour: 40 },
+  { skillId: "leatherworking", name: "Leatherworking", description: "Crafting leather armor and accessories from hides", category: "crafting", icon: "leather", xpPerHour: 46 },
+  { skillId: "first_aid", name: "First Aid", description: "Treating wounds and ailments in the field", category: "support", icon: "bandage", xpPerHour: 33 },
+  { skillId: "scouting", name: "Scouting", description: "Surveying zones to reveal hidden enemies and resources", category: "support", icon: "eye", xpPerHour: 30 },
+  { skillId: "bartering", name: "Bartering", description: "Negotiating better prices and deals with merchants", category: "support", icon: "coin", xpPerHour: 27 },
+  { skillId: "runecrafting", name: "Runecrafting", description: "Inscribing magical runes that enhance gear and abilities", category: "support", icon: "rune", xpPerHour: 38 },
 ];
 
 export function getItemById(id: string): Item | undefined {
