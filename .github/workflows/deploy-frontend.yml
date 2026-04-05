@@ -8,6 +8,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -23,9 +25,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Build frontend
-        run: pnpm --filter @workspace/melvor-eq2 run build
 
       - name: Install Vercel CLI
         run: pnpm add -g vercel
