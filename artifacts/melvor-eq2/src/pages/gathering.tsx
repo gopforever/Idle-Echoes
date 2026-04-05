@@ -337,12 +337,12 @@ export default function GatheringPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <Tabs defaultValue="mining">
-            <TabsList className="bg-slate-900 border border-slate-800 w-full">
+            <TabsList className="bg-slate-900 border border-slate-800 w-full flex-wrap h-auto gap-y-1 p-1">
               {SKILL_ORDER.map(skillId => {
                 const meta = SKILL_META[skillId];
                 const session = activeSessionMap.get(skillId);
                 return (
-                  <TabsTrigger key={skillId} value={skillId} className="flex-1 text-xs gap-1">
+                  <TabsTrigger key={skillId} value={skillId} className="flex-1 basis-[23%] text-xs gap-1">
                     <span>{meta.icon}</span>
                     <span className="hidden sm:inline">{meta.label}</span>
                     {session && <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block" />}
