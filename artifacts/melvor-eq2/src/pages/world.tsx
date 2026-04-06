@@ -6,9 +6,11 @@ import {
   useGetWorldStats,
   useGetWorldZones,
 } from "@workspace/api-client-react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Sheet,
   SheetContent,
@@ -566,6 +568,209 @@ function ZoneMapPanel({ zones }: { zones: any[] }) {
   );
 }
 
+// ─── Champions Tab ───────────────────────────────────────────────────────────
+
+interface GhostRoleEntry {
+  id: number;
+  name: string;
+  class: string;
+  race: string;
+  level: number;
+  zone: string;
+  killCount: number;
+  bossKills: number;
+  gearScore: number;
+  dungeonClears: number;
+  personality: string;
+  role: string;
+  generation: number;
+}
+
+function gearScoreBadgeCls(gs: number): string {
+  if (gs >= 400) return "text-amber-300 border-amber-600/60 bg-amber-950/20";
+  if (gs >= 200) return "text-violet-300 border-violet-600/60 bg-violet-950/20";
+  if (gs >= 100) return "text-blue-300 border-blue-600/60 bg-blue-950/20";
+  return "text-slate-400 border-slate-700 bg-slate-900/40";
+}
+
+function ChampionGhostCard({
+  ghost,
+  rank,
+  onSelect,
+}: {
+  ghost: GhostRoleEntry;
+  rank: number;
+  onSelect: (ghost: GhostRoleEntry) => void;
+}) {
+  const rankBadge =
+    rank === 1 ? "👑" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : `#${rank}`;
+  const rankCls =
+    rank === 1
+      ? "text-amber-400 font-black"
+      : rank === 2
+      ? "text-slate-300 font-bold"
+      : rank === 3
+      ? "text-amber-700 font-bold"
+      : "text-slate-500";
+  const ps = PERSONALITY_STYLES[ghost.personality];
+
+  return (
+    <div
+      className="border border-slate-800 bg-slate-900/60 rounded-xl p-3 cursor-pointer hover:border-slate-700 hover:bg-slate-800/60 transition-colors"
+      onClick={() => onSelect(ghost)}
+    >
+      <div className="flex items-start gap-2">
+        <span className={cn("text-sm w-6 text-center shrink-0 mt-0.5", rankCls)}>
+          {rankBadge}
+        </span>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-1 flex-wrap">
+            <span className="text-sm font-bold text-slate-200 truncate">{ghost.name}</span>
+            <span className="text-xs font-black text-amber-400 shrink-0">Lv {ghost.level}</span>
+          </div>
+          <div className="text-[10px] text-slate-500 mt-0.5 truncate">
+            {ghost.race} · {ghost.class}
+          </div>
+
+          <div className="flex flex-wrap gap-1 mt-1.5">
+            <span className={cn("text-[10px] px-1.5 py-0.5 rounded border", gearScoreBadgeCls(ghost.gearScore))}>
+              GS {ghost.gearScore}
+            </span>
+            {ghost.generation > 1 && (
+              <span className="text-[10px] px-1.5 py-0.5 rounded border border-slate-600/60 text-slate-400 bg-slate-900/40">
+                ✦ Gen {ghost.generation}
+              </span>
+            )}
+            {ps && (
+              <span className={cn("text-[10px] px-1.5 py-0.5 rounded border", ps.cls)}>
+                {ps.icon} {ghost.personality}
+              </span>
+            )}
+          </div>
+
+          <div className="mt-1.5 grid grid-cols-3 gap-1 text-[10px]">
+            <div className="text-center">
+              <div className="font-bold text-red-400">{ghost.killCount.toLocaleString()}</div>
+              <div className="text-slate-600">Kills</div>
+            </div>
+            <div className="text-center">
+              <div className="font-bold text-purple-400">{ghost.bossKills}</div>
+              <div className="text-slate-600">Bosses</div>
+            </div>
+            <div className="text-center">
+              <div className="font-bold text-emerald-400">{ghost.dungeonClears}</div>
+              <div className="text-slate-600">Clears</div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1 text-[10px] text-slate-500 mt-1.5 min-w-0">
+            <MapIcon className="w-3 h-3 shrink-0" />
+            <span className="truncate">{ghost.zone}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface RoleColumnConfig {
+  key: "tanks" | "healers" | "dps";
+  label: string;
+  icon: string;
+  headerCls: string;
+  borderCls: string;
+  bgCls: string;
+  emptyMsg: string;
+}
+
+const ROLE_COLUMNS: RoleColumnConfig[] = [
+  {
+    key: "tanks",
+    label: "Top Tanks",
+    icon: "🛡️",
+    headerCls: "text-blue-400",
+    borderCls: "border-blue-800/40",
+    bgCls: "bg-blue-950/10",
+    emptyMsg: "No Tank ghosts found yet.",
+  },
+  {
+    key: "healers",
+    label: "Top Healers",
+    icon: "💚",
+    headerCls: "text-green-400",
+    borderCls: "border-green-800/40",
+    bgCls: "bg-green-950/10",
+    emptyMsg: "No Healer ghosts found yet.",
+  },
+  {
+    key: "dps",
+    label: "Top DPS",
+    icon: "⚔️",
+    headerCls: "text-red-400",
+    borderCls: "border-red-800/40",
+    bgCls: "bg-red-950/10",
+    emptyMsg: "No DPS ghosts found yet.",
+  },
+];
+
+function ChampionsTab({ onSelectPlayer }: { onSelectPlayer: (player: any) => void }) {
+  const { data, isLoading } = useQuery<{
+    tanks: GhostRoleEntry[];
+    healers: GhostRoleEntry[];
+    dps: GhostRoleEntry[];
+  }>({
+    queryKey: ["champions-by-role"],
+    queryFn: () =>
+      fetch(apiUrl("/api/leaderboard/ghosts/top-by-role")).then(r => r.json()),
+    refetchInterval: 30_000,
+  });
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <h2 className="text-lg font-serif font-bold text-slate-100 flex items-center gap-2">
+          <Trophy className="w-5 h-5 text-amber-400" /> Champions of Norrath
+        </h2>
+        <p className="text-sm text-slate-500 mt-1">
+          Top 5 ghost adventurers per role, ranked by composite score (gear score × 2 + level × 50 + kills × 0.1 + dungeon clears × 100).
+        </p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {ROLE_COLUMNS.map(col => (
+          <Card key={col.key} className={cn("border backdrop-blur", col.borderCls, col.bgCls)}>
+            <CardHeader className={cn("py-3 px-4 border-b", col.borderCls)}>
+              <CardTitle className={cn("text-sm font-semibold flex items-center gap-2", col.headerCls)}>
+                <span>{col.icon}</span> {col.label}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-3 space-y-2">
+              {isLoading ? (
+                [...Array(5)].map((_, i) => (
+                  <Skeleton key={i} className="h-24 rounded-xl" />
+                ))
+              ) : !data || data[col.key].length === 0 ? (
+                <div className="py-6 text-center text-slate-500 text-sm">
+                  <span className="block text-2xl mb-2">{col.icon}</span>
+                  {col.emptyMsg}
+                </div>
+              ) : (
+                data[col.key].map((ghost, idx) => (
+                  <ChampionGhostCard
+                    key={ghost.id}
+                    ghost={ghost}
+                    rank={idx + 1}
+                    onSelect={onSelectPlayer}
+                  />
+                ))
+              )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function PlayerCard({
   player, onSelect, rivals, onRivalToggle,
 }: {
@@ -854,170 +1059,189 @@ export default function WorldPage() {
         </div>
       </div>
 
-      {/* ── World Stats ── */}
-      {statsLoading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-20 rounded-xl" />)}
-        </div>
-      ) : stats && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <WorldStatCard label="Adventurers Online" value={stats.totalPlayers} icon={Users} color="bg-blue-900/40 text-blue-400" />
-          <WorldStatCard label="Total Kills" value={stats.totalKills} icon={Sword} color="bg-red-900/40 text-red-400" />
-          <WorldStatCard label="Boss Kills" value={stats.totalBossKills} icon={Crown} color="bg-purple-900/40 text-purple-400" />
-          <WorldStatCard label="Gold Earned" value={`${(stats.totalGoldEarned / 1000).toFixed(0)}K`} icon={Coins} color="bg-amber-900/40 text-amber-400" />
-        </div>
-      )}
+      <Tabs defaultValue="world">
+        <TabsList className="bg-slate-900 border border-slate-800">
+          <TabsTrigger value="world" className="data-[state=active]:bg-slate-800 data-[state=active]:text-slate-100 text-slate-400">
+            <Globe2 className="w-3.5 h-3.5 mr-1.5" /> World
+          </TabsTrigger>
+          <TabsTrigger value="champions" className="data-[state=active]:bg-slate-800 data-[state=active]:text-slate-100 text-slate-400">
+            <Trophy className="w-3.5 h-3.5 mr-1.5" /> Champions
+          </TabsTrigger>
+        </TabsList>
 
-      {/* ── Secondary stats ── */}
-      {stats && (
-        <div className="grid grid-cols-3 gap-3">
-          <div className="bg-slate-900/40 border border-slate-800 rounded-xl p-4 text-center">
-            <div className="text-2xl font-black text-emerald-400">{stats.maxLevel}</div>
-            <div className="text-xs text-slate-500 mt-0.5">Highest Level</div>
-          </div>
-          <div className="bg-slate-900/40 border border-slate-800 rounded-xl p-4 text-center">
-            <div className="text-2xl font-black text-sky-400">{stats.avgLevel}</div>
-            <div className="text-xs text-slate-500 mt-0.5">Average Level</div>
-          </div>
-          <div className="bg-slate-900/40 border border-slate-800 rounded-xl p-4 text-center">
-            <div className="text-2xl font-black text-violet-400">{stats.totalEvents}</div>
-            <div className="text-xs text-slate-500 mt-0.5">World Events</div>
-          </div>
-        </div>
-      )}
-
-      {/* ── Three-column layout: Events | Leaderboard + Zone Map ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-
-        {/* ── Live Event Feed ── */}
-        <div className="lg:col-span-2 space-y-3">
-          {/* Major World Events Panel */}
-          {majorEvents.length > 0 && (
-            <Card className="border-purple-800/40 bg-purple-950/10 backdrop-blur">
-              <CardHeader className="py-3 px-4 border-b border-purple-800/30">
-                <CardTitle className="text-sm font-semibold text-purple-300 flex items-center gap-2">
-                  <Star className="w-4 h-4 text-purple-400" /> Major World Events
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-3 space-y-1.5">
-                {majorEvents.map((event: any) => (
-                  <EventCard key={event.id} event={event} />
-                ))}
-              </CardContent>
-            </Card>
+        {/* ── World Tab ── */}
+        <TabsContent value="world" className="mt-4 space-y-5">
+          {/* ── World Stats ── */}
+          {statsLoading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-20 rounded-xl" />)}
+            </div>
+          ) : stats && (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <WorldStatCard label="Adventurers Online" value={stats.totalPlayers} icon={Users} color="bg-blue-900/40 text-blue-400" />
+              <WorldStatCard label="Total Kills" value={stats.totalKills} icon={Sword} color="bg-red-900/40 text-red-400" />
+              <WorldStatCard label="Boss Kills" value={stats.totalBossKills} icon={Crown} color="bg-purple-900/40 text-purple-400" />
+              <WorldStatCard label="Gold Earned" value={`${(stats.totalGoldEarned / 1000).toFixed(0)}K`} icon={Coins} color="bg-amber-900/40 text-amber-400" />
+            </div>
           )}
 
-          {/* Live Activity Feed */}
-          <Card className="border-slate-800 bg-card/40 backdrop-blur">
-            <CardHeader className="py-3 px-4 border-b border-slate-800/50">
-              <div className="flex items-center justify-between flex-wrap gap-2">
-                <CardTitle className="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                  <ScrollText className="w-4 h-4 text-blue-400" /> World Activity Feed
-                </CardTitle>
-                <select
-                  value={eventZone}
-                  onChange={e => setEventZone(e.target.value)}
-                  className="text-xs bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-slate-400 focus:outline-none focus:border-slate-600"
-                >
-                  <option value="">All Zones</option>
-                  {zoneNames.map(z => <option key={z} value={z}>{z}</option>)}
-                </select>
+          {/* ── Secondary stats ── */}
+          {stats && (
+            <div className="grid grid-cols-3 gap-3">
+              <div className="bg-slate-900/40 border border-slate-800 rounded-xl p-4 text-center">
+                <div className="text-2xl font-black text-emerald-400">{stats.maxLevel}</div>
+                <div className="text-xs text-slate-500 mt-0.5">Highest Level</div>
               </div>
-            </CardHeader>
-            <CardContent className="p-3 max-h-[480px] overflow-y-auto space-y-1.5">
-              {eventsLoading ? (
-                <div className="space-y-2">
-                  {[...Array(8)].map((_, i) => <Skeleton key={i} className="h-14 rounded-lg" />)}
-                </div>
-              ) : filteredEvents.length === 0 ? (
-                <div className="py-8 text-center text-slate-600">
-                  <Globe2 className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                  <p className="text-sm">No events yet — world is loading...</p>
-                </div>
-              ) : (
-                filteredEvents.map((event: any) => (
-                  <EventCard key={event.id} event={event} />
-                ))
-              )}
-            </CardContent>
-          </Card>
-        </div>
+              <div className="bg-slate-900/40 border border-slate-800 rounded-xl p-4 text-center">
+                <div className="text-2xl font-black text-sky-400">{stats.avgLevel}</div>
+                <div className="text-xs text-slate-500 mt-0.5">Average Level</div>
+              </div>
+              <div className="bg-slate-900/40 border border-slate-800 rounded-xl p-4 text-center">
+                <div className="text-2xl font-black text-violet-400">{stats.totalEvents}</div>
+                <div className="text-xs text-slate-500 mt-0.5">World Events</div>
+              </div>
+            </div>
+          )}
 
-        {/* ── Right column: Leaderboard + Zone Map ── */}
-        <div className="space-y-4">
-          {/* Leaderboard: top-10 by level then kills */}
+          {/* ── Three-column layout: Events | Leaderboard + Zone Map ── */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+            {/* ── Live Event Feed ── */}
+            <div className="lg:col-span-2 space-y-3">
+              {/* Major World Events Panel */}
+              {majorEvents.length > 0 && (
+                <Card className="border-purple-800/40 bg-purple-950/10 backdrop-blur">
+                  <CardHeader className="py-3 px-4 border-b border-purple-800/30">
+                    <CardTitle className="text-sm font-semibold text-purple-300 flex items-center gap-2">
+                      <Star className="w-4 h-4 text-purple-400" /> Major World Events
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-3 space-y-1.5">
+                    {majorEvents.map((event: any) => (
+                      <EventCard key={event.id} event={event} />
+                    ))}
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Live Activity Feed */}
+              <Card className="border-slate-800 bg-card/40 backdrop-blur">
+                <CardHeader className="py-3 px-4 border-b border-slate-800/50">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <CardTitle className="text-sm font-semibold text-slate-300 flex items-center gap-2">
+                      <ScrollText className="w-4 h-4 text-blue-400" /> World Activity Feed
+                    </CardTitle>
+                    <select
+                      value={eventZone}
+                      onChange={e => setEventZone(e.target.value)}
+                      className="text-xs bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-slate-400 focus:outline-none focus:border-slate-600"
+                    >
+                      <option value="">All Zones</option>
+                      {zoneNames.map(z => <option key={z} value={z}>{z}</option>)}
+                    </select>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-3 max-h-[480px] overflow-y-auto space-y-1.5">
+                  {eventsLoading ? (
+                    <div className="space-y-2">
+                      {[...Array(8)].map((_, i) => <Skeleton key={i} className="h-14 rounded-lg" />)}
+                    </div>
+                  ) : filteredEvents.length === 0 ? (
+                    <div className="py-8 text-center text-slate-600">
+                      <Globe2 className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                      <p className="text-sm">No events yet — world is loading...</p>
+                    </div>
+                  ) : (
+                    filteredEvents.map((event: any) => (
+                      <EventCard key={event.id} event={event} />
+                    ))
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* ── Right column: Leaderboard + Zone Map ── */}
+            <div className="space-y-4">
+              {/* Leaderboard: top-10 by level then kills */}
+              <Card className="border-slate-800 bg-card/40 backdrop-blur">
+                <CardHeader className="py-3 px-4 border-b border-slate-800/50">
+                  <CardTitle className="text-sm font-semibold text-slate-300 flex items-center gap-2">
+                    <Trophy className="w-4 h-4 text-amber-400" /> Leaderboard
+                    <span className="text-[10px] text-slate-600 font-normal ml-1">by level → kills</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-3">
+                  {lbLoading ? (
+                    <div className="space-y-2">
+                      {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-10 rounded-lg" />)}
+                    </div>
+                  ) : (
+                    <div>
+                      {(Array.isArray(leaderboard) ? leaderboard : []).map((entry: any) => (
+                        <LeaderboardRow
+                          key={entry.id}
+                          entry={entry}
+                          onSelect={() => setSelectedPlayer(entry)}
+                        />
+                      ))}
+                      {(!leaderboard || (Array.isArray(leaderboard) && leaderboard.length === 0)) && (
+                        <div className="text-center py-4 text-slate-600 text-xs">No data yet</div>
+                      )}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Zone Map */}
+              {zonesLoading ? (
+                <Card className="border-slate-800 bg-card/40">
+                  <CardContent className="p-4">
+                    <div className="space-y-2">
+                      {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-12 rounded-lg" />)}
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : zones && (
+                <ZoneMapPanel zones={zones} />
+              )}
+            </div>
+          </div>
+
+          {/* ── All Adventurers ── */}
           <Card className="border-slate-800 bg-card/40 backdrop-blur">
             <CardHeader className="py-3 px-4 border-b border-slate-800/50">
               <CardTitle className="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                <Trophy className="w-4 h-4 text-amber-400" /> Leaderboard
-                <span className="text-[10px] text-slate-600 font-normal ml-1">by level → kills</span>
+                <Users className="w-4 h-4 text-purple-400" /> All Adventurers of Norrath
+                <span className="text-[10px] text-slate-600 font-normal ml-1">click a ghost to view profile</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-3">
-              {lbLoading ? (
-                <div className="space-y-2">
-                  {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-10 rounded-lg" />)}
+            <CardContent className="p-4">
+              {playersLoading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                  {[...Array(8)].map((_, i) => <Skeleton key={i} className="h-40 rounded-xl" />)}
                 </div>
               ) : (
-                <div>
-                  {(Array.isArray(leaderboard) ? leaderboard : []).map((entry: any) => (
-                    <LeaderboardRow
-                      key={entry.id}
-                      entry={entry}
-                      onSelect={() => setSelectedPlayer(entry)}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                  {(Array.isArray(players) ? players : []).map((p: any) => (
+                    <PlayerCard
+                      key={p.id}
+                      player={p}
+                      onSelect={() => setSelectedPlayer(p)}
+                      rivals={rivals}
+                      onRivalToggle={toggleRival}
                     />
                   ))}
-                  {(!leaderboard || (Array.isArray(leaderboard) && leaderboard.length === 0)) && (
-                    <div className="text-center py-4 text-slate-600 text-xs">No data yet</div>
-                  )}
                 </div>
               )}
             </CardContent>
           </Card>
+        </TabsContent>
 
-          {/* Zone Map */}
-          {zonesLoading ? (
-            <Card className="border-slate-800 bg-card/40">
-              <CardContent className="p-4">
-                <div className="space-y-2">
-                  {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-12 rounded-lg" />)}
-                </div>
-              </CardContent>
-            </Card>
-          ) : zones && (
-            <ZoneMapPanel zones={zones} />
-          )}
-        </div>
-      </div>
-
-      {/* ── All Adventurers ── */}
-      <Card className="border-slate-800 bg-card/40 backdrop-blur">
-        <CardHeader className="py-3 px-4 border-b border-slate-800/50">
-          <CardTitle className="text-sm font-semibold text-slate-300 flex items-center gap-2">
-            <Users className="w-4 h-4 text-purple-400" /> All Adventurers of Norrath
-            <span className="text-[10px] text-slate-600 font-normal ml-1">click a ghost to view profile</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-4">
-          {playersLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-              {[...Array(8)].map((_, i) => <Skeleton key={i} className="h-40 rounded-xl" />)}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-              {(Array.isArray(players) ? players : []).map((p: any) => (
-                <PlayerCard
-                  key={p.id}
-                  player={p}
-                  onSelect={() => setSelectedPlayer(p)}
-                  rivals={rivals}
-                  onRivalToggle={toggleRival}
-                />
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+        {/* ── Champions Tab ── */}
+        <TabsContent value="champions" className="mt-4">
+          <ChampionsTab onSelectPlayer={setSelectedPlayer} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
