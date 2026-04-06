@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { charactersTable, inventoryTable, skillsTable, gatheringSessionsTable } from "@workspace/db/schema";
+import { charactersTable, inventoryTable, skillsTable, gatheringSessionsTable, gatheringBagItemsTable } from "@workspace/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { getOrCreateCharacter } from "./character.js";
 import { getOrCreateSkills } from "./skills.js";
@@ -64,6 +64,20 @@ async function addItemToInventory(characterId: number, itemId: string, quantity:
   }
 }
 
+async function addItemToGatheringBag(characterId: number, itemId: string, quantity: number) {
+  const itemData = itemToRecord(itemId);
+  if (!itemData) return;
+  const updated = await db.update(gatheringBagItemsTable)
+    .set({ quantity: sql`${gatheringBagItemsTable.quantity} + ${quantity}` })
+    .where(and(eq(gatheringBagItemsTable.characterId, characterId), eq(gatheringBagItemsTable.itemId, itemId)))
+    .returning({ id: gatheringBagItemsTable.id });
+  if (updated.length === 0) {
+    await db.insert(gatheringBagItemsTable)
+      .values({ characterId, itemId, itemData: itemData as Record<string, unknown>, quantity })
+      .onConflictDoNothing();
+  }
+}
+
 async function awardSkillXp(characterId: number, skillId: string, xpAmount: number) {
   const [skill] = await db.select().from(skillsTable).where(and(eq(skillsTable.characterId, characterId), eq(skillsTable.skillId, skillId)));
   if (!skill) return;
@@ -90,7 +104,7 @@ async function processGatheringTick(
   for (const y of node.yields) {
     const bonus = yieldBonusQty(y.baseQuantity, skillLevel);
     const qty = y.baseQuantity + bonus;
-    await addItemToInventory(characterId, y.itemId, qty);
+    await addItemToGatheringBag(characterId, y.itemId, qty);
     results.push({ itemId: y.itemId, quantity: qty });
   }
 
@@ -98,7 +112,7 @@ async function processGatheringTick(
   if (node.rareYield) {
     const chance = rareChance(skillLevel);
     if (chance > 0 && Math.random() < chance) {
-      await addItemToInventory(characterId, node.rareYield.itemId, node.rareYield.quantity);
+      await addItemToGatheringBag(characterId, node.rareYield.itemId, node.rareYield.quantity);
       results.push({ itemId: node.rareYield.itemId, quantity: node.rareYield.quantity });
       gotRare = true;
     }
@@ -354,6 +368,40 @@ router.get("/gathering/status", async (req, res) => {
     return res.json({ sessions: enrichedSessions, yields: allYields });
   } catch (err) {
     req.log.error({ err }, "Error getting gathering status");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// ─── GET /gathering/bag ───────────────────────────────────────────────────────
+
+router.get("/gathering/bag", async (req, res) => {
+  try {
+    const character = await getOrCreateCharacter(req.characterId);
+    const items = await db.select().from(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.characterId, character.id));
+    return res.json({ items: items.filter(i => i.quantity > 0) });
+  } catch (err) {
+    req.log.error({ err }, "Error fetching gathering bag");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// ─── POST /gathering/bag/withdraw-all ────────────────────────────────────────
+
+router.post("/gathering/bag/withdraw-all", async (req, res) => {
+  try {
+    const character = await getOrCreateCharacter(req.characterId);
+    const bagItems = await db.select().from(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.characterId, character.id));
+
+    for (const item of bagItems) {
+      if (item.quantity <= 0) continue;
+      await addItemToInventory(character.id, item.itemId, item.quantity);
+    }
+
+    await db.delete(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.characterId, character.id));
+
+    return res.json({ success: true, moved: bagItems.filter(i => i.quantity > 0).length });
+  } catch (err) {
+    req.log.error({ err }, "Error withdrawing gathering bag");
     return res.status(500).json({ error: "Internal server error" });
   }
 });

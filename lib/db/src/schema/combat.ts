@@ -81,6 +81,17 @@ export const bankItemsTable = pgTable("bank_items", {
 
 export type BankItem = typeof bankItemsTable.$inferSelect;
 
+export const gatheringBagItemsTable = pgTable("gathering_bag_items", {
+  id: serial("id").primaryKey(),
+  characterId: integer("character_id").notNull(),
+  itemId: text("item_id").notNull(),
+  itemData: jsonb("item_data").notNull().$type<Record<string, unknown>>(),
+  quantity: integer("quantity").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type GatheringBagItem = typeof gatheringBagItemsTable.$inferSelect;
+
 export const insertCombatLogSchema = createInsertSchema(combatLogTable).omit({ id: true, createdAt: true });
 export type InsertCombatLog = z.infer<typeof insertCombatLogSchema>;
 export type CombatLog = typeof combatLogTable.$inferSelect;

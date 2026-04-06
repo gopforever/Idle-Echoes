@@ -6,8 +6,9 @@ import {
   charactersTable,
   knownRecipesTable,
   oneOfAKindCraftedTable,
+  gatheringBagItemsTable,
 } from "@workspace/db/schema";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import {
   CRAFTING_RECIPES,
   getItemById,
@@ -239,9 +240,16 @@ router.post("/crafting/craft", async (req, res) => {
     const currentInventory = await db.select().from(inventoryTable).where(eq(inventoryTable.characterId, character.id));
     const inventoryMap = new Map(currentInventory.map(i => [i.itemId, i]));
 
+    const currentBag = await db.select().from(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.characterId, character.id));
+    const bagMap = new Map(currentBag.map(i => [i.itemId, i]));
+
+    // Combined total = inventory + gathering bag
+    function totalOwned(itemId: string): number {
+      return (inventoryMap.get(itemId)?.quantity ?? 0) + (bagMap.get(itemId)?.quantity ?? 0);
+    }
+
     for (const ingredient of recipe.ingredients) {
-      const invRow = inventoryMap.get(ingredient.itemId);
-      const have = invRow?.quantity || 0;
+      const have = totalOwned(ingredient.itemId);
       if (have < ingredient.quantity) {
         const ingredientItem = getItemById(ingredient.itemId);
         return res.json({
@@ -316,15 +324,39 @@ router.post("/crafting/craft", async (req, res) => {
       }
 
       for (const ingredient of recipe.ingredients) {
-        const invRow = inventoryMap.get(ingredient.itemId)!;
-        const remaining = invRow.quantity - ingredient.quantity;
-        if (remaining <= 0) {
-          await tx.delete(inventoryTable).where(and(eq(inventoryTable.characterId, character.id), eq(inventoryTable.itemId, ingredient.itemId)));
-        } else {
-          await tx
-            .update(inventoryTable)
-            .set({ quantity: remaining })
-            .where(and(eq(inventoryTable.characterId, character.id), eq(inventoryTable.itemId, ingredient.itemId)));
+        let needed = ingredient.quantity;
+
+        // Deduct from inventory first
+        const invRow = inventoryMap.get(ingredient.itemId);
+        if (invRow && invRow.quantity > 0) {
+          const fromInv = Math.min(needed, invRow.quantity);
+          const remaining = invRow.quantity - fromInv;
+          if (remaining <= 0) {
+            await tx.delete(inventoryTable).where(and(eq(inventoryTable.characterId, character.id), eq(inventoryTable.itemId, ingredient.itemId)));
+          } else {
+            await tx
+              .update(inventoryTable)
+              .set({ quantity: remaining })
+              .where(and(eq(inventoryTable.characterId, character.id), eq(inventoryTable.itemId, ingredient.itemId)));
+          }
+          needed -= fromInv;
+        }
+
+        // If still need more, deduct from gathering bag
+        if (needed > 0) {
+          const bagRow = bagMap.get(ingredient.itemId);
+          if (bagRow && bagRow.quantity > 0) {
+            const fromBag = Math.min(needed, bagRow.quantity);
+            const remaining = bagRow.quantity - fromBag;
+            if (remaining <= 0) {
+              await tx.delete(gatheringBagItemsTable).where(and(eq(gatheringBagItemsTable.characterId, character.id), eq(gatheringBagItemsTable.itemId, ingredient.itemId)));
+            } else {
+              await tx
+                .update(gatheringBagItemsTable)
+                .set({ quantity: remaining })
+                .where(and(eq(gatheringBagItemsTable.characterId, character.id), eq(gatheringBagItemsTable.itemId, ingredient.itemId)));
+            }
+          }
         }
       }
 
@@ -381,6 +413,55 @@ router.post("/crafting/craft", async (req, res) => {
       });
     }
     req.log.error({ err }, "Error crafting item");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// ─── GET /crafting/pins ───────────────────────────────────────────────────────
+
+router.get("/crafting/pins", async (req, res) => {
+  try {
+    const character = await getOrCreateCharacter(req.characterId);
+    const pinned = (character.pinnedRecipes as string[] | null) ?? [];
+    return res.json({ pinned });
+  } catch (err) {
+    req.log.error({ err }, "Error fetching pins");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// ─── POST /crafting/pins ──────────────────────────────────────────────────────
+
+router.post("/crafting/pins", async (req, res) => {
+  try {
+    const { pinned } = req.body as { pinned: unknown };
+
+    if (!Array.isArray(pinned)) {
+      return res.status(400).json({ error: "pinned must be an array of recipe IDs" });
+    }
+    if (pinned.some((id) => typeof id !== "string")) {
+      return res.status(400).json({ error: "Each pinned entry must be a string recipe ID" });
+    }
+    const uniquePinned = [...new Set(pinned as string[])];
+    if (uniquePinned.length > 10) {
+      return res.status(400).json({ error: "Cannot pin more than 10 recipes" });
+    }
+
+    const allRecipeIds = new Set(CRAFTING_RECIPES.map(r => r.id));
+    const invalid = uniquePinned.filter(id => !allRecipeIds.has(id));
+    if (invalid.length > 0) {
+      return res.status(400).json({ error: `Unknown recipe ID(s): ${invalid.join(", ")}` });
+    }
+
+    const character = await getOrCreateCharacter(req.characterId);
+    await db
+      .update(charactersTable)
+      .set({ pinnedRecipes: uniquePinned, updatedAt: new Date() })
+      .where(eq(charactersTable.id, character.id));
+
+    return res.json({ pinned: uniquePinned });
+  } catch (err) {
+    req.log.error({ err }, "Error saving pins");
     return res.status(500).json({ error: "Internal server error" });
   }
 });

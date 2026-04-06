@@ -6,9 +6,30 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { apiUrl } from "@/lib/api";
-import { Lock } from "lucide-react";
+import { Lock, Pin } from "lucide-react";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
+
+interface Ingredient {
+  itemId: string;
+  quantity: number;
+}
+
+interface CraftingRecipe {
+  id: string;
+  name: string;
+  ingredients: Ingredient[];
+}
+
+interface GatheringBagItem {
+  itemId: string;
+  quantity: number;
+}
+
+interface InventoryItem {
+  id: string;
+  quantity?: number;
+}
 
 interface GatheringNode {
   id: string;
@@ -115,6 +136,57 @@ function useStopGathering() {
       if (!res.ok) throw new Error("Failed to stop");
       return res.json();
     },
+  });
+}
+
+function usePinnedRecipes() {
+  return useQuery<string[]>({
+    queryKey: ["crafting", "pins"],
+    queryFn: async () => {
+      const res = await fetch(apiUrl("/api/crafting/pins"));
+      if (!res.ok) return [];
+      const data = await res.json() as { pinned: string[] };
+      return data.pinned ?? [];
+    },
+    staleTime: 30000,
+  });
+}
+
+function useKnownRecipes() {
+  return useQuery<CraftingRecipe[]>({
+    queryKey: ["crafting", "known-recipes"],
+    queryFn: async () => {
+      const res = await fetch(apiUrl("/api/crafting/known-recipes"));
+      if (!res.ok) return [];
+      return res.json() as Promise<CraftingRecipe[]>;
+    },
+    staleTime: 30000,
+  });
+}
+
+function useGatheringBag() {
+  return useQuery<GatheringBagItem[]>({
+    queryKey: ["gathering", "bag"],
+    queryFn: async () => {
+      const res = await fetch(apiUrl("/api/gathering/bag"));
+      if (!res.ok) return [];
+      const data = await res.json() as { items: GatheringBagItem[] };
+      return data.items ?? [];
+    },
+    refetchInterval: 5000,
+  });
+}
+
+function useInventoryItems() {
+  return useQuery<InventoryItem[]>({
+    queryKey: ["inventory"],
+    queryFn: async () => {
+      const res = await fetch(apiUrl("/api/inventory"));
+      if (!res.ok) return [];
+      const data = await res.json() as { items?: InventoryItem[] } | InventoryItem[];
+      return Array.isArray(data) ? data : (data.items ?? []);
+    },
+    staleTime: 10000,
   });
 }
 
@@ -255,6 +327,10 @@ export default function GatheringPage() {
   const { data: status } = useGatheringStatus();
   const startMutation = useStartGathering();
   const stopMutation = useStopGathering();
+  const { data: pinnedIds = [] } = usePinnedRecipes();
+  const { data: allRecipes = [] } = useKnownRecipes();
+  const { data: bagItems = [] } = useGatheringBag();
+  const { data: inventoryItems = [] } = useInventoryItems();
 
   const [recentYields, setRecentYields] = React.useState<Array<{ itemId: string; qty: number; rare: boolean; ts: number }>>([]);
 
@@ -274,6 +350,7 @@ export default function GatheringPage() {
     if (newEntries.length > 0) {
       setRecentYields(prev => [...newEntries, ...prev].slice(0, 15));
       queryClient.invalidateQueries({ queryKey: ["inventory"] });
+      queryClient.invalidateQueries({ queryKey: ["gathering", "bag"] });
     }
   }, [status?.yields, queryClient]);
 
@@ -309,6 +386,23 @@ export default function GatheringPage() {
     }
     return groups;
   }, [nodes]);
+
+  // Combined totals: inventory + gathering bag
+  const combinedTotals = React.useMemo(() => {
+    const map = new Map<string, number>();
+    for (const item of inventoryItems) {
+      map.set(item.id, (map.get(item.id) ?? 0) + (item.quantity ?? 1));
+    }
+    for (const item of bagItems) {
+      map.set(item.itemId, (map.get(item.itemId) ?? 0) + item.quantity);
+    }
+    return map;
+  }, [inventoryItems, bagItems]);
+
+  const pinnedRecipes = React.useMemo(() =>
+    pinnedIds.map(id => allRecipes.find(r => r.id === id)).filter(Boolean) as CraftingRecipe[],
+    [pinnedIds, allRecipes],
+  );
 
   if (nodesLoading) {
     return (
@@ -387,6 +481,42 @@ export default function GatheringPage() {
         </div>
 
         <div className="space-y-4">
+          {/* Pinned Crafts Panel */}
+          {pinnedRecipes.length > 0 && (
+            <div className="rounded-lg border border-amber-500/30 bg-amber-950/10 backdrop-blur p-4">
+              <h3 className="text-sm font-semibold text-amber-400 mb-3 flex items-center gap-1.5">
+                <Pin className="w-3.5 h-3.5" /> Pinned Crafts
+              </h3>
+              <div className="space-y-3">
+                {pinnedRecipes.map(recipe => {
+                  const allMet = recipe.ingredients.every(ing => (combinedTotals.get(ing.itemId) ?? 0) >= ing.quantity);
+                  return (
+                    <div key={recipe.id} className="space-y-1">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-medium text-slate-200">{recipe.name}</span>
+                        {allMet && <span className="text-[10px] text-green-400 font-semibold">✓ Ready</span>}
+                      </div>
+                      {recipe.ingredients.map((ing, i) => {
+                        const have = combinedTotals.get(ing.itemId) ?? 0;
+                        const progress = Math.min(100, (have / ing.quantity) * 100);
+                        const hasEnough = have >= ing.quantity;
+                        return (
+                          <div key={i} className="space-y-0.5">
+                            <div className="flex justify-between text-[10px] text-slate-400">
+                              <span>{ing.itemId.replace(/_/g, " ")}</span>
+                              <span className={hasEnough ? "text-green-400" : "text-slate-400"}>{have}/{ing.quantity}</span>
+                            </div>
+                            <Progress value={progress} className="h-1 bg-slate-800 [&>div]:bg-amber-500" />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <div className="rounded-lg border border-slate-800 bg-card/40 backdrop-blur p-4">
             <h3 className="text-sm font-semibold text-slate-300 mb-3">Recent Yields</h3>
             {recentYields.length === 0 ? (

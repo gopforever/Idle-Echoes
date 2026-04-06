@@ -22,6 +22,13 @@
       "when": 1743573600000,
       "tag": "0002_meditation_regen",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1775453392000,
+      "tag": "0014_pinned_recipes_gathering_bag",
+      "breakpoints": true
     }
   ]
 }

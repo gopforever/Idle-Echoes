@@ -16,6 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { SpriteImage, ItemTooltipContent, computeItemGS, isGearType } from "@/components/game/item-icon";
@@ -25,7 +26,7 @@ import {
   ContextMenuItem, ContextMenuSeparator,
 } from "@/components/ui/context-menu";
 import { ExamineDialog, type ExamineItem } from "@/components/game/examine-dialog";
-import { Package, Sword, ShieldCheck, Gem, Boxes, X, TrendingUp, TrendingDown, Minus, ChevronRight } from "lucide-react";
+import { Package, Sword, ShieldCheck, Gem, Boxes, X, TrendingUp, TrendingDown, Minus, ChevronRight, Pin, BarChart2 } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -96,6 +97,7 @@ const TABS = [
   { id: "armor",     label: "Armor",      icon: ShieldCheck },
   { id: "accessory", label: "Accessories",icon: Gem },
   { id: "material",  label: "Materials",  icon: Package },
+  { id: "overview",  label: "Overview",   icon: BarChart2 },
 ];
 
 // ── Gear endpoint (direct fetch, not in generated client) ─────────────────────
@@ -105,6 +107,35 @@ async function fetchGear(): Promise<GearMap> {
   const res = await fetch(apiUrl("/api/inventory/gear"));
   if (!res.ok) throw new Error("Failed to load gear");
   return res.json();
+}
+
+// ── Gathering bag + pins queries ───────────────────────────────────────────────
+
+interface GatheringBagItem { itemId: string; quantity: number; itemData?: Record<string, unknown> }
+interface PinnedRecipeIngredient { itemId: string; quantity: number }
+interface PinnedRecipe { id: string; name: string; ingredients: PinnedRecipeIngredient[] }
+
+const BAG_KEY = ["gathering", "bag"];
+async function fetchGatheringBag(): Promise<GatheringBagItem[]> {
+  const res = await fetch(apiUrl("/api/gathering/bag"));
+  if (!res.ok) return [];
+  const data = await res.json() as { items: GatheringBagItem[] };
+  return data.items ?? [];
+}
+
+const PINS_KEY = ["crafting", "pins"];
+async function fetchPins(): Promise<string[]> {
+  const res = await fetch(apiUrl("/api/crafting/pins"));
+  if (!res.ok) return [];
+  const data = await res.json() as { pinned: string[] };
+  return data.pinned ?? [];
+}
+
+const RECIPES_KEY = ["crafting", "known-recipes"];
+async function fetchKnownRecipes(): Promise<PinnedRecipe[]> {
+  const res = await fetch(apiUrl("/api/crafting/known-recipes"));
+  if (!res.ok) return [];
+  return res.json() as Promise<PinnedRecipe[]>;
 }
 
 // ── Stat delta helper ─────────────────────────────────────────────────────────
@@ -548,12 +579,17 @@ export default function InventoryPage() {
   const { data: inventory, isLoading } = useGetInventory();
   const { data: character } = useGetCharacter();
   const { data: gear } = useQuery({ queryKey: GEAR_KEY, queryFn: fetchGear });
+  const { data: bagItems = [] } = useQuery({ queryKey: BAG_KEY, queryFn: fetchGatheringBag, staleTime: 10000 });
+  const { data: pinnedIds = [] } = useQuery({ queryKey: PINS_KEY, queryFn: fetchPins, staleTime: 30000 });
+  const { data: knownRecipes = [] } = useQuery({ queryKey: RECIPES_KEY, queryFn: fetchKnownRecipes, staleTime: 30000 });
 
   const equipItem   = useEquipItem();
   const sellItem    = useSellItem();
   const unequipItem = useUnequipItem();
 
   const [activeTab, setActiveTab] = React.useState("all");
+  const [overviewFilter, setOverviewFilter] = React.useState("");
+  const [overviewSort, setOverviewSort] = React.useState<"qty" | "name">("qty");
   const [filter, setFilter]       = React.useState("");
   const [selectedItem, setSelectedItem]     = React.useState<InventoryItem | null>(null);
   const [selectedGearSlot, setSelectedGearSlot] = React.useState<string | null>(null);
@@ -666,6 +702,38 @@ export default function InventoryPage() {
 
   const allItems = (inventory.items ?? []) as InventoryItem[];
 
+  // Compute combined totals (inventory + gathering bag) for materials overview
+  const combinedMap = new Map<string, { name: string; itemId: string; invQty: number; bagQty: number; total: number; type: string }>();
+  for (const item of allItems) {
+    const existing = combinedMap.get(item.id);
+    if (existing) {
+      existing.invQty += item.quantity ?? 1;
+      existing.total += item.quantity ?? 1;
+    } else {
+      combinedMap.set(item.id, { name: item.name, itemId: item.id, invQty: item.quantity ?? 1, bagQty: 0, total: item.quantity ?? 1, type: item.type });
+    }
+  }
+  for (const bagItem of bagItems) {
+    const itemData = bagItem.itemData as Record<string, unknown> | undefined;
+    const name = (itemData?.name as string | undefined) ?? bagItem.itemId.replace(/_/g, " ");
+    const type = (itemData?.type as string | undefined) ?? "material";
+    const existing = combinedMap.get(bagItem.itemId);
+    if (existing) {
+      existing.bagQty += bagItem.quantity;
+      existing.total += bagItem.quantity;
+    } else {
+      combinedMap.set(bagItem.itemId, { name, itemId: bagItem.itemId, invQty: 0, bagQty: bagItem.quantity, total: bagItem.quantity, type });
+    }
+  }
+
+  // Required item IDs for pinned recipes
+  const pinnedRecipes = pinnedIds.map(id => knownRecipes.find(r => r.id === id)).filter(Boolean) as PinnedRecipe[];
+  const pinnedItemIds = new Set(pinnedRecipes.flatMap(r => r.ingredients.map(i => i.itemId)));
+
+  const overviewRows = [...combinedMap.values()]
+    .filter(r => !overviewFilter || r.name.toLowerCase().includes(overviewFilter.toLowerCase()))
+    .sort((a, b) => overviewSort === "qty" ? b.total - a.total : a.name.localeCompare(b.name));
+
   const filteredItems = allItems.filter(item => {
     const matchesTab = activeTab === "all" || item.type === activeTab || (activeTab === "armor" && ["armor", "shield"].includes(item.type));
     const matchesFilter = !filter || item.name.toLowerCase().includes(filter.toLowerCase()) || item.type.toLowerCase().includes(filter.toLowerCase());
@@ -767,7 +835,57 @@ export default function InventoryPage() {
             })}
           </div>
 
-          {/* Grid */}
+          {/* Grid / Overview */}
+          {activeTab === "overview" ? (
+            <ScrollArea className="flex-1">
+              <div className="p-4 space-y-3">
+                <div className="flex gap-2 flex-wrap items-center">
+                  <Input
+                    placeholder="Search materials…"
+                    value={overviewFilter}
+                    onChange={e => setOverviewFilter(e.target.value)}
+                    className="h-7 w-40 bg-slate-900 border-slate-700 text-xs"
+                  />
+                  <button
+                    onClick={() => setOverviewSort("qty")}
+                    className={cn("text-[10px] px-2 py-1 rounded border transition-all", overviewSort === "qty" ? "bg-amber-900/40 text-amber-300 border-amber-700" : "bg-transparent text-slate-500 border-slate-700 hover:text-slate-300")}
+                  >By Qty</button>
+                  <button
+                    onClick={() => setOverviewSort("name")}
+                    className={cn("text-[10px] px-2 py-1 rounded border transition-all", overviewSort === "name" ? "bg-amber-900/40 text-amber-300 border-amber-700" : "bg-transparent text-slate-500 border-slate-700 hover:text-slate-300")}
+                  >By Name</button>
+                  {pinnedItemIds.size > 0 && (
+                    <span className="text-[10px] text-amber-400 ml-auto flex items-center gap-1">
+                      <Pin className="w-3 h-3" /> = required by pinned recipes
+                    </span>
+                  )}
+                </div>
+                {overviewRows.length === 0 ? (
+                  <div className="text-xs text-slate-500 italic text-center py-8">No materials found.</div>
+                ) : (
+                  <div className="space-y-1">
+                    {overviewRows.map((row, i) => {
+                      const isPinned = pinnedItemIds.has(row.itemId);
+                      return (
+                        <div key={i} className={cn("flex items-center justify-between px-3 py-2 rounded text-xs", isPinned ? "bg-amber-950/20 border border-amber-500/20" : "bg-slate-900/40 border border-slate-800/40")}>
+                          <div className="flex items-center gap-2 min-w-0">
+                            {isPinned && <Pin className="w-3 h-3 text-amber-400 shrink-0" />}
+                            <span className="text-slate-200 truncate">{row.name}</span>
+                            <span className="text-slate-600 text-[10px] shrink-0">{row.type}</span>
+                          </div>
+                          <div className="flex items-center gap-3 shrink-0">
+                            {row.invQty > 0 && <span className="text-slate-400 text-[10px]">{row.invQty} inv</span>}
+                            {row.bagQty > 0 && <span className="text-blue-400 text-[10px]">{row.bagQty} 📦</span>}
+                            <span className="text-slate-100 font-medium w-10 text-right">{row.total}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </ScrollArea>
+          ) : (
           <ScrollArea className="flex-1">
             <div className="p-4 grid grid-cols-5 sm:grid-cols-7 md:grid-cols-8 xl:grid-cols-9 gap-2">
               {padded.map((item, i) =>
@@ -786,6 +904,7 @@ export default function InventoryPage() {
               )}
             </div>
           </ScrollArea>
+          )}
         </Card>
       </div>
 
