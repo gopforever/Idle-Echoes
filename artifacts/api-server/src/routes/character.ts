@@ -228,13 +228,35 @@ router.get("/character/profile", async (req, res) => {
     const classDef = CLASSES.find(c => c.name.toLowerCase() === className.toLowerCase() || c.id === className.toLowerCase()) ?? CLASSES[0];
 
     const bs = character.baseStats as { strength: number; agility: number; stamina: number; intelligence: number; wisdom: number; charisma: number };
-    const statBreakdown: Record<string, { base: number; race: number; class: number; total: number }> = {};
-    for (const stat of ["strength","agility","stamina","intelligence","wisdom","charisma"] as const) {
-      const raceBonus = raceDef.bonuses[stat] ?? 0;
+
+    // Sum primary-attribute bonuses contributed by each equipped item
+    const gearObj = (character.gear as Record<string, unknown>) ?? {};
+    const gearPrimaryBonuses: Record<string, number> = {};
+    const PRIMARY_ATTRS = ["strength","agility","stamina","intelligence","wisdom","charisma"] as const;
+    for (const slotValue of Object.values(gearObj)) {
+      let s: Record<string, number> | null = null;
+      if (typeof slotValue === "string") {
+        const item = getItemById(slotValue);
+        if (item?.stats) s = item.stats as Record<string, number>;
+      } else if (slotValue && typeof slotValue === "object") {
+        const obj = slotValue as Record<string, unknown>;
+        if (obj.stats && typeof obj.stats === "object") s = obj.stats as Record<string, number>;
+      }
+      if (!s) continue;
+      for (const attr of PRIMARY_ATTRS) {
+        gearPrimaryBonuses[attr] = (gearPrimaryBonuses[attr] ?? 0) + (s[attr] ?? 0);
+      }
+    }
+
+    const statBreakdown: Record<string, { base: number; race: number; class: number; gear: number; total: number }> = {};
+    for (const stat of PRIMARY_ATTRS) {
+      const raceBonus  = raceDef.bonuses[stat] ?? 0;
       const classBonus = classDef.statBonuses[stat] ?? 0;
-      const total = bs[stat] ?? 0;
-      // base = total − race − class (consistent with frontend formula)
-      statBreakdown[stat] = { base: total - raceBonus - classBonus, race: raceBonus, class: classBonus, total };
+      const gearBonus  = gearPrimaryBonuses[stat] ?? 0;
+      const dbBase     = bs[stat] ?? 0;  // stored at creation: raw base + race + class baked in
+      const rawBase    = dbBase - raceBonus - classBonus;
+      const total      = dbBase + gearBonus;
+      statBreakdown[stat] = { base: rawBase, race: raceBonus, class: classBonus, gear: gearBonus, total };
     }
 
     const [heroicRow] = await db.select().from(heroicStateTable).where(eq(heroicStateTable.characterId, req.characterId)).limit(1);
