@@ -4,6 +4,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiUrl } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { GhostInspect } from "./GhostInspect";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -87,11 +88,13 @@ function GhostCard({
   selected,
   onToggle,
   maxReached,
+  onInspect,
 }: {
   ghost: GhostSuggestion;
   selected: boolean;
   onToggle: () => void;
   maxReached: boolean;
+  onInspect?: (id: number) => void;
 }) {
   return (
     <button
@@ -109,7 +112,10 @@ function GhostCard({
       <div className="text-2xl shrink-0">{roleIcon(ghost.role)}</div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-sm font-medium text-slate-200 truncate">{ghost.name}</span>
+          <span
+            className="text-sm font-medium text-slate-200 truncate hover:text-red-300 cursor-pointer"
+            onClick={e => { e.stopPropagation(); onInspect?.(ghost.id); }}
+          >{ghost.name}</span>
           <span className={cn("text-[9px] px-1 py-0.5 rounded border shrink-0", roleBadge(ghost.role))}>
             {ghost.role}
           </span>
@@ -129,7 +135,7 @@ function GhostCard({
 
 // ─── RaidCard ─────────────────────────────────────────────────────────────────
 
-function RaidCard({ raid, playerGS, playerLevel }: { raid: Raid; playerGS: number; playerLevel: number }) {
+function RaidCard({ raid, playerGS, playerLevel, onInspectGhost }: { raid: Raid; playerGS: number; playerLevel: number; onInspectGhost?: (id: number) => void }) {
   const [, navigate] = useLocation();
   const [selectedGhosts, setSelectedGhosts] = React.useState<number[]>([]);
   const [showPhases, setShowPhases] = React.useState(false);
@@ -282,6 +288,7 @@ function RaidCard({ raid, playerGS, playerLevel }: { raid: Raid; playerGS: numbe
                   selected={selectedGhosts.includes(ghost.id)}
                   onToggle={() => toggleGhost(ghost.id)}
                   maxReached={selectedGhosts.length >= maxGhosts && !selectedGhosts.includes(ghost.id)}
+                  onInspect={onInspectGhost}
                 />
               ))}
             </div>
@@ -336,6 +343,7 @@ function RaidCard({ raid, playerGS, playerLevel }: { raid: Raid; playerGS: numbe
 
 export default function RaidsPage() {
   const [, navigate] = useLocation();
+  const [inspectGhostId, setInspectGhostId] = React.useState<number | null>(null);
 
   const { data, isLoading, error } = useQuery<RaidsResponse>({
     queryKey: ["raids-list"],
@@ -368,6 +376,10 @@ export default function RaidsPage() {
 
   return (
     <div className="p-4 lg:p-6 max-w-4xl mx-auto space-y-6">
+      {inspectGhostId !== null && (
+        <GhostInspect ghostId={inspectGhostId} onClose={() => setInspectGhostId(null)} />
+      )}
+
       {/* Header */}
       <div className="flex items-end justify-between">
         <div>
@@ -392,7 +404,7 @@ export default function RaidsPage() {
 
       {/* Raid cards */}
       {data?.raids.map(raid => (
-        <RaidCard key={raid.id} raid={raid} playerGS={playerGS} playerLevel={playerLevel} />
+        <RaidCard key={raid.id} raid={raid} playerGS={playerGS} playerLevel={playerLevel} onInspectGhost={setInspectGhostId} />
       ))}
 
       {data?.raids.length === 0 && (

@@ -5,9 +5,9 @@
  */
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { questsTable, charactersTable, factionsTable, loreCacheTable, inventoryTable, bossEncountersTable } from "@workspace/db/schema";
+import { questsTable, charactersTable, factionsTable, loreCacheTable, inventoryTable, bossEncountersTable, worldPlayersTable, worldEventsTable } from "@workspace/db/schema";
 import type { QuestObjective } from "@workspace/db/schema";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, sql } from "drizzle-orm";
 import { openai } from "@workspace/integrations-openai-ai-server";
 import { getOrCreateCharacter } from "./character.js";
 import { progressTalkObjectives } from "../lib/questProgress.js";
@@ -653,4 +653,97 @@ Respond with ONLY valid JSON array (no markdown):
   }
 }
 
+// GET /world/events/player-relevant
+router.get("/world/events/player-relevant", async (req, res) => {
+  try {
+    const character = await getOrCreateCharacter(req.characterId);
+    const playerLevel = character.level ?? 1;
+    const playerZone = character.zone ?? "Commonlands";
+
+    const nearbyGhosts = await db.select({ name: worldPlayersTable.name, zone: worldPlayersTable.zone })
+      .from(worldPlayersTable)
+      .where(sql`ABS(${worldPlayersTable.level} - ${playerLevel}) <= 15`);
+
+    const nearbyNames = new Set(nearbyGhosts.map(g => g.name));
+    const nearbyZones = new Set([playerZone, ...nearbyGhosts.map(g => g.zone)]);
+
+    const recentEvents = await db.select()
+      .from(worldEventsTable)
+      .orderBy(desc(worldEventsTable.createdAt))
+      .limit(200);
+
+    const relevant = recentEvents.filter(e =>
+      nearbyNames.has(e.playerName) ||
+      nearbyZones.has(e.zone) ||
+      e.type === "rival_surge" ||
+      e.type === "market_surge" ||
+      e.type === "market_crash" ||
+      e.importance >= 4
+    ).slice(0, 50);
+
+    return res.json({ events: relevant });
+  } catch (err) {
+    req.log.error({ err }, "Error fetching player-relevant events");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// GET /world/ghost/:id/lineage
+router.get("/world/ghost/:id/lineage", async (req, res) => {
+  try {
+    const ghostId = parseInt(req.params.id, 10);
+    if (isNaN(ghostId)) return res.status(400).json({ error: "Invalid ghost id" });
+
+    const allGhosts = await db.select({
+      id: worldPlayersTable.id,
+      name: worldPlayersTable.name,
+      class: worldPlayersTable.class,
+      race: worldPlayersTable.race,
+      level: worldPlayersTable.level,
+      generation: worldPlayersTable.generation,
+      parentId: worldPlayersTable.parentId,
+      inheritedTraits: worldPlayersTable.inheritedTraits,
+      killCount: worldPlayersTable.killCount,
+      deathCount: worldPlayersTable.deathCount,
+    }).from(worldPlayersTable);
+
+    const ghostMap = new Map(allGhosts.map(g => [g.id, g]));
+    let root = ghostMap.get(ghostId);
+    if (!root) return res.status(404).json({ error: "Ghost not found" });
+
+    // Walk up to find root ancestor
+    while (root.parentId && ghostMap.has(root.parentId)) {
+      root = ghostMap.get(root.parentId)!;
+    }
+
+    function buildTree(nodeId: number, depth: number): object | null {
+      if (depth > 5) return null;
+      const node = ghostMap.get(nodeId);
+      if (!node) return null;
+      const children = allGhosts
+        .filter(g => g.parentId === nodeId)
+        .map(c => buildTree(c.id, depth + 1))
+        .filter(Boolean);
+      return {
+        id: node.id,
+        name: node.name,
+        class: node.class,
+        race: node.race,
+        level: node.level,
+        generation: node.generation ?? 1,
+        inheritedTraits: (node.inheritedTraits as string[]) ?? [],
+        killCount: node.killCount,
+        deathCount: node.deathCount,
+        children,
+      };
+    }
+
+    return res.json({ lineage: buildTree(root.id, 1) });
+  } catch (err) {
+    req.log.error({ err }, "Error fetching ghost lineage");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 export default router;
+

@@ -802,6 +802,12 @@ export default function CharacterSheet() {
     queryFn: () => fetch(apiUrl("/api/dungeons/kill-stats")).then(r => r.json()),
     refetchInterval: 30_000,
   });
+
+  const worldEventsQ = useQuery<{ events: Array<{ id: number; type: string; message: string; playerName: string; zone: string; importance: number; tick: number; createdAt: string }> }>({
+    queryKey: ["world-events-relevant"],
+    queryFn: () => fetch(apiUrl("/api/gm/world/events/player-relevant")).then(r => r.json()),
+    refetchInterval: 30_000,
+  });
   const { data: combatState } = useGetCombatState();
   const isInCombat = !!(combatState as { active?: boolean } | undefined)?.active;
 
@@ -1656,6 +1662,52 @@ export default function CharacterSheet() {
         open={examineOpen}
         onClose={() => setExamineOpen(false)}
       />
+
+      {/* ── World Events Feed ────────────────────────────────────────────── */}
+      <Card className="bg-card/40 border-slate-800 mt-4">
+        <CardHeader className="border-b border-slate-800/50 bg-slate-900/30 py-3">
+          <CardTitle className="text-sm text-amber-400">📜 World Events</CardTitle>
+        </CardHeader>
+        <CardContent className="p-3">
+          {worldEventsQ.isLoading ? (
+            <div className="text-xs text-slate-500 animate-pulse py-2">Loading world events…</div>
+          ) : (
+            <div className="space-y-1 max-h-64 overflow-y-auto pr-1">
+              {(worldEventsQ.data?.events ?? []).slice(0, 20).map(evt => {
+                const icon =
+                  evt.type === "dungeon_clear" ? "🏰" :
+                  evt.type === "raid_clear"    ? "⚔️" :
+                  evt.type === "rival_surge"   ? "⚡" :
+                  evt.type === "market_surge"  ? "📈" :
+                  evt.type === "market_crash"  ? "📉" :
+                  evt.type === "boss_slay"     ? "💀" :
+                  evt.type === "ghost_lineage" ? "👶" :
+                  "📜";
+                const color =
+                  evt.importance >= 5 ? "text-orange-400" :
+                  evt.importance >= 4 ? "text-blue-400" :
+                  evt.importance >= 3 ? "text-green-400" :
+                  "text-slate-400";
+                const createdAt = new Date(evt.createdAt);
+                const minsAgo = Math.floor((Date.now() - createdAt.getTime()) / 60000);
+                const timeLabel = minsAgo < 1 ? "just now" : `${minsAgo}m ago`;
+                return (
+                  <div key={evt.id} className="flex items-start gap-2 py-1 border-b border-slate-800/50 last:border-0">
+                    <span className="text-base shrink-0">{icon}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className={cn("text-xs leading-snug", color)}>{evt.message}</p>
+                    </div>
+                    <span className="text-[10px] text-slate-600 shrink-0">{timeLabel}</span>
+                  </div>
+                );
+              })}
+              {(worldEventsQ.data?.events ?? []).length === 0 && (
+                <div className="text-xs text-slate-600 py-2 text-center">No recent world events.</div>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

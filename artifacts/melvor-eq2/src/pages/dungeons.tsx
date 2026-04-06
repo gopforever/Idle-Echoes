@@ -5,6 +5,7 @@ import { apiUrl } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { DUNGEON_GS_GATE } from "@workspace/api-client-react";
+import { GhostInspect } from "./GhostInspect";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -139,10 +140,12 @@ function GhostCard({
   ghost,
   selected,
   onToggle,
+  onInspect,
 }: {
   ghost: GhostSuggestion;
   selected: boolean;
   onToggle: () => void;
+  onInspect?: (id: number) => void;
 }) {
   return (
     <button
@@ -159,7 +162,10 @@ function GhostCard({
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-sm font-medium text-slate-200 truncate">{ghost.name}</span>
+          <span
+            className="text-sm font-medium text-slate-200 truncate hover:text-amber-300 cursor-pointer"
+            onClick={e => { e.stopPropagation(); onInspect?.(ghost.id); }}
+          >{ghost.name}</span>
           <span className={cn("text-[9px] px-1 py-0.5 rounded border shrink-0", roleBadge(ghost.role))}>
             {ghost.role}
           </span>
@@ -185,10 +191,12 @@ function PartyFormation({
   dungeonId,
   selectedGhosts,
   onToggleGhost,
+  onInspectGhost,
 }: {
   dungeonId: string;
   selectedGhosts: number[];
   onToggleGhost: (id: number) => void;
+  onInspectGhost?: (id: number) => void;
 }) {
   const { data, isLoading } = useQuery<{ suggestions: GhostSuggestion[] }>({
     queryKey: ["party-suggestions", dungeonId],
@@ -220,6 +228,7 @@ function PartyFormation({
             key={ghost.id}
             ghost={ghost}
             selected={selectedGhosts.includes(ghost.id)}
+            onInspect={onInspectGhost}
             onToggle={() => {
               if (selectedGhosts.includes(ghost.id) || selectedGhosts.length < 3) {
                 onToggleGhost(ghost.id);
@@ -252,7 +261,7 @@ interface StuckRunInfo {
   stuckDungeonId: string;
 }
 
-function DungeonCard({ dungeon, playerGS }: { dungeon: Dungeon; playerGS: number }) {
+function DungeonCard({ dungeon, playerGS, onInspectGhost }: { dungeon: Dungeon; playerGS: number; onInspectGhost?: (id: number) => void }) {
   const [selectedDiff, setSelectedDiff] = React.useState("normal");
   const [selectedGhosts, setSelectedGhosts] = React.useState<number[]>([]);
   const [showParty, setShowParty] = React.useState(false);
@@ -387,6 +396,7 @@ function DungeonCard({ dungeon, playerGS }: { dungeon: Dungeon; playerGS: number
                 dungeonId={dungeon.id}
                 selectedGhosts={selectedGhosts}
                 onToggleGhost={toggleGhost}
+                onInspectGhost={onInspectGhost}
               />
             </div>
           )}
@@ -441,6 +451,7 @@ function DungeonCard({ dungeon, playerGS }: { dungeon: Dungeon; playerGS: number
 export default function DungeonsPage() {
   const [activeTab, setActiveTab] = React.useState<"dungeons" | "raids">("dungeons");
   const [, navigate] = useLocation();
+  const [inspectGhostId, setInspectGhostId] = React.useState<number | null>(null);
 
   const { data, isLoading, error } = useQuery<DungeonsResponse>({
     queryKey: ["dungeons-list"],
@@ -472,6 +483,10 @@ export default function DungeonsPage() {
 
   return (
     <div className="p-4 lg:p-6 max-w-4xl mx-auto space-y-6">
+      {inspectGhostId !== null && (
+        <GhostInspect ghostId={inspectGhostId} onClose={() => setInspectGhostId(null)} />
+      )}
+
       {/* Header */}
       <div className="flex items-end justify-between">
         <div>
@@ -513,7 +528,7 @@ export default function DungeonsPage() {
 
       {/* Dungeon cards */}
       {data?.dungeons.map(dungeon => (
-        <DungeonCard key={dungeon.id} dungeon={dungeon} playerGS={playerGS} />
+        <DungeonCard key={dungeon.id} dungeon={dungeon} playerGS={playerGS} onInspectGhost={setInspectGhostId} />
       ))}
 
       {data?.dungeons.length === 0 && (
