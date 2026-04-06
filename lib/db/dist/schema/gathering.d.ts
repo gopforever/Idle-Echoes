@@ -142,12 +142,6 @@ export declare const gatheringSessionsTable: import("drizzle-orm/pg-core").PgTab
     dialect: "pg";
 }>;
 /**
- * Ghost inventory stash — accumulated materials per ghost player before they list on auction.
- * ghostId corresponds to worldPlayersTable.id (stored as text for flexibility).
- * When a ghost gathers resources, the quantity is added here first.
- * ghostGatheringTick drains this stash and posts auction listings once thresholds are met.
- */
-/**
  * Gathering Bag — unlimited storage for items yielded by gathering.
  * Items go here instead of inventory; crafting can consume from both.
  * Unique constraint on (characterId, itemId) enables atomic upsert semantics.

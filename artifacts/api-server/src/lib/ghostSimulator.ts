@@ -24,15 +24,18 @@ import {
   loreCacheTable,
   auctionListingsTable,
   charactersTable,
+  ghostDungeonClearsTable,
+  ghostRaidClearsTable,
 } from "@workspace/db/schema";
-import { and, desc, eq, gt, lt, sql } from "drizzle-orm";
+import { and, desc, eq, gt, lt, sql, inArray } from "drizzle-orm";
 import { GHOST_SEEDS, type GhostPersonality } from "./ghostSeeds.js";
-import { xpForLevel, computeStats } from "./eq2Formulas.js";
+import { xpForLevel, computeStats, computeGearScore } from "./eq2Formulas.js";
 import { cleanExpiredListings } from "./auctionService.js";
 import {
   CRAFTING_RECIPES,
   GATHERING_NODES,
   getItemById,
+  ITEMS,
   type ExperimentFocus,
   type ItemStats,
 } from "./gameData.js";
@@ -43,9 +46,11 @@ import {
   inventoryTable,
   ghostInventoryTable,
 } from "@workspace/db/schema";
+import { DUNGEONS } from "./dungeonData.js";
+import { RAIDS } from "./raidData.js";
 
 // ─── Simulator version — bump to force a reset of ghost data ─────────────────
-const SIMULATOR_VERSION = 2;
+const SIMULATOR_VERSION = 3;
 
 // ─── Zone registry ────────────────────────────────────────────────────────────
 
@@ -666,6 +671,80 @@ function simulateCombat(player: {
 let globalTick = 0;
 const explorerTickTracker = new Map<number, number>();  // playerId → last-travel-tick
 
+// ─── Market event cooldowns ───────────────────────────────────────────────────
+const marketEventCooldowns = new Map<string, number>(); // `${type}_${category}` → last tick fired
+
+// ─── Ghost gear assignment ─────────────────────────────────────────────────────
+
+const ARCHETYPE_SLOTS: Record<string, string[]> = {
+  Fighter: ["primary", "secondary", "head", "chest", "legs", "shoulder", "hands", "feet", "wrist", "back", "neck", "ringLeft", "ringRight"],
+  Priest:  ["primary", "head", "chest", "legs", "shoulder", "hands", "feet", "wrist", "back", "neck", "ringLeft", "ringRight"],
+  Mage:    ["primary", "head", "chest", "legs", "shoulder", "hands", "feet", "wrist", "back", "neck", "ringLeft", "ringRight"],
+  Scout:   ["primary", "ranged", "head", "chest", "legs", "shoulder", "hands", "feet", "wrist", "back", "neck", "ringLeft", "ringRight"],
+};
+
+// Map our gear slots to item slot types in ITEMS
+const SLOT_TO_ITEM_SLOT: Record<string, string[]> = {
+  primary:   ["primary", "mainhand", "weapon", "staff", "sword", "axe", "mace", "dagger"],
+  secondary: ["secondary", "offhand", "shield"],
+  ranged:    ["ranged", "bow", "wand"],
+  head:      ["head", "helm", "helmet"],
+  chest:     ["chest", "breastplate", "robe"],
+  legs:      ["legs", "leggings"],
+  shoulder:  ["shoulder", "shoulders", "pauldrons"],
+  hands:     ["hands", "gloves", "gauntlets"],
+  feet:      ["feet", "boots"],
+  wrist:     ["wrist", "bracers"],
+  back:      ["back", "cloak", "cape"],
+  neck:      ["neck", "necklace", "amulet"],
+  ringLeft:  ["ringLeft", "ring", "ringright", "ringleft"],
+  ringRight: ["ringRight", "ring", "ringright", "ringleft"],
+};
+
+const RARITY_WEIGHT: Record<string, number> = {
+  common: 1, uncommon: 2, rare: 3, legendary: 4, fabled: 5, mythical: 6,
+};
+
+function assignGhostGear(
+  ghost: { level: number; archetype: string },
+  currentGear: Record<string, unknown>,
+): Record<string, unknown> {
+  const slots = ARCHETYPE_SLOTS[ghost.archetype] ?? ARCHETYPE_SLOTS["Fighter"];
+  const newGear: Record<string, unknown> = { ...currentGear };
+
+  const levelMin = ghost.level - 5;
+  const levelMax = ghost.level + 2;
+
+  const eligibleItems = ITEMS.filter(item =>
+    item.level >= levelMin && item.level <= levelMax && item.slot && item.slot !== "none"
+  );
+
+  for (const slot of slots) {
+    const acceptedSlots = SLOT_TO_ITEM_SLOT[slot] ?? [slot];
+    const candidates = eligibleItems.filter(item =>
+      acceptedSlots.some(s => (item.slot ?? "").toLowerCase().includes(s.toLowerCase()))
+    );
+    if (candidates.length === 0) continue;
+
+    // Pick best by rarity then level
+    candidates.sort((a, b) => {
+      const rarityDiff = (RARITY_WEIGHT[b.rarity] ?? 0) - (RARITY_WEIGHT[a.rarity] ?? 0);
+      if (rarityDiff !== 0) return rarityDiff;
+      return b.level - a.level;
+    });
+    const best = candidates[0];
+
+    // Only upgrade if new item is better level than current
+    const current = newGear[slot] as Record<string, unknown> | undefined;
+    const currentLevel = current ? (current.level as number ?? 0) : 0;
+    if (best.level > currentLevel) {
+      newGear[slot] = best;
+    }
+  }
+
+  return newGear;
+}
+
 // ─── Ghost auction loot pool ──────────────────────────────────────────────────
 
 interface GhostLootTemplate {
@@ -720,7 +799,7 @@ async function seedGhostPlayersInner(): Promise<void> {
   for (const seed of GHOST_SEEDS) {
     const zone = ZONE_LIST.find(z => z.name === seed.zone) ?? zoneForLevel(seed.level);
     const xpRequired = xpForLevel(seed.level);
-    await db.insert(worldPlayersTable).values({
+    const [inserted] = await db.insert(worldPlayersTable).values({
       name: seed.name,
       race: seed.race,
       class: seed.class,
@@ -738,8 +817,16 @@ async function seedGhostPlayersInner(): Promise<void> {
       totalGoldEarned: seed.totalGoldEarned,
       totalGoldSpent: seed.totalGoldSpent,
       stats: seed.stats,
+      gear: {},
+      generation: 1,
       lastTickAt: new Date(),
-    });
+    }).returning();
+    if (inserted) {
+      const gear = assignGhostGear({ level: inserted.level, archetype: inserted.archetype }, {});
+      if (Object.keys(gear).length > 0) {
+        await db.update(worldPlayersTable).set({ gear }).where(eq(worldPlayersTable.id, inserted.id));
+      }
+    }
   }
 }
 
@@ -784,6 +871,214 @@ export async function seedGhostPlayers(): Promise<void> {
 }
 
 // ─── Ghost auction participation ─────────────────────────────────────────────
+
+// ─── Difficulty ordering ──────────────────────────────────────────────────────
+const DIFFICULTY_ORDER = ["normal", "expert", "legendary", "mythical"];
+function isBetterDifficulty(a: string, b: string): boolean {
+  return (DIFFICULTY_ORDER.indexOf(a) ?? 0) > (DIFFICULTY_ORDER.indexOf(b) ?? 0);
+}
+
+// ─── Ghost dungeon/raid progression tick ─────────────────────────────────────
+
+async function ghostDungeonProgressTick(
+  players: typeof worldPlayersTable.$inferSelect[],
+  tick: number,
+): Promise<void> {
+  const events: Array<typeof worldEventsTable.$inferInsert> = [];
+  const now = new Date();
+
+  for (const ghost of players) {
+    const gearObj = (ghost.gear as Record<string, unknown>) ?? {};
+    const gearScore = computeGearScore(
+      Object.entries(gearObj).map(([slot, val]) => ({
+        level: (val as Record<string, unknown>)?.level as number ?? 0,
+        rarity: (val as Record<string, unknown>)?.rarity as string ?? "common",
+        slot,
+      })),
+    );
+
+    // ── Dungeon attempts (level >= 10, 12% chance) ───────────────────────────
+    if (ghost.level >= 10 && Math.random() < 0.12) {
+      const eligible = DUNGEONS.filter(d =>
+        ghost.level >= d.minLevel - 2 && ghost.level <= d.maxLevel + 5
+      );
+      if (eligible.length > 0) {
+        const dungeon = eligible[Math.floor(Math.random() * eligible.length)];
+
+        // Determine difficulty from gear score
+        let difficulty = "normal";
+        if (gearScore >= 250) difficulty = "mythical";
+        else if (gearScore >= 100) difficulty = "legendary";
+        else if (gearScore >= 30) difficulty = "expert";
+
+        const winChance = Math.max(0.3, Math.min(0.9, 0.6 + (ghost.level - dungeon.minLevel) / 20));
+        if (Math.random() < winChance) {
+          // Upsert dungeon clear
+          const existing = await db.select()
+            .from(ghostDungeonClearsTable)
+            .where(and(
+              eq(ghostDungeonClearsTable.ghostId, ghost.id),
+              eq(ghostDungeonClearsTable.dungeonId, dungeon.id),
+            ))
+            .limit(1)
+            .catch(() => []);
+
+          if (existing.length > 0) {
+            const newBest = isBetterDifficulty(difficulty, existing[0].bestDifficulty)
+              ? difficulty : existing[0].bestDifficulty;
+            await db.update(ghostDungeonClearsTable)
+              .set({
+                clearCount: existing[0].clearCount + 1,
+                bestDifficulty: newBest,
+                lastClearedAt: now,
+              })
+              .where(eq(ghostDungeonClearsTable.id, existing[0].id))
+              .catch(() => {});
+          } else {
+            await db.insert(ghostDungeonClearsTable).values({
+              ghostId: ghost.id,
+              dungeonId: dungeon.id,
+              clearCount: 1,
+              bestDifficulty: difficulty,
+              lastClearedAt: now,
+            }).onConflictDoNothing().catch(() => {});
+          }
+
+          events.push({
+            type: "dungeon_clear",
+            message: `${ghost.name} cleared ${dungeon.name} on ${difficulty} difficulty!`,
+            playerName: ghost.name,
+            zone: ghost.zone,
+            importance: 3,
+            tick,
+          });
+        }
+      }
+    }
+
+    // ── Raid attempts (level >= 40, 5% chance) ────────────────────────────────
+    if (ghost.level >= 40 && Math.random() < 0.05) {
+      const eligibleRaids = RAIDS.filter(r => ghost.level >= r.minLevel - 5);
+      if (eligibleRaids.length > 0) {
+        const raid = eligibleRaids[Math.floor(Math.random() * eligibleRaids.length)];
+        const winChance = Math.max(0.2, Math.min(0.8, 0.4 + (ghost.level - raid.minLevel) / 30));
+        if (Math.random() < winChance) {
+          const maxPhase = Math.min(raid.phases.length, 1 + Math.floor(Math.random() * raid.phases.length));
+
+          const existingRaid = await db.select()
+            .from(ghostRaidClearsTable)
+            .where(and(
+              eq(ghostRaidClearsTable.ghostId, ghost.id),
+              eq(ghostRaidClearsTable.raidId, raid.id),
+            ))
+            .limit(1)
+            .catch(() => []);
+
+          if (existingRaid.length > 0) {
+            await db.update(ghostRaidClearsTable)
+              .set({
+                clearCount: existingRaid[0].clearCount + 1,
+                maxPhase: Math.max(existingRaid[0].maxPhase, maxPhase),
+                lastClearedAt: now,
+              })
+              .where(eq(ghostRaidClearsTable.id, existingRaid[0].id))
+              .catch(() => {});
+          } else {
+            await db.insert(ghostRaidClearsTable).values({
+              ghostId: ghost.id,
+              raidId: raid.id,
+              clearCount: 1,
+              maxPhase,
+              lastClearedAt: now,
+            }).onConflictDoNothing().catch(() => {});
+          }
+
+          events.push({
+            type: "raid_clear",
+            message: `${ghost.name} defeated ${raid.bossName} in ${raid.name} (Phase ${maxPhase})!`,
+            playerName: ghost.name,
+            zone: ghost.zone,
+            importance: 4,
+            tick,
+          });
+        }
+      }
+    }
+  }
+
+  if (events.length > 0) {
+    await db.insert(worldEventsTable).values(events).catch(() => {});
+  }
+}
+
+// ─── Generational ghost system ────────────────────────────────────────────────
+
+const GENERATION_SUFFIX = ["", "Jr.", "II", "III", "IV", "V"];
+
+async function spawnChildGhost(
+  parent: typeof worldPlayersTable.$inferSelect,
+  tick: number,
+): Promise<void> {
+  const parentGeneration = parent.generation ?? 1;
+  if (parentGeneration >= 5) return;
+
+  const childGeneration = parentGeneration + 1;
+  const firstName = parent.name.split(" ")[0] ?? parent.name;
+  const suffix = GENERATION_SUFFIX[childGeneration] ?? "V";
+  const childName = `${firstName} ${suffix}`;
+
+  const childLevel = Math.max(1, Math.floor(parent.level * 0.3));
+  const childZone = zoneForLevel(childLevel);
+  const parentStats = parent.stats as { strength: number; agility: number; stamina: number; intelligence: number; wisdom: number; charisma: number };
+
+  // Inherit top 2 gear slots from parent by item level
+  const parentGear = (parent.gear as Record<string, unknown>) ?? {};
+  const gearEntries = Object.entries(parentGear)
+    .filter(([, v]) => v && typeof v === "object")
+    .sort((a, b) => ((b[1] as Record<string, unknown>)?.level as number ?? 0) - ((a[1] as Record<string, unknown>)?.level as number ?? 0));
+  const inheritedGear: Record<string, unknown> = {};
+  for (const [slot, item] of gearEntries.slice(0, 2)) {
+    inheritedGear[slot] = item;
+  }
+
+  const childGold = Math.floor((parent.gold ?? 0) * 0.2);
+
+  const [inserted] = await db.insert(worldPlayersTable).values({
+    name: childName,
+    race: parent.race,
+    class: parent.class,
+    archetype: parent.archetype,
+    alignment: parent.alignment,
+    personality: parent.personality,
+    level: childLevel,
+    xp: 0,
+    xpToNextLevel: xpForLevel(childLevel),
+    gold: childGold,
+    zone: childZone.name,
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { ...parentStats },
+    gear: inheritedGear,
+    generation: childGeneration,
+    parentId: parent.id,
+    inheritedTraits: [parent.personality, parent.alignment],
+    lastTickAt: new Date(),
+  }).returning().catch(() => []);
+
+  if (inserted) {
+    await db.insert(worldEventsTable).values({
+      type: "ghost_lineage",
+      message: `A new adventurer rises: ${childName}, child of the legendary ${parent.name}!`,
+      playerName: childName,
+      zone: childZone.name,
+      importance: 5,
+      tick,
+    }).catch(() => {});
+  }
+}
 
 const GHOST_AUCTION_LISTING_DURATION_MS = 24 * 30 * 1000;
 const MAX_GHOST_ACTIVE_LISTINGS = 80;
@@ -1203,7 +1498,7 @@ async function ghostGatheringTick(
   }
 }
 
-async function ghostAuctionTick(players: typeof worldPlayersTable.$inferSelect[]): Promise<void> {
+async function ghostAuctionTick(players: typeof worldPlayersTable.$inferSelect[], tick: number): Promise<void> {
   const now = new Date();
 
   // Expire stale listings + return items to poster — runs every tick regardless of user activity
@@ -1218,7 +1513,51 @@ async function ghostAuctionTick(players: typeof worldPlayersTable.$inferSelect[]
     demandScores[row.category] = row.demandScore;
   }
 
-  // Resolve the single player character ID for safe gold credits
+  // ── Market surge/crash events ─────────────────────────────────────────────
+  const marketEvents: Array<typeof worldEventsTable.$inferInsert> = [];
+  for (const [category, demandScore] of Object.entries(demandScores)) {
+    const surgeKey = `surge_${category}`;
+    const crashKey = `crash_${category}`;
+    const lastSurge = marketEventCooldowns.get(surgeKey) ?? 0;
+    const lastCrash = marketEventCooldowns.get(crashKey) ?? 0;
+
+    if (demandScore > 75 && tick - lastSurge > 10) {
+      marketEvents.push({
+        type: "market_surge",
+        message: `${category.toUpperCase()} prices are surging! Demand is at ${demandScore.toFixed(0)}`,
+        playerName: "Market",
+        zone: "Commonlands",
+        importance: 3,
+        tick,
+      });
+      marketEventCooldowns.set(surgeKey, tick);
+    } else if (demandScore < 15 && tick - lastCrash > 10) {
+      marketEvents.push({
+        type: "market_crash",
+        message: `${category.toUpperCase()} market is crashing! Oversupplied.`,
+        playerName: "Market",
+        zone: "Commonlands",
+        importance: 3,
+        tick,
+      });
+      marketEventCooldowns.set(crashKey, tick);
+    }
+  }
+  if (marketEvents.length > 0) {
+    await db.insert(worldEventsTable).values(marketEvents).catch(() => {});
+  }
+
+  // ── High-level ghost personal consumption ────────────────────────────────
+  for (const ghost of players) {
+    if (ghost.level >= 25 && Math.random() < 0.05) {
+      await db.execute(sql`
+        UPDATE ghost_inventory SET quantity = GREATEST(0, quantity - 1), updated_at = now()
+        WHERE ghost_id = ${String(ghost.id)} AND item_id = (
+          SELECT item_id FROM ghost_inventory WHERE ghost_id = ${String(ghost.id)} AND quantity > 0 LIMIT 1
+        )
+      `).catch(() => {});
+    }
+  }
   const [playerChar] = await db.select({ id: charactersTable.id }).from(charactersTable).limit(1).catch(() => []);
 
   // Count current active ghost listings (non-player, unsold, uncancelled, not expired)
@@ -1503,6 +1842,16 @@ export async function tickGhostSimulation(): Promise<void> {
         lastTickAt:       new Date(),
       }).where(eq(worldPlayersTable.id, player.id));
 
+      // ── Update gear on level-up ──
+      if (leveledUp) {
+        const currentGear = (player.gear as Record<string, unknown>) ?? {};
+        const newGear = assignGhostGear({ level: newLevel, archetype: player.archetype }, currentGear);
+        if (Object.keys(newGear).length > Object.keys(currentGear).length ||
+            JSON.stringify(newGear) !== JSON.stringify(currentGear)) {
+          await db.update(worldPlayersTable).set({ gear: newGear }).where(eq(worldPlayersTable.id, player.id)).catch(() => {});
+        }
+      }
+
       // Faction standing impact
       if (enemy.factionId) {
         factionDeltas[enemy.factionId] = (factionDeltas[enemy.factionId] ?? 0) - 5;
@@ -1599,12 +1948,19 @@ export async function tickGhostSimulation(): Promise<void> {
       // ── Ghost loses — death penalty ──
       const saferZones = ZONE_LIST.filter(z => player.level >= z.min + 3 && player.level > z.min);
       const safeZone   = saferZones.length ? pick(saferZones) : zoneForLevel(Math.max(1, player.level - 5));
+      const newDeathCount = player.deathCount + 1;
 
       await db.update(worldPlayersTable).set({
-        deathCount: player.deathCount + 1,
+        deathCount: newDeathCount,
         zone:       safeZone.name,
         lastTickAt: new Date(),
       }).where(eq(worldPlayersTable.id, player.id));
+
+      // ── Generational ghost spawn (every 15 deaths, max generation 5) ──
+      if (newDeathCount >= 15 && newDeathCount % 15 === 0 && (player.generation ?? 1) < 5) {
+        const freshPlayer = { ...player, deathCount: newDeathCount };
+        await spawnChildGhost(freshPlayer, tick).catch(() => {});
+      }
     }
   }
 
@@ -1651,13 +2007,53 @@ export async function tickGhostSimulation(): Promise<void> {
   }
 
   // ── Ghost auction participation ──
-  await ghostAuctionTick(players).catch(() => {});
+  await ghostAuctionTick(players, tick).catch(() => {});
 
   // ── Ghost crafting participation ──
   await ghostCraftingTick(players).catch(() => {});
 
   // ── Ghost gathering participation ──
   await ghostGatheringTick(players, events, tick).catch(() => {});
+
+  // ── Ghost dungeon/raid progression ──
+  await ghostDungeonProgressTick(players, tick).catch(() => {});
+
+  // ── Rival detection ──────────────────────────────────────────────────────
+  try {
+    const [playerChar] = await db.select().from(charactersTable).limit(1);
+    if (playerChar) {
+      const playerLevel = playerChar.level ?? 1;
+      const playerKills = playerChar.killCount ?? 0;
+      const rivalIds = (playerChar.rivals as number[] | null) ?? [];
+
+      for (const ghost of players) {
+        const levelDiff = Math.abs(ghost.level - playerLevel);
+        if (levelDiff > 10) continue;
+        if (rivalIds.includes(ghost.id)) continue;
+
+        let surgeMsg: string | null = null;
+        if (ghost.level > playerLevel) {
+          surgeMsg = `${ghost.name} (Lv ${ghost.level}) has surpassed your level!`;
+        } else if (ghost.killCount > playerKills) {
+          surgeMsg = `${ghost.name} (Lv ${ghost.level}) has more kills than you!`;
+        }
+
+        if (surgeMsg) {
+          await db.insert(worldEventsTable).values({
+            type: "rival_surge",
+            message: surgeMsg,
+            playerName: ghost.name,
+            zone: ghost.zone,
+            importance: 5,
+            tick,
+          }).catch(() => {});
+          break; // Only one rival_surge per tick
+        }
+      }
+    }
+  } catch {
+    // Rival detection is non-critical
+  }
 
   // ── Prune old events (keep last 500) ──
   const [countRow] = await db

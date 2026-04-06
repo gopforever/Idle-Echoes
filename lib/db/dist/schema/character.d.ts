@@ -756,6 +756,25 @@ export declare const charactersTable: import("drizzle-orm/pg-core").PgTableWithC
         }, {}, {
             $type: Record<string, number>;
         }>;
+        pinnedRecipes: import("drizzle-orm/pg-core").PgColumn<{
+            name: "pinned_recipes";
+            tableName: "characters";
+            dataType: "json";
+            columnType: "PgJsonb";
+            data: string[];
+            driverParam: unknown;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {
+            $type: string[];
+        }>;
         createdAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "created_at";
             tableName: "characters";
@@ -864,6 +883,7 @@ export declare const insertCharacterSchema: z.ZodObject<{
     herbsGathered: z.ZodOptional<z.ZodInt>;
     raresGathered: z.ZodOptional<z.ZodInt>;
     zoneKills: z.ZodOptional<z.ZodType<Record<string, number>, Record<string, number>, z.core.$ZodTypeInternals<Record<string, number>, Record<string, number>>>>;
+    pinnedRecipes: z.ZodOptional<z.ZodType<string[], string[], z.core.$ZodTypeInternals<string[], string[]>>>;
 }, {
     out: {};
     in: {};

@@ -1,8 +1,8 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { charactersTable, dungeonRunsTable, raidRunsTable, worldPlayersTable } from "@workspace/db/schema";
-import { asc, and, eq, sql } from "drizzle-orm";
-import { computeStats, makeZeroAABonuses } from "../lib/eq2Formulas.js";
+import { charactersTable, dungeonRunsTable, raidRunsTable, worldPlayersTable, ghostDungeonClearsTable, ghostRaidClearsTable } from "@workspace/db/schema";
+import { asc, and, eq, sql, desc } from "drizzle-orm";
+import { computeStats, makeZeroAABonuses, computeGearScore } from "../lib/eq2Formulas.js";
 import { getItemById } from "../lib/gameData.js";
 import { getDungeonById } from "../lib/dungeonData.js";
 
@@ -69,7 +69,7 @@ function resolveGearItems(gear: Record<string, unknown>): Array<{ slot: string; 
 
 router.get("/leaderboard/overall", async (_req, res) => {
   try {
-    const [realPlayers, ghostPlayers, dungeonAgg, raidAgg] = await Promise.all([
+    const [realPlayers, ghostPlayers, dungeonAgg, raidAgg, ghostDungAgg, ghostRaidAgg] = await Promise.all([
       db.select().from(charactersTable).orderBy(asc(charactersTable.id)),
       db.select().from(worldPlayersTable).orderBy(asc(worldPlayersTable.id)),
       db
@@ -90,10 +90,21 @@ router.get("/leaderboard/overall", async (_req, res) => {
         .from(raidRunsTable)
         .where(eq(raidRunsTable.completed, true))
         .groupBy(raidRunsTable.characterId),
+      db.select({
+        ghostId: ghostDungeonClearsTable.ghostId,
+        totalClears: sql<number>`sum(${ghostDungeonClearsTable.clearCount})`.as("total_clears"),
+      }).from(ghostDungeonClearsTable).groupBy(ghostDungeonClearsTable.ghostId),
+      db.select({
+        ghostId: ghostRaidClearsTable.ghostId,
+        totalClears: sql<number>`sum(${ghostRaidClearsTable.clearCount})`.as("total_clears"),
+        maxPhase: sql<number>`max(${ghostRaidClearsTable.maxPhase})`.as("max_phase"),
+      }).from(ghostRaidClearsTable).groupBy(ghostRaidClearsTable.ghostId),
     ]);
 
     const dungeonMap = new Map(dungeonAgg.map(d => [d.characterId, d]));
     const raidMap = new Map(raidAgg.map(r => [r.characterId, r]));
+    const ghostDungMap = new Map(ghostDungAgg.map(d => [d.ghostId, d]));
+    const ghostRaidMap = new Map(ghostRaidAgg.map(r => [r.ghostId, r]));
 
     const entries: Array<{
       id: string;
@@ -145,10 +156,18 @@ router.get("/leaderboard/overall", async (_req, res) => {
     }
 
     for (const g of ghostPlayers) {
+      const gDung = ghostDungMap.get(g.id);
+      const gRaid = ghostRaidMap.get(g.id);
+      const dungCompleted = Number(gDung?.totalClears ?? 0);
+      const raidsCompleted = Number(gRaid?.totalClears ?? 0);
+      const maxPhase = Number(gRaid?.maxPhase ?? 0);
+
       const score =
         g.level * 1000 +
         g.killCount * 0.5 +
-        g.bossKills * 10;
+        g.bossKills * 10 +
+        dungCompleted * 50 +
+        raidsCompleted * 200;
 
       entries.push({
         id: `ghost_${g.id}`,
@@ -159,10 +178,10 @@ router.get("/leaderboard/overall", async (_req, res) => {
         xp: g.xp,
         killCount: g.killCount,
         bossKills: g.bossKills,
-        dungeonsCompleted: 0,
+        dungeonsCompleted: dungCompleted,
         heroicCompletions: 0,
-        raidsCompleted: 0,
-        highestPhase: 0,
+        raidsCompleted,
+        highestPhase: maxPhase,
         _score: score,
       });
     }
@@ -180,7 +199,7 @@ router.get("/leaderboard/overall", async (_req, res) => {
 
 router.get("/leaderboard/dungeons", async (_req, res) => {
   try {
-    const [realAgg, perDungeonAgg, realPlayers, ghostPlayers] = await Promise.all([
+    const [realAgg, perDungeonAgg, realPlayers, ghostPlayers, ghostDungAgg, ghostPerDungAgg] = await Promise.all([
       db
         .select({
           characterId: dungeonRunsTable.characterId,
@@ -203,6 +222,11 @@ router.get("/leaderboard/dungeons", async (_req, res) => {
         .groupBy(dungeonRunsTable.characterId, dungeonRunsTable.dungeonId, dungeonRunsTable.difficulty),
       db.select().from(charactersTable).orderBy(asc(charactersTable.id)),
       db.select().from(worldPlayersTable).orderBy(asc(worldPlayersTable.id)),
+      db.select({
+        ghostId: ghostDungeonClearsTable.ghostId,
+        totalClears: sql<number>`sum(${ghostDungeonClearsTable.clearCount})`.as("total_clears"),
+      }).from(ghostDungeonClearsTable).groupBy(ghostDungeonClearsTable.ghostId),
+      db.select().from(ghostDungeonClearsTable),
     ]);
 
     const realAggMap = new Map(realAgg.map(r => [r.characterId, r]));
@@ -214,6 +238,17 @@ router.get("/leaderboard/dungeons", async (_req, res) => {
       const existing = perDungeonMap.get(row.characterId) ?? [];
       existing.push(entry);
       perDungeonMap.set(row.characterId, existing);
+    }
+
+    // Build ghost dungeon aggregate maps
+    const ghostDungMap = new Map(ghostDungAgg.map(d => [d.ghostId, d]));
+    const ghostPerDungMap = new Map<number, Array<{ dungeonId: string; dungeonName: string; difficulty: string; clearCount: number }>>();
+    for (const row of ghostPerDungAgg) {
+      const def = getDungeonById(row.dungeonId);
+      const entry = { dungeonId: row.dungeonId, dungeonName: def?.name ?? row.dungeonId, difficulty: row.bestDifficulty, clearCount: row.clearCount };
+      const existing = ghostPerDungMap.get(row.ghostId) ?? [];
+      existing.push(entry);
+      ghostPerDungMap.set(row.ghostId, existing);
     }
 
     const entries: Array<{
@@ -245,15 +280,17 @@ router.get("/leaderboard/dungeons", async (_req, res) => {
     }
 
     for (const g of ghostPlayers) {
+      const gAgg = ghostDungMap.get(g.id);
+      const dungCompleted = Number(gAgg?.totalClears ?? 0);
       entries.push({
         id: `ghost_${g.id}`,
         type: "ghost",
         name: g.name,
-        dungeonsCompleted: 0,
+        dungeonsCompleted: dungCompleted,
         floorsCleared: 0,
         heroicCompletions: 0,
-        dungeonBreakdown: [],
-        _score: 0,
+        dungeonBreakdown: ghostPerDungMap.get(g.id) ?? [],
+        _score: dungCompleted * 100,
       });
     }
 
@@ -270,7 +307,7 @@ router.get("/leaderboard/dungeons", async (_req, res) => {
 
 router.get("/leaderboard/raids", async (_req, res) => {
   try {
-    const [raidAgg, realPlayers, ghostPlayers] = await Promise.all([
+    const [raidAgg, realPlayers, ghostPlayers, ghostRaidAgg] = await Promise.all([
       db
         .select({
           characterId: raidRunsTable.characterId,
@@ -283,9 +320,15 @@ router.get("/leaderboard/raids", async (_req, res) => {
         .groupBy(raidRunsTable.characterId),
       db.select().from(charactersTable).orderBy(asc(charactersTable.id)),
       db.select().from(worldPlayersTable).orderBy(asc(worldPlayersTable.id)),
+      db.select({
+        ghostId: ghostRaidClearsTable.ghostId,
+        raidsCompleted: sql<number>`sum(${ghostRaidClearsTable.clearCount})`.as("raids_completed"),
+        maxPhase: sql<number>`max(${ghostRaidClearsTable.maxPhase})`.as("max_phase"),
+      }).from(ghostRaidClearsTable).groupBy(ghostRaidClearsTable.ghostId),
     ]);
 
     const raidMap = new Map(raidAgg.map(r => [r.characterId, r]));
+    const ghostRaidMap = new Map(ghostRaidAgg.map(r => [r.ghostId, r]));
 
     const entries: Array<{
       id: string;
@@ -314,14 +357,17 @@ router.get("/leaderboard/raids", async (_req, res) => {
     }
 
     for (const g of ghostPlayers) {
+      const gAgg = ghostRaidMap.get(g.id);
+      const raidsCompleted = Number(gAgg?.raidsCompleted ?? 0);
+      const highestPhase = Number(gAgg?.maxPhase ?? 0);
       entries.push({
         id: `ghost_${g.id}`,
         type: "ghost",
         name: g.name,
-        raidsCompleted: 0,
-        highestPhase: 0,
+        raidsCompleted,
+        highestPhase,
         totalRaidKills: 0,
-        _score: 0,
+        _score: raidsCompleted * 1000 + highestPhase * 100,
       });
     }
 
@@ -435,25 +481,34 @@ router.get("/leaderboard/player/:characterId/profile", async (req, res) => {
 
 /**
  * GET /leaderboard/ghost/:ghostId/profile
- * Returns limited profile for a ghost NPC (no dungeon data, just base stats and zone).
+ * Returns full profile for a ghost NPC including real gear, dungeon/raid clears, generation data.
  */
 router.get("/leaderboard/ghost/:ghostId/profile", async (req, res) => {
   try {
     const ghostId = parseInt(req.params.ghostId, 10);
     if (isNaN(ghostId)) return res.status(400).json({ error: "Invalid ghost id" });
 
-    const [ghostRows] = await db.select().from(worldPlayersTable).where(eq(worldPlayersTable.id, ghostId)).limit(1);
+    const [ghostResults, dungeonClears, raidClears] = await Promise.all([
+      db.select().from(worldPlayersTable).where(eq(worldPlayersTable.id, ghostId)).limit(1),
+      db.select().from(ghostDungeonClearsTable).where(eq(ghostDungeonClearsTable.ghostId, ghostId)),
+      db.select().from(ghostRaidClearsTable).where(eq(ghostRaidClearsTable.ghostId, ghostId)),
+    ]);
+    const ghostRows = ghostResults[0];
     if (!ghostRows) return res.status(404).json({ error: "Ghost not found" });
     const g = ghostRows;
 
     const baseStats = g.stats as { strength: number; agility: number; stamina: number; intelligence: number; wisdom: number; charisma: number };
-    const gearData = {
-      gearAttackRating: 0, gearDefenseRating: 0, gearMitigation: 0,
-      gearHaste: 0, gearCritChance: 0,
-      gearWeaponDamageMin: baseStats.strength * 0.5 + g.level,
-      gearWeaponDamageMax: baseStats.strength * 1.0 + g.level * 2,
-      gearWeaponDelay: 2.0, gearHealth: 0, gearPower: 0,
-    };
+    const gear = (g.gear as Record<string, unknown>) ?? {};
+    const gearItems = resolveGearItems(gear);
+    const gearScore = computeGearScore(
+      Object.entries(gear).map(([slot, val]) => ({
+        level: (val as Record<string, unknown>)?.level as number ?? 0,
+        rarity: (val as Record<string, unknown>)?.rarity as string ?? "common",
+        slot,
+      })),
+    );
+
+    const gearData = resolveGearStats(gear, g.level, baseStats);
     const aa = makeZeroAABonuses();
     const computedStats = computeStats({ level: g.level, ...baseStats, ...gearData, gearCritBonus: 0 }, aa);
     const maxHp = Math.floor(baseStats.stamina * 10 + 50 + (g.level - 1) * 15);
@@ -463,14 +518,29 @@ router.get("/leaderboard/ghost/:ghostId/profile", async (req, res) => {
       ghostId,
       name: g.name,
       class: g.class,
+      race: g.race,
       level: g.level,
       zone: g.zone,
       killCount: g.killCount,
       bossKills: g.bossKills,
+      generation: g.generation ?? 1,
+      parentId: g.parentId ?? null,
+      inheritedTraits: (g.inheritedTraits as string[]) ?? [],
+      gearScore,
       zoneKills: {},
-      dungeonClears: [],
-      raidClears: [],
-      gear: [],
+      dungeonClears: dungeonClears.map(d => ({
+        dungeonId: d.dungeonId,
+        bestDifficulty: d.bestDifficulty,
+        clearCount: d.clearCount,
+        lastClearedAt: d.lastClearedAt,
+      })),
+      raidClears: raidClears.map(r => ({
+        raidId: r.raidId,
+        maxPhase: r.maxPhase,
+        clearCount: r.clearCount,
+        lastClearedAt: r.lastClearedAt,
+      })),
+      gear: gearItems,
       stats: {
         maxHp,
         attackRating: computedStats.attackRating,
@@ -487,6 +557,76 @@ router.get("/leaderboard/ghost/:ghostId/profile", async (req, res) => {
   } catch (err) {
     console.error("leaderboard/ghost/profile error", err);
     return res.status(500).json({ error: "Failed to fetch ghost profile" });
+  }
+});
+
+/**
+ * GET /leaderboard/ghosts/top-by-role
+ * Returns top 5 ghosts per role (Tank/Healer/DPS) ranked by composite score.
+ */
+router.get("/leaderboard/ghosts/top-by-role", async (_req, res) => {
+  try {
+    const [ghostPlayers, ghostDungAgg] = await Promise.all([
+      db.select().from(worldPlayersTable),
+      db.select({
+        ghostId: ghostDungeonClearsTable.ghostId,
+        totalClears: sql<number>`sum(${ghostDungeonClearsTable.clearCount})`.as("total_clears"),
+      }).from(ghostDungeonClearsTable).groupBy(ghostDungeonClearsTable.ghostId),
+    ]);
+
+    const dungMap = new Map(ghostDungAgg.map(d => [d.ghostId, Number(d.totalClears ?? 0)]));
+
+    function ghostRole(archetype: string, cls: string): string {
+      const archetypeLower = archetype.toLowerCase();
+      const clsLower = cls.toLowerCase();
+      if (archetypeLower === "fighter" && (clsLower.includes("guard") || clsLower.includes("brawl") || clsLower.includes("shadow") || clsLower.includes("paladin") || clsLower.includes("shadow knight"))) return "Tank";
+      if (archetypeLower === "fighter") return "Tank";
+      if (archetypeLower === "priest") return "Healer";
+      return "DPS";
+    }
+
+    type GhostRoleEntry = {
+      id: number; name: string; class: string; race: string; level: number;
+      zone: string; killCount: number; bossKills: number; gearScore: number;
+      dungeonClears: number; personality: string; role: string; generation: number;
+      _score: number;
+    };
+
+    const tanks: GhostRoleEntry[] = [];
+    const healers: GhostRoleEntry[] = [];
+    const dps: GhostRoleEntry[] = [];
+
+    for (const g of ghostPlayers) {
+      const gear = (g.gear as Record<string, unknown>) ?? {};
+      const gearScore = computeGearScore(
+        Object.entries(gear).map(([slot, val]) => ({
+          level: (val as Record<string, unknown>)?.level as number ?? 0,
+          rarity: (val as Record<string, unknown>)?.rarity as string ?? "common",
+          slot,
+        })),
+      );
+      const dungeonClears = dungMap.get(g.id) ?? 0;
+      const role = ghostRole(g.archetype, g.class);
+      const score = gearScore * 2 + g.level * 50 + g.killCount * 0.1 + dungeonClears * 100;
+
+      const entry: GhostRoleEntry = {
+        id: g.id, name: g.name, class: g.class, race: g.race, level: g.level,
+        zone: g.zone, killCount: g.killCount, bossKills: g.bossKills,
+        gearScore, dungeonClears, personality: g.personality,
+        role, generation: g.generation ?? 1, _score: score,
+      };
+      if (role === "Tank") tanks.push(entry);
+      else if (role === "Healer") healers.push(entry);
+      else dps.push(entry);
+    }
+
+    const top5 = (arr: GhostRoleEntry[]) =>
+      arr.sort((a, b) => b._score - a._score).slice(0, 5).map(({ _score, ...e }) => e);
+
+    return res.json({ tanks: top5(tanks), healers: top5(healers), dps: top5(dps) });
+  } catch (err) {
+    console.error("leaderboard/ghosts/top-by-role error", err);
+    return res.status(500).json({ error: "Failed to fetch ghost role leaderboard" });
   }
 });
 

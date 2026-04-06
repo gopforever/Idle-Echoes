@@ -1,4 +1,4 @@
-import { pgTable, text, serial, real, integer, jsonb, timestamp, boolean, primaryKey } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, real, integer, jsonb, timestamp, boolean, primaryKey, uniqueIndex } from "drizzle-orm/pg-core";
 
 export const worldPlayersTable = pgTable("world_players", {
   id: serial("id").primaryKey(),
@@ -22,6 +22,10 @@ export const worldPlayersTable = pgTable("world_players", {
     strength: number; agility: number; stamina: number;
     intelligence: number; wisdom: number; charisma: number;
   }>(),
+  gear: jsonb("gear").$type<Record<string, unknown>>().default({}),
+  generation: integer("generation").notNull().default(1),
+  parentId: integer("parent_id"),
+  inheritedTraits: jsonb("inherited_traits").$type<string[]>().default([]),
   lastTickAt: timestamp("last_tick_at").defaultNow().notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -80,9 +84,33 @@ export const oneOfAKindCraftedTable = pgTable("one_of_a_kind_crafted", {
   craftedAt: timestamp("crafted_at").defaultNow().notNull(),
 });
 
+export const ghostDungeonClearsTable = pgTable("ghost_dungeon_clears", {
+  id: serial("id").primaryKey(),
+  ghostId: integer("ghost_id").notNull(),
+  dungeonId: text("dungeon_id").notNull(),
+  clearCount: integer("clear_count").notNull().default(1),
+  bestDifficulty: text("best_difficulty").notNull().default("normal"),
+  lastClearedAt: timestamp("last_cleared_at").defaultNow().notNull(),
+}, (t) => [
+  uniqueIndex("ghost_dungeon_clears_ghost_dungeon_idx").on(t.ghostId, t.dungeonId),
+]);
+
+export const ghostRaidClearsTable = pgTable("ghost_raid_clears", {
+  id: serial("id").primaryKey(),
+  ghostId: integer("ghost_id").notNull(),
+  raidId: text("raid_id").notNull(),
+  clearCount: integer("clear_count").notNull().default(1),
+  maxPhase: integer("max_phase").notNull().default(1),
+  lastClearedAt: timestamp("last_cleared_at").defaultNow().notNull(),
+}, (t) => [
+  uniqueIndex("ghost_raid_clears_ghost_raid_idx").on(t.ghostId, t.raidId),
+]);
+
 export type WorldPlayer = typeof worldPlayersTable.$inferSelect;
 export type WorldEvent = typeof worldEventsTable.$inferSelect;
 export type GhostMarketDemand = typeof ghostMarketDemandTable.$inferSelect;
 export type AuctionListing = typeof auctionListingsTable.$inferSelect;
 export type KnownRecipe = typeof knownRecipesTable.$inferSelect;
 export type OneOfAKindCrafted = typeof oneOfAKindCraftedTable.$inferSelect;
+export type GhostDungeonClear = typeof ghostDungeonClearsTable.$inferSelect;
+export type GhostRaidClear = typeof ghostRaidClearsTable.$inferSelect;
