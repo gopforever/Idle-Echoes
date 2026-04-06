@@ -427,5 +427,54 @@ router.post("/crafting/craft", async (req, res) => {
   }
 });
 
+// ─── GET /crafting/pins ───────────────────────────────────────────────────────
+
+router.get("/crafting/pins", async (req, res) => {
+  try {
+    const character = await getOrCreateCharacter(req.characterId);
+    const pinned = (character.pinnedRecipes as string[] | null) ?? [];
+    return res.json({ pinned });
+  } catch (err) {
+    req.log.error({ err }, "Error fetching pins");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// ─── POST /crafting/pins ──────────────────────────────────────────────────────
+
+router.post("/crafting/pins", async (req, res) => {
+  try {
+    const { pinned } = req.body as { pinned: unknown };
+
+    if (!Array.isArray(pinned)) {
+      return res.status(400).json({ error: "pinned must be an array of recipe IDs" });
+    }
+    if (pinned.some((id) => typeof id !== "string")) {
+      return res.status(400).json({ error: "Each pinned entry must be a string recipe ID" });
+    }
+    const uniquePinned = [...new Set(pinned as string[])];
+    if (uniquePinned.length > 10) {
+      return res.status(400).json({ error: "Cannot pin more than 10 recipes" });
+    }
+
+    const allRecipeIds = new Set(CRAFTING_RECIPES.map(r => r.id));
+    const invalid = uniquePinned.filter(id => !allRecipeIds.has(id));
+    if (invalid.length > 0) {
+      return res.status(400).json({ error: `Unknown recipe ID(s): ${invalid.join(", ")}` });
+    }
+
+    const character = await getOrCreateCharacter(req.characterId);
+    await db
+      .update(charactersTable)
+      .set({ pinnedRecipes: uniquePinned, updatedAt: new Date() })
+      .where(eq(charactersTable.id, character.id));
+
+    return res.json({ pinned: uniquePinned });
+  } catch (err) {
+    req.log.error({ err }, "Error saving pins");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 export { JOURNEYMAN_RECIPE_IDS };
 export default router;

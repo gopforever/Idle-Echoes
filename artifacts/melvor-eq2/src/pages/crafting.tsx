@@ -10,8 +10,10 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { apiUrl } from "@/lib/api";
+import { Pin, PinOff, Package } from "lucide-react";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -52,6 +54,13 @@ interface InventoryItem {
   recipeId?: string;
   recipeTier?: string;
   [key: string]: unknown;
+}
+
+interface GatheringBagItem {
+  id: number;
+  itemId: string;
+  quantity: number;
+  itemData?: Record<string, unknown>;
 }
 
 type ExperimentFocus = "attack" | "defense" | "utility";
@@ -111,6 +120,32 @@ async function fetchKnownRecipes(): Promise<CraftingRecipe[]> {
   const res = await fetch(apiUrl("/api/crafting/known-recipes"));
   if (!res.ok) throw new Error("Failed to fetch recipes");
   return res.json() as Promise<CraftingRecipe[]>;
+}
+
+async function fetchPins(): Promise<string[]> {
+  const res = await fetch(apiUrl("/api/crafting/pins"));
+  if (!res.ok) return [];
+  const data = await res.json() as { pinned: string[] };
+  return data.pinned ?? [];
+}
+
+async function savePins(pinned: string[]): Promise<void> {
+  const res = await fetch(apiUrl("/api/crafting/pins"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ pinned }),
+  });
+  if (!res.ok) {
+    const err = await res.json() as { error?: string };
+    throw new Error(err.error ?? "Failed to save pins");
+  }
+}
+
+async function fetchGatheringBag(): Promise<GatheringBagItem[]> {
+  const res = await fetch(apiUrl("/api/gathering/bag"));
+  if (!res.ok) return [];
+  const data = await res.json() as { items: GatheringBagItem[] };
+  return data.items ?? [];
 }
 
 async function learnRecipe(scrollItemId: string) {
@@ -470,6 +505,14 @@ export default function CraftingPage() {
   const [learningScroll, setLearningScroll] = React.useState(false);
   const [tierFilter, setTierFilter] = React.useState<"all" | "journeyman" | "expert" | "mythic">("all");
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [showCraftableOnly, setShowCraftableOnly] = React.useState(false);
+
+  // Pins state
+  const [pinnedIds, setPinnedIds] = React.useState<string[]>([]);
+  const [pinsLoading, setPinsLoading] = React.useState(true);
+
+  // Gathering bag state
+  const [bagItems, setBagItems] = React.useState<GatheringBagItem[]>([]);
 
   const loadRecipes = React.useCallback(async () => {
     setRecipesLoading(true);
@@ -483,7 +526,30 @@ export default function CraftingPage() {
     }
   }, []);
 
+  const loadPins = React.useCallback(async () => {
+    setPinsLoading(true);
+    try {
+      const pins = await fetchPins();
+      setPinnedIds(pins);
+    } catch {
+      setPinnedIds([]);
+    } finally {
+      setPinsLoading(false);
+    }
+  }, []);
+
+  const loadBag = React.useCallback(async () => {
+    try {
+      const items = await fetchGatheringBag();
+      setBagItems(items);
+    } catch {
+      setBagItems([]);
+    }
+  }, []);
+
   React.useEffect(() => { loadRecipes(); }, [loadRecipes]);
+  React.useEffect(() => { loadPins(); }, [loadPins]);
+  React.useEffect(() => { loadBag(); }, [loadBag]);
 
   if (invLoading || skillsLoading) return <Skeleton className="h-[600px] w-full" />;
   if (!inventory || !skills) return null;
@@ -498,10 +564,17 @@ export default function CraftingPage() {
 
   const scrollItems = invItems.filter(i => i.type === "recipe_scroll");
   const invMap = new Map(invItems.map(i => [i.id, i]));
+  const bagMap = new Map(bagItems.map(b => [b.itemId, b]));
+
+  // Combined total = inventory + gathering bag
+  function totalOwned(itemId: string): number {
+    return (invMap.get(itemId)?.quantity as number ?? 0) + (bagMap.get(itemId)?.quantity ?? 0);
+  }
 
   const filteredRecipes = recipes.filter(r => {
     if (tierFilter !== "all" && r.tier !== tierFilter) return false;
     if (searchQuery && !r.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    if (showCraftableOnly && !canCraft(r)) return false;
     return true;
   });
 
@@ -509,10 +582,31 @@ export default function CraftingPage() {
     const skill = skills.find(s => s.id === recipe.requiredSkillId);
     if (!skill || (skill.level ?? 0) < recipe.requiredSkillLevel) return false;
     for (const ing of recipe.ingredients) {
-      const item = invMap.get(ing.itemId);
-      if (!item || (item.quantity ?? 0) < ing.quantity) return false;
+      if (totalOwned(ing.itemId) < ing.quantity) return false;
     }
     return true;
+  };
+
+  const handleTogglePin = async (recipeId: string) => {
+    const isPinned = pinnedIds.includes(recipeId);
+    const previousPins = pinnedIds;
+    let newPins: string[];
+    if (isPinned) {
+      newPins = pinnedIds.filter(id => id !== recipeId);
+    } else {
+      if (pinnedIds.length >= 10) {
+        toast.error("You can only pin up to 10 recipes");
+        return;
+      }
+      newPins = [...pinnedIds, recipeId];
+    }
+    setPinnedIds(newPins);
+    try {
+      await savePins(newPins);
+    } catch (e: unknown) {
+      toast.error((e as Error).message ?? "Failed to save pins");
+      setPinnedIds(previousPins); // revert to pre-update value
+    }
   };
 
   const handleLearnScroll = async (scrollItemId: string) => {
@@ -549,6 +643,7 @@ export default function CraftingPage() {
         queryClient.invalidateQueries({ queryKey: getGetSkillsQueryKey() });
         queryClient.invalidateQueries({ queryKey: getGetCharacterQueryKey() });
         await loadRecipes();
+        await loadBag(); // refresh bag since crafting may consume from it
       } else {
         toast.error(res.message);
         setSelectedRecipe(null);
@@ -589,6 +684,65 @@ export default function CraftingPage() {
         </div>
       )}
 
+      {/* Pinned Recipes Section */}
+      {!pinsLoading && pinnedIds.length > 0 && (
+        <div>
+          <h2 className="text-sm font-semibold text-amber-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+            <Pin className="w-3.5 h-3.5" /> Pinned Recipes
+            <Badge variant="outline" className="text-amber-400 border-amber-400/40 text-xs ml-1">{pinnedIds.length}/10</Badge>
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+            {pinnedIds.map(pinId => {
+              const recipe = recipes.find(r => r.id === pinId);
+              if (!recipe) return null;
+              const craftable = canCraft(recipe);
+              return (
+                <Card key={pinId} className={`border ${craftable ? "border-amber-500/40 bg-amber-950/10" : "border-slate-700 bg-card/30"} backdrop-blur`}>
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-start gap-2 mb-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-slate-200 text-sm">{recipe.name}</span>
+                          {craftable && <Badge className="bg-green-800/60 text-green-300 border-green-600/40 text-[10px]">Ready</Badge>}
+                        </div>
+                      </div>
+                      <div className="flex gap-1">
+                        <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={() => setSelectedRecipe(recipe)} disabled={!craftable}>
+                          Craft
+                        </Button>
+                        <Button size="sm" variant="ghost" className="h-7 px-2 text-amber-400 hover:text-amber-300" onClick={() => handleTogglePin(pinId)}>
+                          <PinOff className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      {recipe.ingredients.map((ing, i) => {
+                        const have = totalOwned(ing.itemId);
+                        const hasEnough = have >= ing.quantity;
+                        const invItem = invMap.get(ing.itemId);
+                        const name = invItem?.name as string | undefined ?? ing.itemId.replace(/_/g, " ");
+                        const bagQty = bagMap.get(ing.itemId)?.quantity ?? 0;
+                        return (
+                          <div key={i} className="flex justify-between items-center text-xs">
+                            <span className="text-slate-400">{name}</span>
+                            <div className="flex items-center gap-2">
+                              {bagQty > 0 && <span className="text-blue-400 text-[10px]">+{bagQty} bag</span>}
+                              <span className={hasEnough ? "text-green-400" : "text-red-400"}>
+                                {have}/{ing.quantity}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Filters */}
       <div className="flex flex-wrap gap-2 items-center">
         <input
@@ -614,6 +768,15 @@ export default function CraftingPage() {
             {tier.charAt(0).toUpperCase() + tier.slice(1)}
           </button>
         ))}
+        <button
+          onClick={() => setShowCraftableOnly(v => !v)}
+          className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${showCraftableOnly
+            ? "bg-green-900/60 text-green-300 border-green-600"
+            : "bg-transparent text-slate-500 border-slate-700 hover:border-slate-500"
+          }`}
+        >
+          Craftable only
+        </button>
         <span className="text-xs text-slate-500 ml-auto">{filteredRecipes.length} recipes known</span>
       </div>
 
@@ -634,10 +797,10 @@ export default function CraftingPage() {
             const skill = skills.find(s => s.id === recipe.requiredSkillId);
             const hasSkill = (skill?.level ?? 0) >= recipe.requiredSkillLevel;
             const craftable = canCraft(recipe);
-            const tierColor = TIER_COLORS[recipe.tier];
             const isMythic = recipe.tier === "mythic";
             const isExpert = recipe.tier === "expert";
             const resultItem = recipe.resultItem;
+            const isPinned = pinnedIds.includes(recipe.id);
 
             return (
               <Card
@@ -673,17 +836,28 @@ export default function CraftingPage() {
                         {skill && ` (you: ${skill.level})`}
                       </div>
                     </div>
-                    <div className="text-right shrink-0">
-                      <div className="text-xs text-primary mb-1">+{recipe.xpReward} XP</div>
-                      <Button
-                        onClick={() => setSelectedRecipe(recipe)}
-                        disabled={!craftable}
-                        size="sm"
-                        variant={isMythic ? "default" : "default"}
-                        className={`w-20 ${isMythic ? "bg-amber-700 hover:bg-amber-600 text-white" : ""}`}
-                      >
-                        Craft
-                      </Button>
+                    <div className="flex flex-col items-end gap-1 shrink-0">
+                      <div className="text-xs text-primary">+{recipe.xpReward} XP</div>
+                      <div className="flex gap-1">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className={`h-7 px-2 ${isPinned ? "text-amber-400 hover:text-amber-300" : "text-slate-500 hover:text-amber-400"}`}
+                          onClick={() => handleTogglePin(recipe.id)}
+                          title={isPinned ? "Unpin recipe" : "Pin recipe"}
+                        >
+                          {isPinned ? <PinOff className="w-3.5 h-3.5" /> : <Pin className="w-3.5 h-3.5" />}
+                        </Button>
+                        <Button
+                          onClick={() => setSelectedRecipe(recipe)}
+                          disabled={!craftable}
+                          size="sm"
+                          variant={isMythic ? "default" : "default"}
+                          className={`w-16 ${isMythic ? "bg-amber-700 hover:bg-amber-600 text-white" : ""}`}
+                        >
+                          Craft
+                        </Button>
+                      </div>
                     </div>
                   </div>
 
@@ -691,24 +865,28 @@ export default function CraftingPage() {
                   <div className="bg-slate-900/60 p-3 rounded-md border border-slate-800/50 space-y-1">
                     <div className="text-xs text-slate-500 uppercase tracking-wider font-bold mb-1.5">Ingredients</div>
                     {recipe.ingredients.map((ing, i) => {
-                      const item = invMap.get(ing.itemId);
-                      const have = item?.quantity ?? 0;
-                      const hasEnough = (have as number) >= ing.quantity;
-                      const itemData = item as Record<string, unknown> | undefined;
+                      const have = totalOwned(ing.itemId);
+                      const hasEnough = have >= ing.quantity;
+                      const invItem = invMap.get(ing.itemId);
+                      const bagQty = bagMap.get(ing.itemId)?.quantity ?? 0;
+                      const itemData = invItem as Record<string, unknown> | undefined;
                       const rawData = itemData?.itemData as Record<string, unknown> | undefined;
                       const quality = typeof rawData?.quality === "number" ? rawData.quality
-                        : typeof item?.quality === "number" ? item.quality : null;
+                        : typeof invItem?.quality === "number" ? invItem.quality : null;
                       return (
                         <div key={i} className="flex justify-between items-center text-xs">
                           <div className="flex items-center gap-2">
-                            <span className="text-slate-300">{item?.name || ing.itemId}</span>
+                            <span className="text-slate-300">{invItem?.name as string | undefined || ing.itemId.replace(/_/g, " ")}</span>
                             {quality !== null && (
                               <span className={`${qualityColor(quality)} font-mono`}>Q:{quality}</span>
                             )}
                           </div>
-                          <span className={hasEnough ? "text-green-400" : "text-red-400"}>
-                            {String(have)}/{ing.quantity}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            {bagQty > 0 && <span className="text-blue-400 text-[10px] flex items-center gap-0.5">+{bagQty}<Package className="w-2.5 h-2.5 inline" /></span>}
+                            <span className={hasEnough ? "text-green-400" : "text-red-400"}>
+                              {have}/{ing.quantity}
+                            </span>
+                          </div>
                         </div>
                       );
                     })}

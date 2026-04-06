@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { charactersTable, skillsTable, gatheringSessionsTable, gatheringBagItemsTable } from "@workspace/db/schema";
+import { charactersTable, inventoryTable, skillsTable, gatheringSessionsTable, gatheringBagItemsTable } from "@workspace/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { getOrCreateCharacter } from "./character.js";
 import { getOrCreateSkills } from "./skills.js";
@@ -45,6 +45,22 @@ function itemToRecord(itemId: string) {
     buyPrice: item.buyPrice ?? 0, spriteId: item.spriteId,
     stackable: item.stackable ?? false,
   };
+}
+
+async function addItemToInventory(characterId: number, itemId: string, quantity: number) {
+  const itemData = itemToRecord(itemId);
+  if (!itemData) {
+    console.warn(`addItemToInventory: unknown itemId "${itemId}" – skipping`);
+    return;
+  }
+  const existing = await db.select().from(inventoryTable).where(and(eq(inventoryTable.characterId, characterId), eq(inventoryTable.itemId, itemId)));
+  if (existing.length > 0) {
+    await db.update(inventoryTable)
+      .set({ quantity: sql`${inventoryTable.quantity} + ${quantity}` })
+      .where(and(eq(inventoryTable.characterId, characterId), eq(inventoryTable.itemId, itemId)));
+  } else {
+    await db.insert(inventoryTable).values({ characterId, itemId, itemData: itemData as Record<string, unknown>, quantity });
+  }
 }
 
 async function addItemToGatheringBag(characterId: number, itemId: string, quantity: number) {
@@ -353,6 +369,40 @@ router.get("/gathering/status", async (req, res) => {
     return res.json({ sessions: enrichedSessions, yields: allYields });
   } catch (err) {
     req.log.error({ err }, "Error getting gathering status");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// ─── GET /gathering/bag ───────────────────────────────────────────────────────
+
+router.get("/gathering/bag", async (req, res) => {
+  try {
+    const character = await getOrCreateCharacter(req.characterId);
+    const items = await db.select().from(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.characterId, character.id));
+    return res.json({ items: items.filter(i => i.quantity > 0) });
+  } catch (err) {
+    req.log.error({ err }, "Error fetching gathering bag");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// ─── POST /gathering/bag/withdraw-all ────────────────────────────────────────
+
+router.post("/gathering/bag/withdraw-all", async (req, res) => {
+  try {
+    const character = await getOrCreateCharacter(req.characterId);
+    const bagItems = await db.select().from(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.characterId, character.id));
+
+    for (const item of bagItems) {
+      if (item.quantity <= 0) continue;
+      await addItemToInventory(character.id, item.itemId, item.quantity);
+    }
+
+    await db.delete(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.characterId, character.id));
+
+    return res.json({ success: true, moved: bagItems.filter(i => i.quantity > 0).length });
+  } catch (err) {
+    req.log.error({ err }, "Error withdrawing gathering bag");
     return res.status(500).json({ error: "Internal server error" });
   }
 });

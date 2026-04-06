@@ -51,6 +51,8 @@ export const charactersTable = pgTable("characters", {
   raresGathered: integer("rares_gathered").notNull().default(0),
   /** Per-zone kill counts: { "Commonlands": 42, "Antonica": 18, ... } */
   zoneKills: jsonb("zone_kills").notNull().default({}).$type<Record<string, number>>(),
+  /** Pinned recipe IDs for quick-access crafting panels (max 10, per character) */
+  pinnedRecipes: jsonb("pinned_recipes").notNull().default([]).$type<string[]>(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
