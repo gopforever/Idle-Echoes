@@ -1,0 +1,1 @@
+{"version":3,"file":"craftResult.d.ts","sourceRoot":"","sources":["../../../src/generated/types/craftResult.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AACH,OAAO,KAAK,EAAE,IAAI,EAAE,MAAM,QAAQ,CAAC;AAEnC,MAAM,WAAW,WAAW;IAC1B,OAAO,EAAE,OAAO,CAAC;IACjB,UAAU,CAAC,EAAE,IAAI,CAAC;IAClB,QAAQ,EAAE,MAAM,CAAC;IACjB,OAAO,EAAE,MAAM,CAAC;CACjB"}

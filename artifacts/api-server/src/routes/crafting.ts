@@ -6,6 +6,7 @@ import {
   charactersTable,
   knownRecipesTable,
   oneOfAKindCraftedTable,
+  gatheringBagItemsTable,
 } from "@workspace/db/schema";
 import { and, eq, inArray } from "drizzle-orm";
 import {
@@ -237,12 +238,15 @@ router.post("/crafting/craft", async (req, res) => {
     );
 
     const currentInventory = await db.select().from(inventoryTable).where(eq(inventoryTable.characterId, character.id));
+    const bagItems = await db.select().from(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.characterId, character.id));
     const inventoryMap = new Map(currentInventory.map(i => [i.itemId, i]));
+    const bagMap = new Map(bagItems.map(i => [i.itemId, i]));
 
     for (const ingredient of recipe.ingredients) {
-      const invRow = inventoryMap.get(ingredient.itemId);
-      const have = invRow?.quantity || 0;
-      if (have < ingredient.quantity) {
+      const invQty = inventoryMap.get(ingredient.itemId)?.quantity ?? 0;
+      const bagQty = bagMap.get(ingredient.itemId)?.quantity ?? 0;
+      const totalQty = invQty + bagQty;
+      if (totalQty < ingredient.quantity) {
         const ingredientItem = getItemById(ingredient.itemId);
         return res.json({
           success: false,
@@ -254,10 +258,24 @@ router.post("/crafting/craft", async (req, res) => {
 
     const qualityScores: number[] = [];
     for (const ingredient of recipe.ingredients) {
+      let remaining = ingredient.quantity;
       const invRow = inventoryMap.get(ingredient.itemId);
-      const data = invRow?.itemData as Record<string, unknown> | null;
-      const quality = (typeof data?.quality === "number" ? data.quality : 50);
-      for (let q = 0; q < ingredient.quantity; q++) qualityScores.push(quality);
+      if (invRow && invRow.quantity > 0) {
+        const invUsed = Math.min(invRow.quantity, remaining);
+        const invData = invRow.itemData as Record<string, unknown> | null;
+        const invQuality = (typeof invData?.quality === "number" ? invData.quality : 50);
+        for (let q = 0; q < invUsed; q++) qualityScores.push(invQuality);
+        remaining -= invUsed;
+      }
+      if (remaining > 0) {
+        const bagRow = bagMap.get(ingredient.itemId);
+        if (bagRow) {
+          const bagUsed = Math.min(bagRow.quantity, remaining);
+          const bagData = bagRow.itemData as Record<string, unknown> | null;
+          const bagQuality = (typeof bagData?.quality === "number" ? bagData.quality : 50);
+          for (let q = 0; q < bagUsed; q++) qualityScores.push(bagQuality);
+        }
+      }
     }
     const resourceQuality = qualityScores.length > 0
       ? Math.round(qualityScores.reduce((a, b) => a + b, 0) / qualityScores.length)
@@ -316,15 +334,39 @@ router.post("/crafting/craft", async (req, res) => {
       }
 
       for (const ingredient of recipe.ingredients) {
-        const invRow = inventoryMap.get(ingredient.itemId)!;
-        const remaining = invRow.quantity - ingredient.quantity;
-        if (remaining <= 0) {
-          await tx.delete(inventoryTable).where(and(eq(inventoryTable.characterId, character.id), eq(inventoryTable.itemId, ingredient.itemId)));
-        } else {
-          await tx
-            .update(inventoryTable)
-            .set({ quantity: remaining })
-            .where(and(eq(inventoryTable.characterId, character.id), eq(inventoryTable.itemId, ingredient.itemId)));
+        let remaining = ingredient.quantity;
+
+        // Consume from inventory first
+        const invRow = inventoryMap.get(ingredient.itemId);
+        if (invRow && invRow.quantity > 0) {
+          const invUsed = Math.min(invRow.quantity, remaining);
+          const invRemaining = invRow.quantity - invUsed;
+          if (invRemaining <= 0) {
+            await tx.delete(inventoryTable).where(and(eq(inventoryTable.characterId, character.id), eq(inventoryTable.itemId, ingredient.itemId)));
+          } else {
+            await tx
+              .update(inventoryTable)
+              .set({ quantity: invRemaining })
+              .where(and(eq(inventoryTable.characterId, character.id), eq(inventoryTable.itemId, ingredient.itemId)));
+          }
+          remaining -= invUsed;
+        }
+
+        // Then consume from gathering bag if still needed
+        if (remaining > 0) {
+          const bagRow = bagMap.get(ingredient.itemId);
+          if (bagRow) {
+            const bagUsed = Math.min(bagRow.quantity, remaining);
+            const bagRemaining = bagRow.quantity - bagUsed;
+            if (bagRemaining <= 0) {
+              await tx.delete(gatheringBagItemsTable).where(and(eq(gatheringBagItemsTable.characterId, character.id), eq(gatheringBagItemsTable.itemId, ingredient.itemId)));
+            } else {
+              await tx
+                .update(gatheringBagItemsTable)
+                .set({ quantity: bagRemaining })
+                .where(and(eq(gatheringBagItemsTable.characterId, character.id), eq(gatheringBagItemsTable.itemId, ingredient.itemId)));
+            }
+          }
         }
       }
 
