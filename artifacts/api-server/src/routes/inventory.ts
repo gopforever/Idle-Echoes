@@ -1,9 +1,13 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { charactersTable, inventoryTable } from "@workspace/db/schema";
-import { eq, and } from "drizzle-orm";
+import { charactersTable, inventoryTable, aaPointsTable } from "@workspace/db/schema";
+import { eq, and, gt } from "drizzle-orm";
 import { getItemById, isNoSell, type Item } from "../lib/gameData.js";
 import { getOrCreateCharacter } from "./character.js";
+import { computeStats, applyAABonuses, makeZeroAABonuses } from "../lib/eq2Formulas.js";
+import { AA_TABS } from "../lib/eq2Data.js";
+
+const ALL_AA_NODES = AA_TABS.flatMap((tab: { nodes: unknown[] }) => tab.nodes) as Array<{ id: string; effect: string; effectValue: number; effectPerRank: number }>;
 
 const router: IRouter = Router();
 
@@ -29,6 +33,77 @@ async function resolveItem(itemId: string, characterId: number): Promise<Record<
 function gearValue(itemId: string, itemData: Record<string, unknown>): string | Record<string, unknown> {
   if (!getItemById(itemId)) return { ...itemData, id: itemId };
   return itemId;
+}
+
+async function recomputeMaxStats(
+  character: Awaited<ReturnType<typeof getOrCreateCharacter>>,
+  gear: Record<string, unknown>,
+): Promise<{ newMaxHealth: number; newMaxPower: number }> {
+  const baseStats = character.baseStats as { strength: number; agility: number; stamina: number; intelligence: number; wisdom: number; charisma: number };
+
+  const nodeDefsMap = new Map(ALL_AA_NODES.map(n => [n.id, n]));
+  const investedRows = await db.select().from(aaPointsTable).where(and(eq(aaPointsTable.characterId, character.id), gt(aaPointsTable.rank, 0)));
+  const investedNodes = investedRows
+    .map((r: { nodeId: string; rank: number }) => {
+      const def = nodeDefsMap.get(r.nodeId);
+      if (!def) return null;
+      return { effect: def.effect, currentRank: r.rank, effectValue: def.effectValue, effectPerRank: def.effectPerRank };
+    })
+    .filter((n: unknown): n is NonNullable<typeof n> => n !== null);
+  const aaBonuses = investedNodes.length > 0 ? applyAABonuses(investedNodes) : makeZeroAABonuses();
+
+  let gearHealth = 0, gearPower = 0;
+  let gearAttackRating = 0, gearDefenseRating = 0, gearMitigation = 0;
+  let gearHaste = 0, gearCritChance = 0, gearCritBonus = 0;
+  let gearWeaponDamageMin = 0, gearWeaponDamageMax = 0, gearWeaponDelay = 2.0;
+  let hasWeapon = false;
+
+  for (const slotValue of Object.values(gear)) {
+    let s: Record<string, number> | null = null;
+    if (typeof slotValue === "string") {
+      const it = getItemById(slotValue);
+      if (it?.stats) s = it.stats as Record<string, number>;
+    } else if (slotValue && typeof slotValue === "object") {
+      const obj = slotValue as Record<string, unknown>;
+      if (obj.stats && typeof obj.stats === "object") s = obj.stats as Record<string, number>;
+    }
+    if (!s) continue;
+    gearHealth        += s.health        || 0;
+    gearPower         += s.power         || 0;
+    gearAttackRating  += s.attackRating  || 0;
+    gearDefenseRating += s.defenseRating || 0;
+    gearMitigation    += s.mitigation    || 0;
+    gearHaste         += s.haste         || 0;
+    gearCritChance    += s.critChance    || 0;
+    gearCritBonus     += s.critBonus     || 0;
+    if (s.weaponDamageMin) {
+      gearWeaponDamageMin = s.weaponDamageMin;
+      gearWeaponDamageMax = s.weaponDamageMax || s.weaponDamageMin * 2;
+      gearWeaponDelay = s.weaponDelay || 2.0;
+      hasWeapon = true;
+    }
+  }
+
+  if (!hasWeapon) {
+    gearWeaponDamageMin = baseStats.strength * 0.5 + character.level;
+    gearWeaponDamageMax = baseStats.strength * 1.0 + character.level * 2;
+  }
+
+  const computed = computeStats({
+    level: character.level, ...baseStats,
+    gearAttackRating, gearDefenseRating, gearMitigation,
+    gearHaste, gearCritChance, gearCritBonus,
+    gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay,
+    gearHealth, gearPower,
+  }, aaBonuses);
+
+  const newMaxHealth = Math.max(1, Math.floor(
+    (baseStats.stamina * 10 + 50 + (character.level - 1) * 15 + gearHealth)
+    * (1 + aaBonuses.maxHpPercent / 100)
+  ));
+  const newMaxPower = computed.totalPower;
+
+  return { newMaxHealth, newMaxPower };
 }
 
 router.get("/inventory/gear", async (req, res) => {
@@ -115,7 +190,10 @@ router.post("/inventory/equip", async (req, res) => {
     await db.delete(inventoryTable).where(
       and(eq(inventoryTable.characterId, characterId), eq(inventoryTable.itemId, itemId))
     );
-    await db.update(charactersTable).set({ gear, updatedAt: new Date() }).where(eq(charactersTable.id, character.id));
+    const { newMaxHealth, newMaxPower } = await recomputeMaxStats(character, gear);
+    const newHealth = Math.min(character.health, newMaxHealth);
+    const newPower  = Math.min(character.power,  newMaxPower);
+    await db.update(charactersTable).set({ gear, maxHealth: newMaxHealth, maxPower: newMaxPower, health: newHealth, power: newPower, updatedAt: new Date() }).where(eq(charactersTable.id, character.id));
 
     const formattedGear: Record<string, unknown> = {};
     for (const [gSlot, gValue] of Object.entries(gear)) {
@@ -165,7 +243,10 @@ router.post("/inventory/unequip", async (req, res) => {
     }
 
     delete gear[slot];
-    await db.update(charactersTable).set({ gear, updatedAt: new Date() }).where(eq(charactersTable.id, character.id));
+    const { newMaxHealth, newMaxPower } = await recomputeMaxStats(character, gear);
+    const newHealth = Math.min(character.health, newMaxHealth);
+    const newPower  = Math.min(character.power,  newMaxPower);
+    await db.update(charactersTable).set({ gear, maxHealth: newMaxHealth, maxPower: newMaxPower, health: newHealth, power: newPower, updatedAt: new Date() }).where(eq(charactersTable.id, character.id));
 
     const formattedGear: Record<string, unknown> = {};
     for (const [gSlot, gValue] of Object.entries(gear)) {
