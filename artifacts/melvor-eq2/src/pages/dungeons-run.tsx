@@ -578,15 +578,37 @@ export default function DungeonsRunPage() {
     remainingEnemiesRef.current = runState?.remainingEnemies ?? [];
   }, [runState?.remainingEnemies]);
 
+  const lastEngagedEnemyIdRef = React.useRef<string | null>(null);
+
+  // When combat transitions from active → inactive, immediately refetch dungeon
+  // run so remainingEnemies is fresh before the auto-loop fires.
+  const prevCombatActiveRef = React.useRef<boolean>(false);
+  React.useEffect(() => {
+    const wasActive = prevCombatActiveRef.current;
+    const isActive = !!combatState?.active;
+    prevCombatActiveRef.current = isActive;
+
+    if (wasActive && !isActive) {
+      queryClient.invalidateQueries({ queryKey: ["dungeon-run-current"] });
+    }
+  }, [combatState?.active, queryClient]);
+
   React.useEffect(() => {
     if (combatState?.active || !autoCombat || startCombat.isPending || showBanner) return;
     const remaining = remainingEnemiesRef.current;
     if (!remaining || remaining.length === 0) return;
-    const nextEnemyId = remaining[0]?.id;
+    // Skip the last engaged enemy in case remainingEnemies ref is still stale
+    const nextEnemy = remaining.find(e => e.id !== lastEngagedEnemyIdRef.current) ?? remaining[0];
+    const nextEnemyId = nextEnemy?.id;
     if (!nextEnemyId) return;
+    // Only one enemy left and it's the one we just killed — wait for fresh data
+    if (nextEnemyId === lastEngagedEnemyIdRef.current) return;
     const timer = setTimeout(() => {
       startCombat.mutate({ data: { enemyId: nextEnemyId } }, {
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["dungeon-run-current"] }),
+        onSuccess: () => {
+          lastEngagedEnemyIdRef.current = nextEnemyId;
+          queryClient.invalidateQueries({ queryKey: ["dungeon-run-current"] });
+        },
       });
     }, 1500);
     return () => clearTimeout(timer);
@@ -612,6 +634,7 @@ export default function DungeonsRunPage() {
           party: data.party ?? [],
         });
       } else {
+        lastEngagedEnemyIdRef.current = null;
         queryClient.invalidateQueries({ queryKey: ["dungeon-run-current"] });
         if (data.nextFloor?.enemies && Array.isArray(data.nextFloor.enemies)) {
           remainingEnemiesRef.current = data.nextFloor.enemies as ScaledEnemy[];
@@ -632,9 +655,15 @@ export default function DungeonsRunPage() {
   });
 
   const handleFightEnemy = (enemyId: string) => {
+    lastEngagedEnemyIdRef.current = enemyId;
     startCombat.mutate(
       { data: { enemyId } },
-      { onSuccess: () => queryClient.invalidateQueries({ queryKey: getGetCombatStateQueryKey() }) }
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: getGetCombatStateQueryKey() });
+          queryClient.invalidateQueries({ queryKey: ["dungeon-run-current"] });
+        },
+      }
     );
   };
 
