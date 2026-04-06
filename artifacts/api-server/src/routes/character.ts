@@ -152,6 +152,7 @@ router.get("/character/stats", async (req, res) => {
       gearMitigation    += s.mitigation || 0;
       gearHaste         += s.haste || 0;
       gearCritChance    += s.critChance || 0;
+      gearCritBonus     += s.critBonus || 0;
       gearHealth        += s.health || 0;
       gearPower         += s.power || 0;
       if (s.weaponDamageMin) {
@@ -187,10 +188,17 @@ router.get("/character/stats", async (req, res) => {
       gearHealth, gearPower,
     }, aaBonuses);
 
+    const maxHealth = Math.max(1, Math.floor(
+      (baseStats.stamina * 10 + 50 + (character.level - 1) * 15 + gearHealth)
+      * (1 + aaBonuses.maxHpPercent / 100)
+    ));
+
     const gearScore = computeGearScore(gear as Record<string, string>);
 
     res.json({
       ...computed,
+      maxHealth,
+      maxPower: computed.totalPower,
       spellCritChance: computed.critChance,
       spellCritBonus: computed.critBonus,
       mountSpeedBonus: 0,

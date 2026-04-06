@@ -78,6 +78,7 @@ interface ComputedStats {
   critChance: number; critBonus: number; haste: number; dps: number;
   totalPower: number; spellCritChance: number; spellCritBonus: number;
   weaponDamageMin: number; weaponDamageMax: number; mountSpeedBonus: number;
+  maxHealth?: number; maxPower?: number;
 }
 
 interface AANode {
@@ -1153,8 +1154,8 @@ export default function CharacterSheet() {
                         { label: "Spell Crit Chance", val: `${stats.spellCritChance}%` },
                         { label: "Spell Crit Bonus",  val: `${stats.spellCritBonus}%` },
                         { label: "Total Power",       val: stats.totalPower.toLocaleString() },
-                        { label: "Max Health",        val: p.maxHealth.toLocaleString() },
-                        { label: "Max Power",         val: p.maxPower.toLocaleString() },
+                        { label: "Max Health",        val: (stats.maxHealth ?? p.maxHealth).toLocaleString() },
+                        { label: "Max Power",         val: (stats.maxPower ?? p.maxPower).toLocaleString() },
                       ].map(({ label, val }) => (
                         <div key={label} className="flex justify-between text-sm">
                           <span className="text-slate-500">{label}</span>
