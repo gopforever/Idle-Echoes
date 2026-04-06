@@ -1021,7 +1021,9 @@ router.post("/combat/tick", async (req, res) => {
         progressFactionObjectives(alignFactionId, newStanding).catch(() => {});
       }
 
-      if (character.autoLoop) {
+      // Skip server-side auto-loop inside dungeon runs — the dungeon frontend controls
+      // which enemy to fight next; re-engaging the same enemy would break floor progression.
+      if (character.autoLoop && activeRunType !== "dungeon") {
         const updatedChar = await getOrCreateCharacter(req.characterId);
         const [updatedState] = await db.update(combatStateTable).set({
           active: true,
