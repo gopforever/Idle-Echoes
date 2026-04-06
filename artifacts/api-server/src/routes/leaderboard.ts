@@ -573,9 +573,12 @@ router.get("/leaderboard/ghosts/top-by-role", async (_req, res) => {
     function ghostRole(archetype: string, cls: string): string {
       const archetypeLower = archetype.toLowerCase();
       const clsLower = cls.toLowerCase();
-      if (archetypeLower === "fighter" && (clsLower.includes("guard") || clsLower.includes("brawl") || clsLower.includes("shadow") || clsLower.includes("paladin") || clsLower.includes("shadow knight"))) return "Tank";
-      if (archetypeLower === "fighter") return "Tank";
       if (archetypeLower === "priest") return "Healer";
+      if (archetypeLower === "fighter") {
+        // Brawlers (Monk, Bruiser) are DPS-oriented in EQ2; all other fighters are tanks
+        if (clsLower.includes("monk") || clsLower.includes("bruiser")) return "DPS";
+        return "Tank";
+      }
       return "DPS";
     }
 
@@ -592,7 +595,13 @@ router.get("/leaderboard/ghosts/top-by-role", async (_req, res) => {
 
     for (const g of ghostPlayers) {
       const gear = (g.gear as Record<string, unknown>) ?? {};
-      const gearScore = computeGearScore(gear as Record<string, string>);
+      const gearScore = computeGearScore(
+        Object.entries(gear).map(([slot, val]) => ({
+          level: (val as Record<string, unknown>)?.level as number ?? 0,
+          rarity: (val as Record<string, unknown>)?.rarity as string ?? "common",
+          slot,
+        })),
+      );
       const dungeonClears = dungMap.get(g.id) ?? 0;
       const role = ghostRole(g.archetype, g.class);
       const score = gearScore * 2 + g.level * 50 + g.killCount * 0.1 + dungeonClears * 100;
