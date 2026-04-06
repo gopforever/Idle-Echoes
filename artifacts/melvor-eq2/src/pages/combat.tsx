@@ -5,10 +5,12 @@ import {
   useGetCombatState,
   useStartCombat,
   useGetEnemies,
+  useGetSkillsSummary,
   getGetCombatStateQueryKey,
 } from "@workspace/api-client-react";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Skull } from "lucide-react";
 import { CombatHud, EnemyCard } from "@/components/game/combat-hud";
@@ -20,6 +22,9 @@ export default function Combat() {
   const { data: combatState } = useGetCombatState();
   const { data: enemies } = useGetEnemies({ zone: character?.zone });
   const startCombat = useStartCombat();
+
+  const { data: skillsSummary } = useGetSkillsSummary();
+  const activeSkills = (skillsSummary?.skills ?? []).filter((s: any) => s.isTraining).slice(0, 4);
 
   const [autoCombat, setAutoCombat] = React.useState(true);
 
@@ -80,6 +85,29 @@ export default function Combat() {
             ))}
           </div>
         </ScrollArea>
+        {activeSkills.length > 0 && (
+          <div className="shrink-0 border-t border-slate-800/50 bg-slate-900/40 p-3">
+            <div className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold mb-2">Idle Skills</div>
+            <div className="space-y-2">
+              {activeSkills.map((skill: any) => {
+                const pct = Math.min(100, ((skill.xp ?? 0) / Math.max(1, skill.xpToNext ?? 1)) * 100);
+                return (
+                  <div key={skill.id}>
+                    <div className="flex justify-between text-[10px] mb-0.5">
+                      <span className="text-emerald-400 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
+                        {skill.name}
+                      </span>
+                      <span className="text-slate-500 tabular-nums">Lv {skill.level}</span>
+                    </div>
+                    <Progress value={pct} className="h-1 bg-slate-800 rounded-full"
+                      indicatorClassName="bg-emerald-600 rounded-full" />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </Card>
     </div>
   );

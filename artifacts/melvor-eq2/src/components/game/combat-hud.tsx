@@ -475,7 +475,15 @@ export function EnemyCard({ enemy, isActive, isInCombat, onFight, isPending }: {
             <div className={cn("text-xs font-bold truncate", enemy.isBoss ? "text-purple-300" : isActive ? "text-amber-300" : "text-slate-200")}>
               {enemy.name}
             </div>
-            <div className="text-[10px] text-slate-600">Lv {enemy.level} · {enemy.xpReward} XP</div>
+            <div className="flex items-center gap-1 text-[10px] text-slate-600">
+              <span>Lv {enemy.level}</span>
+              {(() => { const stars = enemyStars(enemy.level, enemy.isBoss); return (
+                <span className="text-amber-500/80">
+                  {"★".repeat(stars)}
+                  {"☆".repeat(Math.max(0, 3 - stars))}
+                </span>
+              ); })()}
+            </div>
           </div>
         </div>
         <div className="flex items-center gap-1 shrink-0 ml-2">
@@ -525,6 +533,30 @@ export function EnemyCard({ enemy, isActive, isInCombat, onFight, isPending }: {
       </AnimatePresence>
     </div>
   );
+}
+
+// ── Utility helpers ──────────────────────────────────────────────────────────
+
+function ElapsedTimer({ startMs }: { startMs: number }) {
+  const [elapsed, setElapsed] = React.useState(0);
+  React.useEffect(() => {
+    const id = setInterval(() => setElapsed(Math.floor((Date.now() - startMs) / 1000)), 1000);
+    return () => clearInterval(id);
+  }, [startMs]);
+  const m = Math.floor(elapsed / 60);
+  const s = elapsed % 60;
+  return (
+    <div className="text-[9px] text-slate-600 tabular-nums">
+      ⏱ {m}m {String(s).padStart(2, "0")}s
+    </div>
+  );
+}
+
+function enemyStars(level: number, isBoss: boolean): number {
+  if (isBoss) return 3;
+  if (level >= 40) return 2;
+  if (level >= 20) return 1;
+  return 0;
 }
 
 // ── Main CombatHud ─────────────────────────────────────────────────────────────
@@ -829,10 +861,16 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
               </motion.div>
             )}
             {combatState.active && (
-              <div className="flex flex-col items-center gap-0">
+              <div className="flex flex-col items-center gap-0.5 mt-1">
                 <div className="text-[11px] font-bold text-orange-400 tabular-nums">⚔ {fightDps} DPS</div>
                 {fightTotalDamage > 0 && (
                   <div className="text-[9px] text-slate-600 tabular-nums">{Math.round(fightTotalDamage).toLocaleString()} total</div>
+                )}
+                {(character.killCount ?? 0) > 0 && (
+                  <div className="text-[9px] text-slate-500 tabular-nums">☠ {(character.killCount ?? 0).toLocaleString()} kills</div>
+                )}
+                {(combatState as any).combatStartMs && (
+                  <ElapsedTimer startMs={(combatState as any).combatStartMs} />
                 )}
               </div>
             )}
