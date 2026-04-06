@@ -313,43 +313,68 @@ export function xpForLevel(level: number): number {
 }
 
 /**
- * Gear Score: WoW GearScore-style slot-weighted formula.
- * Rarity multipliers: common=1, uncommon=2, rare=4, legendary=8, fabled=12, mythical=16
- * Slot weights: weapons (2.5×) > chest/legs (1.25×) > armor (1.0×) > accessories (0.75×) > jewelry (0.5×)
+ * Gear Score: formula matching the authentic WoW GearScoreCalc.lua script.
  *
- * Primary signature: computeGearScore(gear: Record<slot,itemId>) where keys are slot names.
- * Legacy signature: computeGearScore(items: Array<{level,rarity,slot?}>) also supported.
+ * itemGS = floor((itemLevel / rarityDivisor) * slotModifier * enchantModifier * GLOBAL_SCALE)
+ *
+ * Rarity is a DIVISOR — lower value = rarer = higher GS contribution.
+ * Matches rarityModifiers from GearScoreCalc.lua.
  */
+export const RARITY_GS_DIVISOR: Record<string, number> = {
+  poor:      3.5,
+  common:    3.0,
+  uncommon:  2.5,
+  rare:      1.76,
+  epic:      1.6,    // not used in game but keep for completeness
+  legendary: 1.4,
+  fabled:    1.3,    // one tier above legendary
+  mythical:  1.2,    // highest tier
+};
+
+// Deprecated aliases — kept for backward compatibility
+/** @deprecated Use RARITY_GS_DIVISOR instead */
 export const RARITY_GS_MULTIPLIER: Record<string, number> = {
   common: 1, uncommon: 2, rare: 4, legendary: 8, fabled: 12, mythical: 16,
 };
 
 /**
- * Per-slot weight for Gear Score computation.
- * Mirrors the WoW GearScoreLite approach: weapons carry the most weight,
- * jewelry the least. Average weight across all 18 slots ≈ 1.0 so total GS
- * remains on a comparable scale to the previous flat formula.
+ * Per-slot modifiers from GearScoreCalc.lua itemTypeInfo.
+ * Maps our slot names to the corresponding Lua INVTYPE values.
  */
-export const SLOT_GS_WEIGHT: Record<string, number> = {
-  primary:   2.5,
-  secondary: 2.5,
-  ranged:    2.5,
-  chest:     1.25,
-  legs:      1.25,
-  head:      1.0,
-  shoulder:  1.0,
-  hands:     1.0,
-  feet:      1.0,
-  back:      0.75,
-  waist:     0.75,
-  wrist:     0.75,
-  neck:      0.75,
-  charm:     0.75,
-  earLeft:   0.5,
-  earRight:  0.5,
-  ringLeft:  0.5,
-  ringRight: 0.5,
+export const SLOT_GS_MODIFIER: Record<string, number> = {
+  primary:   1.0,    // INVTYPE_WEAPONMAINHAND
+  secondary: 1.0,    // INVTYPE_WEAPONOFFHAND / INVTYPE_SHIELD
+  ranged:    0.3164, // INVTYPE_RANGED / INVTYPE_RANGEDRIGHT
+  head:      1.0,    // INVTYPE_HEAD
+  shoulder:  0.75,   // INVTYPE_SHOULDER
+  chest:     1.0,    // INVTYPE_CHEST / INVTYPE_ROBE
+  waist:     0.75,   // INVTYPE_WAIST
+  legs:      1.0,    // INVTYPE_LEGS
+  feet:      0.75,   // INVTYPE_FEET
+  wrist:     0.5625, // INVTYPE_WRIST
+  hands:     0.75,   // INVTYPE_HAND
+  back:      0.5625, // INVTYPE_CLOAK
+  neck:      0.5625, // INVTYPE_NECK
+  ringLeft:  0.5625, // INVTYPE_FINGER
+  ringRight: 0.5625, // INVTYPE_FINGER
+  charm:     0.5625, // INVTYPE_TRINKET
+  earLeft:   0.5625, // no WoW equiv — treat as accessory
+  earRight:  0.5625, // no WoW equiv — treat as accessory
 };
+
+// Deprecated alias — kept for backward compatibility
+/** @deprecated Use SLOT_GS_MODIFIER instead */
+export const SLOT_GS_WEIGHT: Record<string, number> = SLOT_GS_MODIFIER;
+
+const GS_GLOBAL_SCALE = 1.7;
+const GS_ENCHANT_MODIFIER = 1.05; // treat all equippable gear as enchanted
+
+/** Returns the GS contribution of a single item using the WoW GearScoreCalc.lua formula. */
+export function computeItemGSServer(level: number, rarity: string, slot: string): number {
+  const divisor = RARITY_GS_DIVISOR[rarity] ?? RARITY_GS_DIVISOR.common;
+  const slotMod = SLOT_GS_MODIFIER[slot] ?? 1.0;
+  return Math.floor((level / divisor) * slotMod * GS_ENCHANT_MODIFIER * GS_GLOBAL_SCALE);
+}
 
 export function computeGearScore(gear: Record<string, string>): number;
 export function computeGearScore(equippedItems: Array<{ level: number; rarity: string; slot?: string }>): number;
@@ -358,39 +383,45 @@ export function computeGearScore(
 ): number {
   if (Array.isArray(input)) {
     return input.reduce((sum, item) => {
-      const mult = RARITY_GS_MULTIPLIER[item.rarity] ?? 1;
-      const slotWeight = SLOT_GS_WEIGHT[item.slot ?? ""] ?? 1.0;
-      return sum + Math.round(item.level * slotWeight * mult);
+      return sum + computeItemGSServer(item.level, item.rarity, item.slot ?? "");
     }, 0);
   }
-  // gear: Record<slot, itemId> — look up each item using the slot key for weighting
+  // gear: Record<slot, itemId | itemObject> — look up each item using the slot key for weighting.
+  // DB column characters.gear is JSONB and may contain either a plain item ID string or a full
+  // resolved item object. Handle both cases.
   // Import is deferred to avoid circular dep risk; gameData does not import eq2Formulas
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const { getItemById } = require("./gameData.js") as typeof import("./gameData.js");
   return Object.entries(input).reduce((sum, [slot, itemId]) => {
-    if (!itemId || typeof itemId !== "string") return sum;
-    const item = getItemById(itemId);
-    if (!item) return sum;
-    const mult = RARITY_GS_MULTIPLIER[item.rarity] ?? 1;
-    const slotWeight = SLOT_GS_WEIGHT[slot] ?? 1.0;
-    return sum + Math.round(item.level * slotWeight * mult);
+    if (!itemId) return sum;
+    if (typeof itemId === "string") {
+      const item = getItemById(itemId);
+      if (!item) return sum;
+      return sum + computeItemGSServer(item.level, item.rarity, slot);
+    }
+    // itemId is an already-resolved item object stored as JSONB
+    const obj = itemId as Record<string, unknown>;
+    const level  = typeof obj.level  === "number" ? obj.level  : 0;
+    const rarity = typeof obj.rarity === "string" ? obj.rarity : "common";
+    return sum + computeItemGSServer(level, rarity, slot);
   }, 0);
 }
 
 /**
  * Minimum Gear Score required to enter a dungeon at a given difficulty.
- * Calibrated for the slot-weighted formula where all weapons are 2.5×.
- * With weapons at 2.5×, the GS scale is significantly amplified vs the old flat formula.
- * Tier benchmarks (typical player at that threshold):
- *  - expert   ~100: starter uncommon weapon (lv8 = 40 GS) + a couple uncommon armor pieces
- *  - legendary ~500: rare weapon (lv20 = 200 GS) + uncommon/rare in most other slots
- *  - mythical ~1500: legendary/fabled weapons (lv35+ = 875+ GS) + rare armor
+ * Calibrated for the WoW GearScoreCalc.lua formula (rarity as divisor, GLOBAL_SCALE=1.7).
+ * With the new formula, a level-20 rare weapon scores ~20 GS; a full set of
+ * level-20 rare gear across all 18 slots totals roughly 180–220 GS.
+ * Tier benchmarks:
+ *  - expert    30: a few uncommon pieces
+ *  - legendary 100: mostly rare gear around level 15–20
+ *  - mythical  250: legendary/fabled gear at higher levels
  */
 export const DUNGEON_GS_GATE: Record<string, number> = {
   normal:    0,
-  expert:    100,
-  legendary: 500,
-  mythical:  1500,
+  expert:    30,
+  legendary: 100,
+  mythical:  250,
 };
 
 /**
