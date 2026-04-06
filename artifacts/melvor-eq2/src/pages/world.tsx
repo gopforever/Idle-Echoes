@@ -721,7 +721,10 @@ function ChampionsTab({ onSelectPlayer }: { onSelectPlayer: (player: any) => voi
   }>({
     queryKey: ["champions-by-role"],
     queryFn: () =>
-      fetch(apiUrl("/api/leaderboard/ghosts/top-by-role")).then(r => r.json()),
+      fetch(apiUrl("/api/leaderboard/ghosts/top-by-role")).then(r => {
+        if (!r.ok) throw new Error(`Failed to fetch champions: ${r.status}`);
+        return r.json();
+      }),
     refetchInterval: 30_000,
   });
 
