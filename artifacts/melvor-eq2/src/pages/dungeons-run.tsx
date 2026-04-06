@@ -579,7 +579,7 @@ export default function DungeonsRunPage() {
   }, [runState?.remainingEnemies]);
 
   React.useEffect(() => {
-    if (combatState?.active || !autoCombat || startCombat.isPending) return;
+    if (combatState?.active || !autoCombat || startCombat.isPending || showBanner) return;
     const remaining = remainingEnemiesRef.current;
     if (!remaining || remaining.length === 0) return;
     const nextEnemyId = remaining[0]?.id;
@@ -590,7 +590,7 @@ export default function DungeonsRunPage() {
       });
     }, 1500);
     return () => clearTimeout(timer);
-  }, [combatState?.active, autoCombat, startCombat.isPending]);
+  }, [combatState?.active, autoCombat, startCombat.isPending, showBanner]);
 
   const advanceMutation = useMutation({
     mutationFn: async () => {
@@ -613,6 +613,9 @@ export default function DungeonsRunPage() {
         });
       } else {
         queryClient.invalidateQueries({ queryKey: ["dungeon-run-current"] });
+        if (data.nextFloor?.enemies && Array.isArray(data.nextFloor.enemies)) {
+          remainingEnemiesRef.current = data.nextFloor.enemies as ScaledEnemy[];
+        }
       }
     },
   });
