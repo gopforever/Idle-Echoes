@@ -50,7 +50,7 @@ import { DUNGEONS } from "./dungeonData.js";
 import { RAIDS } from "./raidData.js";
 
 // ─── Simulator version — bump to force a reset of ghost data ─────────────────
-const SIMULATOR_VERSION = 3;
+const SIMULATOR_VERSION = 4;
 
 // ─── Zone registry ────────────────────────────────────────────────────────────
 
