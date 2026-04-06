@@ -26,7 +26,7 @@ const ghostQuoteCache = new Map<string, string>();
 // ─── Helper: safe OpenAI call with fallback ─────────────────────────────────
 async function aiComplete(
   messages: Array<{ role: "system" | "user" | "assistant"; content: string }>,
-  model: string = "gpt-5.2",
+  model: string = "gpt-4o-mini",
   maxTokens: number = 300,
 ): Promise<string> {
   const response = await openai.chat.completions.create({
@@ -88,7 +88,7 @@ Include at least one faction objective per quest that references a faction from 
 Rewards must include realistic xp (100–2000), gold (5–200), a specific item name (EQ2 gear/consumable), and aaXp (10–200).
 Make objectives specific to the zone and class. Vary quest themes — do not repeat same enemy type across quests.`;
 
-  const raw = await aiComplete([{ role: "user", content: prompt }], "gpt-5.2", Math.min(4000, count * 900));
+  const raw = await aiComplete([{ role: "user", content: prompt }], "gpt-4o-mini", Math.min(4000, count * 900));
 
   let parsed: Array<{
     title: string; description: string;
@@ -290,7 +290,7 @@ Keep responses to 2-4 sentences. Be immersive and lore-appropriate. Use EQ2 lore
     const reply = await aiComplete([
       { role: "system", content: systemPrompt },
       { role: "user", content: playerMessage },
-    ], "gpt-5.2", 200);
+    ], "gpt-4o-mini", 200);
 
     // Advance any "talk to NPC" quest objectives for this NPC (fire-and-forget)
     progressTalkObjectives(npcName).catch(() => {});
@@ -330,7 +330,7 @@ Paragraph 3 — Current Legend: Describe their current deeds, reputation in ${ch
 
 Write in third-person chronicle voice — evocative, heroic, mythic. Separate paragraphs with a blank line. No headers or bullet points.`;
 
-    const lore = await aiComplete([{ role: "user", content: prompt }], "gpt-5.2", 700);
+    const lore = await aiComplete([{ role: "user", content: prompt }], "gpt-4o-mini", 700);
 
     // Persist to DB cache
     await db.insert(loreCacheTable).values({ cacheKey, content: lore })
@@ -359,13 +359,13 @@ router.get("/world/player/by-name/:name/quote", async (req, res) => {
     if (!player) {
       // Still generate a quote with just the name
       const prompt = `Generate a short, in-character quote (1-2 sentences) for an adventurer named ${playerName} exploring Norrath. No quotation marks.`;
-      const quote = await aiComplete([{ role: "user", content: prompt }], "gpt-5.2", 80);
+      const quote = await aiComplete([{ role: "user", content: prompt }], "gpt-4o-mini", 80);
       if (quote) ghostQuoteCache.set(cacheKey, quote);
       res.json({ quote, cached: false }); return;
     }
 
     const prompt = `Generate a short, in-character quote (1-2 sentences) for a ${player.level} ${player.race} ${player.class} adventurer named ${player.name} who has ${player.killCount} kills and is exploring ${player.zone} in Norrath. No quotation marks.`;
-    const quote = await aiComplete([{ role: "user", content: prompt }], "gpt-5.2", 100);
+    const quote = await aiComplete([{ role: "user", content: prompt }], "gpt-4o-mini", 100);
     if (quote) ghostQuoteCache.set(cacheKey, quote);
     res.json({ quote, cached: false });
   } catch (err) {
@@ -389,7 +389,7 @@ router.get("/world/player/:id/quote", async (req, res) => {
     const prompt = `Generate a short, in-character quote (1-2 sentences) for a ${player.level} ${player.race} ${player.class} adventurer named ${player.name} who has ${player.killCount} kills and is exploring ${player.zone} in Norrath.
 Make it feel authentic to their race/class archetype. No quotation marks around the text.`;
 
-    const quote = await aiComplete([{ role: "user", content: prompt }], "gpt-5.2", 100);
+    const quote = await aiComplete([{ role: "user", content: prompt }], "gpt-4o-mini", 100);
     if (quote) {
       ghostQuoteCache.set(playerId, quote);
     }
@@ -497,7 +497,7 @@ export async function generateBossNarration(
   const narration = await aiComplete([
     { role: "system", content: "You are a dungeon narrator for an EverQuest 2 idle RPG. Respond only with the requested boss speech — no quotation marks, no stage directions, no meta-commentary." },
     { role: "user", content: userContent },
-  ], "gpt-5.2", 150);
+  ], "gpt-4o-mini", 150);
   if (narration) bossNarrationCache.set(cacheKey, narration);
   return narration;
 }
@@ -528,7 +528,7 @@ export async function generateBossClosingLine(
   const line = await aiComplete([
     { role: "system", content: "You are a boss villain in EverQuest 2. Speak only the closing line — no quotation marks, no stage directions." },
     { role: "user", content: prompt },
-  ], "gpt-5.2", 100);
+  ], "gpt-4o-mini", 100);
   if (line) bossClosingLineCache.set(cacheKey, line);
   return line;
 }
@@ -614,7 +614,7 @@ Respond with ONLY valid JSON array (no markdown):
   }
 ]`;
 
-    const raw = await aiComplete([{ role: "user", content: prompt }], "gpt-5.2", 600);
+    const raw = await aiComplete([{ role: "user", content: prompt }], "gpt-4o-mini", 600);
     let nameLorePairs: { name: string; lore: string }[] = [];
     try {
       const jsonStr = raw.replace(/^```json?\s*/i, "").replace(/```\s*$/, "").trim();
