@@ -4,6 +4,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiUrl } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { DUNGEON_GS_GATE } from "@workspace/api-client-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -70,9 +71,9 @@ const DIFF_COLORS: Record<string, { ring: string; label: string; bg: string; bad
 };
 
 function gsBadgeColor(gs: number) {
-  if (gs >= 1500) return "bg-orange-900 text-orange-300 border-orange-700";
-  if (gs >=  500) return "bg-blue-900 text-blue-300 border-blue-700";
-  if (gs >=  100) return "bg-green-900 text-green-300 border-green-700";
+  if (gs >= DUNGEON_GS_GATE.mythical)   return "bg-orange-900 text-orange-300 border-orange-700";
+  if (gs >= DUNGEON_GS_GATE.legendary)  return "bg-blue-900 text-blue-300 border-blue-700";
+  if (gs >= DUNGEON_GS_GATE.expert)     return "bg-green-900 text-green-300 border-green-700";
   return "bg-slate-800 text-slate-400 border-slate-700";
 }
 

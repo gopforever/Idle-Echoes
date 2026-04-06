@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiUrl } from "@/lib/api";
-import { useGetCharacterStats, useGetCombatState } from "@workspace/api-client-react";
+import { useGetCharacterStats, useGetCombatState, DUNGEON_GS_GATE } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -982,11 +982,11 @@ export default function CharacterSheet() {
                     {/* Gear Score badge row */}
                     {stats.gearScore !== undefined && (() => {
                       const gs = stats.gearScore ?? 0;
-                      const gsBadge = gs >= 1500
+                      const gsBadge = gs >= DUNGEON_GS_GATE.mythical
                         ? "bg-orange-950/40 border-orange-700/60 text-orange-300"
-                        : gs >= 500
+                        : gs >= DUNGEON_GS_GATE.legendary
                           ? "bg-blue-950/40 border-blue-700/60 text-blue-300"
-                          : gs >= 100
+                          : gs >= DUNGEON_GS_GATE.expert
                             ? "bg-green-950/40 border-green-700/60 text-green-300"
                             : "bg-slate-800/40 border-slate-700/50 text-slate-400";
                       return (
