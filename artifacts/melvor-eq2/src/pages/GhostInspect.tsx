@@ -40,7 +40,7 @@ interface GhostProfile {
   bossKills: number;
   generation: number;
   parentId: number | null;
-  inheritedTraits: string[];
+  inheritedTraits: string[] | null | undefined;
   gearScore: number;
   dungeonClears: DungeonClear[];
   raidClears: RaidClear[];
@@ -206,9 +206,9 @@ export function GhostInspect({
                     <span className="text-xs text-slate-500">Child of #{profile.parentId}</span>
                   )}
                 </div>
-                {profile.inheritedTraits.length > 0 && (
+                {(profile.inheritedTraits?.length ?? 0) > 0 && (
                   <div className="flex gap-1 mt-2 flex-wrap">
-                    {profile.inheritedTraits.map(trait => (
+                    {(profile.inheritedTraits ?? []).map(trait => (
                       <span key={trait} className="text-xs px-1.5 py-0.5 rounded bg-slate-700/60 text-slate-400 border border-slate-600/50">
                         {trait}
                       </span>
