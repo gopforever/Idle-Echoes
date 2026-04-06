@@ -44,7 +44,7 @@ interface Profile {
     description: string; lore: string; primaryStat: string; armorType: string;
     role: string; statBonuses: Record<string, number>; abilities: ClassAbility[];
   };
-  statBreakdown: Record<string, { base: number; race: number; class: number; total: number }>;
+  statBreakdown: Record<string, { base: number; race: number; class: number; gear: number; total: number }>;
   heroicCompletions: number;
 }
 
@@ -587,18 +587,28 @@ function PaperDoll({
 }
 
 function StatBreakdownRow({ stat, p }: { stat: string; p: Profile }) {
-  // Formula per task: base = total - race bonus - class bonus
-  const total      = p.baseStats[stat] ?? 0;
   const raceBonus  = p.raceDef.bonuses[stat] ?? 0;
   const classBonus = p.classDef.statBonuses[stat] ?? 0;
-  const base       = total - raceBonus - classBonus; // derived base (includes gear)
 
-  // For the segmented bar we treat positive/negative bonuses separately
+  // Sum primary-attribute bonuses from all equipped gear items
+  const gearBonus = Object.values(p.gear).reduce((sum, item) => {
+    if (!item?.stats) return sum;
+    return sum + ((item.stats as Record<string, number>)[stat] ?? 0);
+  }, 0);
+
+  // base = stored DB value (naked base baked in at creation, includes race+class)
+  const base  = p.baseStats[stat] ?? 0;
+  // rawBase = base minus the race/class that were baked in at creation
+  const rawBase = base - raceBonus - classBonus;
+  // total = everything: naked base + race + class + gear
+  const total = base + gearBonus;
+
   const MAX_BAR = 50;
   const clamp = (v: number) => Math.min(100, Math.max(0, (Math.abs(v) / MAX_BAR) * 100));
-  const basePct  = clamp(base);
+  const basePct  = clamp(rawBase);
   const racePct  = clamp(raceBonus);
   const classPct = clamp(classBonus);
+  const gearPct  = clamp(gearBonus);
 
   return (
     <div className="space-y-1">
@@ -616,13 +626,16 @@ function StatBreakdownRow({ stat, p }: { stat: string; p: Profile }) {
       {/* Source labels */}
       <div className="flex flex-wrap items-center gap-3 text-xs">
         <span className="text-slate-500">
-          Base <span className="text-slate-300">{base}</span>
+          Base <span className="text-slate-300">{rawBase}</span>
         </span>
         {raceBonus !== 0 && (
           <span className="text-slate-500">Race <SignedBonus val={raceBonus} /></span>
         )}
         {classBonus !== 0 && (
           <span className="text-slate-500">Class <SignedBonus val={classBonus} /></span>
+        )}
+        {gearBonus !== 0 && (
+          <span className="text-slate-500">Gear <SignedBonus val={gearBonus} /></span>
         )}
       </div>
 
@@ -640,8 +653,15 @@ function StatBreakdownRow({ stat, p }: { stat: string; p: Profile }) {
         {/* Class segment (blue positive / orange negative) */}
         {classBonus !== 0 && (
           <div
-            className={cn("h-full rounded-r-full transition-all", classBonus > 0 ? "bg-blue-500" : "bg-orange-500")}
+            className={cn("h-full transition-all", classBonus > 0 ? "bg-blue-500" : "bg-orange-500")}
             style={{ width: `${classPct}%` }}
+          />
+        )}
+        {/* Gear segment (yellow positive / dark-red negative) */}
+        {gearBonus !== 0 && (
+          <div
+            className={cn("h-full rounded-r-full transition-all", gearBonus > 0 ? "bg-yellow-400" : "bg-red-700")}
+            style={{ width: `${gearPct}%` }}
           />
         )}
       </div>
@@ -1084,7 +1104,7 @@ export default function CharacterSheet() {
                   <div className="flex items-center gap-2">
                     <span className="inline-block w-3 h-2 rounded bg-slate-500" />
                     <span className="text-slate-500">Base</span>
-                    <span>= total − race − class</span>
+                    <span>= naked base (no race/class/gear)</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="inline-block w-3 h-2 rounded bg-green-500" />
@@ -1097,6 +1117,12 @@ export default function CharacterSheet() {
                     <span className="text-blue-400">Class +</span>
                     <span>/ <span className="inline-block w-3 h-2 rounded bg-orange-500 align-middle" /> <span className="text-orange-400">Class −</span></span>
                     <span>from {p.class}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="inline-block w-3 h-2 rounded bg-yellow-400" />
+                    <span className="text-yellow-400">Gear +</span>
+                    <span>/ <span className="inline-block w-3 h-2 rounded bg-red-700 align-middle" /> <span className="text-red-700">Gear −</span></span>
+                    <span>from equipped items</span>
                   </div>
                 </div>
               </CardContent>
