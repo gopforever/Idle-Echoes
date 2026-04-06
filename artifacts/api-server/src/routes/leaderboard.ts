@@ -500,7 +500,13 @@ router.get("/leaderboard/ghost/:ghostId/profile", async (req, res) => {
     const baseStats = g.stats as { strength: number; agility: number; stamina: number; intelligence: number; wisdom: number; charisma: number };
     const gear = (g.gear as Record<string, unknown>) ?? {};
     const gearItems = resolveGearItems(gear);
-    const gearScore = computeGearScore(gear as Record<string, string>);
+    const gearScore = computeGearScore(
+      Object.entries(gear).map(([slot, val]) => ({
+        level: (val as Record<string, unknown>)?.level as number ?? 0,
+        rarity: (val as Record<string, unknown>)?.rarity as string ?? "common",
+        slot,
+      })),
+    );
 
     const gearData = resolveGearStats(gear, g.level, baseStats);
     const aa = makeZeroAABonuses();
