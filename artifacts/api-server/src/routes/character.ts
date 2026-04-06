@@ -136,22 +136,17 @@ router.get("/character/stats", async (req, res) => {
     let gearWeaponDamageMin = 0, gearWeaponDamageMax = 0, gearWeaponDelay = 2.0;
     let gearHealth = 0, gearPower = 0;
     let hasWeapon = false;
-    const equippedItems: Array<{ level: number; rarity: string }> = [];
-
     for (const slotValue of Object.values(gear)) {
       let s: Record<string, number> | null = null;
-      let lvl = 1, rar = "common";
       if (typeof slotValue === "string") {
         const item = getItemById(slotValue);
-        if (item) { s = item.stats as Record<string, number>; lvl = item.level; rar = item.rarity; }
+        if (item) { s = item.stats as Record<string, number>; }
       } else if (slotValue && typeof slotValue === "object") {
         const obj = slotValue as Record<string, unknown>;
         if (obj.stats && typeof obj.stats === "object") s = obj.stats as Record<string, number>;
-        if (typeof obj.level === "number") lvl = obj.level;
-        if (typeof obj.rarity === "string") rar = obj.rarity;
       }
       if (!s) continue;
-      equippedItems.push({ level: lvl, rarity: rar });
+
       gearAttackRating  += s.attackRating || 0;
       gearDefenseRating += s.defenseRating || 0;
       gearMitigation    += s.mitigation || 0;
@@ -192,7 +187,7 @@ router.get("/character/stats", async (req, res) => {
       gearHealth, gearPower,
     }, aaBonuses);
 
-    const gearScore = computeGearScore(equippedItems);
+    const gearScore = computeGearScore(gear as Record<string, string>);
 
     res.json({
       ...computed,
