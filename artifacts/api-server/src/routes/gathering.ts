@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { charactersTable, inventoryTable, skillsTable, gatheringSessionsTable } from "@workspace/db/schema";
+import { charactersTable, skillsTable, gatheringSessionsTable, gatheringBagItemsTable } from "@workspace/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { getOrCreateCharacter } from "./character.js";
 import { getOrCreateSkills } from "./skills.js";
@@ -47,18 +47,17 @@ function itemToRecord(itemId: string) {
   };
 }
 
-async function addItemToInventory(characterId: number, itemId: string, quantity: number) {
+async function addItemToGatheringBag(characterId: number, itemId: string, quantity: number) {
   const itemData = itemToRecord(itemId);
   if (!itemData) return;
   // Atomic increment: try update first so concurrent calls don't overwrite each other.
-  const updated = await db.update(inventoryTable)
-    .set({ quantity: sql`${inventoryTable.quantity} + ${quantity}` })
-    .where(and(eq(inventoryTable.characterId, characterId), eq(inventoryTable.itemId, itemId)))
-    .returning({ id: inventoryTable.id });
+  const updated = await db.update(gatheringBagItemsTable)
+    .set({ quantity: sql`${gatheringBagItemsTable.quantity} + ${quantity}`, updatedAt: new Date() })
+    .where(and(eq(gatheringBagItemsTable.characterId, characterId), eq(gatheringBagItemsTable.itemId, itemId)))
+    .returning({ id: gatheringBagItemsTable.id });
   if (updated.length === 0) {
-    // Item not yet in inventory — insert it. Rare concurrent inserts are safe
-    // because the duplicate will simply error and be ignored by the next update.
-    await db.insert(inventoryTable)
+    // Item not yet in bag — insert it.
+    await db.insert(gatheringBagItemsTable)
       .values({ characterId, itemId, itemData: itemData as Record<string, unknown>, quantity })
       .onConflictDoNothing();
   }
@@ -90,7 +89,7 @@ async function processGatheringTick(
   for (const y of node.yields) {
     const bonus = yieldBonusQty(y.baseQuantity, skillLevel);
     const qty = y.baseQuantity + bonus;
-    await addItemToInventory(characterId, y.itemId, qty);
+    await addItemToGatheringBag(characterId, y.itemId, qty);
     results.push({ itemId: y.itemId, quantity: qty });
   }
 
@@ -98,7 +97,7 @@ async function processGatheringTick(
   if (node.rareYield) {
     const chance = rareChance(skillLevel);
     if (chance > 0 && Math.random() < chance) {
-      await addItemToInventory(characterId, node.rareYield.itemId, node.rareYield.quantity);
+      await addItemToGatheringBag(characterId, node.rareYield.itemId, node.rareYield.quantity);
       results.push({ itemId: node.rareYield.itemId, quantity: node.rareYield.quantity });
       gotRare = true;
     }

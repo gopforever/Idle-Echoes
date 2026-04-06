@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, uniqueIndex, index } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, uniqueIndex, index, jsonb } from "drizzle-orm/pg-core";
 
 export const gatheringSessionsTable = pgTable("gathering_sessions", {
   id: serial("id").primaryKey(),
@@ -16,6 +16,25 @@ export const gatheringSessionsTable = pgTable("gathering_sessions", {
   // at most one active session per character+skill. Drizzle does not support partial indexes
   // in schema definitions, so this constraint is SQL-only and does not appear here.
 ]);
+
+/**
+ * Gathering Bag — unlimited storage for items yielded by gathering.
+ * Items go here instead of inventory; crafting can consume from both.
+ * Unique constraint on (characterId, itemId) enables atomic upsert semantics.
+ */
+export const gatheringBagItemsTable = pgTable("gathering_bag_items", {
+  id: serial("id").primaryKey(),
+  characterId: integer("character_id").notNull(),
+  itemId: text("item_id").notNull(),
+  itemData: jsonb("item_data").notNull().$type<Record<string, unknown>>(),
+  quantity: integer("quantity").notNull().default(1),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (t) => [
+  uniqueIndex("gathering_bag_items_character_item_idx").on(t.characterId, t.itemId),
+]);
+
+export type GatheringBagItem = typeof gatheringBagItemsTable.$inferSelect;
 
 /**
  * Ghost inventory stash — accumulated materials per ghost player before they list on auction.

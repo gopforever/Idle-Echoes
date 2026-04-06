@@ -25,7 +25,7 @@ import {
   ContextMenuItem, ContextMenuSeparator,
 } from "@/components/ui/context-menu";
 import { ExamineDialog, type ExamineItem } from "@/components/game/examine-dialog";
-import { Package, Sword, ShieldCheck, Gem, Boxes, X, TrendingUp, TrendingDown, Minus, ChevronRight } from "lucide-react";
+import { Package, Sword, ShieldCheck, Gem, Boxes, X, TrendingUp, TrendingDown, Minus, ChevronRight, ShoppingBag } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -104,6 +104,15 @@ const GEAR_KEY = ["inventory", "gear"];
 async function fetchGear(): Promise<GearMap> {
   const res = await fetch(apiUrl("/api/inventory/gear"));
   if (!res.ok) throw new Error("Failed to load gear");
+  return res.json();
+}
+
+// ── Gathering Bag endpoint ─────────────────────────────────────────────────────
+
+const GATHERING_BAG_KEY = ["gathering-bag"];
+async function fetchGatheringBag(): Promise<{ items: InventoryItem[] }> {
+  const res = await fetch(apiUrl("/api/gathering-bag"));
+  if (!res.ok) throw new Error("Failed to load gathering bag");
   return res.json();
 }
 
@@ -548,13 +557,15 @@ export default function InventoryPage() {
   const { data: inventory, isLoading } = useGetInventory();
   const { data: character } = useGetCharacter();
   const { data: gear } = useQuery({ queryKey: GEAR_KEY, queryFn: fetchGear });
+  const { data: gatheringBag, isLoading: bagLoading } = useQuery({ queryKey: GATHERING_BAG_KEY, queryFn: fetchGatheringBag });
 
   const equipItem   = useEquipItem();
   const sellItem    = useSellItem();
   const unequipItem = useUnequipItem();
 
-  const [activeTab, setActiveTab] = React.useState("all");
-  const [filter, setFilter]       = React.useState("");
+  const [mainView, setMainView]             = React.useState<"inventory" | "gathering-bag">("inventory");
+  const [activeTab, setActiveTab]           = React.useState("all");
+  const [filter, setFilter]                 = React.useState("");
   const [selectedItem, setSelectedItem]     = React.useState<InventoryItem | null>(null);
   const [selectedGearSlot, setSelectedGearSlot] = React.useState<string | null>(null);
   const [useItemPending, setUseItemPending]     = React.useState(false);
@@ -577,6 +588,7 @@ export default function InventoryPage() {
     queryClient.invalidateQueries({ queryKey: getGetCharacterQueryKey() });
     queryClient.invalidateQueries({ queryKey: getGetCharacterStatsQueryKey() });
     queryClient.invalidateQueries({ queryKey: GEAR_KEY });
+    queryClient.invalidateQueries({ queryKey: GATHERING_BAG_KEY });
   };
 
   const handleEquip = (item: InventoryItem) => {
@@ -665,12 +677,17 @@ export default function InventoryPage() {
   if (isLoading || !inventory) return <Skeleton className="h-[600px] w-full rounded-xl" />;
 
   const allItems = (inventory.items ?? []) as InventoryItem[];
+  const bagItems = (gatheringBag?.items ?? []) as InventoryItem[];
 
   const filteredItems = allItems.filter(item => {
     const matchesTab = activeTab === "all" || item.type === activeTab || (activeTab === "armor" && ["armor", "shield"].includes(item.type));
     const matchesFilter = !filter || item.name.toLowerCase().includes(filter.toLowerCase()) || item.type.toLowerCase().includes(filter.toLowerCase());
     return matchesTab && matchesFilter;
   });
+
+  const filteredBagItems = bagItems.filter(item =>
+    !filter || item.name.toLowerCase().includes(filter.toLowerCase()) || item.type.toLowerCase().includes(filter.toLowerCase())
+  );
 
   const padded = [...filteredItems];
   while (padded.length < Math.max(inventory.maxSlots, 40)) padded.push(null as unknown as InventoryItem);
@@ -681,111 +698,188 @@ export default function InventoryPage() {
   return (
     <div className="flex gap-4 max-w-7xl mx-auto" style={{ height: "calc(100vh - 8.5rem)" }}>
 
-      {/* ── Equipment panel ── */}
-      <div className="w-52 shrink-0 flex flex-col gap-3">
-        <Card className="flex-1 bg-slate-950/80 border-slate-800 overflow-hidden flex flex-col">
-          <div className="px-3 py-2.5 border-b border-slate-800/50 bg-slate-900/40">
-            <div className="text-xs font-bold text-slate-400 flex items-center gap-2">
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-500" /> Equipment
+      {/* ── Equipment panel (hidden while viewing gathering bag) ── */}
+      {mainView === "inventory" && (
+        <div className="w-52 shrink-0 flex flex-col gap-3">
+          <Card className="flex-1 bg-slate-950/80 border-slate-800 overflow-hidden flex flex-col">
+            <div className="px-3 py-2.5 border-b border-slate-800/50 bg-slate-900/40">
+              <div className="text-xs font-bold text-slate-400 flex items-center gap-2">
+                <ShieldCheck className="w-3.5 h-3.5 text-amber-500" /> Equipment
+              </div>
+              {character && <div className="text-[10px] text-slate-600 mt-0.5">{character.name}</div>}
             </div>
-            {character && <div className="text-[10px] text-slate-600 mt-0.5">{character.name}</div>}
+            <div className="flex-1 flex flex-col items-center justify-center gap-2 py-4 px-3">
+              {DISPLAY_SLOTS.map((row, ri) => (
+                <div key={ri} className="flex gap-2 justify-center">
+                  {row.map((slot, ci) => {
+                    const isDup = ri === 0 && slot === "ear" && ci === 2;
+                    const item = isDup ? gear?.["ear2"] : gear?.[slot];
+                    return (
+                      <GearSlot
+                        key={`${ri}-${ci}`}
+                        slot={slot}
+                        item={item}
+                        onClick={() => handleGearSlotClick(isDup ? "ear2" : slot)}
+                      />
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+            <div className="px-3 py-2 border-t border-slate-800/40 text-center text-[10px] text-slate-700">
+              Click equipped item to unequip
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* ── Main panel ── */}
+      <div className="flex-1 flex flex-col gap-3 min-w-0 min-h-0">
+        <Card className="flex-1 bg-card/30 border-slate-800 flex flex-col overflow-hidden">
+          {/* View switcher header */}
+          <div className="px-4 py-2.5 border-b border-slate-800/50 bg-slate-900/40 flex items-center gap-3 shrink-0">
+            <div className="flex gap-1 bg-slate-900/60 rounded-lg p-0.5">
+              <button
+                onClick={() => { setMainView("inventory"); setSelectedItem(null); }}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all",
+                  mainView === "inventory"
+                    ? "bg-amber-900/40 text-amber-400 border border-amber-800/40"
+                    : "text-slate-600 hover:text-slate-400"
+                )}
+              >
+                <Package className="w-3 h-3" />
+                Inventory
+                <span className="text-[10px] text-slate-600 font-normal">{inventory.usedSlots}/{inventory.maxSlots}</span>
+              </button>
+              <button
+                onClick={() => { setMainView("gathering-bag"); setSelectedItem(null); setSelectedGearSlot(null); }}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all",
+                  mainView === "gathering-bag"
+                    ? "bg-emerald-900/40 text-emerald-400 border border-emerald-800/40"
+                    : "text-slate-600 hover:text-slate-400"
+                )}
+              >
+                <ShoppingBag className="w-3 h-3" />
+                Gathering Bag
+                <span className="text-[10px] text-slate-600 font-normal">{bagItems.length}</span>
+              </button>
+            </div>
+            <div className="flex-1" />
+            {mainView === "inventory" && (
+              <>
+                <div className="text-xs text-amber-500 font-bold">💰 {(character?.gold ?? 0).toLocaleString()}g</div>
+                <Input
+                  placeholder="Search items…"
+                  value={filter}
+                  onChange={e => setFilter(e.target.value)}
+                  className="h-7 w-40 bg-slate-900 border-slate-700 text-xs"
+                />
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={handleSellAll}
+                  disabled={sellAllPending || allItems.length === 0}
+                  className="h-7 text-[10px] px-2 shrink-0"
+                  title="Sell all inventory items"
+                >
+                  {sellAllPending ? "Selling…" : "Sell All"}
+                </Button>
+              </>
+            )}
+            {mainView === "gathering-bag" && (
+              <Input
+                placeholder="Search items…"
+                value={filter}
+                onChange={e => setFilter(e.target.value)}
+                className="h-7 w-40 bg-slate-900 border-slate-700 text-xs"
+              />
+            )}
           </div>
-          <div className="flex-1 flex flex-col items-center justify-center gap-2 py-4 px-3">
-            {DISPLAY_SLOTS.map((row, ri) => (
-              <div key={ri} className="flex gap-2 justify-center">
-                {row.map((slot, ci) => {
-                  const isDup = ri === 0 && slot === "ear" && ci === 2;
-                  const slotKey = isDup ? "ear2" : slot;
-                  const item = isDup ? gear?.["ear2"] : gear?.[slot];
+
+          {mainView === "inventory" && (
+            <>
+              {/* Item-type tabs */}
+              <div className="flex gap-0.5 px-3 py-2 border-b border-slate-800/30 bg-slate-900/20 shrink-0">
+                {TABS.map(tab => {
+                  const Icon = tab.icon;
                   return (
-                    <GearSlot
-                      key={`${ri}-${ci}`}
-                      slot={slot}
-                      item={item}
-                      onClick={() => handleGearSlotClick(isDup ? "ear2" : slot)}
-                    />
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={cn(
+                        "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all",
+                        activeTab === tab.id
+                          ? "bg-amber-900/30 text-amber-400 border border-amber-800/40"
+                          : "text-slate-600 hover:text-slate-400 hover:bg-slate-800/40"
+                      )}
+                    >
+                      <Icon className="w-3 h-3" />
+                      {tab.label}
+                    </button>
                   );
                 })}
               </div>
-            ))}
-          </div>
-          <div className="px-3 py-2 border-t border-slate-800/40 text-center text-[10px] text-slate-700">
-            Click equipped item to unequip
-          </div>
-        </Card>
-      </div>
 
-      {/* ── Inventory grid ── */}
-      <div className="flex-1 flex flex-col gap-3 min-w-0 min-h-0">
-        <Card className="flex-1 bg-card/30 border-slate-800 flex flex-col overflow-hidden">
-          {/* Header */}
-          <div className="px-4 py-2.5 border-b border-slate-800/50 bg-slate-900/40 flex items-center gap-3 shrink-0">
-            <div className="text-xs font-bold text-slate-400 flex items-center gap-2">
-              <Package className="w-3.5 h-3.5 text-amber-500" />
-              Inventory
-              <span className="text-slate-700 font-normal">{inventory.usedSlots}/{inventory.maxSlots}</span>
-            </div>
-            <div className="text-xs text-amber-500 font-bold ml-1">💰 {(character?.gold ?? 0).toLocaleString()}g</div>
-            <div className="flex-1" />
-            <Input
-              placeholder="Search items…"
-              value={filter}
-              onChange={e => setFilter(e.target.value)}
-              className="h-7 w-40 bg-slate-900 border-slate-700 text-xs"
-            />
-            <Button
-              size="sm"
-              variant="destructive"
-              onClick={handleSellAll}
-              disabled={sellAllPending || allItems.length === 0}
-              className="h-7 text-[10px] px-2 shrink-0"
-              title="Sell all inventory items"
-            >
-              {sellAllPending ? "Selling…" : "Sell All"}
-            </Button>
-          </div>
-
-          {/* Tabs */}
-          <div className="flex gap-0.5 px-3 py-2 border-b border-slate-800/30 bg-slate-900/20 shrink-0">
-            {TABS.map(tab => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={cn(
-                    "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all",
-                    activeTab === tab.id
-                      ? "bg-amber-900/30 text-amber-400 border border-amber-800/40"
-                      : "text-slate-600 hover:text-slate-400 hover:bg-slate-800/40"
+              {/* Inventory grid */}
+              <ScrollArea className="flex-1">
+                <div className="p-4 grid grid-cols-5 sm:grid-cols-7 md:grid-cols-8 xl:grid-cols-9 gap-2">
+                  {padded.map((item, i) =>
+                    item ? (
+                      <ItemCell
+                        key={item.id + i}
+                        item={item}
+                        selected={selectedItem?.id === item.id}
+                        onClick={() => handleItemClick(item)}
+                        onEquip={() => handleEquip(item)}
+                        onExamine={() => handleExamineItem(item)}
+                      />
+                    ) : (
+                      <EmptyCell key={`empty-${i}`} />
+                    )
                   )}
-                >
-                  <Icon className="w-3 h-3" />
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
+                </div>
+              </ScrollArea>
+            </>
+          )}
 
-          {/* Grid */}
-          <ScrollArea className="flex-1">
-            <div className="p-4 grid grid-cols-5 sm:grid-cols-7 md:grid-cols-8 xl:grid-cols-9 gap-2">
-              {padded.map((item, i) =>
-                item ? (
-                  <ItemCell
-                    key={item.id + i}
-                    item={item}
-                    selected={selectedItem?.id === item.id}
-                    onClick={() => handleItemClick(item)}
-                    onEquip={() => handleEquip(item)}
-                    onExamine={() => handleExamineItem(item)}
-                  />
+          {mainView === "gathering-bag" && (
+            <>
+              {/* Gathering bag info bar */}
+              <div className="px-4 py-1.5 border-b border-slate-800/30 bg-emerald-950/20 shrink-0">
+                <p className="text-[10px] text-slate-600">
+                  Items gathered from the world land here. Crafting automatically draws from this bag.
+                </p>
+              </div>
+              {/* Gathering bag grid */}
+              <ScrollArea className="flex-1">
+                {bagLoading ? (
+                  <div className="p-4 grid grid-cols-5 sm:grid-cols-7 md:grid-cols-8 xl:grid-cols-9 gap-2">
+                    {Array.from({ length: 18 }).map((_, i) => <EmptyCell key={i} />)}
+                  </div>
+                ) : filteredBagItems.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-40 text-slate-700">
+                    <ShoppingBag className="w-8 h-8 mb-2 opacity-30" />
+                    <span className="text-xs">Your gathering bag is empty.</span>
+                    <span className="text-[10px] mt-1 opacity-60">Start gathering to fill it up!</span>
+                  </div>
                 ) : (
-                  <EmptyCell key={`empty-${i}`} />
-                )
-              )}
-            </div>
-          </ScrollArea>
+                  <div className="p-4 grid grid-cols-5 sm:grid-cols-7 md:grid-cols-8 xl:grid-cols-9 gap-2">
+                    {filteredBagItems.map((item, i) => (
+                      <ItemCell
+                        key={item.id + i}
+                        item={item}
+                        selected={selectedItem?.id === item.id}
+                        onClick={() => handleItemClick(item)}
+                        onExamine={() => handleExamineItem(item)}
+                      />
+                    ))}
+                  </div>
+                )}
+              </ScrollArea>
+            </>
+          )}
         </Card>
       </div>
 
