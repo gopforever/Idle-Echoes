@@ -136,6 +136,8 @@ router.get("/character/stats", async (req, res) => {
     let gearWeaponDamageMin = 0, gearWeaponDamageMax = 0, gearWeaponDelay = 2.0;
     let gearHealth = 0, gearPower = 0;
     let hasWeapon = false;
+    let gearStrength = 0, gearAgility = 0, gearStamina = 0;
+    let gearIntelligence = 0, gearWisdom = 0, gearCharisma = 0;
     for (const slotValue of Object.values(gear)) {
       let s: Record<string, number> | null = null;
       if (typeof slotValue === "string") {
@@ -155,6 +157,12 @@ router.get("/character/stats", async (req, res) => {
       gearCritBonus     += s.critBonus || 0;
       gearHealth        += s.health || 0;
       gearPower         += s.power || 0;
+      gearStrength      += s.strength     || 0;
+      gearAgility       += s.agility      || 0;
+      gearStamina       += s.stamina      || 0;
+      gearIntelligence  += s.intelligence || 0;
+      gearWisdom        += s.wisdom       || 0;
+      gearCharisma      += s.charisma     || 0;
       if (s.weaponDamageMin) {
         gearWeaponDamageMin = s.weaponDamageMin;
         gearWeaponDamageMax = s.weaponDamageMax || s.weaponDamageMin * 2;
@@ -186,10 +194,13 @@ router.get("/character/stats", async (req, res) => {
       gearHaste, gearCritChance, gearCritBonus,
       gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay,
       gearHealth, gearPower,
+      gearStrength, gearAgility, gearStamina, gearIntelligence, gearWisdom, gearCharisma,
+      archetype: (character.archetype ?? "Fighter"),
     }, aaBonuses);
 
+    const effStamina = baseStats.stamina + gearStamina;
     const maxHealth = Math.max(1, Math.floor(
-      (baseStats.stamina * 10 + 50 + (character.level - 1) * 15 + gearHealth)
+      (effStamina * 10 + 50 + (character.level - 1) * 15 + gearHealth)
       * (1 + aaBonuses.maxHpPercent / 100)
     ));
 
@@ -313,8 +324,30 @@ router.post("/character/regen", async (req, res) => {
     const meditationLevel = medSkill?.level ?? 1;
 
     const bs = character.baseStats as { stamina: number; wisdom: number; intelligence: number };
-    const baseHpPerSec  = 0.5 + (bs.wisdom ?? 10) * 0.03 + (bs.stamina ?? 14) * 0.02;
-    const basePwrPerSec = 0.3 + (bs.intelligence ?? 10) * 0.03 + (bs.wisdom ?? 10) * 0.02;
+
+    // Sum gear primary stat bonuses for more accurate regen
+    const gearObj = (character.gear as Record<string, unknown>) ?? {};
+    let gearWisdomRegen = 0, gearIntelligenceRegen = 0, gearStaminaRegen = 0;
+    for (const slotValue of Object.values(gearObj)) {
+      let s: Record<string, number> | null = null;
+      if (typeof slotValue === "string") {
+        const item = getItemById(slotValue);
+        if (item?.stats) s = item.stats as Record<string, number>;
+      } else if (slotValue && typeof slotValue === "object") {
+        const obj = slotValue as Record<string, unknown>;
+        if (obj.stats && typeof obj.stats === "object") s = obj.stats as Record<string, number>;
+      }
+      if (!s) continue;
+      gearWisdomRegen      += s.wisdom      || 0;
+      gearIntelligenceRegen += s.intelligence || 0;
+      gearStaminaRegen     += s.stamina      || 0;
+    }
+    const effWisdom      = (bs.wisdom      ?? 10) + gearWisdomRegen;
+    const effIntelligence = (bs.intelligence ?? 10) + gearIntelligenceRegen;
+    const effStaminaRegen = (bs.stamina     ?? 14) + gearStaminaRegen;
+
+    const baseHpPerSec  = 0.5 + effWisdom * 0.03 + effStaminaRegen * 0.02;
+    const basePwrPerSec = 0.3 + effIntelligence * 0.03 + effWisdom * 0.02;
     const medMultiplier = character.isMeditating ? (1 + meditationLevel * 0.05) : 1;
     const regenPerTick = {
       hp:  parseFloat((baseHpPerSec  * medMultiplier * 3).toFixed(1)),

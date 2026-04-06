@@ -97,6 +97,8 @@ function computeGearStats(gear: Record<string, unknown>, baseStats: { strength: 
   let gearAttackRating = 0, gearDefenseRating = 0, gearMitigation = 0;
   let gearHaste = 0, gearCritChance = 0, gearWeaponDamageMin = 0, gearWeaponDamageMax = 0, gearWeaponDelay = 2.0;
   let gearHealth = 0, gearPower = 0, hasWeapon = false;
+  let gearStrength = 0, gearAgility = 0, gearStamina = 0;
+  let gearIntelligence = 0, gearWisdom = 0, gearCharisma = 0;
 
   for (const slotValue of Object.values(gear)) {
     let s: Record<string, number> | null = null;
@@ -119,6 +121,12 @@ function computeGearStats(gear: Record<string, unknown>, baseStats: { strength: 
     gearCritChance += s.critChance || 0;
     gearHealth += s.health || 0;
     gearPower += s.power || 0;
+    gearStrength     += s.strength     || 0;
+    gearAgility      += s.agility      || 0;
+    gearStamina      += s.stamina      || 0;
+    gearIntelligence += s.intelligence || 0;
+    gearWisdom       += s.wisdom       || 0;
+    gearCharisma     += s.charisma     || 0;
     if (s.weaponDamageMin) {
       gearWeaponDamageMin = s.weaponDamageMin;
       gearWeaponDamageMax = s.weaponDamageMax || s.weaponDamageMin * 2;
@@ -130,7 +138,7 @@ function computeGearStats(gear: Record<string, unknown>, baseStats: { strength: 
     gearWeaponDamageMin = baseStats.strength * 0.5 + level;
     gearWeaponDamageMax = baseStats.strength * 1.0 + level * 2;
   }
-  return { gearAttackRating, gearDefenseRating, gearMitigation, gearHaste, gearCritChance, gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay, gearHealth, gearPower };
+  return { gearAttackRating, gearDefenseRating, gearMitigation, gearHaste, gearCritChance, gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay, gearHealth, gearPower, gearStrength, gearAgility, gearStamina, gearIntelligence, gearWisdom, gearCharisma };
 }
 
 /** Check if an enemy ability should trigger this tick (non-proc abilities only) */
@@ -403,9 +411,10 @@ router.post("/combat/tick", async (req, res) => {
       if (sr.skillId === "magic")   skillLevels.magic   = sr.level;
     }
 
-    const playerStats = computeStats({ level: character.level, ...baseStats, ...gearData, gearCritBonus: 0 }, aaBonuses, skillLevels);
+    const playerStats = computeStats({ level: character.level, ...baseStats, ...gearData, gearCritBonus: 0, archetype: character.archetype ?? "Fighter" }, aaBonuses, skillLevels);
 
-    const maxHp = Math.max(1, Math.floor((baseStats.stamina * 10 + 50 + (character.level - 1) * 15) * (1 + aaBonuses.maxHpPercent / 100)));
+    const effStamina      = baseStats.stamina      + gearData.gearStamina;
+    const maxHp = Math.max(1, Math.floor((effStamina * 10 + 50 + (character.level - 1) * 15 + gearData.gearHealth) * (1 + aaBonuses.maxHpPercent / 100)));
     const maxPower = playerStats.totalPower;
 
     const newTick = state.tick + 1;
@@ -466,7 +475,7 @@ router.post("/combat/tick", async (req, res) => {
     }
 
     // ── Power regen ───────────────────────────────────────────────────────────
-    const powerRegen = Math.max(1, Math.floor(baseStats.wisdom * 0.2 + 0.5));
+    const powerRegen = Math.max(1, Math.floor((baseStats.wisdom + gearData.gearWisdom) * 0.2 + 0.5));
     playerPower = Math.min(maxPower, playerPower + powerRegen);
     if (powerRegen > 0) {
       // Only log power regen once every 5 ticks to avoid clutter
@@ -965,8 +974,17 @@ router.post("/combat/tick", async (req, res) => {
       }
 
       const newGold = character.gold + goldGained;
-      const newMaxHealth = Math.floor((baseStats.stamina * 10 + 50 + (newLevel - 1) * 15) * (1 + aaBonuses.maxHpPercent / 100));
-      const newMaxPower = Math.floor(((baseStats.wisdom + baseStats.intelligence) * 5 + 20 + (newLevel - 1) * 8) * (1 + aaBonuses.maxPowerPercent / 100));
+      const effSta = baseStats.stamina + gearData.gearStamina;
+      const effWis = baseStats.wisdom  + gearData.gearWisdom;
+      const effInt = baseStats.intelligence + gearData.gearIntelligence;
+      const newMaxHealth = Math.floor(
+        (effSta * 10 + 50 + (newLevel - 1) * 15 + gearData.gearHealth)
+        * (1 + aaBonuses.maxHpPercent / 100)
+      );
+      const newMaxPower = Math.floor(
+        ((effWis + effInt) * 5 + effSta * 2 + newLevel * 10 + gearData.gearPower)
+        * (1 + aaBonuses.maxPowerPercent / 100)
+      );
 
       const currentZoneKills = (character.zoneKills as Record<string, number> | null) ?? {};
       const updatedZoneKills = {
