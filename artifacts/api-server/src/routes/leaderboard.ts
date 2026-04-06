@@ -13,6 +13,8 @@ function resolveGearStats(gear: Record<string, unknown>, level: number, baseStat
   let gearAttackRating = 0, gearDefenseRating = 0, gearMitigation = 0;
   let gearHaste = 0, gearCritChance = 0, gearWeaponDamageMin = 0, gearWeaponDamageMax = 0, gearWeaponDelay = 2.0;
   let gearHealth = 0, gearPower = 0, hasWeapon = false;
+  let gearStrength = 0, gearAgility = 0, gearStamina = 0;
+  let gearIntelligence = 0, gearWisdom = 0, gearCharisma = 0;
 
   for (const slotValue of Object.values(gear)) {
     let s: Record<string, number> | null = null;
@@ -31,6 +33,12 @@ function resolveGearStats(gear: Record<string, unknown>, level: number, baseStat
     gearCritChance += s.critChance || 0;
     gearHealth += s.health || 0;
     gearPower += s.power || 0;
+    gearStrength     += s.strength     || 0;
+    gearAgility      += s.agility      || 0;
+    gearStamina      += s.stamina      || 0;
+    gearIntelligence += s.intelligence || 0;
+    gearWisdom       += s.wisdom       || 0;
+    gearCharisma     += s.charisma     || 0;
     if (s.weaponDamageMin) {
       gearWeaponDamageMin = s.weaponDamageMin;
       gearWeaponDamageMax = s.weaponDamageMax || s.weaponDamageMin * 2;
@@ -42,7 +50,7 @@ function resolveGearStats(gear: Record<string, unknown>, level: number, baseStat
     gearWeaponDamageMin = baseStats.strength * 0.5 + level;
     gearWeaponDamageMax = baseStats.strength * 1.0 + level * 2;
   }
-  return { gearAttackRating, gearDefenseRating, gearMitigation, gearHaste, gearCritChance, gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay, gearHealth, gearPower };
+  return { gearAttackRating, gearDefenseRating, gearMitigation, gearHaste, gearCritChance, gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay, gearHealth, gearPower, gearStrength, gearAgility, gearStamina, gearIntelligence, gearWisdom, gearCharisma };
 }
 
 /** Resolve equipped gear items to display objects for the profile panel */
@@ -448,8 +456,9 @@ router.get("/leaderboard/player/:characterId/profile", async (req, res) => {
     const baseStats = p.baseStats as { strength: number; agility: number; stamina: number; intelligence: number; wisdom: number; charisma: number };
     const gearData = resolveGearStats(gear, p.level, baseStats);
     const aa = makeZeroAABonuses();
-    const computedStats = computeStats({ level: p.level, ...baseStats, ...gearData, gearCritBonus: 0 }, aa);
-    const maxHp = Math.floor(baseStats.stamina * 10 + 50 + (p.level - 1) * 15);
+    const computedStats = computeStats({ level: p.level, ...baseStats, ...gearData, gearCritBonus: 0, archetype: p.archetype ?? "Fighter" }, aa);
+    const effStamina = baseStats.stamina + gearData.gearStamina;
+    const maxHp = Math.floor(effStamina * 10 + 50 + (p.level - 1) * 15 + gearData.gearHealth);
 
     return res.json({
       characterId,
@@ -510,8 +519,9 @@ router.get("/leaderboard/ghost/:ghostId/profile", async (req, res) => {
 
     const gearData = resolveGearStats(gear, g.level, baseStats);
     const aa = makeZeroAABonuses();
-    const computedStats = computeStats({ level: g.level, ...baseStats, ...gearData, gearCritBonus: 0 }, aa);
-    const maxHp = Math.floor(baseStats.stamina * 10 + 50 + (g.level - 1) * 15);
+    const computedStats = computeStats({ level: g.level, ...baseStats, ...gearData, gearCritBonus: 0, archetype: g.archetype ?? "Fighter" }, aa);
+    const effStaminaGhost = baseStats.stamina + gearData.gearStamina;
+    const maxHp = Math.floor(effStaminaGhost * 10 + 50 + (g.level - 1) * 15 + gearData.gearHealth);
 
     return res.json({
       characterId: ghostId,

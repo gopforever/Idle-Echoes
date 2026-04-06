@@ -57,6 +57,8 @@ async function recomputeMaxStats(
   let gearHaste = 0, gearCritChance = 0, gearCritBonus = 0;
   let gearWeaponDamageMin = 0, gearWeaponDamageMax = 0, gearWeaponDelay = 2.0;
   let hasWeapon = false;
+  let gearStrength = 0, gearAgility = 0, gearStamina = 0;
+  let gearIntelligence = 0, gearWisdom = 0, gearCharisma = 0;
 
   for (const slotValue of Object.values(gear)) {
     let s: Record<string, number> | null = null;
@@ -76,6 +78,12 @@ async function recomputeMaxStats(
     gearHaste         += s.haste         || 0;
     gearCritChance    += s.critChance    || 0;
     gearCritBonus     += s.critBonus     || 0;
+    gearStrength      += s.strength      || 0;
+    gearAgility       += s.agility       || 0;
+    gearStamina       += s.stamina       || 0;
+    gearIntelligence  += s.intelligence  || 0;
+    gearWisdom        += s.wisdom        || 0;
+    gearCharisma      += s.charisma      || 0;
     if (s.weaponDamageMin) {
       gearWeaponDamageMin = s.weaponDamageMin;
       gearWeaponDamageMax = s.weaponDamageMax || s.weaponDamageMin * 2;
@@ -95,10 +103,13 @@ async function recomputeMaxStats(
     gearHaste, gearCritChance, gearCritBonus,
     gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay,
     gearHealth, gearPower,
+    gearStrength, gearAgility, gearStamina, gearIntelligence, gearWisdom, gearCharisma,
+    archetype: (character.archetype ?? "Fighter"),
   }, aaBonuses);
 
+  const effStamina = baseStats.stamina + gearStamina;
   const newMaxHealth = Math.max(1, Math.floor(
-    (baseStats.stamina * 10 + 50 + (character.level - 1) * 15 + gearHealth)
+    (effStamina * 10 + 50 + (character.level - 1) * 15 + gearHealth)
     * (1 + aaBonuses.maxHpPercent / 100)
   ));
   const newMaxPower = computed.totalPower;

@@ -22,6 +22,13 @@ export interface CharacterStats {
   gearWeaponDelay: number;
   gearHealth: number;
   gearPower: number;
+  gearStrength?: number;
+  gearAgility?: number;
+  gearStamina?: number;
+  gearIntelligence?: number;
+  gearWisdom?: number;
+  gearCharisma?: number;
+  archetype?: string;
 }
 
 export interface ComputedStats {
@@ -126,8 +133,15 @@ export interface SkillLevels {
 }
 
 export function computeStats(stats: CharacterStats, aa?: AABonuses, skills?: SkillLevels): ComputedStats {
-  const { level, strength, agility, stamina, intelligence, wisdom } = stats;
+  const { level } = stats;
   const bonus = aa ?? makeZeroAABonuses();
+
+  // Effective primary stats = base + gear contributions
+  const strength     = stats.strength     + (stats.gearStrength     ?? 0);
+  const agility      = stats.agility      + (stats.gearAgility      ?? 0);
+  const stamina      = stats.stamina      + (stats.gearStamina      ?? 0);
+  const intelligence = stats.intelligence + (stats.gearIntelligence ?? 0);
+  const wisdom       = stats.wisdom       + (stats.gearWisdom       ?? 0);
 
   // Skill-level bonuses (each skill level ≈ 0.5 attack / 0.4 defense bonus)
   const combatSkillLvl  = skills?.combat  ?? 1;
@@ -166,8 +180,21 @@ export function computeStats(stats: CharacterStats, aa?: AABonuses, skills?: Ski
   const baseWeaponDelay = stats.gearWeaponDelay || 2.0;
   const effectiveDelay = baseWeaponDelay * (1 - haste / 200);
 
-  const weaponDamageMin = stats.gearWeaponDamageMin || (strength * 0.8 + level * 2);
-  const weaponDamageMax = stats.gearWeaponDamageMax || (strength * 1.5 + level * 4);
+  // Archetype-based primary stat damage scaling
+  const archetype = (stats.archetype ?? "").toLowerCase();
+  let archetypeDmgBonus = 0;
+  if (archetype === "fighter") {
+    archetypeDmgBonus = Math.floor(strength * 0.3);
+  } else if (archetype === "scout") {
+    archetypeDmgBonus = Math.floor(agility * 0.3);
+  } else if (archetype === "mage") {
+    archetypeDmgBonus = Math.floor(intelligence * 0.2);
+  } else if (archetype === "priest") {
+    archetypeDmgBonus = Math.floor(wisdom * 0.2);
+  }
+
+  const weaponDamageMin = (stats.gearWeaponDamageMin || (strength * 0.8 + level * 2)) + archetypeDmgBonus;
+  const weaponDamageMax = (stats.gearWeaponDamageMax || (strength * 1.5 + level * 4)) + archetypeDmgBonus;
 
   // DPS calculation (includes AA crit bonus)
   const avgDmg = (weaponDamageMin + weaponDamageMax) / 2;
