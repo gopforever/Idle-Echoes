@@ -595,9 +595,9 @@ export default function DungeonsRunPage() {
 
   React.useEffect(() => {
     if (combatState?.active || !autoCombat || startCombat.isPending || showBanner) return;
-    const remaining = remainingEnemiesRef.current;
+    const remaining = runState?.remainingEnemies ?? [];
     if (!remaining || remaining.length === 0) return;
-    // Skip the last engaged enemy in case remainingEnemies ref is still stale
+    // Skip the last engaged enemy in case remainingEnemies is still stale
     const nextEnemy = remaining.find(e => e.id !== lastEngagedEnemyIdRef.current) ?? remaining[0];
     const nextEnemyId = nextEnemy?.id;
     if (!nextEnemyId) return;
@@ -606,13 +606,13 @@ export default function DungeonsRunPage() {
     const timer = setTimeout(() => {
       startCombat.mutate({ data: { enemyId: nextEnemyId } }, {
         onSuccess: () => {
-          lastEngagedEnemyIdRef.current = nextEnemyId;
+          lastEngagedEnemyIdRef.current = null;
           queryClient.invalidateQueries({ queryKey: ["dungeon-run-current"] });
         },
       });
     }, 1500);
     return () => clearTimeout(timer);
-  }, [combatState?.active, autoCombat, startCombat.isPending, showBanner]);
+  }, [combatState?.active, autoCombat, startCombat.isPending, showBanner, runState?.remainingEnemies]);
 
   const advanceMutation = useMutation({
     mutationFn: async () => {
