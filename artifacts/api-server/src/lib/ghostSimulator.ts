@@ -875,7 +875,9 @@ export async function seedGhostPlayers(): Promise<void> {
 // ─── Difficulty ordering ──────────────────────────────────────────────────────
 const DIFFICULTY_ORDER = ["normal", "expert", "legendary", "mythical"];
 function isBetterDifficulty(a: string, b: string): boolean {
-  return (DIFFICULTY_ORDER.indexOf(a) ?? 0) > (DIFFICULTY_ORDER.indexOf(b) ?? 0);
+  const aIdx = DIFFICULTY_ORDER.indexOf(a);
+  const bIdx = DIFFICULTY_ORDER.indexOf(b);
+  return (aIdx === -1 ? 0 : aIdx) > (bIdx === -1 ? 0 : bIdx);
 }
 
 // ─── Ghost dungeon/raid progression tick ─────────────────────────────────────
@@ -1846,8 +1848,12 @@ export async function tickGhostSimulation(): Promise<void> {
       if (leveledUp) {
         const currentGear = (player.gear as Record<string, unknown>) ?? {};
         const newGear = assignGhostGear({ level: newLevel, archetype: player.archetype }, currentGear);
-        if (Object.keys(newGear).length > Object.keys(currentGear).length ||
-            JSON.stringify(newGear) !== JSON.stringify(currentGear)) {
+        const slotsAdded = Object.keys(newGear).length > Object.keys(currentGear).length;
+        const slotsUpgraded = Object.entries(newGear).some(([slot, val]) => {
+          const cur = currentGear[slot] as Record<string, unknown> | undefined;
+          return !cur || ((val as Record<string, unknown>)?.level as number ?? 0) > (cur?.level as number ?? 0);
+        });
+        if (slotsAdded || slotsUpgraded) {
           await db.update(worldPlayersTable).set({ gear: newGear }).where(eq(worldPlayersTable.id, player.id)).catch(() => {});
         }
       }
