@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { apiUrl } from "@/lib/api";
-import { Pin, PinOff } from "lucide-react";
+import { Pin, PinOff, Package } from "lucide-react";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -878,11 +878,11 @@ export default function CraftingPage() {
                           <div className="flex items-center gap-2">
                             <span className="text-slate-300">{invItem?.name as string | undefined || ing.itemId.replace(/_/g, " ")}</span>
                             {quality !== null && (
-                              <span className={`${qualityColor(quality as number)} font-mono`}>Q:{quality}</span>
+                              <span className={`${qualityColor(quality)} font-mono`}>Q:{quality}</span>
                             )}
                           </div>
                           <div className="flex items-center gap-2">
-                            {bagQty > 0 && <span className="text-blue-400 text-[10px]">+{bagQty}📦</span>}
+                            {bagQty > 0 && <span className="text-blue-400 text-[10px] flex items-center gap-0.5">+{bagQty}<Package className="w-2.5 h-2.5 inline" /></span>}
                             <span className={hasEnough ? "text-green-400" : "text-red-400"}>
                               {have}/{ing.quantity}
                             </span>

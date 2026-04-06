@@ -875,7 +875,7 @@ export default function InventoryPage() {
                           </div>
                           <div className="flex items-center gap-3 shrink-0">
                             {row.invQty > 0 && <span className="text-slate-400 text-[10px]">{row.invQty} inv</span>}
-                            {row.bagQty > 0 && <span className="text-blue-400 text-[10px]">{row.bagQty} 📦</span>}
+                            {row.bagQty > 0 && <span className="text-blue-400 text-[10px] flex items-center gap-0.5">{row.bagQty}<Package className="w-2.5 h-2.5 inline" /></span>}
                             <span className="text-slate-100 font-medium w-10 text-right">{row.total}</span>
                           </div>
                         </div>
