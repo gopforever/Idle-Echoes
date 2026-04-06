@@ -22,6 +22,9 @@ const CLASS_ICONS: Record<string, string> = {
 };
 function getClassIcon(c: string) { return CLASS_ICONS[c] ?? "⚔️"; }
 
+// Raids don't have a maxLevel field; use this as the level window above minLevel for loot generation.
+const RAID_LEVEL_RANGE = 10;
+
 const router: IRouter = Router();
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -72,9 +75,13 @@ function generateRaidLoot(raidId: string, playerLevel: number): string[] {
   const raid = getRaidById(raidId);
   const tier = raid?.lootTier ?? "legendary";
 
+  const raidMinLevel = raid?.minLevel ?? playerLevel;
+  const raidMaxLevel = raidMinLevel + RAID_LEVEL_RANGE;
+  const clampedLevel = Math.min(Math.max(playerLevel, raidMinLevel), raidMaxLevel);
+
   const pool = ITEMS.filter(item => {
     if (item.type === "material" || item.type === "consumable" || item.type === "quest") return false;
-    if (Math.abs(item.level - playerLevel) > 10) return false;
+    if (Math.abs(item.level - clampedLevel) > RAID_LEVEL_RANGE) return false;
     return true;
   });
 

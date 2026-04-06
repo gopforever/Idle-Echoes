@@ -75,11 +75,23 @@ function weightedRarityPick(difficulty: string): string {
 
 /**
  * Generate 1–3 loot items.
- * Spec: item level = playerLevel + floor - 1 (exact).
- * If no items at that exact level exist, expand outward ±1, ±2, ±3 until a pool is found.
+ * Item level = playerLevel + floor - 1, clamped to the dungeon's defined level range
+ * so that low-level dungeons (e.g. Blackburrow, minLevel 10–20) never drop items
+ * scaled to a high-level character.
+ * If no items at the clamped level exist, expand outward ±1, ±2, ±3 until a pool is found.
  */
-export function generateDungeonLoot(playerLevel: number, floorNumber: number, difficulty: string): string[] {
-  const targetLevel = playerLevel + floorNumber - 1;
+export function generateDungeonLoot(
+  playerLevel: number,
+  floorNumber: number,
+  difficulty: string,
+  dungeonMinLevel: number,
+  dungeonMaxLevel: number,
+): string[] {
+  const rawTarget = playerLevel + floorNumber - 1;
+  // Cap at dungeon max so high-level players don't receive over-levelled gear
+  const targetLevel = Math.min(rawTarget, dungeonMaxLevel + floorNumber - 1);
+  // Floor at dungeon min so low-level players still get appropriate loot
+  const clampedLevel = Math.max(targetLevel, dungeonMinLevel);
 
   const nonConsumable = ITEMS.filter(item =>
     item.type !== "material" &&
@@ -87,10 +99,10 @@ export function generateDungeonLoot(playerLevel: number, floorNumber: number, di
     item.type !== "quest",
   );
 
-  // Find items at or near the exact target level (expanding outward)
-  let pool = nonConsumable.filter(item => item.level === targetLevel);
+  // Find items at or near the clamped target level (expanding outward)
+  let pool = nonConsumable.filter(item => item.level === clampedLevel);
   for (let delta = 1; delta <= 5 && pool.length === 0; delta++) {
-    pool = nonConsumable.filter(item => Math.abs(item.level - targetLevel) <= delta);
+    pool = nonConsumable.filter(item => Math.abs(item.level - clampedLevel) <= delta);
   }
   if (pool.length === 0) pool = nonConsumable; // ultimate fallback
 
