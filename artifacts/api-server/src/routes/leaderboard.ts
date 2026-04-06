@@ -500,13 +500,7 @@ router.get("/leaderboard/ghost/:ghostId/profile", async (req, res) => {
     const baseStats = g.stats as { strength: number; agility: number; stamina: number; intelligence: number; wisdom: number; charisma: number };
     const gear = (g.gear as Record<string, unknown>) ?? {};
     const gearItems = resolveGearItems(gear);
-    const gearScore = computeGearScore(
-      Object.entries(gear).map(([slot, val]) => ({
-        level: (val as Record<string, unknown>)?.level as number ?? 0,
-        rarity: (val as Record<string, unknown>)?.rarity as string ?? "common",
-        slot,
-      })),
-    );
+    const gearScore = computeGearScore(gear as Record<string, string>);
 
     const gearData = resolveGearStats(gear, g.level, baseStats);
     const aa = makeZeroAABonuses();
@@ -598,13 +592,7 @@ router.get("/leaderboard/ghosts/top-by-role", async (_req, res) => {
 
     for (const g of ghostPlayers) {
       const gear = (g.gear as Record<string, unknown>) ?? {};
-      const gearScore = computeGearScore(
-        Object.entries(gear).map(([slot, val]) => ({
-          level: (val as Record<string, unknown>)?.level as number ?? 0,
-          rarity: (val as Record<string, unknown>)?.rarity as string ?? "common",
-          slot,
-        })),
-      );
+      const gearScore = computeGearScore(gear as Record<string, string>);
       const dungeonClears = dungMap.get(g.id) ?? 0;
       const role = ghostRole(g.archetype, g.class);
       const score = gearScore * 2 + g.level * 50 + g.killCount * 0.1 + dungeonClears * 100;
