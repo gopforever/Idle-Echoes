@@ -276,12 +276,15 @@ router.get("/dungeons/:dungeonId/party-suggestions", async (req, res) => {
       const adjacent = !sameZone && adjacentZones.includes(g.zone);
       // "Rival" = within 5 levels of the player character (same power bracket)
       const isRival = Math.abs(g.level - character.level) <= 5;
+      // A ghost is "dungeon-appropriate" if their level meets or exceeds the dungeon's min level
+      const dungeonAppropriate = g.level >= minLevel;
 
       let priority: number;
       if (isRival && sameZone) priority = 4;
       else if (isRival) priority = 3;
       else if (sameZone) priority = 2;
       else if (adjacent) priority = 1;
+      else if (dungeonAppropriate) priority = 1; // ensure level-appropriate ghosts are never priority 0
       else priority = 0;
 
       return {
@@ -303,7 +306,7 @@ router.get("/dungeons/:dungeonId/party-suggestions", async (req, res) => {
     });
 
     withPriority.sort((a, b) => b.priority - a.priority || b.level - a.level);
-    const suggestions = withPriority.slice(0, 20);
+    const suggestions = withPriority.slice(0, 30);
 
     return res.json({ suggestions });
   } catch (err) {
