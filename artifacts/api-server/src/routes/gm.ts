@@ -768,9 +768,8 @@ Generate a named gear set for this dungeon. Respond with ONLY valid JSON (no mar
     const pieceName = setDef.pieceNames[slot] ?? `${setDef.setName} ${slot.charAt(0).toUpperCase() + slot.slice(1)}`;
 
     // ── Stat scaling ─────────────────────────────────────────────────────────
-    // Set pieces are notably better than random drops of the same rarity.
-    // Multipliers aligned to RARITY_STAT_MULT in proceduralItems.ts (rare=2.0,
-    // legendary=3.2, fabled=5.0) but boosted ~25% as a "set premium".
+    // Set pieces carry a ~25% "set premium" over random drops of the same rarity.
+    // Baseline: proceduralItems RARITY_STAT_MULT (rare=2.0, legendary=3.2, fabled=5.0).
     const rarityMult: Record<string, number> = {
       normal: 2.5,    // rare quality + set premium
       expert: 4.5,    // legendary quality + set premium
@@ -779,55 +778,56 @@ Generate a named gear set for this dungeon. Respond with ONLY valid JSON (no mar
     };
     const mult = rarityMult[difficulty] ?? 2.5;
 
-    // Chest/legs are the biggest armor slots — bonus factor
+    // Larger armor slots get more stat budget
     const slotSizeFactor: Record<string, number> = {
       head: 1.0, shoulder: 0.85, chest: 1.3, wrist: 0.8, legs: 1.1, feet: 0.85,
     };
     const sizeFactor = slotSizeFactor[slot] ?? 1.0;
 
     const base = Math.max(1, Math.floor(level * 0.8));
-    const pri  = Math.round(base * mult * sizeFactor);         // primary stat
-    const sec  = Math.round(base * mult * sizeFactor * 0.65);  // secondary stat
+    const pri = Math.round(base * mult * sizeFactor);          // primary flat stat
+    const sec = Math.round(base * mult * sizeFactor * 0.65);   // secondary flat stat
+    const ter = Math.round(base * mult * sizeFactor * 0.40);   // tertiary flat stat
 
-    // Percentage stats (crit, haste, avoidance, mitigation) scale separately
-    const pctBase: Record<string, number> = {
-      normal: 2, expert: 5, legendary: 9, mythical: 14,
-    };
-    const pct = (pctBase[difficulty] ?? 2) + Math.round(level / 10);
+    // Percentage-scale stats (crit, haste, avoidance) — kept small, cap 20
+    const pct = Math.min(20, (difficulty === "normal" ? 2 : difficulty === "expert" ? 5 : difficulty === "legendary" ? 9 : 14) + Math.round(level / 8));
 
-    // ── Archetype × slot stat profiles ───────────────────────────────────────
+    // ── Archetype × slot stat profiles (3 stats per slot) ────────────────────
+    // Fighter:  survival (def/stamina/health) + offense (attack/crit)
+    // Healer:   health + wisdom (spell power) + regen-support stats
+    // Caster:   intelligence + spellDamage + spell-specific support
     type SlotStatMap = Record<string, Record<string, number>>;
 
     const fighterStats: SlotStatMap = {
-      head:     { defenseRating: pri, stamina: sec },
-      shoulder: { defenseRating: pri, attackRating: sec },
-      chest:    { defenseRating: pri, stamina: sec },
-      wrist:    { attackRating: pri, haste: pct },
-      legs:     { defenseRating: pri, mitigation: pct },
-      feet:     { attackRating: pri, avoidance: pct },
+      head:     { defenseRating: pri, stamina: sec, health: ter },
+      shoulder: { defenseRating: pri, attackRating: sec, stamina: ter },
+      chest:    { defenseRating: pri, stamina: sec, health: ter },
+      wrist:    { attackRating: pri, defenseRating: sec, haste: pct },
+      legs:     { defenseRating: pri, stamina: sec, avoidance: pct },
+      feet:     { attackRating: pri, agility: sec, avoidance: pct },
     };
 
     const healerStats: SlotStatMap = {
-      head:     { health: pri, wisdom: sec },
-      shoulder: { health: pri, spellCritChance: pct },
-      chest:    { health: pri, wisdom: sec },
-      wrist:    { spellCritChance: pct, haste: pct },
-      legs:     { health: pri, wisdom: sec },
-      feet:     { avoidance: pct, haste: pct },
+      head:     { health: pri, wisdom: sec, intelligence: ter },
+      shoulder: { health: pri, wisdom: sec, spellCritChance: pct },
+      chest:    { health: pri, wisdom: sec, intelligence: ter },
+      wrist:    { wisdom: sec, spellCritChance: pct, haste: pct },
+      legs:     { health: pri, wisdom: sec, spellCritChance: pct },
+      feet:     { wisdom: sec, avoidance: pct, haste: pct },
     };
 
     const casterStats: SlotStatMap = {
-      head:     { intelligence: pri, spellCritChance: pct },
-      shoulder: { intelligence: pri, spellDamage: sec },
-      chest:    { intelligence: pri, spellDamage: sec },
-      wrist:    { spellCritChance: pct, haste: pct },
-      legs:     { intelligence: pri, spellDamage: sec },
-      feet:     { avoidance: pct, haste: pct },
+      head:     { intelligence: pri, spellDamage: sec, spellCritChance: pct },
+      shoulder: { intelligence: pri, spellDamage: sec, haste: pct },
+      chest:    { intelligence: pri, spellDamage: sec, wisdom: ter },
+      wrist:    { intelligence: sec, spellCritChance: pct, haste: pct },
+      legs:     { intelligence: pri, spellDamage: sec, spellCritChance: pct },
+      feet:     { intelligence: sec, avoidance: pct, haste: pct },
     };
 
     const profileMap = { fighter: fighterStats, healer: healerStats, caster: casterStats };
     const profile = profileMap[archetype] ?? fighterStats;
-    const stats = profile[slot] ?? { attackRating: pri, defenseRating: sec };
+    const stats = profile[slot] ?? { attackRating: pri, defenseRating: sec, stamina: ter };
 
     const sellPrice = rarity === "mythical" ? 0 : Math.round(level * mult * 3);
 
