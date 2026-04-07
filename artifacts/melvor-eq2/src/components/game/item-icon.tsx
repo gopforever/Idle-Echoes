@@ -135,7 +135,15 @@ export interface ItemTooltipData {
   setName?: string;
   setPieceSlot?: string;
   setBonuses?: Array<{ piecesRequired: number; description: string; isProc: boolean; procName?: string }>;
+  armorType?: "plate" | "chain" | "leather" | "cloth";
 }
+
+const ARMOR_TYPE_STYLE: Record<string, { label: string; text: string; border: string; bg: string }> = {
+  plate:   { label: "Plate",   text: "text-slate-300",  border: "border-slate-500/60", bg: "bg-slate-800/60"  },
+  chain:   { label: "Chain",   text: "text-yellow-400", border: "border-yellow-600/60",bg: "bg-yellow-950/60" },
+  leather: { label: "Leather", text: "text-amber-400",  border: "border-amber-700/60", bg: "bg-amber-950/60"  },
+  cloth:   { label: "Cloth",   text: "text-blue-400",   border: "border-blue-600/60",  bg: "bg-blue-950/60"   },
+};
 
 function itemIsNoSell(item: ItemTooltipData): boolean {
   return item.noSell === true || item.rarity === "fabled" || item.rarity === "mythical";
@@ -177,7 +185,13 @@ export function ItemTooltipContent({ item }: { item: ItemTooltipData }) {
           <div className={cn("font-bold text-sm truncate", rarityText)}>{item.name}</div>
           <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
             <span className="text-[10px] text-slate-500 capitalize">
-              {item.slot ? `${item.slot} · ` : ""}{type}{level > 0 ? ` · Lv ${level}` : ""}
+              {item.slot ? `${item.slot} · ` : ""}
+              {item.armorType && ARMOR_TYPE_STYLE[item.armorType]
+                ? <span className={cn("px-1 py-0 rounded border text-[9px] font-semibold", ARMOR_TYPE_STYLE[item.armorType].text, ARMOR_TYPE_STYLE[item.armorType].border, ARMOR_TYPE_STYLE[item.armorType].bg)}>
+                    {ARMOR_TYPE_STYLE[item.armorType].label}
+                  </span>
+                : type}
+              {level > 0 ? ` · Lv ${level}` : ""}
             </span>
             {hasGS && (
               <span className="text-[9px] px-1.5 py-0 rounded font-black bg-amber-950/70 text-amber-300 border border-amber-800/50">

@@ -207,6 +207,40 @@ export declare const charactersTable: import("drizzle-orm/pg-core").PgTableWithC
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
+        aaXpRatio: import("drizzle-orm/pg-core").PgColumn<{
+            name: "aa_xp_ratio";
+            tableName: "characters";
+            dataType: "number";
+            columnType: "PgInteger";
+            data: number;
+            driverParam: string | number;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        aaRespecUsed: import("drizzle-orm/pg-core").PgColumn<{
+            name: "aa_respec_used";
+            tableName: "characters";
+            dataType: "boolean";
+            columnType: "PgBoolean";
+            data: boolean;
+            driverParam: boolean;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
         gold: import("drizzle-orm/pg-core").PgColumn<{
             name: "gold";
             tableName: "characters";
@@ -775,6 +809,42 @@ export declare const charactersTable: import("drizzle-orm/pg-core").PgTableWithC
         }, {}, {
             $type: string[];
         }>;
+        tradeskillClass: import("drizzle-orm/pg-core").PgColumn<{
+            name: "tradeskill_class";
+            tableName: "characters";
+            dataType: "string";
+            columnType: "PgText";
+            data: string;
+            driverParam: string;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: [string, ...string[]];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        tradeskills: import("drizzle-orm/pg-core").PgColumn<{
+            name: "tradeskills";
+            tableName: "characters";
+            dataType: "json";
+            columnType: "PgJsonb";
+            data: Record<string, number>;
+            driverParam: unknown;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {
+            $type: Record<string, number>;
+        }>;
         createdAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "created_at";
             tableName: "characters";
@@ -824,6 +894,8 @@ export declare const insertCharacterSchema: z.ZodObject<{
     xpToNextLevel: z.ZodOptional<z.ZodNumber>;
     aaPoints: z.ZodOptional<z.ZodInt>;
     aaPointsSpent: z.ZodOptional<z.ZodInt>;
+    aaXpRatio: z.ZodOptional<z.ZodInt>;
+    aaRespecUsed: z.ZodOptional<z.ZodBoolean>;
     gold: z.ZodOptional<z.ZodNumber>;
     bankGold: z.ZodOptional<z.ZodNumber>;
     health: z.ZodOptional<z.ZodNumber>;
@@ -884,6 +956,8 @@ export declare const insertCharacterSchema: z.ZodObject<{
     raresGathered: z.ZodOptional<z.ZodInt>;
     zoneKills: z.ZodOptional<z.ZodType<Record<string, number>, Record<string, number>, z.core.$ZodTypeInternals<Record<string, number>, Record<string, number>>>>;
     pinnedRecipes: z.ZodOptional<z.ZodType<string[], string[], z.core.$ZodTypeInternals<string[], string[]>>>;
+    tradeskillClass: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    tradeskills: z.ZodOptional<z.ZodType<Record<string, number>, Record<string, number>, z.core.$ZodTypeInternals<Record<string, number>, Record<string, number>>>>;
 }, {
     out: {};
     in: {};

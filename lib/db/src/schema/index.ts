@@ -9,3 +9,4 @@ export * from "./messages";
 export * from "./quests";
 export * from "./dungeons";
 export * from "./gathering";
+export * from "./tradeskills";

@@ -656,12 +656,15 @@ Respond with ONLY valid JSON array (no markdown):
 
 // ─── Gear Set Item Generation ─────────────────────────────────────────────────
 
+export type GearSetArmorType = "plate" | "chain" | "leather" | "cloth";
+
 export interface GearSetItemResult {
   item: {
     id: string;
     name: string;
     description: string;
     type: "armor";
+    armorType: GearSetArmorType;
     slot: string;
     rarity: "rare" | "legendary" | "fabled" | "mythical";
     level: number;
@@ -697,6 +700,7 @@ export async function generateGearSetItem(
   setNameTemplate: string,
   level: number,
   archetype: "fighter" | "healer" | "caster" = "fighter",
+  armorType: GearSetArmorType = "plate",
 ): Promise<GearSetItemResult | null> {
   try {
     const cacheKey = `gear_set_${setId}`;
@@ -789,25 +793,46 @@ Generate a named gear set for this dungeon. Respond with ONLY valid JSON (no mar
     const sec = Math.round(base * mult * sizeFactor * 0.65);   // secondary flat stat
     const ter = Math.round(base * mult * sizeFactor * 0.40);   // tertiary flat stat
 
-    // Percentage-scale stats (crit, haste, avoidance) — kept small, cap 20
+    // Percentage-scale stats (crit, haste, avoidance) — capped at 20
     const pct = Math.min(20, (difficulty === "normal" ? 2 : difficulty === "expert" ? 5 : difficulty === "legendary" ? 9 : 14) + Math.round(level / 8));
 
-    // ── Archetype × slot stat profiles (3 stats per slot) ────────────────────
-    // Fighter:  survival (def/stamina/health) + offense (attack/crit)
-    // Healer:   health + wisdom (spell power) + regen-support stats
-    // Caster:   intelligence + spellDamage + spell-specific support
+    // ── Stat profiles by armor type × slot (3 stats per slot) ─────────────────
+    // armorType drives WHAT stats you get; archetype picks between cloth variants.
+    // Plate  → heavy defense: DEF, STA, health, STR
+    // Chain  → balanced:     DEF, ATK, AGI, avoidance, haste
+    // Leather→ offense:      ATK, AGI, crit, haste, avoidance
+    // Cloth  → magic:        INT/WIS, spellDmg/health, spellCrit, haste
     type SlotStatMap = Record<string, Record<string, number>>;
 
-    const fighterStats: SlotStatMap = {
+    const plateStats: SlotStatMap = {
       head:     { defenseRating: pri, stamina: sec, health: ter },
-      shoulder: { defenseRating: pri, attackRating: sec, stamina: ter },
+      shoulder: { defenseRating: pri, strength: sec, stamina: ter },
       chest:    { defenseRating: pri, stamina: sec, health: ter },
-      wrist:    { attackRating: pri, defenseRating: sec, haste: pct },
-      legs:     { defenseRating: pri, stamina: sec, avoidance: pct },
-      feet:     { attackRating: pri, agility: sec, avoidance: pct },
+      wrist:    { defenseRating: pri, stamina: sec, strength: ter },
+      legs:     { defenseRating: pri, stamina: sec, health: ter },
+      feet:     { defenseRating: pri, agility: sec, stamina: ter },
     };
 
-    const healerStats: SlotStatMap = {
+    const chainStats: SlotStatMap = {
+      head:     { defenseRating: pri, agility: sec, stamina: ter },
+      shoulder: { attackRating: pri, defenseRating: sec, agility: ter },
+      chest:    { defenseRating: pri, attackRating: sec, agility: ter },
+      wrist:    { attackRating: pri, agility: sec, haste: pct },
+      legs:     { defenseRating: pri, agility: sec, avoidance: pct },
+      feet:     { agility: pri, attackRating: sec, haste: pct },
+    };
+
+    const leatherStats: SlotStatMap = {
+      head:     { agility: pri, attackRating: sec, critChance: pct },
+      shoulder: { attackRating: pri, agility: sec, haste: pct },
+      chest:    { agility: pri, attackRating: sec, strength: ter },
+      wrist:    { attackRating: pri, haste: pct, critChance: pct },
+      legs:     { agility: pri, attackRating: sec, avoidance: pct },
+      feet:     { agility: pri, haste: pct, avoidance: pct },
+    };
+
+    // Cloth splits by archetype: healers want health+wisdom, casters want int+spellDmg
+    const clothHealerStats: SlotStatMap = {
       head:     { health: pri, wisdom: sec, intelligence: ter },
       shoulder: { health: pri, wisdom: sec, spellCritChance: pct },
       chest:    { health: pri, wisdom: sec, intelligence: ter },
@@ -816,7 +841,7 @@ Generate a named gear set for this dungeon. Respond with ONLY valid JSON (no mar
       feet:     { wisdom: sec, avoidance: pct, haste: pct },
     };
 
-    const casterStats: SlotStatMap = {
+    const clothCasterStats: SlotStatMap = {
       head:     { intelligence: pri, spellDamage: sec, spellCritChance: pct },
       shoulder: { intelligence: pri, spellDamage: sec, haste: pct },
       chest:    { intelligence: pri, spellDamage: sec, wisdom: ter },
@@ -825,8 +850,13 @@ Generate a named gear set for this dungeon. Respond with ONLY valid JSON (no mar
       feet:     { intelligence: sec, avoidance: pct, haste: pct },
     };
 
-    const profileMap = { fighter: fighterStats, healer: healerStats, caster: casterStats };
-    const profile = profileMap[archetype] ?? fighterStats;
+    // Pick profile: armor type is primary key; cloth uses archetype as tiebreaker
+    let profile: SlotStatMap;
+    if (armorType === "plate") profile = plateStats;
+    else if (armorType === "chain") profile = chainStats;
+    else if (armorType === "leather") profile = leatherStats;
+    else profile = archetype === "healer" ? clothHealerStats : clothCasterStats;
+
     const stats = profile[slot] ?? { attackRating: pri, defenseRating: sec, stamina: ter };
 
     const sellPrice = rarity === "mythical" ? 0 : Math.round(level * mult * 3);
@@ -844,6 +874,7 @@ Generate a named gear set for this dungeon. Respond with ONLY valid JSON (no mar
       name: pieceName,
       description: setDef.lore,
       type: "armor",
+      armorType,
       slot,
       rarity,
       level,

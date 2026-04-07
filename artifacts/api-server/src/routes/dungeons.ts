@@ -652,6 +652,25 @@ router.post("/dungeons/run/advance", async (req, res) => {
     // ── Gear set piece drops ──────────────────────────────────────────────────
     const charClass = (character.class ?? "Fighter") as string;
     const setArchetype: GearSetArchetype = charClass === "Priest" ? "healer" : charClass === "Mage" ? "caster" : "fighter";
+
+    // Map character class → armor type (determines stat profile + UI colour)
+    const CLASS_ARMOR_TYPE: Record<string, "plate" | "chain" | "leather" | "cloth"> = {
+      // Plate — heavy fighter tanks
+      Guardian: "plate", Berserker: "plate", Paladin: "plate", Shadowknight: "plate",
+      // Chain — hybrid fighters
+      Monk: "chain", Bruiser: "chain",
+      // Leather — scouts
+      Ranger: "leather", Assassin: "leather", Swashbuckler: "leather",
+      Brigand: "leather", Troubador: "leather", Dirge: "leather",
+      // Cloth — mages & priests
+      Wizard: "cloth", Warlock: "cloth", Conjuror: "cloth", Necromancer: "cloth",
+      Coercer: "cloth", Illusionist: "cloth",
+      Templar: "cloth", Inquisitor: "cloth", Mystic: "cloth", Defiler: "cloth",
+      // Generic fallbacks
+      Fighter: "plate", Scout: "leather", Mage: "cloth", Priest: "cloth",
+    };
+    const setArmorType = CLASS_ARMOR_TYPE[charClass] ?? "plate";
+
     const setPieceDefs = getGearSetsForFloor(dungeon.id, run.difficulty as DungeonDifficulty, run.currentFloor, setArchetype);
     const setPieceItems: Array<{ item: Record<string, unknown> }> = [];
     for (const pieceDef of setPieceDefs) {
@@ -669,6 +688,7 @@ router.post("/dungeons/run/advance", async (req, res) => {
         setDef.setNameTemplate,
         character.level,
         setArchetype,
+        setArmorType,
       );
       if (result) setPieceItems.push({ item: result.item as unknown as Record<string, unknown> });
     }
