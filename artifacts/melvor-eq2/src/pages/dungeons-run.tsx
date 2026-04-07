@@ -58,6 +58,9 @@ interface LootItem {
   level?: number;
   rarity?: string;
   slot?: string;
+  setId?: string;
+  setName?: string;
+  setPieceSlot?: string;
 }
 
 interface CurrentFloor {
@@ -364,6 +367,7 @@ function FloorProgressPanel({
 
 function DungeonCompleteModal({
   lootEarned,
+  setPiecesAwarded,
   dungeonName,
   xpEarned,
   goldEarned,
@@ -371,13 +375,15 @@ function DungeonCompleteModal({
   onClaim,
 }: {
   lootEarned: Array<{ floor: number; items: LootItem[] }>;
+  setPiecesAwarded?: LootItem[];
   dungeonName: string;
   xpEarned: number;
   goldEarned: number;
   party?: PartyMemberInfo[];
   onClaim: () => void;
 }) {
-  const allItems = lootEarned.flatMap(l => l.items);
+  const allItems = lootEarned.flatMap(l => l.items).filter(i => !i.setId);
+  const setPieces = setPiecesAwarded ?? lootEarned.flatMap(l => l.items).filter(i => i.setId);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
@@ -436,7 +442,34 @@ function DungeonCompleteModal({
           </div>
         )}
 
-        {/* Loot */}
+        {/* Set Pieces — highlighted separately */}
+        {setPieces.length > 0 && (
+          <div className="px-6 py-4 border-b border-amber-800/30 bg-amber-950/10">
+            <p className="text-[10px] uppercase tracking-widest text-amber-600 font-bold mb-3">
+              🛡️ Set Pieces Acquired ({setPieces.length})
+            </p>
+            <div className="space-y-2">
+              {setPieces.map((item, idx) => {
+                const name = item.name ?? "Set Piece";
+                const rarity = item.rarity ?? "rare";
+                return (
+                  <div key={idx} className={cn("flex items-center gap-3 px-3 py-2 rounded-lg border", rarityColor(rarity), "border-amber-700/40 bg-amber-950/20")}>
+                    <span className="text-xl shrink-0">🛡️</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate text-amber-300">{name}</p>
+                      <p className="text-[10px] text-amber-600 capitalize">
+                        {item.setName ?? "Set"} · {item.setPieceSlot ?? item.slot ?? "piece"} · {rarity}
+                      </p>
+                    </div>
+                    <span className="text-[9px] px-1.5 py-0.5 rounded border border-amber-700/60 text-amber-500 shrink-0">SET</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Regular Loot */}
         <div className="px-6 py-4">
           <p className="text-[10px] uppercase tracking-widest text-slate-600 font-bold mb-3">
             Loot Earned ({allItems.length} items)
@@ -543,6 +576,7 @@ export default function DungeonsRunPage() {
   const [bannerFloor, setBannerFloor] = React.useState(1);
   const [completedRun, setCompletedRun] = React.useState<{
     lootEarned: Array<{ floor: number; items: LootItem[] }>;
+    setPiecesAwarded?: LootItem[];
     dungeonName: string;
     xpEarned: number;
     goldEarned: number;
@@ -628,6 +662,7 @@ export default function DungeonsRunPage() {
         const loot = (run?.lootEarned as Array<{ floor: number; items: LootItem[] }>) ?? [];
         setCompletedRun({
           lootEarned: loot,
+          setPiecesAwarded: (data.setPiecesAwarded as LootItem[] | undefined) ?? [],
           dungeonName: runState?.dungeon?.name ?? run?.dungeonId ?? "Blackburrow",
           xpEarned: data.xpEarned ?? 0,
           goldEarned: data.goldEarned ?? 0,
@@ -686,6 +721,7 @@ export default function DungeonsRunPage() {
     return (
       <DungeonCompleteModal
         lootEarned={completedRun.lootEarned}
+        setPiecesAwarded={completedRun.setPiecesAwarded}
         dungeonName={completedRun.dungeonName}
         xpEarned={completedRun.xpEarned}
         goldEarned={completedRun.goldEarned}

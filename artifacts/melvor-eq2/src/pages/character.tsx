@@ -824,6 +824,19 @@ export default function CharacterSheet() {
     refetchInterval: 30_000,
   });
 
+  const activeSetsQ = useQuery<{
+    summaries: Array<{
+      setId: string; setName: string; dungeonId: string; difficulty: string; archetype: string;
+      piecesEquipped: number; piecesTotal: number;
+      bonuses: Array<{ piecesRequired: number; description: string; active: boolean; isProc: boolean; procName?: string }>;
+    }>;
+    statBoosts: Record<string, number>;
+  }>({
+    queryKey: ["gear-sets", "active"],
+    queryFn: () => fetch(apiUrl("/api/gear-sets/active")).then(r => r.json()),
+    refetchInterval: 30_000,
+  });
+
   const worldEventsQ = useQuery<{ events: Array<{ id: number; type: string; message: string; playerName: string; zone: string; importance: number; tick: number; createdAt: string }> }>({
     queryKey: ["world-events-relevant"],
     queryFn: () => fetch(apiUrl("/api/gm/world/events/player-relevant")).then(r => r.json()),
@@ -1085,6 +1098,54 @@ export default function CharacterSheet() {
               </Card>
             </div>
           </div>
+
+          {/* ── Gear Set Bonuses ─────────────────────────────────────────── */}
+          {activeSetsQ.data && activeSetsQ.data.summaries.length > 0 && (
+            <Card className="mt-4 bg-card/40 border-amber-800/40">
+              <CardHeader className="border-b border-amber-800/30 bg-amber-950/20 py-3">
+                <CardTitle className="text-sm text-amber-400">Gear Set Bonuses</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {activeSetsQ.data.summaries.map(s => {
+                    const diffColor: Record<string, string> = {
+                      normal: "text-slate-400 border-slate-600",
+                      expert: "text-blue-400 border-blue-700/60",
+                      legendary: "text-purple-400 border-purple-700/60",
+                      mythical: "text-red-400 border-red-700/60",
+                    };
+                    const col = diffColor[s.difficulty] ?? "text-slate-400 border-slate-600";
+                    return (
+                      <div key={s.setId} className={cn("rounded border p-3 space-y-1.5 bg-slate-900/40", col)}>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-semibold text-slate-200">{s.setName}</span>
+                          <span className={cn("text-[10px] px-1.5 py-0.5 rounded border capitalize", col)}>
+                            {s.difficulty}
+                          </span>
+                        </div>
+                        <div className="text-[10px] text-slate-500">
+                          {s.piecesEquipped}/{s.piecesTotal} pieces equipped
+                        </div>
+                        <div className="space-y-1">
+                          {s.bonuses.map((b, i) => (
+                            <div key={i} className={cn("flex items-start gap-1.5 text-[11px]", b.active ? "" : "opacity-40")}>
+                              <span className={cn("shrink-0", b.active ? (b.isProc ? "text-amber-400" : "text-green-400") : "text-slate-600")}>
+                                {b.active ? (b.isProc ? "⚡" : "✓") : "○"}
+                              </span>
+                              <div className="min-w-0">
+                                <span className="text-[10px] font-mono text-slate-500 mr-1">({b.piecesRequired}pc)</span>
+                                <span className={b.active ? "text-slate-300" : "text-slate-600"}>{b.description}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         {/* ── ATTRIBUTES ───────────────────────────────────────────────────── */}

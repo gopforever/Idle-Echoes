@@ -131,6 +131,10 @@ export interface ItemTooltipData {
   quality?: number;
   spriteId?: string;
   noSell?: boolean;
+  setId?: string;
+  setName?: string;
+  setPieceSlot?: string;
+  setBonuses?: Array<{ piecesRequired: number; description: string; isProc: boolean; procName?: string }>;
 }
 
 function itemIsNoSell(item: ItemTooltipData): boolean {
@@ -215,6 +219,28 @@ export function ItemTooltipContent({ item }: { item: ItemTooltipData }) {
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {/* Set piece info + bonus tiers */}
+        {item.setId && (
+          <div className="space-y-1">
+            <div className="text-[10px] font-bold text-amber-400 tracking-wide text-center py-0.5 bg-amber-950/40 rounded border border-amber-800/40">
+              🛡️ {item.setName ?? "Dungeon Set"} · {item.setPieceSlot ?? item.slot ?? "piece"}
+            </div>
+            {item.setBonuses && item.setBonuses.length > 0 && (
+              <div className="space-y-0.5 pt-0.5">
+                {item.setBonuses.map((b, i) => (
+                  <div key={i} className="flex items-start gap-1 text-[10px]">
+                    <span className={b.isProc ? "text-amber-500 shrink-0" : "text-amber-400/70 shrink-0"}>
+                      {b.isProc ? "⚡" : "◆"}
+                    </span>
+                    <span className="font-mono text-slate-500 shrink-0">({b.piecesRequired}pc)</span>
+                    <span className="text-slate-400 leading-tight">{b.description}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -309,16 +335,20 @@ export function ItemIcon({ item, emptyText, onClick, className, showTooltip = tr
         </div>
       )}
 
-      {/* Rarity corner pip */}
-      <div className={cn(
-        "absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full",
-        item.rarity === "common"    ? "bg-slate-500"  :
-        item.rarity === "uncommon"  ? "bg-green-400"  :
-        item.rarity === "rare"      ? "bg-blue-400"   :
-        item.rarity === "legendary" ? "bg-purple-400" :
-        item.rarity === "fabled"    ? "bg-orange-400" :
-        "bg-red-400"
-      )} />
+      {/* Set piece pip — amber shield replaces rarity pip */}
+      {(item as unknown as Record<string, unknown>)["setId"] ? (
+        <div className="absolute top-0.5 right-0.5 text-[8px] leading-none">🛡️</div>
+      ) : (
+        <div className={cn(
+          "absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full",
+          item.rarity === "common"    ? "bg-slate-500"  :
+          item.rarity === "uncommon"  ? "bg-green-400"  :
+          item.rarity === "rare"      ? "bg-blue-400"   :
+          item.rarity === "legendary" ? "bg-purple-400" :
+          item.rarity === "fabled"    ? "bg-orange-400" :
+          "bg-red-400"
+        )} />
+      )}
     </div>
   );
 
@@ -328,7 +358,7 @@ export function ItemIcon({ item, emptyText, onClick, className, showTooltip = tr
     <Tooltip>
       <TooltipTrigger asChild>{content}</TooltipTrigger>
       <TooltipContent side="right" className="p-0 border-slate-700 bg-transparent shadow-xl">
-        <ItemTooltipContent item={item as ItemTooltipData} />
+        <ItemTooltipContent item={item as unknown as ItemTooltipData} />
       </TooltipContent>
     </Tooltip>
   );
