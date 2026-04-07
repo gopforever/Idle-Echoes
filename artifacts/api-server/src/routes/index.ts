@@ -31,6 +31,7 @@ import gatheringRouter from "./gathering.js";
 import gatheringBagRouter from "./gathering-bag.js";
 import bestiaryRouter from "./bestiary.js";
 import settingsRouter from "./settings.js";
+import gearSetsRouter from "./gear-sets.js";
 import { requireAuth } from "../middleware/auth.js";
 
 const router: IRouter = Router();
@@ -75,6 +76,7 @@ gameRoutes.use(gatheringRouter);
 gameRoutes.use(gatheringBagRouter);
 gameRoutes.use(bestiaryRouter);
 gameRoutes.use(settingsRouter);
+gameRoutes.use(gearSetsRouter);
 
 router.use(gameRoutes);
 

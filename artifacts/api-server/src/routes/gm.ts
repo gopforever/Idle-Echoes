@@ -13,6 +13,7 @@ import { getOrCreateCharacter } from "./character.js";
 import { progressTalkObjectives } from "../lib/questProgress.js";
 import { rollItem } from "../lib/proceduralItems.js";
 import { getEnemyById } from "../lib/gameData.js";
+import { GEAR_SETS } from "../lib/dungeonData.js";
 
 const router: IRouter = Router();
 
@@ -648,6 +649,215 @@ Respond with ONLY valid JSON array (no markdown):
     const entry = pool[Math.floor(Math.random() * pool.length)];
     const { lore, ...item } = entry;
     return { item: item as import("../lib/proceduralItems.js").ProceduralItem, lore };
+  } catch {
+    return null;
+  }
+}
+
+// ─── Gear Set Item Generation ─────────────────────────────────────────────────
+
+export interface GearSetItemResult {
+  item: {
+    id: string;
+    name: string;
+    description: string;
+    type: "armor";
+    slot: string;
+    rarity: "rare" | "legendary" | "fabled" | "mythical";
+    level: number;
+    stats: Record<string, number>;
+    sellPrice: number;
+    spriteId: string;
+    noSell: boolean;
+    setId: string;
+    setPieceSlot: string;
+    setName: string;
+    setBonuses: Array<{ piecesRequired: number; description: string; isProc: boolean; procName?: string }>;
+  };
+  lore: string;
+}
+
+const DIFFICULTY_SET_RARITY: Record<string, "rare" | "legendary" | "fabled" | "mythical"> = {
+  normal: "rare", expert: "legendary", legendary: "fabled", mythical: "mythical",
+};
+
+/**
+ * Generate a named gear set piece with AI flavor. The full set definition
+ * (name, lore, per-slot piece names) is generated once on the first drop and
+ * cached in loreCacheTable as `gear_set_{setId}`. Subsequent drops for any
+ * slot sample from the cached set definition.
+ */
+export async function generateGearSetItem(
+  setId: string,
+  slot: string,
+  dungeonName: string,
+  dungeonZone: string,
+  difficulty: string,
+  setTheme: string,
+  setNameTemplate: string,
+  level: number,
+  archetype: "fighter" | "healer" | "caster" = "fighter",
+): Promise<GearSetItemResult | null> {
+  try {
+    const cacheKey = `gear_set_${setId}`;
+    const [cached] = await db.select().from(loreCacheTable).where(eq(loreCacheTable.cacheKey, cacheKey)).limit(1);
+
+    type CachedSetDef = {
+      setName: string;
+      lore: string;
+      pieceNames: Record<string, string>;
+    };
+
+    let setDef: CachedSetDef | null = null;
+
+    if (cached) {
+      try { setDef = JSON.parse(cached.content) as CachedSetDef; } catch { /* re-generate below */ }
+    }
+
+    if (!setDef) {
+      const prompt = `You are the item lore writer for an EverQuest 2 idle RPG.
+Theme: ${setTheme}
+Dungeon: ${dungeonName} (${dungeonZone}), difficulty: ${difficulty}, character level ~${level}.
+Default set name: "${setNameTemplate}"
+
+Generate a named gear set for this dungeon. Respond with ONLY valid JSON (no markdown):
+{
+  "setName": "Short 2-4 word set name (e.g. 'Gnollskin Warchief's Raiment')",
+  "lore": "1-2 sentence atmospheric lore for the full set.",
+  "pieceNames": {
+    "head": "Short 3-5 word piece name",
+    "shoulder": "Short 3-5 word piece name",
+    "chest": "Short 3-5 word piece name",
+    "wrist": "Short 3-5 word piece name",
+    "legs": "Short 3-5 word piece name",
+    "feet": "Short 3-5 word piece name"
+  }
+}`;
+
+      const raw = await aiComplete([{ role: "user", content: prompt }], "gpt-4o-mini", 400);
+      try {
+        const jsonStr = raw.replace(/^```json?\s*/i, "").replace(/```\s*$/, "").trim();
+        const parsed = JSON.parse(jsonStr) as CachedSetDef;
+        if (parsed.setName && parsed.pieceNames) {
+          setDef = parsed;
+        }
+      } catch { /* use template below */ }
+
+      // Fallback if AI fails
+      if (!setDef) {
+        setDef = {
+          setName: setNameTemplate,
+          lore: `Armor forged in the depths of ${dungeonName}, imbued with the power of ${dungeonZone}.`,
+          pieceNames: {
+            head: `${setNameTemplate} Helm`,
+            shoulder: `${setNameTemplate} Spaulders`,
+            chest: `${setNameTemplate} Breastplate`,
+            wrist: `${setNameTemplate} Bracers`,
+            legs: `${setNameTemplate} Greaves`,
+            feet: `${setNameTemplate} Boots`,
+          },
+        };
+      }
+
+      const cacheContent = JSON.stringify(setDef);
+      await db.insert(loreCacheTable).values({ cacheKey, content: cacheContent })
+        .onConflictDoUpdate({ target: loreCacheTable.cacheKey, set: { content: cacheContent } });
+    }
+
+    const rarity = DIFFICULTY_SET_RARITY[difficulty] ?? "rare";
+    const pieceName = setDef.pieceNames[slot] ?? `${setDef.setName} ${slot.charAt(0).toUpperCase() + slot.slice(1)}`;
+
+    // ── Stat scaling ─────────────────────────────────────────────────────────
+    // Set pieces are notably better than random drops of the same rarity.
+    // Multipliers aligned to RARITY_STAT_MULT in proceduralItems.ts (rare=2.0,
+    // legendary=3.2, fabled=5.0) but boosted ~25% as a "set premium".
+    const rarityMult: Record<string, number> = {
+      normal: 2.5,    // rare quality + set premium
+      expert: 4.5,    // legendary quality + set premium
+      legendary: 7.0, // fabled quality + set premium
+      mythical: 10.0, // best-in-slot
+    };
+    const mult = rarityMult[difficulty] ?? 2.5;
+
+    // Chest/legs are the biggest armor slots — bonus factor
+    const slotSizeFactor: Record<string, number> = {
+      head: 1.0, shoulder: 0.85, chest: 1.3, wrist: 0.8, legs: 1.1, feet: 0.85,
+    };
+    const sizeFactor = slotSizeFactor[slot] ?? 1.0;
+
+    const base = Math.max(1, Math.floor(level * 0.8));
+    const pri  = Math.round(base * mult * sizeFactor);         // primary stat
+    const sec  = Math.round(base * mult * sizeFactor * 0.65);  // secondary stat
+
+    // Percentage stats (crit, haste, avoidance, mitigation) scale separately
+    const pctBase: Record<string, number> = {
+      normal: 2, expert: 5, legendary: 9, mythical: 14,
+    };
+    const pct = (pctBase[difficulty] ?? 2) + Math.round(level / 10);
+
+    // ── Archetype × slot stat profiles ───────────────────────────────────────
+    type SlotStatMap = Record<string, Record<string, number>>;
+
+    const fighterStats: SlotStatMap = {
+      head:     { defenseRating: pri, stamina: sec },
+      shoulder: { defenseRating: pri, attackRating: sec },
+      chest:    { defenseRating: pri, stamina: sec },
+      wrist:    { attackRating: pri, haste: pct },
+      legs:     { defenseRating: pri, mitigation: pct },
+      feet:     { attackRating: pri, avoidance: pct },
+    };
+
+    const healerStats: SlotStatMap = {
+      head:     { health: pri, wisdom: sec },
+      shoulder: { health: pri, spellCritChance: pct },
+      chest:    { health: pri, wisdom: sec },
+      wrist:    { spellCritChance: pct, haste: pct },
+      legs:     { health: pri, wisdom: sec },
+      feet:     { avoidance: pct, haste: pct },
+    };
+
+    const casterStats: SlotStatMap = {
+      head:     { intelligence: pri, spellCritChance: pct },
+      shoulder: { intelligence: pri, spellDamage: sec },
+      chest:    { intelligence: pri, spellDamage: sec },
+      wrist:    { spellCritChance: pct, haste: pct },
+      legs:     { intelligence: pri, spellDamage: sec },
+      feet:     { avoidance: pct, haste: pct },
+    };
+
+    const profileMap = { fighter: fighterStats, healer: healerStats, caster: casterStats };
+    const profile = profileMap[archetype] ?? fighterStats;
+    const stats = profile[slot] ?? { attackRating: pri, defenseRating: sec };
+
+    const sellPrice = rarity === "mythical" ? 0 : Math.round(level * mult * 3);
+
+    const gearSetDef = GEAR_SETS.find(s => s.id === setId);
+    const setBonuses = (gearSetDef?.bonuses ?? []).map(b => ({
+      piecesRequired: b.piecesRequired,
+      description: b.description,
+      isProc: !!b.effect,
+      procName: b.effect?.name,
+    }));
+
+    const item: GearSetItemResult["item"] = {
+      id: `set_${setId}_${slot}`,
+      name: pieceName,
+      description: setDef.lore,
+      type: "armor",
+      slot,
+      rarity,
+      level,
+      stats,
+      sellPrice,
+      spriteId: `armor_${slot}_${difficulty}`,
+      noSell: rarity === "fabled" || rarity === "mythical",
+      setId,
+      setPieceSlot: slot,
+      setName: setDef.setName,
+      setBonuses,
+    };
+
+    return { item, lore: setDef.lore };
   } catch {
     return null;
   }

@@ -4,7 +4,7 @@ import { charactersTable, combatStateTable, combatLogTable, heroicStateTable, fa
 import { eq, desc, gt, and } from "drizzle-orm";
 import { computeStats, calculatePlayerDamage, calculateEnemyDamage, calculateXpGain, xpForLevel, applyAABonuses, type SkillLevels } from "../lib/eq2Formulas.js";
 import { getEnemyById, getItemById, ENEMIES, CRAFTING_RECIPES, getOneOfAKindScrollMap, type Enemy, type EnemyAbility } from "../lib/gameData.js";
-import { CLASSES, HEROIC_CHAINS, AA_TABS } from "../lib/eq2Data.js";
+import { CLASSES, HEROIC_CHAINS, ALL_AA_TABS } from "../lib/eq2Data.js";
 import { getOrCreateCharacter } from "./character.js";
 import { applySkillXp } from "../lib/skillXp.js";
 import type { StatusEffect } from "@workspace/db/schema";
@@ -49,7 +49,7 @@ export interface FloatEvent {
 const router: IRouter = Router();
 
 // Flat list of all AA node definitions for quick lookup
-const ALL_AA_NODES = AA_TABS.flatMap(tab => tab.nodes);
+const ALL_AA_NODES = ALL_AA_TABS.flatMap(tab => tab.nodes);
 
 async function getOrCreateCombatState(characterId: number) {
   const states = await db.select().from(combatStateTable).where(eq(combatStateTable.characterId, characterId)).limit(1);
@@ -956,14 +956,23 @@ router.post("/combat/tick", async (req, res) => {
         await db.insert(combatLogTable).values({ characterId, tick: newTick, message: collectMsg, type: "loot" });
       }
 
-      const xpMsg = `✨ Gained ${xpGained} XP and ${goldGained}g.`;
+      // ── XP ratio split: divert a % of XP to AA points instead of level XP ──
+      const aaXpRatio = Math.max(0, Math.min(100, character.aaXpRatio ?? 0));
+      const aaXpDiverted = Math.floor(xpGained * aaXpRatio / 100);
+      const levelXpGained = xpGained - aaXpDiverted;
+      // 1 AA point per 100 diverted XP (floored; remainder carries into future kills via level-up bonus)
+      const aaPtsFromRatio = Math.floor(aaXpDiverted / 100);
+
+      const xpMsg = aaXpRatio > 0
+        ? `✨ Gained ${levelXpGained} XP, ${goldGained}g (+${aaPtsFromRatio > 0 ? aaPtsFromRatio + " AA" : aaXpDiverted + " AA XP"} from ${aaXpRatio}% ratio).`
+        : `✨ Gained ${xpGained} XP and ${goldGained}g.`;
       combatMessages.push(xpMsg);
       await db.insert(combatLogTable).values({ characterId, tick: newTick, message: xpMsg, type: "info" });
 
-      let newXp = character.xp + xpGained;
+      let newXp = character.xp + levelXpGained;
       let newLevel = character.level;
       let newXpToNext = character.xpToNextLevel;
-      let aaPtsGained = 0;
+      let aaPtsGained = aaPtsFromRatio;
 
       while (newXp >= newXpToNext) {
         newXp -= newXpToNext;

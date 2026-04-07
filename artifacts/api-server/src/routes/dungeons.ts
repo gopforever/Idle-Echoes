@@ -1,16 +1,18 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { dungeonRunsTable, raidRunsTable, worldPlayersTable, dungeonKillStatsTable } from "@workspace/db/schema";
+import { dungeonRunsTable, raidRunsTable, worldPlayersTable, dungeonKillStatsTable, inventoryTable } from "@workspace/db/schema";
 import { eq, and, inArray } from "drizzle-orm";
 import { getOrCreateCharacter } from "./character.js";
 import { getEnemyById, getItemById } from "../lib/gameData.js";
-import { getDungeonById, DUNGEONS, scaleEnemyForDifficulty, DUNGEON_GS_GATE, DUNGEON_DIFFICULTY_MULTIPLIER } from "../lib/dungeonData.js";
+import { getDungeonById, DUNGEONS, GEAR_SETS, scaleEnemyForDifficulty, DUNGEON_GS_GATE, DUNGEON_DIFFICULTY_MULTIPLIER, getGearSetsForFloor } from "../lib/dungeonData.js";
+import type { DungeonDifficulty, GearSetArchetype } from "../lib/dungeonData.js";
 import { RAIDS } from "../lib/raidData.js";
 import { computeGearScore } from "../lib/eq2Formulas.js";
 import { progressDungeonKill, generateDungeonLoot, awardItemsToInventory, upsertDungeonKillStats } from "../lib/dungeonProgress.js";
 import { checkAndUnlockAchievements } from "./achievements.js";
 import { initPartyMember, fetchGhostInfo, revivePartyOnFloorAdvance, awardGhostContributions } from "../lib/partyEngine.js";
 import type { PartyMember } from "../lib/partyEngine.js";
+import { generateGearSetItem } from "./gm.js";
 
 export { progressDungeonKill };
 
@@ -84,6 +86,24 @@ function formatRun(run: typeof dungeonRunsTable.$inferSelect) {
     abandoned: run.abandoned ?? run.status === "abandoned",
     party: (run.party as PartyMember[]) ?? [],
   };
+}
+
+/**
+ * Award set piece items directly to inventory (bypassing the ITEMS lookup since
+ * set pieces are AI-generated on first drop, not from the static item catalog).
+ */
+async function awardSetPiecesToInventory(
+  pieces: Array<{ item: Record<string, unknown> }>,
+  characterId: number,
+): Promise<void> {
+  for (const { item } of pieces) {
+    await db.insert(inventoryTable).values({
+      characterId,
+      itemId: item["id"] as string,
+      itemData: item,
+      quantity: 1,
+    });
+  }
 }
 
 // ─── GET /api/dungeons ────────────────────────────────────────────────────────
@@ -628,8 +648,35 @@ router.post("/dungeons/run/advance", async (req, res) => {
 
     const loot = generateDungeonLoot(character.level, run.currentFloor, run.difficulty, dungeon.minLevel, dungeon.maxLevel);
     await awardItemsToInventory(loot, character.id);
+
+    // ── Gear set piece drops ──────────────────────────────────────────────────
+    const charClass = (character.class ?? "Fighter") as string;
+    const setArchetype: GearSetArchetype = charClass === "Priest" ? "healer" : charClass === "Mage" ? "caster" : "fighter";
+    const setPieceDefs = getGearSetsForFloor(dungeon.id, run.difficulty as DungeonDifficulty, run.currentFloor, setArchetype);
+    const setPieceItems: Array<{ item: Record<string, unknown> }> = [];
+    for (const pieceDef of setPieceDefs) {
+      const setDef = GEAR_SETS.find(
+        s => s.dungeonId === dungeon.id && s.difficulty === run.difficulty && s.archetype === setArchetype,
+      );
+      if (!setDef) continue;
+      const result = await generateGearSetItem(
+        setDef.id,
+        pieceDef.slot,
+        dungeon.name,
+        dungeon.zone,
+        run.difficulty,
+        setDef.theme,
+        setDef.setNameTemplate,
+        character.level,
+        setArchetype,
+      );
+      if (result) setPieceItems.push({ item: result.item as unknown as Record<string, unknown> });
+    }
+    if (setPieceItems.length > 0) await awardSetPiecesToInventory(setPieceItems, character.id);
+    const setPieceIds = setPieceItems.map(p => p.item["id"] as string);
+
     const existingLoot = (run.lootEarned as Array<{ floor: number; items: string[] }>) ?? [];
-    const newLoot = [...existingLoot, { floor: run.currentFloor, items: loot }];
+    const newLoot = [...existingLoot, { floor: run.currentFloor, items: [...loot, ...setPieceIds] }];
 
     const currentParty = (run.party as PartyMember[]) ?? [];
 
@@ -676,6 +723,7 @@ router.post("/dungeons/run/advance", async (req, res) => {
         completed: true,
         abandoned: false,
         lootAwarded: loot,
+        setPiecesAwarded: setPieceItems.map(p => p.item),
         xpEarned,
         goldEarned,
         party: partyWithInfo,
@@ -710,6 +758,7 @@ router.post("/dungeons/run/advance", async (req, res) => {
       abandoned: false,
       newFloor,
       lootAwarded: loot,
+      setPiecesAwarded: setPieceItems.map(p => p.item),
       party: revivedParty,
       nextFloor: {
         floorNumber: newFloor,
