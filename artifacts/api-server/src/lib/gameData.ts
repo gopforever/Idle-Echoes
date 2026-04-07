@@ -43,6 +43,8 @@ export interface Item {
   setPieceSlot?: string;
   /** AI-generated display name for the set family */
   setName?: string;
+  /** Armor material type — drives stat profiles and UI color coding */
+  armorType?: "plate" | "chain" | "leather" | "cloth";
 }
 
 /**
