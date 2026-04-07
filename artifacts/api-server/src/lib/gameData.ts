@@ -37,6 +37,12 @@ export interface Item {
   recipeTier?: RecipeTier;
   /** Fabled and mythical items are No-Drop — cannot be sold to shop or listed on the Auction Hall */
   noSell?: boolean;
+  /** Gear set this item belongs to (e.g. "blackburrow_mythical") */
+  setId?: string;
+  /** The slot this set piece occupies within its set (e.g. "chest") */
+  setPieceSlot?: string;
+  /** AI-generated display name for the set family */
+  setName?: string;
 }
 
 /**

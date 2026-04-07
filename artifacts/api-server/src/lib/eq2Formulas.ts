@@ -71,6 +71,9 @@ export interface AABonuses {
   spellPiercing: number;
   goldBonus: number;
   xpBonus: number;
+  wardAbsorb: number;
+  gatheringSpeed: number;
+  craftYield: number;
 }
 
 export function makeZeroAABonuses(): AABonuses {
@@ -82,6 +85,7 @@ export function makeZeroAABonuses(): AABonuses {
     backstabDamageBonus: 0, cooldownReduction: 0, powerCostReduction: 0,
     dmgReduction: 0, divineDamageBonus: 0, healAmountBonus: 0,
     spellPiercing: 0, goldBonus: 0, xpBonus: 0,
+    wardAbsorb: 0, gatheringSpeed: 0, craftYield: 0,
   };
 }
 
@@ -119,6 +123,9 @@ export function applyAABonuses(nodes: Array<{
       case "spell_piercing":      b.spellPiercing        += total; break;
       case "gold_bonus":          b.goldBonus            += total; break;
       case "xp_bonus":            b.xpBonus              += total; break;
+      case "ward_absorb":         b.wardAbsorb           += total; break;
+      case "gathering_speed":     b.gatheringSpeed       += total; break;
+      case "craft_yield":         b.craftYield           += total; break;
     }
   }
   return b;
@@ -460,3 +467,103 @@ export const DUNGEON_DIFFICULTY_MULTIPLIER: Record<string, number> = {
   legendary: 2.0,
   mythical: 3.0,
 };
+
+// ─── Gear Set Bonus Computation ───────────────────────────────────────────────
+
+/** Flat stat boosts accumulated from all active gear set bonuses */
+export interface SetStatBoosts {
+  attackRating: number;
+  defenseRating: number;
+  mitigation: number;
+  avoidance: number;
+  critChance: number;
+  haste: number;
+  maxHpPercent: number;
+  maxPowerPercent: number;
+  spellDamage: number;
+  spellCritChance: number;
+}
+
+export interface SetBonusSummary {
+  setId: string;
+  setName: string;
+  dungeonId: string;
+  difficulty: string;
+  archetype: string;
+  piecesEquipped: number;
+  piecesTotal: number;
+  /** All bonus tiers, both active (met) and locked (not yet met) */
+  bonuses: Array<{ piecesRequired: number; description: string; active: boolean; isProc: boolean; procName?: string }>;
+}
+
+export function makeZeroSetBoosts(): SetStatBoosts {
+  return {
+    attackRating: 0, defenseRating: 0, mitigation: 0, avoidance: 0,
+    critChance: 0, haste: 0, maxHpPercent: 0, maxPowerPercent: 0,
+    spellDamage: 0, spellCritChance: 0,
+  };
+}
+
+/**
+ * Scan equipped gear for set piece tags, count equipped pieces per set,
+ * then apply bonuses for any tier threshold that is met.
+ * equippedGear: the character.gear JSONB object (slot → item or itemId string).
+ */
+export function computeSetBonuses(
+  equippedGear: Record<string, unknown>,
+  gearSets: import("./dungeonData.js").GearSetDefinition[],
+): { summaries: SetBonusSummary[]; statBoosts: SetStatBoosts } {
+  const statBoosts = makeZeroSetBoosts();
+  const summaries: SetBonusSummary[] = [];
+
+  // Build a map of setId → { count, setName }
+  const equippedBySet = new Map<string, { count: number; setName: string }>();
+  for (const slotVal of Object.values(equippedGear)) {
+    if (!slotVal || typeof slotVal !== "object") continue;
+    const item = slotVal as Record<string, unknown>;
+    const setId = item["setId"] as string | undefined;
+    if (!setId) continue;
+    const setName = (item["setName"] as string | undefined) ?? setId;
+    const prev = equippedBySet.get(setId) ?? { count: 0, setName };
+    equippedBySet.set(setId, { count: prev.count + 1, setName: prev.setName });
+  }
+
+  for (const setDef of gearSets) {
+    const entry = equippedBySet.get(setDef.id);
+    if (!entry || entry.count === 0) continue;
+
+    const piecesEquipped = entry.count;
+    const bonuses: SetBonusSummary["bonuses"] = [];
+
+    for (const bonus of setDef.bonuses) {
+      const active = piecesEquipped >= bonus.piecesRequired;
+      const isProc = !!bonus.effect;
+      bonuses.push({
+        piecesRequired: bonus.piecesRequired,
+        description: bonus.description,
+        active,
+        isProc,
+        procName: bonus.effect?.name,
+      });
+      if (active && !isProc && bonus.stat && bonus.value !== undefined) {
+        const key = bonus.stat as keyof SetStatBoosts;
+        if (key in statBoosts) {
+          (statBoosts as unknown as Record<string, number>)[key] += bonus.value;
+        }
+      }
+    }
+
+    summaries.push({
+      setId: setDef.id,
+      setName: entry.setName,
+      dungeonId: setDef.dungeonId,
+      difficulty: setDef.difficulty,
+      archetype: setDef.archetype,
+      piecesEquipped,
+      piecesTotal: setDef.pieces.length,
+      bonuses,
+    });
+  }
+
+  return { summaries, statBoosts };
+}
