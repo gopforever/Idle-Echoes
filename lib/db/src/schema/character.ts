@@ -57,6 +57,10 @@ export const charactersTable = pgTable("characters", {
   zoneKills: jsonb("zone_kills").notNull().default({}).$type<Record<string, number>>(),
   /** Pinned recipe IDs for quick-access crafting panels (max 10, per character) */
   pinnedRecipes: jsonb("pinned_recipes").notNull().default([]).$type<string[]>(),
+  /** Chosen tradeskill class (weaponsmith, armorer, tailor, jeweler, alchemist) — set once */
+  tradeskillClass: text("tradeskill_class"),
+  /** Total tradeskill XP per class — level derived as floor(sqrt(xp/25)) */
+  tradeskills: jsonb("tradeskills").notNull().default({}).$type<Record<string, number>>(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
