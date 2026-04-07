@@ -1015,7 +1015,7 @@ export default function WorldPage() {
             <Globe2 className="w-6 h-6 text-blue-400" /> Living World of Norrath
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            30 ghost adventurers explore the world alongside you — simulated every 30 seconds, refreshed every 10s.
+            60 ghost adventurers explore the world alongside you — simulated every 30 seconds, refreshed every 10s.
             {rivals.length > 0 && (
               <span className="ml-2 text-amber-400 font-medium">
                 ⚔ Tracking {rivals.length} rival{rivals.length !== 1 ? "s" : ""}
@@ -1039,12 +1039,12 @@ export default function WorldPage() {
           <button
             disabled={ghostResetting}
             onClick={async () => {
-              if (!confirm("Reset all 30 ghost players back to level 1? This takes a few seconds.")) return;
+              if (!confirm("Reset all 60 ghost players back to level 1? This takes a few seconds.")) return;
               setGhostResetting(true);
               try {
                 const res = await fetch(apiUrl("/api/admin/reset-ghosts"), { method: "POST" });
                 if (res.ok) {
-                  toast({ title: "Ghost players reset", description: "All 30 adventurers have been reborn at level 1." });
+                  toast({ title: "Ghost players reset", description: "All 60 adventurers have been reborn at level 1." });
                 } else {
                   toast({ title: "Reset failed", description: "Could not reset ghosts. Check server logs.", variant: "destructive" });
                 }

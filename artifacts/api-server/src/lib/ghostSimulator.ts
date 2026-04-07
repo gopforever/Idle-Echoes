@@ -1,6 +1,6 @@
 /**
  * Ghost Player Simulation Engine v2
- * 30 ghost players with distinct personalities, organic level progression from 1,
+ * 60 ghost players with distinct personalities, organic level progression from 1,
  * economy participation, and richer world-building events.
  *
  * Personalities:
@@ -50,7 +50,7 @@ import { DUNGEONS } from "./dungeonData.js";
 import { RAIDS } from "./raidData.js";
 
 // ─── Simulator version — bump to force a reset of ghost data ─────────────────
-const SIMULATOR_VERSION = 4;
+const SIMULATOR_VERSION = 5;
 
 // ─── Zone registry ────────────────────────────────────────────────────────────
 
@@ -864,7 +864,7 @@ export async function seedGhostPlayers(): Promise<void> {
     return;
   }
 
-  console.log("[Ghost] Seeding 30 ghost players at level 1...");
+  console.log("[Ghost] Seeding 60 ghost players at level 1...");
   await seedGhostPlayersInner();
   await storeSimVersion(SIMULATOR_VERSION);
   console.log("[Ghost] Seeding complete.");
@@ -1962,10 +1962,22 @@ export async function tickGhostSimulation(): Promise<void> {
         lastTickAt: new Date(),
       }).where(eq(worldPlayersTable.id, player.id));
 
-      // ── Generational ghost spawn (every 15 deaths, max generation 5) ──
-      if (newDeathCount >= 15 && newDeathCount % 15 === 0 && (player.generation ?? 1) < 5) {
+      // ── Generational ghost retirement (at 500 deaths) ──
+      if (newDeathCount >= 500 && (player.generation ?? 1) < 5) {
         const freshPlayer = { ...player, deathCount: newDeathCount };
         await spawnChildGhost(freshPlayer, tick).catch(() => {});
+        // Retire the parent — remove from world
+        await db.delete(worldPlayersTable).where(eq(worldPlayersTable.id, player.id)).catch((e) => { console.error("[Ghost] Failed to delete retired ghost:", e); });
+        await db.delete(ghostDungeonClearsTable).where(eq(ghostDungeonClearsTable.ghostId, player.id)).catch((e) => { console.error("[Ghost] Failed to delete dungeon clears for retired ghost:", e); });
+        await db.delete(ghostRaidClearsTable).where(eq(ghostRaidClearsTable.ghostId, player.id)).catch((e) => { console.error("[Ghost] Failed to delete raid clears for retired ghost:", e); });
+        await db.insert(worldEventsTable).values({
+          type: "ghost_retirement",
+          message: `${player.name} has fought their last battle after 500 deaths — their legacy lives on!`,
+          playerName: player.name,
+          zone: player.zone,
+          importance: 5,
+          tick,
+        }).catch((e) => { console.error("[Ghost] Failed to insert retirement event:", e); });
       }
     }
   }
