@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Link, useLocation } from "wouter";
 import {
-  Shield, Sword, Backpack, GraduationCap, Hammer, LayoutDashboard,
+  Shield, Sword, Backpack, GraduationCap, Hammer, Anvil, LayoutDashboard,
   Map, Users, Star, Layers, Zap, Award, ShoppingBag, Gem, Globe2, ScrollText, Castle, Landmark, Pickaxe,
   BookOpen, Settings, LogOut, UserRound
 } from "lucide-react";
@@ -19,6 +19,7 @@ const NAV_ITEMS = [
   { href: "/skills", label: "Skills", icon: GraduationCap },
   { href: "/gathering", label: "Gathering", icon: Pickaxe },
   { href: "/crafting", label: "Crafting", icon: Hammer },
+  { href: "/tradeskills", label: "Tradeskills", icon: Anvil },
 ];
 
 const NAV_EQ2 = [
