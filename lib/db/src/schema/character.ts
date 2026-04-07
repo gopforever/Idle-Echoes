@@ -16,6 +16,10 @@ export const charactersTable = pgTable("characters", {
   xpToNextLevel: real("xp_to_next_level").notNull().default(100),
   aaPoints: integer("aa_points").notNull().default(0),
   aaPointsSpent: integer("aa_points_spent").notNull().default(0),
+  /** 0-100: percentage of combat XP diverted to AA points instead of level XP */
+  aaXpRatio: integer("aa_xp_ratio").notNull().default(0),
+  /** True once the character has used their one paid respec */
+  aaRespecUsed: boolean("aa_respec_used").notNull().default(false),
   gold: real("gold").notNull().default(250),
   bankGold: real("bank_gold").notNull().default(0),
   health: real("health").notNull().default(100),
