@@ -248,7 +248,7 @@ async function awardTradeskillXp(
 router.get("/tradeskills/status", async (req, res) => {
   await seedRecipesIfNeeded();
   try {
-    const characterId = (req.session as { characterId?: number }).characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
 
     const char = await getOrCreateCharacter(characterId);
@@ -285,7 +285,7 @@ router.get("/tradeskills/status", async (req, res) => {
 
 router.post("/tradeskills/class", async (req, res) => {
   try {
-    const characterId = (req.session as { characterId?: number }).characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
 
     const { tradeskillClass } = req.body as { tradeskillClass?: string };
@@ -314,7 +314,7 @@ router.post("/tradeskills/class", async (req, res) => {
 
 router.get("/tradeskills/vendor/materials", async (req, res) => {
   try {
-    const characterId = (req.session as { characterId?: number }).characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
 
     const char = await getOrCreateCharacter(characterId);
@@ -336,7 +336,7 @@ router.get("/tradeskills/vendor/materials", async (req, res) => {
 
 router.post("/tradeskills/vendor/materials/purchase", async (req, res) => {
   try {
-    const characterId = (req.session as { characterId?: number }).characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
 
     const { itemId, quantity = 1 } = req.body as { itemId?: string; quantity?: number };
@@ -408,7 +408,7 @@ router.post("/tradeskills/vendor/materials/purchase", async (req, res) => {
 router.get("/tradeskills/vendor/recipes", async (req, res) => {
   await seedRecipesIfNeeded();
   try {
-    const characterId = (req.session as { characterId?: number }).characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
 
     const char = await getOrCreateCharacter(characterId);
@@ -441,7 +441,7 @@ router.get("/tradeskills/vendor/recipes", async (req, res) => {
 
 router.post("/tradeskills/vendor/recipes/purchase", async (req, res) => {
   try {
-    const characterId = (req.session as { characterId?: number }).characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
 
     const { recipeId } = req.body as { recipeId?: number };
@@ -497,7 +497,7 @@ router.post("/tradeskills/vendor/recipes/purchase", async (req, res) => {
 router.get("/tradeskills/recipes", async (req, res) => {
   await seedRecipesIfNeeded();
   try {
-    const characterId = (req.session as { characterId?: number }).characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
 
     const known = await db
@@ -545,7 +545,7 @@ router.get("/tradeskills/recipes", async (req, res) => {
 
 router.post("/tradeskills/queue", async (req, res) => {
   try {
-    const characterId = (req.session as { characterId?: number }).characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
 
     const { recipeId, quantity = 1 } = req.body as { recipeId?: number; quantity?: number };
@@ -622,7 +622,7 @@ router.post("/tradeskills/queue", async (req, res) => {
 
 router.get("/tradeskills/queue", async (req, res) => {
   try {
-    const characterId = (req.session as { characterId?: number }).characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
 
     const char = await getOrCreateCharacter(characterId);
@@ -727,7 +727,7 @@ router.get("/tradeskills/queue", async (req, res) => {
 
 router.delete("/tradeskills/queue/:id", async (req, res) => {
   try {
-    const characterId = (req.session as { characterId?: number }).characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
 
     const queueId = Number(req.params.id);
