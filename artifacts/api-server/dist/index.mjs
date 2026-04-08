@@ -28,11 +28,11 @@ var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
 };
-var __copyProps = (to, from, except2, desc2) => {
+var __copyProps = (to, from, except2, desc3) => {
   if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except2)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc2 = __getOwnPropDesc(from, key)) || desc2.enumerable });
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc3 = __getOwnPropDesc(from, key)) || desc3.enumerable });
   }
   return to;
 };
@@ -1355,10 +1355,10 @@ var require_http_errors = __commonJS({
       return ServerError;
     }
     function nameFunc(func, name) {
-      var desc2 = Object.getOwnPropertyDescriptor(func, "name");
-      if (desc2 && desc2.configurable) {
-        desc2.value = name;
-        Object.defineProperty(func, "name", desc2);
+      var desc3 = Object.getOwnPropertyDescriptor(func, "name");
+      if (desc3 && desc3.configurable) {
+        desc3.value = name;
+        Object.defineProperty(func, "name", desc3);
       }
     }
     function populateConstructorExports(exports2, codes, HttpError) {
@@ -16803,14 +16803,14 @@ var require_get = __commonJS({
         throw e;
       }
     }
-    var desc2 = !!hasProtoAccessor && gOPD && gOPD(
+    var desc3 = !!hasProtoAccessor && gOPD && gOPD(
       Object.prototype,
       /** @type {keyof typeof Object.prototype} */
       "__proto__"
     );
     var $Object = Object;
     var $getPrototypeOf = $Object.getPrototypeOf;
-    module.exports = desc2 && typeof desc2.get === "function" ? callBind([desc2.get]) : typeof $getPrototypeOf === "function" ? (
+    module.exports = desc3 && typeof desc3.get === "function" ? callBind([desc3.get]) : typeof $getPrototypeOf === "function" ? (
       /** @type {import('./get')} */
       function getDunder(value) {
         return $getPrototypeOf(value == null ? value : $Object(value));
@@ -17160,10 +17160,10 @@ var require_get_intrinsic = __commonJS({
             return void undefined2;
           }
           if ($gOPD && i + 1 >= parts.length) {
-            var desc2 = $gOPD(value, part);
-            isOwn = !!desc2;
-            if (isOwn && "get" in desc2 && !("originalValue" in desc2.get)) {
-              value = desc2.get;
+            var desc3 = $gOPD(value, part);
+            isOwn = !!desc3;
+            if (isOwn && "get" in desc3 && !("originalValue" in desc3.get)) {
+              value = desc3.get;
             } else {
               value = value[part];
             }
@@ -19850,9 +19850,9 @@ var require_is_promise = __commonJS({
   }
 });
 
-// ../../node_modules/.pnpm/path-to-regexp@8.3.0/node_modules/path-to-regexp/dist/index.js
+// ../../node_modules/.pnpm/path-to-regexp@8.4.2/node_modules/path-to-regexp/dist/index.js
 var require_dist = __commonJS({
-  "../../node_modules/.pnpm/path-to-regexp@8.3.0/node_modules/path-to-regexp/dist/index.js"(exports) {
+  "../../node_modules/.pnpm/path-to-regexp@8.4.2/node_modules/path-to-regexp/dist/index.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.PathError = exports.TokenData = void 0;
@@ -19865,19 +19865,7 @@ var require_dist = __commonJS({
     var NOOP_VALUE = (value) => value;
     var ID_START = /^[$_\p{ID_Start}]$/u;
     var ID_CONTINUE = /^[$\u200c\u200d\p{ID_Continue}]$/u;
-    var SIMPLE_TOKENS = {
-      // Groups.
-      "{": "{",
-      "}": "}",
-      // Reserved.
-      "(": "(",
-      ")": ")",
-      "[": "[",
-      "]": "]",
-      "+": "+",
-      "?": "?",
-      "!": "!"
-    };
+    var ID = /^[$_\p{ID_Start}][$\u200c\u200d\p{ID_Continue}]*$/u;
     function escapeText(str2) {
       return str2.replace(/[{}()\[\]+?!:*\\]/g, "\\$&");
     }
@@ -19905,97 +19893,90 @@ var require_dist = __commonJS({
     function parse3(str2, options = {}) {
       const { encodePath = NOOP_VALUE } = options;
       const chars = [...str2];
-      const tokens = [];
       let index2 = 0;
-      let pos = 0;
-      function name() {
-        let value = "";
-        if (ID_START.test(chars[index2])) {
-          do {
-            value += chars[index2++];
-          } while (ID_CONTINUE.test(chars[index2]));
-        } else if (chars[index2] === '"') {
-          let quoteStart = index2;
-          while (index2++ < chars.length) {
-            if (chars[index2] === '"') {
-              index2++;
-              quoteStart = 0;
-              break;
-            }
-            if (chars[index2] === "\\")
-              index2++;
-            value += chars[index2];
-          }
-          if (quoteStart) {
-            throw new PathError(`Unterminated quote at index ${quoteStart}`, str2);
-          }
-        }
-        if (!value) {
-          throw new PathError(`Missing parameter name at index ${index2}`, str2);
-        }
-        return value;
-      }
-      while (index2 < chars.length) {
-        const value = chars[index2];
-        const type = SIMPLE_TOKENS[value];
-        if (type) {
-          tokens.push({ type, index: index2++, value });
-        } else if (value === "\\") {
-          tokens.push({ type: "escape", index: index2++, value: chars[index2++] });
-        } else if (value === ":") {
-          tokens.push({ type: "param", index: index2++, value: name() });
-        } else if (value === "*") {
-          tokens.push({ type: "wildcard", index: index2++, value: name() });
-        } else {
-          tokens.push({ type: "char", index: index2++, value });
-        }
-      }
-      tokens.push({ type: "end", index: index2, value: "" });
-      function consumeUntil(endType) {
+      function consumeUntil(end) {
         const output = [];
-        while (true) {
-          const token = tokens[pos++];
-          if (token.type === endType)
-            break;
-          if (token.type === "char" || token.type === "escape") {
-            let path2 = token.value;
-            let cur = tokens[pos];
-            while (cur.type === "char" || cur.type === "escape") {
-              path2 += cur.value;
-              cur = tokens[++pos];
+        let path2 = "";
+        function writePath() {
+          if (!path2)
+            return;
+          output.push({
+            type: "text",
+            value: encodePath(path2)
+          });
+          path2 = "";
+        }
+        while (index2 < chars.length) {
+          const value = chars[index2++];
+          if (value === end) {
+            writePath();
+            return output;
+          }
+          if (value === "\\") {
+            if (index2 === chars.length) {
+              throw new PathError(`Unexpected end after \\ at index ${index2}`, str2);
             }
-            output.push({
-              type: "text",
-              value: encodePath(path2)
-            });
+            path2 += chars[index2++];
             continue;
           }
-          if (token.type === "param" || token.type === "wildcard") {
-            output.push({
-              type: token.type,
-              name: token.value
-            });
+          if (value === ":" || value === "*") {
+            const type = value === ":" ? "param" : "wildcard";
+            let name = "";
+            if (ID_START.test(chars[index2])) {
+              do {
+                name += chars[index2++];
+              } while (ID_CONTINUE.test(chars[index2]));
+            } else if (chars[index2] === '"') {
+              let quoteStart = index2;
+              while (index2 < chars.length) {
+                if (chars[++index2] === '"') {
+                  index2++;
+                  quoteStart = 0;
+                  break;
+                }
+                if (chars[index2] === "\\")
+                  index2++;
+                name += chars[index2];
+              }
+              if (quoteStart) {
+                throw new PathError(`Unterminated quote at index ${quoteStart}`, str2);
+              }
+            }
+            if (!name) {
+              throw new PathError(`Missing parameter name at index ${index2}`, str2);
+            }
+            writePath();
+            output.push({ type, name });
             continue;
           }
-          if (token.type === "{") {
+          if (value === "{") {
+            writePath();
             output.push({
               type: "group",
               tokens: consumeUntil("}")
             });
             continue;
           }
-          throw new PathError(`Unexpected ${token.type} at index ${token.index}, expected ${endType}`, str2);
+          if (value === "}" || value === "(" || value === ")" || value === "[" || value === "]" || value === "+" || value === "?" || value === "!") {
+            throw new PathError(`Unexpected ${value} at index ${index2 - 1}`, str2);
+          }
+          path2 += value;
         }
+        if (end) {
+          throw new PathError(`Unexpected end at index ${index2}, expected ${end}`, str2);
+        }
+        writePath();
         return output;
       }
-      return new TokenData(consumeUntil("end"), str2);
+      return new TokenData(consumeUntil(""), str2);
     }
     function compile(path2, options = {}) {
       const { encode: encode2 = encodeURIComponent, delimiter = DEFAULT_DELIMITER } = options;
       const data = typeof path2 === "object" ? path2 : parse3(path2, options);
       const fn = tokensToFunction(data.tokens, delimiter, encode2);
       return function path3(params = {}) {
-        const [path4, ...missing] = fn(params);
+        const missing = [];
+        const path4 = fn(params, missing);
         if (missing.length) {
           throw new TypeError(`Missing parameters: ${missing.join(", ")}`);
         }
@@ -20004,55 +19985,61 @@ var require_dist = __commonJS({
     }
     function tokensToFunction(tokens, delimiter, encode2) {
       const encoders = tokens.map((token) => tokenToFunction(token, delimiter, encode2));
-      return (data) => {
-        const result = [""];
+      return (data, missing) => {
+        let result = "";
         for (const encoder of encoders) {
-          const [value, ...extras] = encoder(data);
-          result[0] += value;
-          result.push(...extras);
+          result += encoder(data, missing);
         }
         return result;
       };
     }
     function tokenToFunction(token, delimiter, encode2) {
       if (token.type === "text")
-        return () => [token.value];
+        return () => token.value;
       if (token.type === "group") {
         const fn = tokensToFunction(token.tokens, delimiter, encode2);
-        return (data) => {
-          const [value, ...missing] = fn(data);
-          if (!missing.length)
-            return [value];
-          return [""];
+        return (data, missing) => {
+          const len = missing.length;
+          const value = fn(data, missing);
+          if (missing.length === len)
+            return value;
+          missing.length = len;
+          return "";
         };
       }
       const encodeValue = encode2 || NOOP_VALUE;
       if (token.type === "wildcard" && encode2 !== false) {
-        return (data) => {
+        return (data, missing) => {
           const value = data[token.name];
-          if (value == null)
-            return ["", token.name];
+          if (value == null) {
+            missing.push(token.name);
+            return "";
+          }
           if (!Array.isArray(value) || value.length === 0) {
             throw new TypeError(`Expected "${token.name}" to be a non-empty array`);
           }
-          return [
-            value.map((value2, index2) => {
-              if (typeof value2 !== "string") {
-                throw new TypeError(`Expected "${token.name}/${index2}" to be a string`);
-              }
-              return encodeValue(value2);
-            }).join(delimiter)
-          ];
+          let result = "";
+          for (let i = 0; i < value.length; i++) {
+            if (typeof value[i] !== "string") {
+              throw new TypeError(`Expected "${token.name}/${i}" to be a string`);
+            }
+            if (i > 0)
+              result += delimiter;
+            result += encodeValue(value[i]);
+          }
+          return result;
         };
       }
-      return (data) => {
+      return (data, missing) => {
         const value = data[token.name];
-        if (value == null)
-          return ["", token.name];
+        if (value == null) {
+          missing.push(token.name);
+          return "";
+        }
         if (typeof value !== "string") {
           throw new TypeError(`Expected "${token.name}" to be a string`);
         }
-        return [encodeValue(value)];
+        return encodeValue(value);
       };
     }
     function match(path2, options = {}) {
@@ -20084,106 +20071,134 @@ var require_dist = __commonJS({
     function pathToRegexp(path2, options = {}) {
       const { delimiter = DEFAULT_DELIMITER, end = true, sensitive = false, trailing = true } = options;
       const keys = [];
-      const flags = sensitive ? "" : "i";
-      const sources = [];
-      for (const input of pathsToArray(path2, [])) {
-        const data = typeof input === "object" ? input : parse3(input, options);
-        for (const tokens of flatten(data.tokens, 0, [])) {
-          sources.push(toRegExpSource(tokens, delimiter, keys, data.originalPath));
+      let source = "";
+      let combinations = 0;
+      function process2(path3) {
+        if (Array.isArray(path3)) {
+          for (const p of path3)
+            process2(p);
+          return;
         }
+        const data = typeof path3 === "object" ? path3 : parse3(path3, options);
+        flatten(data.tokens, 0, [], (tokens) => {
+          if (combinations >= 256) {
+            throw new PathError("Too many path combinations", data.originalPath);
+          }
+          if (combinations > 0)
+            source += "|";
+          source += toRegExpSource(tokens, delimiter, keys, data.originalPath);
+          combinations++;
+        });
       }
-      let pattern = `^(?:${sources.join("|")})`;
+      process2(path2);
+      let pattern = `^(?:${source})`;
       if (trailing)
-        pattern += `(?:${escape2(delimiter)}$)?`;
-      pattern += end ? "$" : `(?=${escape2(delimiter)}|$)`;
-      const regexp = new RegExp(pattern, flags);
-      return { regexp, keys };
+        pattern += "(?:" + escape2(delimiter) + "$)?";
+      pattern += end ? "$" : "(?=" + escape2(delimiter) + "|$)";
+      return { regexp: new RegExp(pattern, sensitive ? "" : "i"), keys };
     }
-    function pathsToArray(paths, init) {
-      if (Array.isArray(paths)) {
-        for (const p of paths)
-          pathsToArray(p, init);
-      } else {
-        init.push(paths);
-      }
-      return init;
-    }
-    function* flatten(tokens, index2, init) {
-      if (index2 === tokens.length) {
-        return yield init;
-      }
-      const token = tokens[index2];
-      if (token.type === "group") {
-        for (const seq of flatten(token.tokens, 0, init.slice())) {
-          yield* flatten(tokens, index2 + 1, seq);
+    function flatten(tokens, index2, result, callback) {
+      while (index2 < tokens.length) {
+        const token = tokens[index2++];
+        if (token.type === "group") {
+          const len = result.length;
+          flatten(token.tokens, 0, result, (seq) => flatten(tokens, index2, seq, callback));
+          result.length = len;
+          continue;
         }
-      } else {
-        init.push(token);
+        result.push(token);
       }
-      yield* flatten(tokens, index2 + 1, init);
+      callback(result);
     }
     function toRegExpSource(tokens, delimiter, keys, originalPath) {
       let result = "";
       let backtrack = "";
-      let isSafeSegmentParam = true;
-      for (const token of tokens) {
+      let wildcardBacktrack = "";
+      let prevCaptureType = 0;
+      let hasSegmentCapture = 0;
+      let index2 = 0;
+      function hasInSegment(index3, type) {
+        while (index3 < tokens.length) {
+          const token = tokens[index3++];
+          if (token.type === type)
+            return true;
+          if (token.type === "text") {
+            if (token.value.includes(delimiter))
+              break;
+          }
+        }
+        return false;
+      }
+      function peekText(index3) {
+        let result2 = "";
+        while (index3 < tokens.length) {
+          const token = tokens[index3++];
+          if (token.type !== "text")
+            break;
+          result2 += token.value;
+        }
+        return result2;
+      }
+      while (index2 < tokens.length) {
+        const token = tokens[index2++];
         if (token.type === "text") {
           result += escape2(token.value);
           backtrack += token.value;
-          isSafeSegmentParam || (isSafeSegmentParam = token.value.includes(delimiter));
+          if (prevCaptureType === 2)
+            wildcardBacktrack += token.value;
+          if (token.value.includes(delimiter))
+            hasSegmentCapture = 0;
           continue;
         }
         if (token.type === "param" || token.type === "wildcard") {
-          if (!isSafeSegmentParam && !backtrack) {
+          if (prevCaptureType && !backtrack) {
             throw new PathError(`Missing text before "${token.name}" ${token.type}`, originalPath);
           }
           if (token.type === "param") {
-            result += `(${negate(delimiter, isSafeSegmentParam ? "" : backtrack)}+)`;
+            result += hasSegmentCapture & 2 ? `(${negate(delimiter, backtrack)}+)` : hasInSegment(index2, "wildcard") ? `(${negate(delimiter, peekText(index2))}+)` : hasSegmentCapture & 1 ? `(${negate(delimiter, backtrack)}+|${escape2(backtrack)})` : `(${negate(delimiter, "")}+)`;
+            hasSegmentCapture |= prevCaptureType = 1;
           } else {
-            result += `([\\s\\S]+)`;
+            result += hasSegmentCapture & 2 ? `(${negate(backtrack, "")}+)` : wildcardBacktrack ? `(${negate(wildcardBacktrack, "")}+|${negate(delimiter, "")}+)` : `([^]+)`;
+            wildcardBacktrack = "";
+            hasSegmentCapture |= prevCaptureType = 2;
           }
           keys.push(token);
           backtrack = "";
-          isSafeSegmentParam = false;
           continue;
         }
+        throw new TypeError(`Unknown token type: ${token.type}`);
       }
       return result;
     }
-    function negate(delimiter, backtrack) {
-      if (backtrack.length < 2) {
-        if (delimiter.length < 2)
-          return `[^${escape2(delimiter + backtrack)}]`;
-        return `(?:(?!${escape2(delimiter)})[^${escape2(backtrack)}])`;
-      }
-      if (delimiter.length < 2) {
-        return `(?:(?!${escape2(backtrack)})[^${escape2(delimiter)}])`;
-      }
-      return `(?:(?!${escape2(backtrack)}|${escape2(delimiter)})[\\s\\S])`;
+    function negate(a, b) {
+      if (b.length > a.length)
+        return negate(b, a);
+      if (a === b)
+        b = "";
+      if (b.length > 1)
+        return `(?:(?!${escape2(a)}|${escape2(b)})[^])`;
+      if (a.length > 1)
+        return `(?:(?!${escape2(a)})[^${escape2(b)}])`;
+      return `[^${escape2(a + b)}]`;
     }
-    function stringifyTokens(tokens) {
+    function stringifyTokens(tokens, index2) {
       let value = "";
-      let i = 0;
-      function name(value2) {
-        const isSafe = isNameSafe(value2) && isNextNameSafe(tokens[i]);
-        return isSafe ? value2 : JSON.stringify(value2);
-      }
-      while (i < tokens.length) {
-        const token = tokens[i++];
+      while (index2 < tokens.length) {
+        const token = tokens[index2++];
         if (token.type === "text") {
           value += escapeText(token.value);
           continue;
         }
         if (token.type === "group") {
-          value += `{${stringifyTokens(token.tokens)}}`;
+          value += "{" + stringifyTokens(token.tokens, 0) + "}";
           continue;
         }
         if (token.type === "param") {
-          value += `:${name(token.name)}`;
+          value += ":" + stringifyName(token.name, tokens[index2]);
           continue;
         }
         if (token.type === "wildcard") {
-          value += `*${name(token.name)}`;
+          value += "*" + stringifyName(token.name, tokens[index2]);
           continue;
         }
         throw new TypeError(`Unknown token type: ${token.type}`);
@@ -20191,16 +20206,15 @@ var require_dist = __commonJS({
       return value;
     }
     function stringify2(data) {
-      return stringifyTokens(data.tokens);
+      return stringifyTokens(data.tokens, 0);
     }
-    function isNameSafe(name) {
-      const [first, ...rest] = name;
-      return ID_START.test(first) && rest.every((char2) => ID_CONTINUE.test(char2));
-    }
-    function isNextNameSafe(token) {
-      if (token && token.type === "text")
-        return !ID_CONTINUE.test(token.value[0]);
-      return true;
+    function stringifyName(name, next) {
+      if (!ID.test(name))
+        return JSON.stringify(name);
+      if ((next === null || next === void 0 ? void 0 : next.type) === "text" && ID_CONTINUE.test(next.value[0])) {
+        return JSON.stringify(name);
+      }
+      return name;
     }
   }
 });
@@ -20489,27 +20503,27 @@ var require_router = __commonJS({
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var methods = METHODS.map((method) => method.toLowerCase());
-    module.exports = Router31;
+    module.exports = Router36;
     module.exports.Route = Route;
-    function Router31(options) {
-      if (!(this instanceof Router31)) {
-        return new Router31(options);
+    function Router36(options) {
+      if (!(this instanceof Router36)) {
+        return new Router36(options);
       }
       const opts = options || {};
-      function router31(req, res, next) {
-        router31.handle(req, res, next);
+      function router36(req, res, next) {
+        router36.handle(req, res, next);
       }
-      Object.setPrototypeOf(router31, this);
-      router31.caseSensitive = opts.caseSensitive;
-      router31.mergeParams = opts.mergeParams;
-      router31.params = {};
-      router31.strict = opts.strict;
-      router31.stack = [];
-      return router31;
+      Object.setPrototypeOf(router36, this);
+      router36.caseSensitive = opts.caseSensitive;
+      router36.mergeParams = opts.mergeParams;
+      router36.params = {};
+      router36.strict = opts.strict;
+      router36.stack = [];
+      return router36;
     }
-    Router31.prototype = function() {
+    Router36.prototype = function() {
     };
-    Router31.prototype.param = function param(name, fn) {
+    Router36.prototype.param = function param(name, fn) {
       if (!name) {
         throw new TypeError("argument name is required");
       }
@@ -20529,7 +20543,7 @@ var require_router = __commonJS({
       params.push(fn);
       return this;
     };
-    Router31.prototype.handle = function handle(req, res, callback) {
+    Router36.prototype.handle = function handle(req, res, callback) {
       if (!callback) {
         throw new TypeError("argument callback is required");
       }
@@ -20656,7 +20670,7 @@ var require_router = __commonJS({
         }
       }
     };
-    Router31.prototype.use = function use(handler) {
+    Router36.prototype.use = function use(handler) {
       let offset = 0;
       let path2 = "/";
       if (typeof handler !== "function") {
@@ -20689,7 +20703,7 @@ var require_router = __commonJS({
       }
       return this;
     };
-    Router31.prototype.route = function route(path2) {
+    Router36.prototype.route = function route(path2) {
       const route2 = new Route(path2);
       const layer = new Layer(path2, {
         sensitive: this.caseSensitive,
@@ -20704,7 +20718,7 @@ var require_router = __commonJS({
       return route2;
     };
     methods.concat("all").forEach(function(method) {
-      Router31.prototype[method] = function(path2) {
+      Router36.prototype[method] = function(path2) {
         const route = this.route(path2);
         route[method].apply(route, slice.call(arguments, 1));
         return this;
@@ -20887,13 +20901,13 @@ var require_application = __commonJS({
     var compileTrust = require_utils3().compileTrust;
     var resolve = __require("node:path").resolve;
     var once = require_once();
-    var Router31 = require_router();
+    var Router36 = require_router();
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var app2 = exports = module.exports = {};
     var trustProxyDefaultSymbol = "@@symbol:trust_proxy_default";
     app2.init = function init() {
-      var router31 = null;
+      var router36 = null;
       this.cache = /* @__PURE__ */ Object.create(null);
       this.engines = /* @__PURE__ */ Object.create(null);
       this.settings = /* @__PURE__ */ Object.create(null);
@@ -20902,13 +20916,13 @@ var require_application = __commonJS({
         configurable: true,
         enumerable: true,
         get: function getrouter() {
-          if (router31 === null) {
-            router31 = new Router31({
+          if (router36 === null) {
+            router36 = new Router36({
               caseSensitive: this.enabled("case sensitive routing"),
               strict: this.enabled("strict routing")
             });
           }
-          return router31;
+          return router36;
         }
       });
     };
@@ -20979,15 +20993,15 @@ var require_application = __commonJS({
       if (fns.length === 0) {
         throw new TypeError("app.use() requires a middleware function");
       }
-      var router31 = this.router;
+      var router36 = this.router;
       fns.forEach(function(fn2) {
         if (!fn2 || !fn2.handle || !fn2.set) {
-          return router31.use(path2, fn2);
+          return router36.use(path2, fn2);
         }
         debug(".use app under %s", path2);
         fn2.mountpath = path2;
         fn2.parent = this;
-        router31.use(path2, function mounted_app(req, res, next) {
+        router36.use(path2, function mounted_app(req, res, next) {
           var orig = req.app;
           fn2.handle(req, res, function(err) {
             Object.setPrototypeOf(req, orig.request);
@@ -23514,7 +23528,7 @@ var require_express = __commonJS({
     var EventEmitter = __require("node:events").EventEmitter;
     var mixin = require_merge_descriptors();
     var proto = require_application();
-    var Router31 = require_router();
+    var Router36 = require_router();
     var req = require_request();
     var res = require_response();
     exports = module.exports = createApplication;
@@ -23536,8 +23550,8 @@ var require_express = __commonJS({
     exports.application = proto;
     exports.request = req;
     exports.response = res;
-    exports.Route = Router31.Route;
-    exports.Router = Router31;
+    exports.Route = Router36.Route;
+    exports.Router = Router36;
     exports.json = bodyParser.json;
     exports.raw = bodyParser.raw;
     exports.static = require_serve_static();
@@ -27933,7 +27947,7 @@ var require_pino = __commonJS({
     function pinoBundlerAbsolutePath(p) {
       try {
         const path2 = __require("path");
-        const outputDir = "/home/runner/workspace/artifacts/api-server/dist";
+        const outputDir = "C:\\Users\\gopfo\\Idle-Echoes\\artifacts\\api-server\\dist";
         return path2.resolve(outputDir, p.replace(/^\.\//, ""));
       } catch (e) {
         const f = new Function("p", "return new URL(p, import.meta.url).pathname");
@@ -31761,12 +31775,12 @@ var require_result = __commonJS({
         }
         const row = {};
         for (let i = 0; i < fieldDescriptions.length; i++) {
-          const desc2 = fieldDescriptions[i];
-          row[desc2.name] = null;
+          const desc3 = fieldDescriptions[i];
+          row[desc3.name] = null;
           if (this._types) {
-            this._parsers[i] = this._types.getTypeParser(desc2.dataTypeID, desc2.format || "text");
+            this._parsers[i] = this._types.getTypeParser(desc3.dataTypeID, desc3.format || "text");
           } else {
-            this._parsers[i] = types3.getTypeParser(desc2.dataTypeID, desc2.format || "text");
+            this._parsers[i] = types3.getTypeParser(desc3.dataTypeID, desc3.format || "text");
           }
         }
         this._prebuiltEmptyResultObject = { ...row };
@@ -32932,11 +32946,11 @@ var require_connection = __commonJS({
           }
         });
       }
-      connect(port2, host) {
+      connect(port, host) {
         const self = this;
         this._connecting = true;
         this.stream.setNoDelay(true);
-        this.stream.connect(port2, host);
+        this.stream.connect(port, host);
         this.stream.once("connect", function() {
           if (self._keepAlive) {
             self.stream.setKeepAlive(true, self._keepAliveInitialDelayMillis);
@@ -34889,7 +34903,7 @@ var require_lib5 = __commonJS({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/entity.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/entity.js
 function is(value, type) {
   if (!value || typeof value !== "object") {
     return false;
@@ -34915,15 +34929,15 @@ function is(value, type) {
 }
 var entityKind;
 var init_entity = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/entity.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/entity.js"() {
     entityKind = /* @__PURE__ */ Symbol.for("drizzle:entityKind");
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/logger.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/logger.js
 var ConsoleLogWriter, DefaultLogger, NoopLogger;
 var init_logger = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/logger.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/logger.js"() {
     init_entity();
     ConsoleLogWriter = class {
       static [entityKind] = "ConsoleLogWriter";
@@ -34957,10 +34971,10 @@ var init_logger = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/query-promise.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/query-promise.js
 var QueryPromise;
 var init_query_promise = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/query-promise.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/query-promise.js"() {
     init_entity();
     QueryPromise = class {
       static [entityKind] = "QueryPromise";
@@ -34987,10 +35001,10 @@ var init_query_promise = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/column.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/column.js
 var Column;
 var init_column = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/column.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/column.js"() {
     init_entity();
     Column = class {
       constructor(table, config2) {
@@ -35044,10 +35058,10 @@ var init_column = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/column-builder.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/column-builder.js
 var ColumnBuilder;
 var init_column_builder = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/column-builder.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/column-builder.js"() {
     init_entity();
     ColumnBuilder = class {
       static [entityKind] = "ColumnBuilder";
@@ -35153,18 +35167,18 @@ var init_column_builder = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/table.utils.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/table.utils.js
 var TableName;
 var init_table_utils = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/table.utils.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/table.utils.js"() {
     TableName = /* @__PURE__ */ Symbol.for("drizzle:Name");
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/foreign-keys.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/foreign-keys.js
 var ForeignKeyBuilder, ForeignKey;
 var init_foreign_keys = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/foreign-keys.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/foreign-keys.js"() {
     init_entity();
     init_table_utils();
     ForeignKeyBuilder = class {
@@ -35225,22 +35239,22 @@ var init_foreign_keys = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/tracing-utils.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/tracing-utils.js
 function iife(fn, ...args) {
   return fn(...args);
 }
 var init_tracing_utils = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/tracing-utils.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/tracing-utils.js"() {
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/unique-constraint.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/unique-constraint.js
 function uniqueKeyName(table, columns) {
   return `${table[TableName]}_${columns.join("_")}_unique`;
 }
 var UniqueConstraintBuilder, UniqueOnConstraintBuilder, UniqueConstraint;
 var init_unique_constraint = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/unique-constraint.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/unique-constraint.js"() {
     init_entity();
     init_table_utils();
     UniqueConstraintBuilder = class {
@@ -35291,7 +35305,7 @@ var init_unique_constraint = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/utils/array.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/utils/array.js
 function parsePgArrayValue(arrayString, startFrom, inQuotes) {
   for (let i = startFrom; i < arrayString.length; i++) {
     const char2 = arrayString[i];
@@ -35367,14 +35381,14 @@ function makePgArray(array2) {
   }).join(",")}}`;
 }
 var init_array = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/utils/array.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/utils/array.js"() {
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/common.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/common.js
 var PgColumnBuilder, PgColumn, ExtraConfigColumn, IndexedColumn, PgArrayBuilder, PgArray;
 var init_common = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/common.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/common.js"() {
     init_column_builder();
     init_column();
     init_entity();
@@ -35567,7 +35581,7 @@ var init_common = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/enum.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/enum.js
 function isPgEnum(obj) {
   return !!obj && typeof obj === "function" && isPgEnumSym in obj && obj[isPgEnumSym] === true;
 }
@@ -35597,7 +35611,7 @@ function pgEnumObjectWithSchema(enumName, values, schema) {
 }
 var PgEnumObjectColumnBuilder, PgEnumObjectColumn, isPgEnumSym, PgEnumColumnBuilder, PgEnumColumn;
 var init_enum = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/enum.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/enum.js"() {
     init_entity();
     init_common();
     PgEnumObjectColumnBuilder = class extends PgColumnBuilder {
@@ -35656,10 +35670,10 @@ var init_enum = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/subquery.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/subquery.js
 var Subquery, WithSubquery;
 var init_subquery = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/subquery.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/subquery.js"() {
     init_entity();
     Subquery = class {
       static [entityKind] = "Subquery";
@@ -35683,18 +35697,18 @@ var init_subquery = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/version.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/version.js
 var version;
 var init_version = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/version.js"() {
-    version = "0.45.1";
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/version.js"() {
+    version = "0.45.2";
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/tracing.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/tracing.js
 var otel, rawTracer, tracer;
 var init_tracing = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/tracing.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/tracing.js"() {
     init_tracing_utils();
     init_version();
     tracer = {
@@ -35731,15 +35745,15 @@ var init_tracing = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/view-common.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/view-common.js
 var ViewBaseConfig;
 var init_view_common = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/view-common.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/view-common.js"() {
     ViewBaseConfig = /* @__PURE__ */ Symbol.for("drizzle:ViewBaseConfig");
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/table.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/table.js
 function isTable(table) {
   return typeof table === "object" && table !== null && IsDrizzleTable in table;
 }
@@ -35751,7 +35765,7 @@ function getTableUniqueName(table) {
 }
 var Schema, Columns, ExtraConfigColumns, OriginalName, BaseName, IsAlias, ExtraConfigBuilder, IsDrizzleTable, Table;
 var init_table = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/table.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/table.js"() {
     init_entity();
     init_table_utils();
     Schema = /* @__PURE__ */ Symbol.for("drizzle:Schema");
@@ -35811,7 +35825,7 @@ var init_table = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/sql/sql.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/sql.js
 function isSQLWrapper(value) {
   return value !== null && value !== void 0 && typeof value.getSQL === "function";
 }
@@ -35864,7 +35878,7 @@ function isView(view) {
 }
 var FakePrimitiveParam, StringChunk, SQL, Name, noopDecoder, noopEncoder, noopMapper, Param, Placeholder, IsDrizzleView, View;
 var init_sql = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/sql/sql.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/sql.js"() {
     init_entity();
     init_enum();
     init_subquery();
@@ -36220,7 +36234,7 @@ var init_sql = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/alias.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/alias.js
 function aliasedTable(table, tableAlias) {
   return new Proxy(table, new TableAliasProxyHandler(tableAlias, false));
 }
@@ -36249,7 +36263,7 @@ function mapColumnsInSQLToAlias(query, alias) {
 }
 var ColumnAliasProxyHandler, TableAliasProxyHandler, RelationTableAliasProxyHandler;
 var init_alias = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/alias.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/alias.js"() {
     init_column();
     init_entity();
     init_sql();
@@ -36326,10 +36340,10 @@ var init_alias = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/selection-proxy.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/selection-proxy.js
 var SelectionProxyHandler;
 var init_selection_proxy = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/selection-proxy.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/selection-proxy.js"() {
     init_alias();
     init_column();
     init_entity();
@@ -36405,7 +36419,7 @@ var init_selection_proxy = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/utils.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/utils.js
 function mapResultRow(columns, row, joinsNotNullableMap) {
   const nullifyMap = {};
   const result = columns.reduce(
@@ -36559,7 +36573,7 @@ function isConfig(data) {
 }
 var textDecoder;
 var init_utils = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/utils.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/utils.js"() {
     init_column();
     init_entity();
     init_sql();
@@ -36570,10 +36584,10 @@ var init_utils = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/int.common.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/int.common.js
 var PgIntColumnBaseBuilder;
 var init_int_common = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/int.common.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/int.common.js"() {
     init_entity();
     init_common();
     PgIntColumnBaseBuilder = class extends PgColumnBuilder {
@@ -36616,7 +36630,7 @@ var init_int_common = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/bigint.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/bigint.js
 function bigint(a, b) {
   const { name, config: config2 } = getColumnNameAndConfig(a, b);
   if (config2.mode === "number") {
@@ -36626,7 +36640,7 @@ function bigint(a, b) {
 }
 var PgBigInt53Builder, PgBigInt53, PgBigInt64Builder, PgBigInt64;
 var init_bigint = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/bigint.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/bigint.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -36679,7 +36693,7 @@ var init_bigint = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/bigserial.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/bigserial.js
 function bigserial(a, b) {
   const { name, config: config2 } = getColumnNameAndConfig(a, b);
   if (config2.mode === "number") {
@@ -36689,7 +36703,7 @@ function bigserial(a, b) {
 }
 var PgBigSerial53Builder, PgBigSerial53, PgBigSerial64Builder, PgBigSerial64;
 var init_bigserial = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/bigserial.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/bigserial.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -36747,13 +36761,13 @@ var init_bigserial = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/boolean.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/boolean.js
 function boolean(name) {
   return new PgBooleanBuilder(name ?? "");
 }
 var PgBooleanBuilder, PgBoolean;
 var init_boolean = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/boolean.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/boolean.js"() {
     init_entity();
     init_common();
     PgBooleanBuilder = class extends PgColumnBuilder {
@@ -36775,14 +36789,14 @@ var init_boolean = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/char.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/char.js
 function char(a, b = {}) {
   const { name, config: config2 } = getColumnNameAndConfig(a, b);
   return new PgCharBuilder(name, config2);
 }
 var PgCharBuilder, PgChar;
 var init_char = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/char.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/char.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -36812,13 +36826,13 @@ var init_char = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/cidr.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/cidr.js
 function cidr(name) {
   return new PgCidrBuilder(name ?? "");
 }
 var PgCidrBuilder, PgCidr;
 var init_cidr = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/cidr.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/cidr.js"() {
     init_entity();
     init_common();
     PgCidrBuilder = class extends PgColumnBuilder {
@@ -36840,7 +36854,7 @@ var init_cidr = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/custom.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/custom.js
 function customType(customTypeParams) {
   return (a, b) => {
     const { name, config: config2 } = getColumnNameAndConfig(a, b);
@@ -36849,7 +36863,7 @@ function customType(customTypeParams) {
 }
 var PgCustomColumnBuilder, PgCustomColumn;
 var init_custom = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/custom.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/custom.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -36892,10 +36906,10 @@ var init_custom = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/date.common.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/date.common.js
 var PgDateColumnBaseBuilder;
 var init_date_common = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/date.common.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/date.common.js"() {
     init_entity();
     init_sql();
     init_common();
@@ -36908,7 +36922,7 @@ var init_date_common = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/date.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/date.js
 function date(a, b) {
   const { name, config: config2 } = getColumnNameAndConfig(a, b);
   if (config2?.mode === "date") {
@@ -36918,7 +36932,7 @@ function date(a, b) {
 }
 var PgDateBuilder, PgDate, PgDateStringBuilder, PgDateString;
 var init_date = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/date.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/date.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -36972,13 +36986,13 @@ var init_date = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/double-precision.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/double-precision.js
 function doublePrecision(name) {
   return new PgDoublePrecisionBuilder(name ?? "");
 }
 var PgDoublePrecisionBuilder, PgDoublePrecision;
 var init_double_precision = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/double-precision.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/double-precision.js"() {
     init_entity();
     init_common();
     PgDoublePrecisionBuilder = class extends PgColumnBuilder {
@@ -37009,13 +37023,13 @@ var init_double_precision = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/inet.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/inet.js
 function inet(name) {
   return new PgInetBuilder(name ?? "");
 }
 var PgInetBuilder, PgInet;
 var init_inet = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/inet.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/inet.js"() {
     init_entity();
     init_common();
     PgInetBuilder = class extends PgColumnBuilder {
@@ -37037,13 +37051,13 @@ var init_inet = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/integer.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/integer.js
 function integer(name) {
   return new PgIntegerBuilder(name ?? "");
 }
 var PgIntegerBuilder, PgInteger;
 var init_integer = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/integer.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/integer.js"() {
     init_entity();
     init_common();
     init_int_common();
@@ -37072,14 +37086,14 @@ var init_integer = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/interval.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/interval.js
 function interval(a, b = {}) {
   const { name, config: config2 } = getColumnNameAndConfig(a, b);
   return new PgIntervalBuilder(name, config2);
 }
 var PgIntervalBuilder, PgInterval;
 var init_interval = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/interval.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/interval.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -37107,13 +37121,13 @@ var init_interval = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/json.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/json.js
 function json(name) {
   return new PgJsonBuilder(name ?? "");
 }
 var PgJsonBuilder, PgJson;
 var init_json = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/json.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/json.js"() {
     init_entity();
     init_common();
     PgJsonBuilder = class extends PgColumnBuilder {
@@ -37151,13 +37165,13 @@ var init_json = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/jsonb.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/jsonb.js
 function jsonb(name) {
   return new PgJsonbBuilder(name ?? "");
 }
 var PgJsonbBuilder, PgJsonb;
 var init_jsonb = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/jsonb.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/jsonb.js"() {
     init_entity();
     init_common();
     PgJsonbBuilder = class extends PgColumnBuilder {
@@ -37195,7 +37209,7 @@ var init_jsonb = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/line.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/line.js
 function line(a, b) {
   const { name, config: config2 } = getColumnNameAndConfig(a, b);
   if (!config2?.mode || config2.mode === "tuple") {
@@ -37205,7 +37219,7 @@ function line(a, b) {
 }
 var PgLineBuilder, PgLineTuple, PgLineABCBuilder, PgLineABC;
 var init_line = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/line.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/line.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -37264,13 +37278,13 @@ var init_line = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/macaddr.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/macaddr.js
 function macaddr(name) {
   return new PgMacaddrBuilder(name ?? "");
 }
 var PgMacaddrBuilder, PgMacaddr;
 var init_macaddr = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/macaddr.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/macaddr.js"() {
     init_entity();
     init_common();
     PgMacaddrBuilder = class extends PgColumnBuilder {
@@ -37292,13 +37306,13 @@ var init_macaddr = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/macaddr8.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/macaddr8.js
 function macaddr8(name) {
   return new PgMacaddr8Builder(name ?? "");
 }
 var PgMacaddr8Builder, PgMacaddr8;
 var init_macaddr8 = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/macaddr8.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/macaddr8.js"() {
     init_entity();
     init_common();
     PgMacaddr8Builder = class extends PgColumnBuilder {
@@ -37320,7 +37334,7 @@ var init_macaddr8 = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/numeric.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/numeric.js
 function numeric(a, b) {
   const { name, config: config2 } = getColumnNameAndConfig(a, b);
   const mode = config2?.mode;
@@ -37328,7 +37342,7 @@ function numeric(a, b) {
 }
 var PgNumericBuilder, PgNumeric, PgNumericNumberBuilder, PgNumericNumber, PgNumericBigIntBuilder, PgNumericBigInt;
 var init_numeric = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/numeric.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/numeric.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -37445,7 +37459,7 @@ var init_numeric = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/point.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/point.js
 function point(a, b) {
   const { name, config: config2 } = getColumnNameAndConfig(a, b);
   if (!config2?.mode || config2.mode === "tuple") {
@@ -37455,7 +37469,7 @@ function point(a, b) {
 }
 var PgPointTupleBuilder, PgPointTuple, PgPointObjectBuilder, PgPointObject;
 var init_point = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/point.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/point.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -37520,7 +37534,7 @@ var init_point = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/postgis_extension/utils.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/postgis_extension/utils.js
 function hexToBytes(hex) {
   const bytes = [];
   for (let c = 0; c < hex.length; c += 2) {
@@ -37559,11 +37573,11 @@ function parseEWKB(hex) {
   throw new Error("Unsupported geometry type");
 }
 var init_utils2 = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/postgis_extension/utils.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/postgis_extension/utils.js"() {
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/postgis_extension/geometry.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/postgis_extension/geometry.js
 function geometry(a, b) {
   const { name, config: config2 } = getColumnNameAndConfig(a, b);
   if (!config2?.mode || config2.mode === "tuple") {
@@ -37573,7 +37587,7 @@ function geometry(a, b) {
 }
 var PgGeometryBuilder, PgGeometry, PgGeometryObjectBuilder, PgGeometryObject;
 var init_geometry = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/postgis_extension/geometry.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/postgis_extension/geometry.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -37632,13 +37646,13 @@ var init_geometry = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/real.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/real.js
 function real(name) {
   return new PgRealBuilder(name ?? "");
 }
 var PgRealBuilder, PgReal;
 var init_real = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/real.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/real.js"() {
     init_entity();
     init_common();
     PgRealBuilder = class extends PgColumnBuilder {
@@ -37670,13 +37684,13 @@ var init_real = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/serial.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/serial.js
 function serial(name) {
   return new PgSerialBuilder(name ?? "");
 }
 var PgSerialBuilder, PgSerial;
 var init_serial = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/serial.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/serial.js"() {
     init_entity();
     init_common();
     PgSerialBuilder = class extends PgColumnBuilder {
@@ -37700,13 +37714,13 @@ var init_serial = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/smallint.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/smallint.js
 function smallint(name) {
   return new PgSmallIntBuilder(name ?? "");
 }
 var PgSmallIntBuilder, PgSmallInt;
 var init_smallint = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/smallint.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/smallint.js"() {
     init_entity();
     init_common();
     init_int_common();
@@ -37735,13 +37749,13 @@ var init_smallint = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/smallserial.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/smallserial.js
 function smallserial(name) {
   return new PgSmallSerialBuilder(name ?? "");
 }
 var PgSmallSerialBuilder, PgSmallSerial;
 var init_smallserial = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/smallserial.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/smallserial.js"() {
     init_entity();
     init_common();
     PgSmallSerialBuilder = class extends PgColumnBuilder {
@@ -37768,14 +37782,14 @@ var init_smallserial = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/text.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/text.js
 function text(a, b = {}) {
   const { name, config: config2 } = getColumnNameAndConfig(a, b);
   return new PgTextBuilder(name, config2);
 }
 var PgTextBuilder, PgText;
 var init_text = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/text.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/text.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -37800,14 +37814,14 @@ var init_text = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/time.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/time.js
 function time(a, b = {}) {
   const { name, config: config2 } = getColumnNameAndConfig(a, b);
   return new PgTimeBuilder(name, config2.withTimezone ?? false, config2.precision);
 }
 var PgTimeBuilder, PgTime;
 var init_time = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/time.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/time.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -37843,7 +37857,7 @@ var init_time = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/timestamp.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/timestamp.js
 function timestamp(a, b = {}) {
   const { name, config: config2 } = getColumnNameAndConfig(a, b);
   if (config2?.mode === "string") {
@@ -37853,7 +37867,7 @@ function timestamp(a, b = {}) {
 }
 var PgTimestampBuilder, PgTimestamp, PgTimestampStringBuilder, PgTimestampString;
 var init_timestamp = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/timestamp.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/timestamp.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -37933,13 +37947,13 @@ var init_timestamp = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/uuid.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/uuid.js
 function uuid(name) {
   return new PgUUIDBuilder(name ?? "");
 }
 var PgUUIDBuilder, PgUUID;
 var init_uuid = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/uuid.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/uuid.js"() {
     init_entity();
     init_sql();
     init_common();
@@ -37968,14 +37982,14 @@ var init_uuid = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/varchar.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/varchar.js
 function varchar(a, b = {}) {
   const { name, config: config2 } = getColumnNameAndConfig(a, b);
   return new PgVarcharBuilder(name, config2);
 }
 var PgVarcharBuilder, PgVarchar;
 var init_varchar = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/varchar.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/varchar.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -38005,14 +38019,14 @@ var init_varchar = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/bit.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/bit.js
 function bit(a, b) {
   const { name, config: config2 } = getColumnNameAndConfig(a, b);
   return new PgBinaryVectorBuilder(name, config2);
 }
 var PgBinaryVectorBuilder, PgBinaryVector;
 var init_bit = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/bit.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/bit.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -38040,14 +38054,14 @@ var init_bit = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/halfvec.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/halfvec.js
 function halfvec(a, b) {
   const { name, config: config2 } = getColumnNameAndConfig(a, b);
   return new PgHalfVectorBuilder(name, config2);
 }
 var PgHalfVectorBuilder, PgHalfVector;
 var init_halfvec = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/halfvec.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/halfvec.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -38081,14 +38095,14 @@ var init_halfvec = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/sparsevec.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/sparsevec.js
 function sparsevec(a, b) {
   const { name, config: config2 } = getColumnNameAndConfig(a, b);
   return new PgSparseVectorBuilder(name, config2);
 }
 var PgSparseVectorBuilder, PgSparseVector;
 var init_sparsevec = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/sparsevec.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/sparsevec.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -38116,14 +38130,14 @@ var init_sparsevec = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/vector.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/vector.js
 function vector(a, b) {
   const { name, config: config2 } = getColumnNameAndConfig(a, b);
   return new PgVectorBuilder(name, config2);
 }
 var PgVectorBuilder, PgVector;
 var init_vector = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/vector.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/vector_extension/vector.js"() {
     init_entity();
     init_utils();
     init_common();
@@ -38157,7 +38171,7 @@ var init_vector = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/all.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/all.js
 function getPgColumnBuilders() {
   return {
     bigint,
@@ -38195,7 +38209,7 @@ function getPgColumnBuilders() {
   };
 }
 var init_all = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/all.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/all.js"() {
     init_bigint();
     init_bigserial();
     init_boolean();
@@ -38231,7 +38245,7 @@ var init_all = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/table.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/table.js
 function pgTableWithSchema(name, columns, extraConfig, schema, baseName = name) {
   const rawTable = new PgTable(name, schema, baseName);
   const parsedColumns = typeof columns === "function" ? columns(getPgColumnBuilders()) : columns;
@@ -38267,7 +38281,7 @@ function pgTableWithSchema(name, columns, extraConfig, schema, baseName = name) 
 }
 var InlineForeignKeys, EnableRLS, PgTable, pgTable;
 var init_table2 = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/table.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/table.js"() {
     init_entity();
     init_table();
     init_all();
@@ -38295,10 +38309,10 @@ var init_table2 = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/checks.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/checks.js
 var CheckBuilder, Check;
 var init_checks = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/checks.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/checks.js"() {
     init_entity();
     CheckBuilder = class {
       constructor(name, value) {
@@ -38325,9 +38339,9 @@ var init_checks = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/index.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/index.js
 var init_columns = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/index.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/columns/index.js"() {
     init_bigint();
     init_bigserial();
     init_boolean();
@@ -38366,7 +38380,7 @@ var init_columns = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/indexes.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/indexes.js
 function index(name) {
   return new IndexBuilderOn(false, name);
 }
@@ -38375,7 +38389,7 @@ function uniqueIndex(name) {
 }
 var IndexBuilderOn, IndexBuilder, Index;
 var init_indexes = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/indexes.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/indexes.js"() {
     init_sql();
     init_entity();
     init_columns();
@@ -38486,10 +38500,10 @@ var init_indexes = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/policies.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/policies.js
 var PgPolicy;
 var init_policies = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/policies.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/policies.js"() {
     init_entity();
     PgPolicy = class {
       constructor(name, config2) {
@@ -38518,10 +38532,10 @@ var init_policies = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/primary-keys.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/primary-keys.js
 var PrimaryKeyBuilder, PrimaryKey;
 var init_primary_keys = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/primary-keys.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/primary-keys.js"() {
     init_entity();
     init_table2();
     PrimaryKeyBuilder = class {
@@ -38555,15 +38569,15 @@ var init_primary_keys = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/view-common.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/view-common.js
 var PgViewConfig;
 var init_view_common2 = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/view-common.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/view-common.js"() {
     PgViewConfig = /* @__PURE__ */ Symbol.for("drizzle:PgViewConfig");
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/casing.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/casing.js
 function toSnakeCase(input) {
   const words = input.replace(/['\u2019]/g, "").match(/[\da-z]+|[A-Z]+(?![a-z])|[A-Z][\da-z]+/g) ?? [];
   return words.map((word) => word.toLowerCase()).join("_");
@@ -38580,7 +38594,7 @@ function noopCase(input) {
 }
 var CasingCache;
 var init_casing = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/casing.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/casing.js"() {
     init_entity();
     init_table();
     CasingCache = class {
@@ -38622,10 +38636,10 @@ var init_casing = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/errors.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/errors.js
 var DrizzleError, DrizzleQueryError, TransactionRollbackError;
 var init_errors = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/errors.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/errors.js"() {
     init_entity();
     DrizzleError = class extends Error {
       static [entityKind] = "DrizzleError";
@@ -38655,7 +38669,7 @@ params: ${params}`);
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/sql/expressions/conditions.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/expressions/conditions.js
 function bindIfParam(value, column) {
   if (isDriverValueEncoder(column) && !isSQLWrapper(value) && !is(value, Param) && !is(value, Placeholder) && !is(value, Column) && !is(value, Table) && !is(value, View)) {
     return new Param(value, column);
@@ -38753,7 +38767,7 @@ function notIlike(column, value) {
 }
 var eq, ne, gt, gte, lt, lte;
 var init_conditions = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/sql/expressions/conditions.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/expressions/conditions.js"() {
     init_column();
     init_entity();
     init_table();
@@ -38779,7 +38793,7 @@ var init_conditions = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/sql/expressions/select.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/expressions/select.js
 function asc(column) {
   return sql`${column} asc`;
 }
@@ -38787,20 +38801,20 @@ function desc(column) {
   return sql`${column} desc`;
 }
 var init_select = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/sql/expressions/select.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/expressions/select.js"() {
     init_sql();
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/sql/expressions/index.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/expressions/index.js
 var init_expressions = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/sql/expressions/index.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/expressions/index.js"() {
     init_conditions();
     init_select();
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/relations.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/relations.js
 function getOperators() {
   return {
     and,
@@ -39010,7 +39024,7 @@ function mapRelationalRow(tablesConfig, tableConfig, row, buildQueryResultSelect
 }
 var Relation, Relations, One, Many;
 var init_relations = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/relations.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/relations.js"() {
     init_table();
     init_column();
     init_entity();
@@ -39072,39 +39086,39 @@ var init_relations = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/sql/functions/aggregate.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/functions/aggregate.js
 var init_aggregate = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/sql/functions/aggregate.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/functions/aggregate.js"() {
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/sql/functions/vector.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/functions/vector.js
 var init_vector2 = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/sql/functions/vector.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/functions/vector.js"() {
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/sql/functions/index.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/functions/index.js
 var init_functions = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/sql/functions/index.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/functions/index.js"() {
     init_aggregate();
     init_vector2();
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/sql/index.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/index.js
 var init_sql2 = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/sql/index.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/sql/index.js"() {
     init_expressions();
     init_functions();
     init_sql();
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/view-base.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/view-base.js
 var PgViewBase;
 var init_view_base = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/view-base.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/view-base.js"() {
     init_entity();
     init_sql();
     PgViewBase = class extends View {
@@ -39113,10 +39127,10 @@ var init_view_base = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/dialect.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/dialect.js
 var PgDialect;
 var init_dialect = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/dialect.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/dialect.js"() {
     init_alias();
     init_casing();
     init_column();
@@ -39169,7 +39183,7 @@ var init_dialect = __esm({
         });
       }
       escapeName(name) {
-        return `"${name}"`;
+        return `"${name.replace(/"/g, '""')}"`;
       }
       escapeParam(num) {
         return `$${num + 1}`;
@@ -40238,10 +40252,10 @@ var init_dialect = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/query-builders/query-builder.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/query-builders/query-builder.js
 var TypedQueryBuilder;
 var init_query_builder = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/query-builders/query-builder.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/query-builders/query-builder.js"() {
     init_entity();
     TypedQueryBuilder = class {
       static [entityKind] = "TypedQueryBuilder";
@@ -40253,7 +40267,7 @@ var init_query_builder = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/select.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/select.js
 function createSetOperator(type, isAll) {
   return (leftSelect, rightSelect, ...restSelects) => {
     const setOperators = [rightSelect, ...restSelects].map((select) => ({
@@ -40273,7 +40287,7 @@ function createSetOperator(type, isAll) {
 }
 var PgSelectBuilder, PgSelectQueryBuilderBase, PgSelectBase, getPgSetOperators, union, unionAll, intersect, intersectAll, except, exceptAll;
 var init_select2 = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/select.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/select.js"() {
     init_entity();
     init_view_base();
     init_query_builder();
@@ -41087,10 +41101,10 @@ var init_select2 = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/query-builder.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/query-builder.js
 var QueryBuilder;
 var init_query_builder2 = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/query-builder.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/query-builder.js"() {
     init_entity();
     init_dialect();
     init_selection_proxy();
@@ -41184,7 +41198,7 @@ var init_query_builder2 = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/view.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/view.js
 function pgViewWithSchema(name, selection, schema) {
   if (selection) {
     return new ManualViewBuilder(name, selection, schema);
@@ -41199,7 +41213,7 @@ function pgMaterializedViewWithSchema(name, selection, schema) {
 }
 var DefaultViewBuilderCore, ViewBuilder, ManualViewBuilder, MaterializedViewBuilderCore, MaterializedViewBuilder, ManualMaterializedViewBuilder, PgView, PgMaterializedViewConfig, PgMaterializedView;
 var init_view = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/view.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/view.js"() {
     init_entity();
     init_selection_proxy();
     init_utils();
@@ -41433,7 +41447,7 @@ var init_view = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/utils.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/utils.js
 function extractUsedTable(table) {
   if (is(table, PgTable)) {
     return [table[Schema] ? `${table[Schema]}.${table[Table.Symbol.BaseName]}` : table[Table.Symbol.BaseName]];
@@ -41447,7 +41461,7 @@ function extractUsedTable(table) {
   return [];
 }
 var init_utils3 = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/utils.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/utils.js"() {
     init_entity();
     init_table2();
     init_sql();
@@ -41456,10 +41470,10 @@ var init_utils3 = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/delete.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/delete.js
 var PgDeleteBase;
 var init_delete = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/delete.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/delete.js"() {
     init_entity();
     init_query_promise();
     init_selection_proxy();
@@ -41564,10 +41578,10 @@ var init_delete = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/insert.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/insert.js
 var PgInsertBuilder, PgInsertBase;
 var init_insert = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/insert.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/insert.js"() {
     init_entity();
     init_query_promise();
     init_selection_proxy();
@@ -41771,10 +41785,10 @@ var init_insert = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/refresh-materialized-view.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/refresh-materialized-view.js
 var PgRefreshMaterializedView;
 var init_refresh_materialized_view = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/refresh-materialized-view.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/refresh-materialized-view.js"() {
     init_entity();
     init_query_promise();
     init_tracing();
@@ -41833,16 +41847,16 @@ var init_refresh_materialized_view = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/select.types.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/select.types.js
 var init_select_types = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/select.types.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/select.types.js"() {
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/update.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/update.js
 var PgUpdateBuilder, PgUpdateBase;
 var init_update = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/update.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/update.js"() {
     init_entity();
     init_table2();
     init_query_promise();
@@ -42066,9 +42080,9 @@ var init_update = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/index.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/index.js
 var init_query_builders = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/index.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/index.js"() {
     init_delete();
     init_insert();
     init_query_builder2();
@@ -42079,10 +42093,10 @@ var init_query_builders = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/count.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/count.js
 var PgCountBuilder;
 var init_count = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/count.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/count.js"() {
     init_entity();
     init_sql();
     PgCountBuilder = class _PgCountBuilder extends SQL {
@@ -42137,10 +42151,10 @@ var init_count = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/query.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/query.js
 var RelationalQueryBuilder, PgRelationalQuery;
 var init_query = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/query.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/query.js"() {
     init_entity();
     init_query_promise();
     init_relations();
@@ -42259,10 +42273,10 @@ var init_query = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/raw.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/raw.js
 var PgRaw;
 var init_raw = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/raw.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/query-builders/raw.js"() {
     init_entity();
     init_query_promise();
     PgRaw = class extends QueryPromise {
@@ -42295,10 +42309,10 @@ var init_raw = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/db.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/db.js
 var PgDatabase;
 var init_db = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/db.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/db.js"() {
     init_entity();
     init_query_builders();
     init_selection_proxy();
@@ -42588,7 +42602,7 @@ var init_db = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/cache/core/cache.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/cache/core/cache.js
 async function hashQuery(sql2, params) {
   const dataToHash = `${sql2}-${JSON.stringify(params)}`;
   const encoder = new TextEncoder();
@@ -42600,7 +42614,7 @@ async function hashQuery(sql2, params) {
 }
 var Cache, NoopCache;
 var init_cache = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/cache/core/cache.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/cache/core/cache.js"() {
     init_entity();
     Cache = class {
       static [entityKind] = "Cache";
@@ -42621,16 +42635,16 @@ var init_cache = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/alias.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/alias.js
 var init_alias2 = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/alias.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/alias.js"() {
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/roles.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/roles.js
 var PgRole;
 var init_roles = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/roles.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/roles.js"() {
     init_entity();
     PgRole = class {
       constructor(name, config2) {
@@ -42658,13 +42672,13 @@ var init_roles = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/sequence.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/sequence.js
 function pgSequenceWithSchema(name, options, schema) {
   return new PgSequence(name, options, schema);
 }
 var PgSequence;
 var init_sequence = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/sequence.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/sequence.js"() {
     init_entity();
     PgSequence = class {
       constructor(seqName, seqOptions, schema) {
@@ -42677,10 +42691,10 @@ var init_sequence = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/schema.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/schema.js
 var PgSchema;
 var init_schema = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/schema.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/schema.js"() {
     init_entity();
     init_sql();
     init_enum();
@@ -42721,10 +42735,10 @@ var init_schema = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/session.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/session.js
 var PgPreparedQuery, PgSession, PgTransaction;
 var init_session = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/session.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/session.js"() {
     init_cache();
     init_entity();
     init_errors();
@@ -42892,22 +42906,22 @@ var init_session = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/subquery.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/subquery.js
 var init_subquery2 = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/subquery.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/subquery.js"() {
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/utils/index.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/utils/index.js
 var init_utils4 = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/utils/index.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/utils/index.js"() {
     init_array();
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/index.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/index.js
 var init_pg_core = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/index.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/index.js"() {
     init_alias2();
     init_checks();
     init_columns();
@@ -54557,15 +54571,15 @@ var init_v4 = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/operations.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/operations.js
 var init_operations = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/operations.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/operations.js"() {
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/index.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/index.js
 var init_drizzle_orm = __esm({
-  "../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/index.js"() {
+  "../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/index.js"() {
     init_alias();
     init_column_builder();
     init_column();
@@ -54583,7 +54597,7 @@ var init_drizzle_orm = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/drizzle-zod@0.8.3_drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0__zod@3.25.76/node_modules/drizzle-zod/index.mjs
+// ../../node_modules/.pnpm/drizzle-zod@0.8.3_drizzle-o_388078da7d074fc4ad4cae0eacfc8b59/node_modules/drizzle-zod/index.mjs
 function isColumnType(column, columnTypes) {
   return columnTypes.includes(column.columnType);
 }
@@ -54795,7 +54809,7 @@ function handleColumns(columns, refinements, conditions, factory) {
 }
 var CONSTANTS, literalSchema, jsonSchema, bufferSchema, insertConditions, createInsertSchema;
 var init_drizzle_zod = __esm({
-  "../../node_modules/.pnpm/drizzle-zod@0.8.3_drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0__zod@3.25.76/node_modules/drizzle-zod/index.mjs"() {
+  "../../node_modules/.pnpm/drizzle-zod@0.8.3_drizzle-o_388078da7d074fc4ad4cae0eacfc8b59/node_modules/drizzle-zod/index.mjs"() {
     init_v4();
     init_drizzle_orm();
     CONSTANTS = {
@@ -54858,6 +54872,10 @@ var init_character = __esm({
       xpToNextLevel: real("xp_to_next_level").notNull().default(100),
       aaPoints: integer("aa_points").notNull().default(0),
       aaPointsSpent: integer("aa_points_spent").notNull().default(0),
+      /** 0-100: percentage of combat XP diverted to AA points instead of level XP */
+      aaXpRatio: integer("aa_xp_ratio").notNull().default(0),
+      /** True once the character has used their one paid respec */
+      aaRespecUsed: boolean("aa_respec_used").notNull().default(false),
       gold: real("gold").notNull().default(250),
       bankGold: real("bank_gold").notNull().default(0),
       health: real("health").notNull().default(100),
@@ -54890,6 +54908,12 @@ var init_character = __esm({
       raresGathered: integer("rares_gathered").notNull().default(0),
       /** Per-zone kill counts: { "Commonlands": 42, "Antonica": 18, ... } */
       zoneKills: jsonb("zone_kills").notNull().default({}).$type(),
+      /** Pinned recipe IDs for quick-access crafting panels (max 10, per character) */
+      pinnedRecipes: jsonb("pinned_recipes").notNull().default([]).$type(),
+      /** Chosen tradeskill class (weaponsmith, armorer, tailor, jeweler, alchemist) — set once */
+      tradeskillClass: text("tradeskill_class"),
+      /** Total tradeskill XP per class — level derived as floor(sqrt(xp/25)) */
+      tradeskills: jsonb("tradeskills").notNull().default({}).$type(),
       createdAt: timestamp("created_at").defaultNow().notNull(),
       updatedAt: timestamp("updated_at").defaultNow().notNull()
     });
@@ -54998,7 +55022,7 @@ var init_skills = __esm({
 });
 
 // ../../lib/db/src/schema/gamestate.ts
-var achievementsTable, factionsTable, aaPointsTable, adornmentsTable, collectionsTable, mountsTable, heroicStateTable, abilityCooldownsTable, loreCacheTable;
+var achievementsTable, factionsTable, aaPointsTable, adornmentsTable, collectionsTable, mountsTable, heroicStateTable, abilityCooldownsTable, loreCacheTable, bestiaryTable, settingsTable;
 var init_gamestate = __esm({
   "../../lib/db/src/schema/gamestate.ts"() {
     "use strict";
@@ -55072,11 +55096,36 @@ var init_gamestate = __esm({
       content: text("content").notNull(),
       createdAt: timestamp("created_at").defaultNow().notNull()
     });
+    bestiaryTable = pgTable("bestiary", {
+      id: serial("id").primaryKey(),
+      characterId: integer("character_id").notNull(),
+      enemyId: text("enemy_id").notNull(),
+      killCount: integer("kill_count").notNull().default(0),
+      firstKillAt: timestamp("first_kill_at").defaultNow().notNull(),
+      lastKillAt: timestamp("last_kill_at").defaultNow().notNull(),
+      loreUnlocked: boolean("lore_unlocked").notNull().default(false)
+    }, (t) => [uniqueIndex("bestiary_character_enemy_unique").on(t.characterId, t.enemyId)]);
+    settingsTable = pgTable("settings", {
+      id: serial("id").primaryKey(),
+      userId: integer("user_id").notNull().unique(),
+      combatSpeed: text("combat_speed").notNull().default("normal"),
+      autoSell: boolean("auto_sell").notNull().default(false),
+      autoSellRarity: text("auto_sell_rarity").notNull().default("common"),
+      showDamageNumbers: boolean("show_damage_numbers").notNull().default(true),
+      showWorldEvents: boolean("show_world_events").notNull().default(true),
+      compactMode: boolean("compact_mode").notNull().default(false),
+      soundEnabled: boolean("sound_enabled").notNull().default(true),
+      musicEnabled: boolean("music_enabled").notNull().default(true),
+      notificationsEnabled: boolean("notifications_enabled").notNull().default(true),
+      theme: text("theme").notNull().default("dark"),
+      createdAt: timestamp("created_at").defaultNow().notNull(),
+      updatedAt: timestamp("updated_at").defaultNow().notNull()
+    });
   }
 });
 
 // ../../lib/db/src/schema/world.ts
-var worldPlayersTable, worldEventsTable, ghostMarketDemandTable, auctionListingsTable, knownRecipesTable, ghostKnownRecipesTable, oneOfAKindCraftedTable;
+var worldPlayersTable, worldEventsTable, ghostMarketDemandTable, auctionListingsTable, knownRecipesTable, ghostKnownRecipesTable, oneOfAKindCraftedTable, ghostDungeonClearsTable, ghostRaidClearsTable;
 var init_world = __esm({
   "../../lib/db/src/schema/world.ts"() {
     "use strict";
@@ -55100,6 +55149,10 @@ var init_world = __esm({
       totalGoldEarned: real("total_gold_earned").notNull().default(0),
       totalGoldSpent: real("total_gold_spent").notNull().default(0),
       stats: jsonb("stats").notNull().$type(),
+      gear: jsonb("gear").$type().default({}),
+      generation: integer("generation").notNull().default(1),
+      parentId: integer("parent_id"),
+      inheritedTraits: jsonb("inherited_traits").$type().default([]),
       lastTickAt: timestamp("last_tick_at").defaultNow().notNull(),
       createdAt: timestamp("created_at").defaultNow().notNull()
     });
@@ -55151,6 +55204,26 @@ var init_world = __esm({
       craftedBy: text("crafted_by").notNull(),
       craftedAt: timestamp("crafted_at").defaultNow().notNull()
     });
+    ghostDungeonClearsTable = pgTable("ghost_dungeon_clears", {
+      id: serial("id").primaryKey(),
+      ghostId: integer("ghost_id").notNull(),
+      dungeonId: text("dungeon_id").notNull(),
+      clearCount: integer("clear_count").notNull().default(1),
+      bestDifficulty: text("best_difficulty").notNull().default("normal"),
+      lastClearedAt: timestamp("last_cleared_at").defaultNow().notNull()
+    }, (t) => [
+      uniqueIndex("ghost_dungeon_clears_ghost_dungeon_idx").on(t.ghostId, t.dungeonId)
+    ]);
+    ghostRaidClearsTable = pgTable("ghost_raid_clears", {
+      id: serial("id").primaryKey(),
+      ghostId: integer("ghost_id").notNull(),
+      raidId: text("raid_id").notNull(),
+      clearCount: integer("clear_count").notNull().default(1),
+      maxPhase: integer("max_phase").notNull().default(1),
+      lastClearedAt: timestamp("last_cleared_at").defaultNow().notNull()
+    }, (t) => [
+      uniqueIndex("ghost_raid_clears_ghost_raid_idx").on(t.ghostId, t.raidId)
+    ]);
   }
 });
 
@@ -55288,7 +55361,7 @@ var init_dungeons = __esm({
 });
 
 // ../../lib/db/src/schema/gathering.ts
-var gatheringSessionsTable, ghostInventoryTable;
+var gatheringSessionsTable, gatheringBagItemsTable, ghostInventoryTable;
 var init_gathering = __esm({
   "../../lib/db/src/schema/gathering.ts"() {
     "use strict";
@@ -55309,6 +55382,17 @@ var init_gathering = __esm({
       // at most one active session per character+skill. Drizzle does not support partial indexes
       // in schema definitions, so this constraint is SQL-only and does not appear here.
     ]);
+    gatheringBagItemsTable = pgTable("gathering_bag_items", {
+      id: serial("id").primaryKey(),
+      characterId: integer("character_id").notNull(),
+      itemId: text("item_id").notNull(),
+      itemData: jsonb("item_data").notNull().$type(),
+      quantity: integer("quantity").notNull().default(1),
+      createdAt: timestamp("created_at").defaultNow().notNull(),
+      updatedAt: timestamp("updated_at").defaultNow().notNull()
+    }, (t) => [
+      uniqueIndex("gathering_bag_items_character_item_idx").on(t.characterId, t.itemId)
+    ]);
     ghostInventoryTable = pgTable("ghost_inventory", {
       id: serial("id").primaryKey(),
       ghostId: text("ghost_id").notNull(),
@@ -55322,6 +55406,41 @@ var init_gathering = __esm({
   }
 });
 
+// ../../lib/db/src/schema/tradeskills.ts
+var recipesTable, craftQueueTable;
+var init_tradeskills = __esm({
+  "../../lib/db/src/schema/tradeskills.ts"() {
+    "use strict";
+    init_pg_core();
+    recipesTable = pgTable("recipes", {
+      id: serial("id").primaryKey(),
+      name: text("name").notNull(),
+      tradeskillClass: text("tradeskill_class").notNull(),
+      tier: text("tier").notNull().default("apprentice"),
+      minSkill: integer("min_skill").notNull().default(1),
+      minLevel: integer("min_level").notNull().default(1),
+      craftTimeSeconds: integer("craft_time_seconds").notNull().default(60),
+      ingredients: jsonb("ingredients").notNull().$type(),
+      output: jsonb("output").notNull().$type(),
+      acquisitionType: text("acquisition_type").notNull().default("vendor"),
+      vendorCost: integer("vendor_cost"),
+      isOoak: boolean("is_ooak").notNull().default(false),
+      spriteId: text("sprite_id"),
+      createdAt: timestamp("created_at").notNull().defaultNow()
+    });
+    craftQueueTable = pgTable("craft_queue", {
+      id: serial("id").primaryKey(),
+      characterId: integer("character_id").notNull(),
+      recipeId: integer("recipe_id").notNull(),
+      quantity: integer("quantity").notNull().default(1),
+      quantityCompleted: integer("quantity_completed").notNull().default(0),
+      startedAt: timestamp("started_at").notNull().defaultNow(),
+      nextCompletesAt: timestamp("next_completes_at").notNull(),
+      status: text("status").notNull().default("crafting")
+    });
+  }
+});
+
 // ../../lib/db/src/schema/index.ts
 var schema_exports = {};
 __export(schema_exports, {
@@ -55331,19 +55450,24 @@ __export(schema_exports, {
   adornmentsTable: () => adornmentsTable,
   auctionListingsTable: () => auctionListingsTable,
   bankItemsTable: () => bankItemsTable,
+  bestiaryTable: () => bestiaryTable,
   bossEncountersTable: () => bossEncountersTable,
   charactersTable: () => charactersTable,
   collectionsTable: () => collectionsTable,
   combatLogTable: () => combatLogTable,
   combatStateTable: () => combatStateTable,
   conversations: () => conversations,
+  craftQueueTable: () => craftQueueTable,
   dungeonKillStatsTable: () => dungeonKillStatsTable,
   dungeonRunsTable: () => dungeonRunsTable,
   factionsTable: () => factionsTable,
+  gatheringBagItemsTable: () => gatheringBagItemsTable,
   gatheringSessionsTable: () => gatheringSessionsTable,
+  ghostDungeonClearsTable: () => ghostDungeonClearsTable,
   ghostInventoryTable: () => ghostInventoryTable,
   ghostKnownRecipesTable: () => ghostKnownRecipesTable,
   ghostMarketDemandTable: () => ghostMarketDemandTable,
+  ghostRaidClearsTable: () => ghostRaidClearsTable,
   heroicStateTable: () => heroicStateTable,
   insertCharacterSchema: () => insertCharacterSchema,
   insertCombatLogSchema: () => insertCombatLogSchema,
@@ -55358,6 +55482,8 @@ __export(schema_exports, {
   oneOfAKindCraftedTable: () => oneOfAKindCraftedTable,
   questsTable: () => questsTable,
   raidRunsTable: () => raidRunsTable,
+  recipesTable: () => recipesTable,
+  settingsTable: () => settingsTable,
   skillsTable: () => skillsTable,
   usersTable: () => usersTable,
   worldEventsTable: () => worldEventsTable,
@@ -55377,6 +55503,7 @@ var init_schema2 = __esm({
     init_quests();
     init_dungeons();
     init_gathering();
+    init_tradeskills();
   }
 });
 
@@ -57045,6 +57172,94 @@ var init_gameData = __esm({
         sellPrice: 210,
         spriteId: "material_herb",
         stackable: true
+      },
+      // ── GATHERING MATERIALS — FORAGING ────────────────────────────────────────
+      { id: "wild_mushroom", name: "Wild Mushroom", description: "A wild mushroom found in the forest", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 4, spriteId: "material_herb", stackable: true },
+      { id: "forest_berry", name: "Forest Berry", description: "Small berries found growing in forest undergrowth", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 3, spriteId: "material_herb", stackable: true },
+      { id: "wild_onion", name: "Wild Onion", description: "A pungent wild onion growing in forest clearings", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 2, spriteId: "material_herb", stackable: true },
+      { id: "thornbush_fruit", name: "Thornbush Fruit", description: "Bitter fruit from a hardy thornbush", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 5, spriteId: "material_herb", stackable: true },
+      { id: "deepwood_truffle", name: "Deepwood Truffle", description: "A rare truffle found deep in ancient forests", type: "material", slot: "none", rarity: "uncommon", level: 1, stats: {}, sellPrice: 25, spriteId: "material_herb", stackable: true },
+      // ── GATHERING MATERIALS — SKINNING ────────────────────────────────────────
+      { id: "scraggly_hide", name: "Scraggly Hide", description: "A rough, worn hide of poor quality", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 3, spriteId: "material_leather", stackable: true },
+      { id: "sturdy_hide", name: "Sturdy Hide", description: "A solid, durable hide suitable for crafting", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 8, spriteId: "material_leather", stackable: true },
+      { id: "thick_pelt", name: "Thick Pelt", description: "A thick, warm pelt from a large beast", type: "material", slot: "none", rarity: "uncommon", level: 1, stats: {}, sellPrice: 18, spriteId: "material_leather", stackable: true },
+      { id: "pristine_pelt", name: "Pristine Pelt", description: "A flawless pelt of exceptional quality", type: "material", slot: "none", rarity: "rare", level: 1, stats: {}, sellPrice: 55, spriteId: "material_leather", stackable: true },
+      // ── GATHERING MATERIALS — PROSPECTING ─────────────────────────────────────
+      { id: "raw_gemstone", name: "Raw Gemstone", description: "An unpolished gemstone found while surveying", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 15, spriteId: "mat_iron_ore", stackable: true },
+      { id: "uncut_diamond", name: "Uncut Diamond", description: "A rough diamond waiting to be cut and polished", type: "material", slot: "none", rarity: "rare", level: 1, stats: {}, sellPrice: 80, spriteId: "mat_iron_ore", stackable: true },
+      { id: "survey_map_fragment", name: "Survey Map Fragment", description: "A torn piece of an old survey map", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 10, spriteId: "mat_iron_ore", stackable: true },
+      // ── GATHERING MATERIALS — ARCHAEOLOGY ─────────────────────────────────────
+      { id: "ancient_shard", name: "Ancient Shard", description: "A fragment of ancient pottery or stone", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 12, spriteId: "mat_iron_ore", stackable: true },
+      { id: "relic_fragment", name: "Relic Fragment", description: "A broken piece of an ancient relic", type: "material", slot: "none", rarity: "uncommon", level: 1, stats: {}, sellPrice: 20, spriteId: "mat_iron_ore", stackable: true },
+      { id: "engraved_tablet", name: "Engraved Tablet", description: "A stone tablet covered in ancient engravings", type: "material", slot: "none", rarity: "rare", level: 1, stats: {}, sellPrice: 75, spriteId: "mat_iron_ore", stackable: true },
+      // ── CRAFTING MATERIALS — WOODWORKING ──────────────────────────────────────
+      { id: "lumber", name: "Lumber", description: "Rough-cut lumber suitable for woodworking", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 4, spriteId: "material_wood", stackable: true },
+      { id: "hardwood_plank", name: "Hardwood Plank", description: "A smoothed plank of hardwood ready for construction", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 8, spriteId: "material_wood", stackable: true },
+      // ── COOKING CONSUMABLES ───────────────────────────────────────────────────
+      { id: "roasted_mushroom", name: "Roasted Mushroom", description: "Mushrooms roasted over an open flame", type: "consumable", slot: "none", rarity: "common", level: 1, stats: { health: 40 }, sellPrice: 10, spriteId: "material_herb", stackable: true },
+      { id: "berry_pie", name: "Berry Pie", description: "A hearty pie baked with wild forest berries", type: "consumable", slot: "none", rarity: "common", level: 1, stats: { health: 80 }, sellPrice: 22, spriteId: "material_herb", stackable: true },
+      { id: "hearty_stew", name: "Hearty Stew", description: "A warming stew of foraged mushrooms and vegetables", type: "consumable", slot: "none", rarity: "common", level: 1, stats: { health: 150, power: 30 }, sellPrice: 45, spriteId: "material_herb", stackable: true },
+      { id: "truffle_feast", name: "Truffle Feast", description: "A lavish feast centered on rare deepwood truffles", type: "consumable", slot: "none", rarity: "uncommon", level: 1, stats: { health: 300, power: 60 }, sellPrice: 90, spriteId: "material_herb", stackable: true },
+      // ── ENCHANTING MATERIALS & CONSUMABLES ───────────────────────────────────
+      { id: "enchanting_dust", name: "Enchanting Dust", description: "Fine dust imbued with arcane energy", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 12, spriteId: "mat_iron_ore", stackable: true },
+      { id: "scroll_of_swiftness", name: "Scroll of Swiftness", description: "A scroll that grants a burst of speed", type: "consumable", slot: "none", rarity: "common", level: 1, stats: { haste: 15 }, sellPrice: 35, spriteId: "mat_iron_ore", stackable: true },
+      { id: "scroll_of_fortitude", name: "Scroll of Fortitude", description: "A scroll that temporarily fortifies the body", type: "consumable", slot: "none", rarity: "uncommon", level: 1, stats: { health: 200 }, sellPrice: 50, spriteId: "mat_iron_ore", stackable: true },
+      // ── WOODWORKING WEAPONS ───────────────────────────────────────────────────
+      {
+        id: "wooden_bow",
+        name: "Wooden Bow",
+        description: "A simple but effective bow crafted from sturdy wood",
+        type: "weapon",
+        slot: "mainhand",
+        rarity: "common",
+        level: 5,
+        stats: { weaponDamageMin: 8, weaponDamageMax: 16, weaponDelay: 2.5, attackRating: 10 },
+        sellPrice: 40
+      },
+      {
+        id: "ash_staff",
+        name: "Ash Staff",
+        description: "A smooth staff carved from ash wood, favoured by spellcasters",
+        type: "weapon",
+        slot: "mainhand",
+        rarity: "uncommon",
+        level: 15,
+        stats: { weaponDamageMin: 14, weaponDamageMax: 28, weaponDelay: 3, attackRating: 18, intelligence: 5 },
+        sellPrice: 90
+      },
+      // ── LEATHERWORKING ARMOR ──────────────────────────────────────────────────
+      {
+        id: "leather_bracers",
+        name: "Leather Bracers",
+        description: "Simple leather bracers offering basic wrist protection",
+        type: "armor",
+        slot: "wrists",
+        rarity: "common",
+        level: 5,
+        stats: { defenseRating: 8, mitigation: 4, agility: 2 },
+        sellPrice: 30
+      },
+      {
+        id: "supple_leather_gloves",
+        name: "Supple Leather Gloves",
+        description: "Soft, well-fitted gloves crafted from supple leather",
+        type: "armor",
+        slot: "hands",
+        rarity: "common",
+        level: 10,
+        stats: { defenseRating: 10, mitigation: 5, agility: 3 },
+        sellPrice: 40
+      },
+      {
+        id: "reinforced_leather_vest",
+        name: "Reinforced Leather Vest",
+        description: "A leather vest reinforced with additional hide panels for greater protection",
+        type: "armor",
+        slot: "chest",
+        rarity: "uncommon",
+        level: 20,
+        stats: { defenseRating: 22, mitigation: 12, stamina: 5, agility: 5 },
+        sellPrice: 85
       }
     ];
     ENEMIES = [
@@ -61923,7 +62138,23 @@ var init_gameData = __esm({
         xpReward: 3e3,
         tier: "mythic",
         oneOfAKind: true
-      }
+      },
+      // ── COOKING RECIPES ───────────────────────────────────────────────────────
+      { id: "recipe_roasted_mushroom", name: "Cook Roasted Mushroom", resultItemId: "roasted_mushroom", resultQuantity: 2, ingredients: [{ itemId: "wild_mushroom", quantity: 2 }], requiredSkillLevel: 1, requiredSkillId: "cooking", craftingTime: 5, xpReward: 15, tier: "journeyman" },
+      { id: "recipe_berry_pie", name: "Bake Berry Pie", resultItemId: "berry_pie", resultQuantity: 1, ingredients: [{ itemId: "forest_berry", quantity: 3 }, { itemId: "wild_onion", quantity: 1 }], requiredSkillLevel: 8, requiredSkillId: "cooking", craftingTime: 10, xpReward: 35, tier: "journeyman" },
+      { id: "recipe_hearty_stew", name: "Brew Hearty Stew", resultItemId: "hearty_stew", resultQuantity: 1, ingredients: [{ itemId: "wild_mushroom", quantity: 2 }, { itemId: "thornbush_fruit", quantity: 1 }, { itemId: "wild_onion", quantity: 2 }], requiredSkillLevel: 20, requiredSkillId: "cooking", craftingTime: 18, xpReward: 80, tier: "expert" },
+      { id: "recipe_truffle_feast", name: "Prepare Truffle Feast", resultItemId: "truffle_feast", resultQuantity: 1, ingredients: [{ itemId: "deepwood_truffle", quantity: 2 }, { itemId: "wild_mushroom", quantity: 3 }, { itemId: "forest_berry", quantity: 2 }], requiredSkillLevel: 40, requiredSkillId: "cooking", craftingTime: 30, xpReward: 180, tier: "expert" },
+      // ── ENCHANTING RECIPES ────────────────────────────────────────────────────
+      { id: "recipe_scroll_of_swiftness", name: "Enchant Scroll of Swiftness", resultItemId: "scroll_of_swiftness", resultQuantity: 1, ingredients: [{ itemId: "enchanting_dust", quantity: 3 }, { itemId: "spider_silk", quantity: 1 }], requiredSkillLevel: 5, requiredSkillId: "enchanting", craftingTime: 12, xpReward: 45, tier: "journeyman" },
+      { id: "recipe_scroll_of_fortitude", name: "Enchant Scroll of Fortitude", resultItemId: "scroll_of_fortitude", resultQuantity: 1, ingredients: [{ itemId: "enchanting_dust", quantity: 5 }, { itemId: "fay_blossom", quantity: 1 }], requiredSkillLevel: 20, requiredSkillId: "enchanting", craftingTime: 20, xpReward: 90, tier: "expert" },
+      // ── WOODWORKING RECIPES ───────────────────────────────────────────────────
+      { id: "recipe_hardwood_plank", name: "Cut Hardwood Plank", resultItemId: "hardwood_plank", resultQuantity: 2, ingredients: [{ itemId: "lumber", quantity: 3 }], requiredSkillLevel: 1, requiredSkillId: "woodworking", craftingTime: 6, xpReward: 18, tier: "journeyman" },
+      { id: "recipe_wooden_bow", name: "Craft Wooden Bow", resultItemId: "wooden_bow", resultQuantity: 1, ingredients: [{ itemId: "lumber", quantity: 3 }, { itemId: "hardwood_plank", quantity: 1 }], requiredSkillLevel: 5, requiredSkillId: "woodworking", craftingTime: 12, xpReward: 40, tier: "journeyman" },
+      { id: "recipe_ash_staff", name: "Craft Ash Staff", resultItemId: "ash_staff", resultQuantity: 1, ingredients: [{ itemId: "lumber", quantity: 4 }, { itemId: "hardwood_plank", quantity: 2 }, { itemId: "spider_silk", quantity: 1 }], requiredSkillLevel: 15, requiredSkillId: "woodworking", craftingTime: 20, xpReward: 85, tier: "expert" },
+      // ── LEATHERWORKING RECIPES ────────────────────────────────────────────────
+      { id: "recipe_leather_bracers", name: "Craft Leather Bracers", resultItemId: "leather_bracers", resultQuantity: 1, ingredients: [{ itemId: "scraggly_hide", quantity: 2 }], requiredSkillLevel: 1, requiredSkillId: "leatherworking", craftingTime: 6, xpReward: 20, tier: "journeyman" },
+      { id: "recipe_supple_leather_gloves", name: "Craft Supple Leather Gloves", resultItemId: "supple_leather_gloves", resultQuantity: 1, ingredients: [{ itemId: "sturdy_hide", quantity: 2 }, { itemId: "scraggly_hide", quantity: 1 }], requiredSkillLevel: 10, requiredSkillId: "leatherworking", craftingTime: 12, xpReward: 50, tier: "journeyman" },
+      { id: "recipe_reinforced_leather_vest", name: "Craft Reinforced Leather Vest", resultItemId: "reinforced_leather_vest", resultQuantity: 1, ingredients: [{ itemId: "thick_pelt", quantity: 3 }, { itemId: "sturdy_hide", quantity: 2 }], requiredSkillLevel: 20, requiredSkillId: "leatherworking", craftingTime: 22, xpReward: 100, tier: "expert" }
     ].map((r) => ({ tier: "journeyman", ...r }));
     INITIAL_SKILLS = [
       { skillId: "combat", name: "Combat", description: "Proficiency with weapons and melee attacks", category: "combat", icon: "sword", xpPerHour: 0 },
@@ -61942,7 +62173,23 @@ var init_gameData = __esm({
       { skillId: "diplomacy", name: "Diplomacy", description: "Influencing NPCs and improving faction standing", category: "support", icon: "scroll", xpPerHour: 30 },
       { skillId: "tracking", name: "Tracking", description: "Following the trails of beasts and enemies", category: "support", icon: "footprint", xpPerHour: 35 },
       { skillId: "lore", name: "Lore & Legend", description: "Knowledge of the world, its history and secrets", category: "support", icon: "book", xpPerHour: 28 },
-      { skillId: "meditation", name: "Meditation", description: "Calming the mind and body to accelerate out-of-combat recovery", category: "combat", icon: "lotus", xpPerHour: 0 }
+      { skillId: "meditation", name: "Meditation", description: "Calming the mind and body to accelerate out-of-combat recovery", category: "combat", icon: "lotus", xpPerHour: 0 },
+      { skillId: "dual_wield", name: "Dual Wield", description: "Mastery of fighting with two weapons simultaneously", category: "combat", icon: "dual_swords", xpPerHour: 0 },
+      { skillId: "parry", name: "Parry", description: "Advanced technique for deflecting and countering attacks", category: "combat", icon: "parry", xpPerHour: 0 },
+      { skillId: "evocation", name: "Evocation", description: "Channeling raw elemental magic for devastating spells", category: "combat", icon: "lightning", xpPerHour: 0 },
+      { skillId: "beastmastery", name: "Beastmastery", description: "Commanding and bonding with wild creatures in battle", category: "combat", icon: "paw", xpPerHour: 0 },
+      { skillId: "foraging", name: "Foraging", description: "Gathering fruits, mushrooms, and wild food from the land", category: "gathering", icon: "mushroom", xpPerHour: 32 },
+      { skillId: "skinning", name: "Skinning", description: "Harvesting hides and pelts from slain beasts", category: "gathering", icon: "hide", xpPerHour: 36 },
+      { skillId: "prospecting", name: "Prospecting", description: "Surveying terrain to find rare mineral deposits", category: "gathering", icon: "map", xpPerHour: 28 },
+      { skillId: "archaeology", name: "Archaeology", description: "Unearthing ancient relics and buried treasures", category: "gathering", icon: "shovel", xpPerHour: 25 },
+      { skillId: "cooking", name: "Cooking", description: "Preparing food and feasts that grant temporary stat buffs", category: "crafting", icon: "pot", xpPerHour: 44 },
+      { skillId: "enchanting", name: "Enchanting", description: "Imbuing items with magical properties and enhancements", category: "crafting", icon: "enchant", xpPerHour: 52 },
+      { skillId: "woodworking", name: "Woodworking", description: "Crafting bows, staves, and wooden structures", category: "crafting", icon: "saw", xpPerHour: 40 },
+      { skillId: "leatherworking", name: "Leatherworking", description: "Crafting leather armor and accessories from hides", category: "crafting", icon: "leather", xpPerHour: 46 },
+      { skillId: "first_aid", name: "First Aid", description: "Treating wounds and ailments in the field", category: "support", icon: "bandage", xpPerHour: 33 },
+      { skillId: "scouting", name: "Scouting", description: "Surveying zones to reveal hidden enemies and resources", category: "support", icon: "eye", xpPerHour: 30 },
+      { skillId: "bartering", name: "Bartering", description: "Negotiating better prices and deals with merchants", category: "support", icon: "coin", xpPerHour: 27 },
+      { skillId: "runecrafting", name: "Runecrafting", description: "Inscribing magical runes that enhance gear and abilities", category: "support", icon: "rune", xpPerHour: 38 }
     ];
     GATHERING_NODES = [
       // ── MINING ────────────────────────────────────────────────────────────────
@@ -62312,7 +62559,24 @@ var init_gameData = __esm({
         gatherTimeSeconds: 65,
         yields: [{ itemId: "growth_spore", baseQuantity: 1, weight: 1 }],
         rareYield: { itemId: "enchanted_pixie_dust", quantity: 2 }
-      }
+      },
+      // ── FORAGING ──────────────────────────────────────────────────────────────
+      { id: "wild_brush", name: "Wild Brush", icon: "\u{1FAD0}", description: "Scraggly bushes at the edge of the forest", skillId: "foraging", requiredLevel: 1, xpPerGather: 12, gatherTimeSeconds: 6, yields: [{ itemId: "forest_berry", baseQuantity: 1, weight: 1 }, { itemId: "wild_onion", baseQuantity: 1, weight: 1 }] },
+      { id: "mushroom_ring", name: "Mushroom Ring", icon: "\u{1F344}", description: "A fairy ring of wild mushrooms", skillId: "foraging", requiredLevel: 5, xpPerGather: 20, gatherTimeSeconds: 8, yields: [{ itemId: "wild_mushroom", baseQuantity: 1, weight: 1 }] },
+      { id: "thornbush_patch", name: "Thornbush Patch", icon: "\u{1F33E}", description: "Hardy thornbushes laden with bitter fruit", skillId: "foraging", requiredLevel: 15, xpPerGather: 40, gatherTimeSeconds: 12, yields: [{ itemId: "thornbush_fruit", baseQuantity: 1, weight: 1 }], rareYield: { itemId: "deepwood_truffle", quantity: 1 } },
+      { id: "deepwood_grove", name: "Deepwood Grove", icon: "\u{1F332}", description: "Ancient grove where rare truffles grow", skillId: "foraging", requiredLevel: 35, xpPerGather: 90, gatherTimeSeconds: 22, yields: [{ itemId: "deepwood_truffle", baseQuantity: 1, weight: 1 }], rareYield: { itemId: "wild_mushroom", quantity: 2 } },
+      // ── SKINNING ──────────────────────────────────────────────────────────────
+      { id: "gnoll_camp", name: "Gnoll Camp Scraps", icon: "\u{1F43A}", description: "Hides left behind at gnoll camps", skillId: "skinning", requiredLevel: 1, xpPerGather: 14, gatherTimeSeconds: 7, yields: [{ itemId: "scraggly_hide", baseQuantity: 1, weight: 1 }] },
+      { id: "wolf_hunting_ground", name: "Wolf Hunting Ground", icon: "\u{1F43E}", description: "Trails where wolf pelts can be gathered", skillId: "skinning", requiredLevel: 10, xpPerGather: 32, gatherTimeSeconds: 10, yields: [{ itemId: "sturdy_hide", baseQuantity: 1, weight: 1 }] },
+      { id: "bear_territory", name: "Bear Territory", icon: "\u{1F43B}", description: "Dense woodland where bear pelts are prized", skillId: "skinning", requiredLevel: 30, xpPerGather: 80, gatherTimeSeconds: 20, yields: [{ itemId: "thick_pelt", baseQuantity: 1, weight: 1 }], rareYield: { itemId: "pristine_pelt", quantity: 1 } },
+      // ── PROSPECTING ───────────────────────────────────────────────────────────
+      { id: "hillside_survey", name: "Hillside Survey", icon: "\u{1F50D}", description: "Survey hillsides for gem deposits", skillId: "prospecting", requiredLevel: 1, xpPerGather: 18, gatherTimeSeconds: 10, yields: [{ itemId: "raw_gemstone", baseQuantity: 1, weight: 1 }] },
+      { id: "karst_survey", name: "Karst Formation Survey", icon: "\u{1F48E}", description: "Limestone karst riddled with gem pockets", skillId: "prospecting", requiredLevel: 20, xpPerGather: 55, gatherTimeSeconds: 18, yields: [{ itemId: "survey_map_fragment", baseQuantity: 1, weight: 1 }, { itemId: "raw_gemstone", baseQuantity: 1, weight: 1 }], rareYield: { itemId: "uncut_diamond", quantity: 1 } },
+      { id: "deep_vein_survey", name: "Deep Vein Survey", icon: "\u{1F311}", description: "Prospecting deep fissures for precious stones", skillId: "prospecting", requiredLevel: 45, xpPerGather: 130, gatherTimeSeconds: 28, yields: [{ itemId: "uncut_diamond", baseQuantity: 1, weight: 1 }], rareYield: { itemId: "raw_gemstone", quantity: 3 } },
+      // ── ARCHAEOLOGY ───────────────────────────────────────────────────────────
+      { id: "commonlands_ruins", name: "Commonlands Ruins", icon: "\u{1F3DB}\uFE0F", description: "Crumbled ruins from an ancient civilization", skillId: "archaeology", requiredLevel: 1, xpPerGather: 16, gatherTimeSeconds: 9, yields: [{ itemId: "ancient_shard", baseQuantity: 1, weight: 1 }] },
+      { id: "antonica_dig_site", name: "Antonica Dig Site", icon: "\u26CF\uFE0F", description: "A formal dig site uncovering buried relics", skillId: "archaeology", requiredLevel: 15, xpPerGather: 42, gatherTimeSeconds: 14, yields: [{ itemId: "relic_fragment", baseQuantity: 1, weight: 1 }] },
+      { id: "feerrott_temple", name: "Feerrott Temple Excavation", icon: "\u{1F5FF}", description: "An overgrown temple filled with ancient tablets", skillId: "archaeology", requiredLevel: 40, xpPerGather: 110, gatherTimeSeconds: 25, yields: [{ itemId: "relic_fragment", baseQuantity: 1, weight: 1 }, { itemId: "ancient_shard", baseQuantity: 1, weight: 1 }], rareYield: { itemId: "engraved_tablet", quantity: 1 } }
     ];
   }
 });
@@ -62400,13 +62664,13 @@ var require_ipv4 = __commonJS({
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
-      var desc2 = Object.getOwnPropertyDescriptor(m, k);
-      if (!desc2 || ("get" in desc2 ? !m.__esModule : desc2.writable || desc2.configurable)) {
-        desc2 = { enumerable: true, get: function() {
+      var desc3 = Object.getOwnPropertyDescriptor(m, k);
+      if (!desc3 || ("get" in desc3 ? !m.__esModule : desc3.writable || desc3.configurable)) {
+        desc3 = { enumerable: true, get: function() {
           return m[k];
         } };
       }
-      Object.defineProperty(o, k2, desc2);
+      Object.defineProperty(o, k2, desc3);
     }) : (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
       o[k2] = m[k];
@@ -62829,13 +63093,13 @@ var require_regular_expressions = __commonJS({
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
-      var desc2 = Object.getOwnPropertyDescriptor(m, k);
-      if (!desc2 || ("get" in desc2 ? !m.__esModule : desc2.writable || desc2.configurable)) {
-        desc2 = { enumerable: true, get: function() {
+      var desc3 = Object.getOwnPropertyDescriptor(m, k);
+      if (!desc3 || ("get" in desc3 ? !m.__esModule : desc3.writable || desc3.configurable)) {
+        desc3 = { enumerable: true, get: function() {
           return m[k];
         } };
       }
-      Object.defineProperty(o, k2, desc2);
+      Object.defineProperty(o, k2, desc3);
     }) : (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
       o[k2] = m[k];
@@ -62921,13 +63185,13 @@ var require_ipv6 = __commonJS({
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
-      var desc2 = Object.getOwnPropertyDescriptor(m, k);
-      if (!desc2 || ("get" in desc2 ? !m.__esModule : desc2.writable || desc2.configurable)) {
-        desc2 = { enumerable: true, get: function() {
+      var desc3 = Object.getOwnPropertyDescriptor(m, k);
+      if (!desc3 || ("get" in desc3 ? !m.__esModule : desc3.writable || desc3.configurable)) {
+        desc3 = { enumerable: true, get: function() {
           return m[k];
         } };
       }
-      Object.defineProperty(o, k2, desc2);
+      Object.defineProperty(o, k2, desc3);
     }) : (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
       o[k2] = m[k];
@@ -63068,7 +63332,7 @@ var require_ipv6 = __commonJS({
        */
       static fromURL(url2) {
         let host;
-        let port2 = null;
+        let port = null;
         let result;
         if (url2.indexOf("[") !== -1 && url2.indexOf("]:") !== -1) {
           result = constants6.RE_URL_WITH_PORT.exec(url2);
@@ -63080,7 +63344,7 @@ var require_ipv6 = __commonJS({
             };
           }
           host = result[1];
-          port2 = result[2];
+          port = result[2];
         } else if (url2.indexOf("/") !== -1) {
           url2 = url2.replace(/^[a-z0-9]+:\/\//, "");
           result = constants6.RE_URL.exec(url2);
@@ -63095,17 +63359,17 @@ var require_ipv6 = __commonJS({
         } else {
           host = url2;
         }
-        if (port2) {
-          port2 = parseInt(port2, 10);
-          if (port2 < 0 || port2 > 65536) {
-            port2 = null;
+        if (port) {
+          port = parseInt(port, 10);
+          if (port < 0 || port > 65536) {
+            port = null;
           }
         } else {
-          port2 = null;
+          port = null;
         }
         return {
           address: new _Address6(host),
-          port: port2
+          port
         };
       }
       /**
@@ -63835,13 +64099,13 @@ var require_ip_address = __commonJS({
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
-      var desc2 = Object.getOwnPropertyDescriptor(m, k);
-      if (!desc2 || ("get" in desc2 ? !m.__esModule : desc2.writable || desc2.configurable)) {
-        desc2 = { enumerable: true, get: function() {
+      var desc3 = Object.getOwnPropertyDescriptor(m, k);
+      if (!desc3 || ("get" in desc3 ? !m.__esModule : desc3.writable || desc3.configurable)) {
+        desc3 = { enumerable: true, get: function() {
           return m[k];
         } };
       }
-      Object.defineProperty(o, k2, desc2);
+      Object.defineProperty(o, k2, desc3);
     }) : (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
       o[k2] = m[k];
@@ -63880,13 +64144,13 @@ var require_ip_address = __commonJS({
 });
 
 // src/app.ts
-var import_express31 = __toESM(require_express2(), 1);
+var import_express36 = __toESM(require_express2(), 1);
 var import_cors = __toESM(require_lib3(), 1);
 var import_pino_http = __toESM(require_logger(), 1);
 var import_express_session2 = __toESM(require_express_session(), 1);
 
 // src/routes/index.ts
-var import_express30 = __toESM(require_express2(), 1);
+var import_express35 = __toESM(require_express2(), 1);
 
 // src/routes/health.ts
 var import_express = __toESM(require_express2(), 1);
@@ -63906,7 +64170,7 @@ var TypeOverrides = import_lib.default.TypeOverrides;
 var defaults = import_lib.default.defaults;
 var esm_default = import_lib.default;
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/node-postgres/driver.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/node-postgres/driver.js
 init_entity();
 init_logger();
 init_db();
@@ -63914,7 +64178,7 @@ init_dialect();
 init_relations();
 init_utils();
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/node-postgres/session.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/node-postgres/session.js
 init_entity();
 init_logger();
 init_pg_core();
@@ -64137,7 +64401,7 @@ var NodePgTransaction = class _NodePgTransaction extends PgTransaction {
   }
 };
 
-// ../../node_modules/.pnpm/drizzle-orm@0.45.1_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/node-postgres/driver.js
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.20.0_pg@8.20.0/node_modules/drizzle-orm/node-postgres/driver.js
 var NodePgDriver = class {
   constructor(client, dialect, options = {}) {
     this.client = client;
@@ -66126,7 +66390,10 @@ function makeZeroAABonuses() {
     healAmountBonus: 0,
     spellPiercing: 0,
     goldBonus: 0,
-    xpBonus: 0
+    xpBonus: 0,
+    wardAbsorb: 0,
+    gatheringSpeed: 0,
+    craftYield: 0
   };
 }
 function applyAABonuses(nodes) {
@@ -66198,13 +66465,27 @@ function applyAABonuses(nodes) {
       case "xp_bonus":
         b.xpBonus += total;
         break;
+      case "ward_absorb":
+        b.wardAbsorb += total;
+        break;
+      case "gathering_speed":
+        b.gatheringSpeed += total;
+        break;
+      case "craft_yield":
+        b.craftYield += total;
+        break;
     }
   }
   return b;
 }
 function computeStats(stats, aa, skills) {
-  const { level, strength, agility, stamina, intelligence, wisdom } = stats;
+  const { level } = stats;
   const bonus = aa ?? makeZeroAABonuses();
+  const strength = stats.strength + (stats.gearStrength ?? 0);
+  const agility = stats.agility + (stats.gearAgility ?? 0);
+  const stamina = stats.stamina + (stats.gearStamina ?? 0);
+  const intelligence = stats.intelligence + (stats.gearIntelligence ?? 0);
+  const wisdom = stats.wisdom + (stats.gearWisdom ?? 0);
   const combatSkillLvl = skills?.combat ?? 1;
   const archerySkillLvl = skills?.archery ?? 1;
   const defenseSkillLvl = skills?.defense ?? 1;
@@ -66224,8 +66505,19 @@ function computeStats(stats, aa, skills) {
   const haste = Math.min(100, stats.gearHaste + bonus.hasteBonus);
   const baseWeaponDelay = stats.gearWeaponDelay || 2;
   const effectiveDelay = baseWeaponDelay * (1 - haste / 200);
-  const weaponDamageMin = stats.gearWeaponDamageMin || strength * 0.8 + level * 2;
-  const weaponDamageMax = stats.gearWeaponDamageMax || strength * 1.5 + level * 4;
+  const archetype = (stats.archetype ?? "").toLowerCase();
+  let archetypeDmgBonus = 0;
+  if (archetype === "fighter") {
+    archetypeDmgBonus = Math.floor(strength * 0.3);
+  } else if (archetype === "scout") {
+    archetypeDmgBonus = Math.floor(agility * 0.3);
+  } else if (archetype === "mage") {
+    archetypeDmgBonus = Math.floor(intelligence * 0.2);
+  } else if (archetype === "priest") {
+    archetypeDmgBonus = Math.floor(wisdom * 0.2);
+  }
+  const weaponDamageMin = (stats.gearWeaponDamageMin || strength * 0.8 + level * 2) + archetypeDmgBonus;
+  const weaponDamageMax = (stats.gearWeaponDamageMax || strength * 1.5 + level * 4) + archetypeDmgBonus;
   const avgDmg = (weaponDamageMin + weaponDamageMax) / 2;
   const critMultiplier = 1 + critChance / 100 * (critBonus / 100);
   const dps = Math.round(avgDmg * critMultiplier / effectiveDelay * 10) / 10;
@@ -66302,57 +66594,89 @@ function calculateXpGain(baseXp, playerLevel, enemyLevel, xpBonus = 0) {
 function xpForLevel2(level) {
   return Math.floor(83 * Math.pow(level, 1.5));
 }
-var RARITY_GS_MULTIPLIER = {
-  common: 1,
-  uncommon: 2,
-  rare: 4,
-  legendary: 8,
-  fabled: 12,
-  mythical: 16
+var RARITY_GS_DIVISOR = {
+  poor: 3.5,
+  common: 3,
+  uncommon: 2.5,
+  rare: 1.76,
+  epic: 1.6,
+  // not used in game but keep for completeness
+  legendary: 1.4,
+  fabled: 1.3,
+  // one tier above legendary
+  mythical: 1.2
+  // highest tier
 };
-var SLOT_GS_WEIGHT = {
-  primary: 2.5,
-  secondary: 2.5,
-  ranged: 2.5,
-  chest: 1.25,
-  legs: 1.25,
+var SLOT_GS_MODIFIER = {
+  primary: 1,
+  // INVTYPE_WEAPONMAINHAND
+  secondary: 1,
+  // INVTYPE_WEAPONOFFHAND / INVTYPE_SHIELD
+  ranged: 0.3164,
+  // INVTYPE_RANGED / INVTYPE_RANGEDRIGHT
   head: 1,
-  shoulder: 1,
-  hands: 1,
-  feet: 1,
-  back: 0.75,
+  // INVTYPE_HEAD
+  shoulder: 0.75,
+  // INVTYPE_SHOULDER
+  chest: 1,
+  // INVTYPE_CHEST / INVTYPE_ROBE
   waist: 0.75,
-  wrist: 0.75,
-  neck: 0.75,
-  charm: 0.75,
-  earLeft: 0.5,
-  earRight: 0.5,
-  ringLeft: 0.5,
-  ringRight: 0.5
+  // INVTYPE_WAIST
+  legs: 1,
+  // INVTYPE_LEGS
+  feet: 0.75,
+  // INVTYPE_FEET
+  wrist: 0.5625,
+  // INVTYPE_WRIST
+  hands: 0.75,
+  // INVTYPE_HAND
+  back: 0.5625,
+  // INVTYPE_CLOAK
+  neck: 0.5625,
+  // INVTYPE_NECK
+  ringLeft: 0.5625,
+  // INVTYPE_FINGER
+  ringRight: 0.5625,
+  // INVTYPE_FINGER
+  charm: 0.5625,
+  // INVTYPE_TRINKET
+  earLeft: 0.5625,
+  // no WoW equiv — treat as accessory
+  earRight: 0.5625
+  // no WoW equiv — treat as accessory
 };
+var GS_GLOBAL_SCALE = 1.7;
+var GS_ENCHANT_MODIFIER = 1.05;
+function computeItemGSServer(level, rarity, slot) {
+  const divisor = RARITY_GS_DIVISOR[rarity] ?? RARITY_GS_DIVISOR.common;
+  const slotMod = SLOT_GS_MODIFIER[slot] ?? 1;
+  return Math.floor(level / divisor * slotMod * GS_ENCHANT_MODIFIER * GS_GLOBAL_SCALE);
+}
 function computeGearScore(input) {
   if (Array.isArray(input)) {
     return input.reduce((sum, item) => {
-      const mult = RARITY_GS_MULTIPLIER[item.rarity] ?? 1;
-      const slotWeight = SLOT_GS_WEIGHT[item.slot ?? ""] ?? 1;
-      return sum + Math.round(item.level * slotWeight * mult);
+      return sum + computeItemGSServer(item.level, item.rarity, item.slot ?? "");
     }, 0);
   }
   const { getItemById: getItemById2 } = (init_gameData(), __toCommonJS(gameData_exports));
   return Object.entries(input).reduce((sum, [slot, itemId]) => {
-    if (!itemId || typeof itemId !== "string") return sum;
-    const item = getItemById2(itemId);
-    if (!item) return sum;
-    const mult = RARITY_GS_MULTIPLIER[item.rarity] ?? 1;
-    const slotWeight = SLOT_GS_WEIGHT[slot] ?? 1;
-    return sum + Math.round(item.level * slotWeight * mult);
+    if (!itemId) return sum;
+    if (typeof itemId === "string") {
+      const item = getItemById2(itemId);
+      if (!item) return sum;
+      return sum + computeItemGSServer(item.level, item.rarity, slot);
+    }
+    const obj = itemId;
+    const level = typeof obj.level === "number" ? obj.level : 0;
+    const rarity = typeof obj.rarity === "string" ? obj.rarity : "common";
+    return sum + computeItemGSServer(level, rarity, slot);
   }, 0);
 }
 var DUNGEON_GS_GATE = {
   normal: 0,
-  expert: 100,
-  legendary: 500,
-  mythical: 1500
+  expert: 30,
+  legendary: 100,
+  mythical: 250
 };
 var DUNGEON_DIFFICULTY_MULTIPLIER = {
   normal: 1,
@@ -66360,6 +66684,68 @@ var DUNGEON_DIFFICULTY_MULTIPLIER = {
   legendary: 2,
   mythical: 3
 };
+function makeZeroSetBoosts() {
+  return {
+    attackRating: 0,
+    defenseRating: 0,
+    mitigation: 0,
+    avoidance: 0,
+    critChance: 0,
+    haste: 0,
+    maxHpPercent: 0,
+    maxPowerPercent: 0,
+    spellDamage: 0,
+    spellCritChance: 0
+  };
+}
+function computeSetBonuses(equippedGear, gearSets) {
+  const statBoosts = makeZeroSetBoosts();
+  const summaries = [];
+  const equippedBySet = /* @__PURE__ */ new Map();
+  for (const slotVal of Object.values(equippedGear)) {
+    if (!slotVal || typeof slotVal !== "object") continue;
+    const item = slotVal;
+    const setId = item["setId"];
+    if (!setId) continue;
+    const setName = item["setName"] ?? setId;
+    const prev = equippedBySet.get(setId) ?? { count: 0, setName };
+    equippedBySet.set(setId, { count: prev.count + 1, setName: prev.setName });
+  }
+  for (const setDef of gearSets) {
+    const entry = equippedBySet.get(setDef.id);
+    if (!entry || entry.count === 0) continue;
+    const piecesEquipped = entry.count;
+    const bonuses = [];
+    for (const bonus of setDef.bonuses) {
+      const active = piecesEquipped >= bonus.piecesRequired;
+      const isProc = !!bonus.effect;
+      bonuses.push({
+        piecesRequired: bonus.piecesRequired,
+        description: bonus.description,
+        active,
+        isProc,
+        procName: bonus.effect?.name
+      });
+      if (active && !isProc && bonus.stat && bonus.value !== void 0) {
+        const key = bonus.stat;
+        if (key in statBoosts) {
+          statBoosts[key] += bonus.value;
+        }
+      }
+    }
+    summaries.push({
+      setId: setDef.id,
+      setName: entry.setName,
+      dungeonId: setDef.dungeonId,
+      difficulty: setDef.difficulty,
+      archetype: setDef.archetype,
+      piecesEquipped,
+      piecesTotal: setDef.pieces.length,
+      bonuses
+    });
+  }
+  return { summaries, statBoosts };
+}
 
 // src/routes/character.ts
 init_gameData();
@@ -68167,6 +68553,655 @@ var AA_TABS = [
     ]
   }
 ];
+var CLASS_AA_TABS = [
+  // ── GUARDIAN ──
+  { id: "guardian_class", name: "Warden's Discipline", archetype: "Fighter", classId: "guardian", tabType: "class", nodes: [
+    { id: "g_shield_mastery", name: "Shield Mastery", description: "Increases mitigation by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "mitigation", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 1, icon: "\u{1F6E1}\uFE0F" },
+    { id: "g_stand_firm", name: "Stand Firm", description: "Increases max HP by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "max_hp", effectValue: 2, effectPerRank: 2, requires: [], row: 1, col: 2, icon: "\u{1F5FF}" },
+    { id: "g_iron_bastion", name: "Iron Bastion", description: "Increases avoidance by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "avoidance", effectValue: 2, effectPerRank: 2, requires: ["g_shield_mastery"], row: 2, col: 1, icon: "\u{1F530}" },
+    { id: "g_stalwart", name: "Stalwart Defense", description: "Reduces all damage taken by 2% per rank", maxRank: 3, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 2, effectPerRank: 2, requires: ["g_stand_firm"], row: 2, col: 2, icon: "\u2693" },
+    { id: "g_indomitable", name: "Indomitable", description: "Ward absorbs 8% more damage per rank", maxRank: 3, pointsPerRank: 2, effect: "ward_absorb", effectValue: 8, effectPerRank: 8, requires: ["g_iron_bastion", "g_stalwart"], row: 3, col: 1, icon: "\u{1F3F0}" }
+  ] },
+  // ── BERSERKER ──
+  { id: "berserker_class", name: "Path of Rage", archetype: "Fighter", classId: "berserker", tabType: "class", nodes: [
+    { id: "bz_blood_frenzy", name: "Blood Frenzy", description: "Increases melee damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "melee_damage", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 1, icon: "\u{1FA78}" },
+    { id: "bz_raging_strikes", name: "Raging Strikes", description: "Increases double attack chance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "double_attack", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u26A1" },
+    { id: "bz_carnage", name: "Carnage", description: "Increases extra attack chance by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 5, effectPerRank: 5, requires: ["bz_blood_frenzy"], row: 2, col: 1, icon: "\u{1F480}" },
+    { id: "bz_swift_rage", name: "Swift Rage", description: "Increases haste by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "haste", effectValue: 2, effectPerRank: 2, requires: ["bz_raging_strikes"], row: 2, col: 2, icon: "\u{1F3C3}" },
+    { id: "bz_executioner", name: "Executioner", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: ["bz_carnage", "bz_swift_rage"], row: 3, col: 1, icon: "\u{1FA93}" }
+  ] },
+  // ── PALADIN ──
+  { id: "paladin_class", name: "Sacred Oath", archetype: "Fighter", classId: "paladin", tabType: "class", nodes: [
+    { id: "pa_holy_armor", name: "Holy Armor", description: "Increases mitigation by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "mitigation", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 1, icon: "\u2728" },
+    { id: "pa_divine_strike", name: "Divine Strike", description: "Increases divine damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "divine_damage", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 2, icon: "\u271D\uFE0F" },
+    { id: "pa_sacred_ward", name: "Sacred Ward", description: "Increases ward absorption by 6% per rank", maxRank: 3, pointsPerRank: 1, effect: "ward_absorb", effectValue: 6, effectPerRank: 6, requires: ["pa_holy_armor"], row: 2, col: 1, icon: "\u{1F530}" },
+    { id: "pa_righteous_fury", name: "Righteous Fury", description: "Increases critical hit chance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: ["pa_divine_strike"], row: 2, col: 2, icon: "\u{1F624}" },
+    { id: "pa_avatar_light", name: "Avatar of Light", description: "Increases divine damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "divine_damage", effectValue: 10, effectPerRank: 10, requires: ["pa_sacred_ward", "pa_righteous_fury"], row: 3, col: 1, icon: "\u{1F31F}" }
+  ] },
+  // ── SHADOWKNIGHT ──
+  { id: "shadowknight_class", name: "Dark Covenant", archetype: "Fighter", classId: "shadowknight", tabType: "class", nodes: [
+    { id: "sk_shadow_veil", name: "Shadow Veil", description: "Increases avoidance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "avoidance", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 1, icon: "\u{1F311}" },
+    { id: "sk_dark_infusion", name: "Dark Infusion", description: "Increases spell damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "spell_damage", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 2, icon: "\u{1F49C}" },
+    { id: "sk_soul_siphon", name: "Soul Siphon", description: "Increases heal amount from life drain by 4% per rank", maxRank: 3, pointsPerRank: 1, effect: "heal_amount", effectValue: 4, effectPerRank: 4, requires: ["sk_shadow_veil"], row: 2, col: 1, icon: "\u{1FA78}" },
+    { id: "sk_dark_pact", name: "Dark Pact", description: "Increases critical hit bonus by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 5, effectPerRank: 5, requires: ["sk_dark_infusion"], row: 2, col: 2, icon: "\u{1F4DC}" },
+    { id: "sk_harbinger", name: "Harbinger of Death", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: ["sk_soul_siphon", "sk_dark_pact"], row: 3, col: 1, icon: "\u{1F480}" }
+  ] },
+  // ── MONK ──
+  { id: "monk_class", name: "Way of the Iron Fist", archetype: "Fighter", classId: "monk", tabType: "class", nodes: [
+    { id: "mo_flowing_water", name: "Flowing Water", description: "Increases avoidance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "avoidance", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 1, icon: "\u{1F4A7}" },
+    { id: "mo_iron_body", name: "Iron Body", description: "Reduces damage taken by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 2, effectPerRank: 2, requires: [], row: 1, col: 2, icon: "\u{1F4AA}" },
+    { id: "mo_eternal_fist", name: "Eternal Fist", description: "Increases extra attack chance by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 5, effectPerRank: 5, requires: ["mo_flowing_water"], row: 2, col: 1, icon: "\u{1F44A}" },
+    { id: "mo_chi_focus", name: "Chi Focus", description: "Reduces power costs by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "power_cost_reduction", effectValue: 5, effectPerRank: 5, requires: ["mo_iron_body"], row: 2, col: 2, icon: "\u{1F535}" },
+    { id: "mo_perfect_form", name: "Perfect Form", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: ["mo_eternal_fist", "mo_chi_focus"], row: 3, col: 1, icon: "\u{1F94B}" }
+  ] },
+  // ── BRUISER ──
+  { id: "bruiser_class", name: "Brawler's Might", archetype: "Fighter", classId: "bruiser", tabType: "class", nodes: [
+    { id: "br_bone_crusher", name: "Bone Crusher", description: "Increases melee damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "melee_damage", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 1, icon: "\u{1F9B4}" },
+    { id: "br_thick_skin", name: "Thick Skin", description: "Increases max HP by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "max_hp", effectValue: 2, effectPerRank: 2, requires: [], row: 1, col: 2, icon: "\u{1F417}" },
+    { id: "br_pile_driver", name: "Pile Driver", description: "Increases crit bonus damage by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 5, effectPerRank: 5, requires: ["br_bone_crusher"], row: 2, col: 1, icon: "\u{1F4A5}" },
+    { id: "br_relentless", name: "Relentless Assault", description: "Increases double attack chance by 3% per rank", maxRank: 3, pointsPerRank: 1, effect: "double_attack", effectValue: 3, effectPerRank: 3, requires: ["br_thick_skin"], row: 2, col: 2, icon: "\u26A1" },
+    { id: "br_unstoppable", name: "Unstoppable Force", description: "Increases melee damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 10, effectPerRank: 10, requires: ["br_pile_driver", "br_relentless"], row: 3, col: 1, icon: "\u{1F32A}\uFE0F" }
+  ] },
+  // ── RANGER ──
+  { id: "ranger_class", name: "Eagle's Eye", archetype: "Scout", classId: "ranger", tabType: "class", nodes: [
+    { id: "ra_eagle_eye", name: "Eagle Eye", description: "Increases critical hit chance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 1, icon: "\u{1F985}" },
+    { id: "ra_rangers_focus", name: "Ranger's Focus", description: "Increases backstab damage by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "backstab_damage", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 2, icon: "\u{1F3AF}" },
+    { id: "ra_careful_aim", name: "Careful Aim", description: "Increases crit bonus damage by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 5, effectPerRank: 5, requires: ["ra_eagle_eye"], row: 2, col: 1, icon: "\u{1F3F9}" },
+    { id: "ra_swift_shots", name: "Swift Shots", description: "Increases haste by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "haste", effectValue: 2, effectPerRank: 2, requires: ["ra_rangers_focus"], row: 2, col: 2, icon: "\u{1F4A8}" },
+    { id: "ra_deadeye", name: "Deadeye", description: "Increases critical hit chance by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "crit_chance", effectValue: 8, effectPerRank: 8, requires: ["ra_careful_aim", "ra_swift_shots"], row: 3, col: 1, icon: "\u{1F441}\uFE0F" }
+  ] },
+  // ── ASSASSIN ──
+  { id: "assassin_class", name: "Shadow's Edge", archetype: "Scout", classId: "assassin", tabType: "class", nodes: [
+    { id: "as_death_touch", name: "Death Touch", description: "Increases backstab damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "backstab_damage", effectValue: 6, effectPerRank: 6, requires: [], row: 1, col: 1, icon: "\u{1F5E1}\uFE0F" },
+    { id: "as_shadow_mastery", name: "Shadow Mastery", description: "Increases avoidance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "avoidance", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u{1F311}" },
+    { id: "as_lethal_strikes", name: "Lethal Strikes", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["as_death_touch"], row: 2, col: 1, icon: "\u2620\uFE0F" },
+    { id: "as_hidden_stalker", name: "Hidden Stalker", description: "Increases critical hit chance by 3% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: ["as_shadow_mastery"], row: 2, col: 2, icon: "\u{1F441}\uFE0F" },
+    { id: "as_master_assassin", name: "Master Assassin", description: "Increases backstab damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "backstab_damage", effectValue: 12, effectPerRank: 12, requires: ["as_lethal_strikes", "as_hidden_stalker"], row: 3, col: 1, icon: "\u{1F480}" }
+  ] },
+  // ── SWASHBUCKLER ──
+  { id: "swashbuckler_class", name: "Rogue's Fortune", archetype: "Scout", classId: "swashbuckler", tabType: "class", nodes: [
+    { id: "sw_fancy_footwork", name: "Fancy Footwork", description: "Increases avoidance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "avoidance", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 1, icon: "\u{1F483}" },
+    { id: "sw_cunning_strikes", name: "Cunning Strikes", description: "Increases melee damage by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "melee_damage", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u2694\uFE0F" },
+    { id: "sw_riposte", name: "Riposte", description: "Increases double attack chance by 4% per rank", maxRank: 3, pointsPerRank: 1, effect: "double_attack", effectValue: 4, effectPerRank: 4, requires: ["sw_fancy_footwork"], row: 2, col: 1, icon: "\u{1F504}" },
+    { id: "sw_exploit_weakness", name: "Exploit Weakness", description: "Increases crit bonus damage by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 5, effectPerRank: 5, requires: ["sw_cunning_strikes"], row: 2, col: 2, icon: "\u{1F3AD}" },
+    { id: "sw_swashbuckling", name: "Swashbuckling Mastery", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: ["sw_riposte", "sw_exploit_weakness"], row: 3, col: 1, icon: "\u{1F3F4}\u200D\u2620\uFE0F" }
+  ] },
+  // ── BRIGAND ──
+  { id: "brigand_class", name: "Criminal's Art", archetype: "Scout", classId: "brigand", tabType: "class", nodes: [
+    { id: "bg_pickpocket", name: "Pickpocket Mastery", description: "Increases gold earned by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "gold_bonus", effectValue: 6, effectPerRank: 6, requires: [], row: 1, col: 1, icon: "\u{1F4B0}" },
+    { id: "bg_coerce", name: "Coerce", description: "Increases critical hit chance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u{1F3B2}" },
+    { id: "bg_cheap_shot", name: "Cheap Shot", description: "Increases extra attack chance by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 5, effectPerRank: 5, requires: ["bg_pickpocket"], row: 2, col: 1, icon: "\u{1F94A}" },
+    { id: "bg_cutthroat", name: "Cutthroat", description: "Increases backstab damage by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "backstab_damage", effectValue: 5, effectPerRank: 5, requires: ["bg_coerce"], row: 2, col: 2, icon: "\u{1F5E1}\uFE0F" },
+    { id: "bg_criminal_mind", name: "Criminal Mastermind", description: "Increases backstab damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "backstab_damage", effectValue: 10, effectPerRank: 10, requires: ["bg_cheap_shot", "bg_cutthroat"], row: 3, col: 1, icon: "\u{1F3A9}" }
+  ] },
+  // ── TROUBADOR ──
+  { id: "troubador_class", name: "Battle Hymn", archetype: "Scout", classId: "troubador", tabType: "class", nodes: [
+    { id: "tr_harmonic", name: "Harmonic Resonance", description: "Increases max power by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "max_power", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 1, icon: "\u{1F3B5}" },
+    { id: "tr_inspiring", name: "Inspiring Melody", description: "Increases haste by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "haste", effectValue: 2, effectPerRank: 2, requires: [], row: 1, col: 2, icon: "\u{1F3B6}" },
+    { id: "tr_crescendo", name: "Arcane Crescendo", description: "Increases spell damage by 4% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 4, effectPerRank: 4, requires: ["tr_harmonic"], row: 2, col: 1, icon: "\u{1F30A}" },
+    { id: "tr_battle_march", name: "Battle March", description: "Increases melee damage by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "melee_damage", effectValue: 3, effectPerRank: 3, requires: ["tr_inspiring"], row: 2, col: 2, icon: "\u2694\uFE0F" },
+    { id: "tr_master_bard", name: "Master Bard", description: "Increases XP earned by 5% per rank", maxRank: 3, pointsPerRank: 2, effect: "xp_bonus", effectValue: 5, effectPerRank: 5, requires: ["tr_crescendo", "tr_battle_march"], row: 3, col: 1, icon: "\u{1F3BC}" }
+  ] },
+  // ── DIRGE ──
+  { id: "dirge_class", name: "Lament", archetype: "Scout", classId: "dirge", tabType: "class", nodes: [
+    { id: "di_deaths_chorus", name: "Death's Chorus", description: "Increases spell damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "spell_damage", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 1, icon: "\u{1F480}" },
+    { id: "di_wail", name: "Wail of Torment", description: "Increases crit bonus damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 2, icon: "\u{1F631}" },
+    { id: "di_lament", name: "Lament of the Fallen", description: "Increases critical hit chance by 3% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: ["di_deaths_chorus"], row: 2, col: 1, icon: "\u{1F56F}\uFE0F" },
+    { id: "di_anthem", name: "Anthem of War", description: "Increases melee damage by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "melee_damage", effectValue: 3, effectPerRank: 3, requires: ["di_wail"], row: 2, col: 2, icon: "\u2694\uFE0F" },
+    { id: "di_dirge_doom", name: "Dirge of Doom", description: "Increases spell damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 8, effectPerRank: 8, requires: ["di_lament", "di_anthem"], row: 3, col: 1, icon: "\u{1F311}" }
+  ] },
+  // ── WIZARD ──
+  { id: "wizard_class", name: "Archmage's Wrath", archetype: "Mage", classId: "wizard", tabType: "class", nodes: [
+    { id: "wz_arcane_fury", name: "Arcane Fury", description: "Increases spell damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "spell_damage", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 1, icon: "\u{1F525}" },
+    { id: "wz_mana_surge", name: "Mana Surge", description: "Increases spell critical chance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "spell_crit_chance", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u26A1" },
+    { id: "wz_spell_mastery", name: "Spell Mastery", description: "Increases spell piercing by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_piercing", effectValue: 5, effectPerRank: 5, requires: ["wz_arcane_fury"], row: 2, col: 1, icon: "\u{1F300}" },
+    { id: "wz_crit_focus", name: "Critical Focus", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["wz_mana_surge"], row: 2, col: 2, icon: "\u{1F4A5}" },
+    { id: "wz_archmage", name: "Archmage's Wrath", description: "Increases spell damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 12, effectPerRank: 12, requires: ["wz_spell_mastery", "wz_crit_focus"], row: 3, col: 1, icon: "\u{1F52E}" }
+  ] },
+  // ── WARLOCK ──
+  { id: "warlock_class", name: "Dark Covenant", archetype: "Mage", classId: "warlock", tabType: "class", nodes: [
+    { id: "wl_dark_arts", name: "Dark Arts", description: "Increases spell damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "spell_damage", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 1, icon: "\u{1F5A4}" },
+    { id: "wl_noxious", name: "Noxious Mastery", description: "Increases critical hit chance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u2620\uFE0F" },
+    { id: "wl_curse_mastery", name: "Curse Mastery", description: "Reduces power costs by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "power_cost_reduction", effectValue: 5, effectPerRank: 5, requires: ["wl_dark_arts"], row: 2, col: 1, icon: "\u{1F4DC}" },
+    { id: "wl_fel_potency", name: "Fel Potency", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["wl_noxious"], row: 2, col: 2, icon: "\u{1F49C}" },
+    { id: "wl_harbinger", name: "Harbinger", description: "Increases spell damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 12, effectPerRank: 12, requires: ["wl_curse_mastery", "wl_fel_potency"], row: 3, col: 1, icon: "\u{1F311}" }
+  ] },
+  // ── CONJUROR ──
+  { id: "conjuror_class", name: "Summoner's Pact", archetype: "Mage", classId: "conjuror", tabType: "class", nodes: [
+    { id: "co_summoning", name: "Summoning Mastery", description: "Increases melee damage by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "melee_damage", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 1, icon: "\u{1F525}" },
+    { id: "co_arcane_feeding", name: "Arcane Feeding", description: "Increases max power by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "max_power", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u{1F4A7}" },
+    { id: "co_elemental_bond", name: "Elemental Bond", description: "Increases extra attack chance by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 5, effectPerRank: 5, requires: ["co_summoning"], row: 2, col: 1, icon: "\u2697\uFE0F" },
+    { id: "co_power_conduit", name: "Power Conduit", description: "Reduces power costs by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "power_cost_reduction", effectValue: 5, effectPerRank: 5, requires: ["co_arcane_feeding"], row: 2, col: 2, icon: "\u{1F50B}" },
+    { id: "co_master_summoner", name: "Master Summoner", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: ["co_elemental_bond", "co_power_conduit"], row: 3, col: 1, icon: "\u{1F300}" }
+  ] },
+  // ── NECROMANCER ──
+  { id: "necromancer_class", name: "Lich's Embrace", archetype: "Mage", classId: "necromancer", tabType: "class", nodes: [
+    { id: "nc_grave_mastery", name: "Grave Mastery", description: "Increases spell damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "spell_damage", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 1, icon: "\u{1F480}" },
+    { id: "nc_life_tap", name: "Life Tap", description: "Increases heal amount from life drain by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "heal_amount", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 2, icon: "\u{1FA78}" },
+    { id: "nc_deaths_touch", name: "Death's Touch", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["nc_grave_mastery"], row: 2, col: 1, icon: "\u{1F5A4}" },
+    { id: "nc_soul_rend", name: "Soul Rend", description: "Increases spell critical chance by 3% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_crit_chance", effectValue: 3, effectPerRank: 3, requires: ["nc_life_tap"], row: 2, col: 2, icon: "\u{1F631}" },
+    { id: "nc_lich_lord", name: "Lich Lord", description: "Increases spell damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 12, effectPerRank: 12, requires: ["nc_deaths_touch", "nc_soul_rend"], row: 3, col: 1, icon: "\u{1F451}" }
+  ] },
+  // ── COERCER ──
+  { id: "coercer_class", name: "Mind's Dominion", archetype: "Mage", classId: "coercer", tabType: "class", nodes: [
+    { id: "ce_mental_acuity", name: "Mental Acuity", description: "Increases spell critical chance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "spell_crit_chance", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 1, icon: "\u{1F9E0}" },
+    { id: "ce_domination", name: "Domination", description: "Increases spell damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "spell_damage", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 2, icon: "\u{1F441}\uFE0F" },
+    { id: "ce_psychic_drain", name: "Psychic Drain", description: "Reduces power costs by 6% per rank", maxRank: 3, pointsPerRank: 1, effect: "power_cost_reduction", effectValue: 6, effectPerRank: 6, requires: ["ce_mental_acuity"], row: 2, col: 1, icon: "\u{1F4A7}" },
+    { id: "ce_bewildering", name: "Bewildering Gaze", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["ce_domination"], row: 2, col: 2, icon: "\u{1F300}" },
+    { id: "ce_grand_coercer", name: "Grand Coercer", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: ["ce_psychic_drain", "ce_bewildering"], row: 3, col: 1, icon: "\u{1F3AD}" }
+  ] },
+  // ── ILLUSIONIST ──
+  { id: "illusionist_class", name: "Mirror Realm", archetype: "Mage", classId: "illusionist", tabType: "class", nodes: [
+    { id: "il_mirror_mastery", name: "Mirror Mastery", description: "Increases avoidance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "avoidance", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 1, icon: "\u{1FA9E}" },
+    { id: "il_prismatic_ward", name: "Prismatic Ward", description: "Reduces damage taken by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 2, effectPerRank: 2, requires: [], row: 1, col: 2, icon: "\u{1F308}" },
+    { id: "il_phantom_double", name: "Phantom Double", description: "Increases double attack chance by 4% per rank", maxRank: 3, pointsPerRank: 1, effect: "double_attack", effectValue: 4, effectPerRank: 4, requires: ["il_mirror_mastery"], row: 2, col: 1, icon: "\u{1F465}" },
+    { id: "il_arcane_veil", name: "Arcane Veil", description: "Increases ward absorption by 6% per rank", maxRank: 3, pointsPerRank: 1, effect: "ward_absorb", effectValue: 6, effectPerRank: 6, requires: ["il_prismatic_ward"], row: 2, col: 2, icon: "\u2728" },
+    { id: "il_grand_illusion", name: "Grand Illusion", description: "Increases spell damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 8, effectPerRank: 8, requires: ["il_phantom_double", "il_arcane_veil"], row: 3, col: 1, icon: "\u{1F300}" }
+  ] },
+  // ── TEMPLAR ──
+  { id: "templar_class", name: "Holy Conviction", archetype: "Priest", classId: "templar", tabType: "class", nodes: [
+    { id: "te_divine_light", name: "Divine Light", description: "Increases heal amount by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "heal_amount", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 1, icon: "\u{1F49B}" },
+    { id: "te_sacred_conviction", name: "Sacred Conviction", description: "Increases divine damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "divine_damage", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 2, icon: "\u271D\uFE0F" },
+    { id: "te_healing_grace", name: "Healing Grace", description: "Reduces power costs by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "power_cost_reduction", effectValue: 5, effectPerRank: 5, requires: ["te_divine_light"], row: 2, col: 1, icon: "\u{1F49A}" },
+    { id: "te_righteous_smite", name: "Righteous Smite", description: "Increases critical hit chance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: ["te_sacred_conviction"], row: 2, col: 2, icon: "\u26A1" },
+    { id: "te_avatar_healing", name: "Avatar of Healing", description: "Increases heal amount by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "heal_amount", effectValue: 10, effectPerRank: 10, requires: ["te_healing_grace", "te_righteous_smite"], row: 3, col: 1, icon: "\u{1F31F}" }
+  ] },
+  // ── INQUISITOR ──
+  { id: "inquisitor_class", name: "Fanatic's Zeal", archetype: "Priest", classId: "inquisitor", tabType: "class", nodes: [
+    { id: "iq_fanatic", name: "Fanatic's Faith", description: "Increases divine damage by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "divine_damage", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 1, icon: "\u{1F525}" },
+    { id: "iq_inquisition", name: "Inquisition", description: "Increases melee damage by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "melee_damage", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u2694\uFE0F" },
+    { id: "iq_will", name: "Inquisitor's Will", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["iq_fanatic"], row: 2, col: 1, icon: "\u{1F4AA}" },
+    { id: "iq_zealous_fury", name: "Zealous Fury", description: "Increases extra attack chance by 4% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 4, effectPerRank: 4, requires: ["iq_inquisition"], row: 2, col: 2, icon: "\u{1F624}" },
+    { id: "iq_holy_inquisitor", name: "Holy Inquisitor", description: "Increases divine damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "divine_damage", effectValue: 10, effectPerRank: 10, requires: ["iq_will", "iq_zealous_fury"], row: 3, col: 1, icon: "\u{1F451}" }
+  ] },
+  // ── MYSTIC ──
+  { id: "mystic_class", name: "Spirit's Voice", archetype: "Priest", classId: "mystic", tabType: "class", nodes: [
+    { id: "my_spirit_ward", name: "Spirit Ward", description: "Increases ward absorption by 7% per rank", maxRank: 3, pointsPerRank: 1, effect: "ward_absorb", effectValue: 7, effectPerRank: 7, requires: [], row: 1, col: 1, icon: "\u{1F300}" },
+    { id: "my_ancestral_aid", name: "Ancestral Aid", description: "Increases heal amount by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "heal_amount", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u{1F47B}" },
+    { id: "my_bolster", name: "Bolster", description: "Increases max HP by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "max_hp", effectValue: 2, effectPerRank: 2, requires: ["my_spirit_ward"], row: 2, col: 1, icon: "\u{1F4AA}" },
+    { id: "my_spirit_wolf", name: "Spirit of the Wolf", description: "Increases haste by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "haste", effectValue: 2, effectPerRank: 2, requires: ["my_ancestral_aid"], row: 2, col: 2, icon: "\u{1F43A}" },
+    { id: "my_spirit_mastery", name: "Spirit Mastery", description: "Reduces damage taken by 3% per rank", maxRank: 3, pointsPerRank: 2, effect: "dmg_reduction", effectValue: 3, effectPerRank: 3, requires: ["my_bolster", "my_spirit_wolf"], row: 3, col: 1, icon: "\u{1F31F}" }
+  ] },
+  // ── DEFILER ──
+  { id: "defiler_class", name: "Shadow Covenant", archetype: "Priest", classId: "defiler", tabType: "class", nodes: [
+    { id: "df_dark_ward", name: "Dark Ward", description: "Increases ward absorption by 7% per rank", maxRank: 3, pointsPerRank: 1, effect: "ward_absorb", effectValue: 7, effectPerRank: 7, requires: [], row: 1, col: 1, icon: "\u{1F5A4}" },
+    { id: "df_pandemic", name: "Pandemic", description: "Increases spell damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "spell_damage", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 2, icon: "\u2623\uFE0F" },
+    { id: "df_shadow_ward", name: "Shadow Ward", description: "Reduces damage taken by 3% per rank", maxRank: 3, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 3, effectPerRank: 3, requires: ["df_dark_ward"], row: 2, col: 1, icon: "\u{1F6E1}\uFE0F" },
+    { id: "df_virulent_strike", name: "Virulent Strike", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["df_pandemic"], row: 2, col: 2, icon: "\u2620\uFE0F" },
+    { id: "df_master_defiler", name: "Master Defiler", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: ["df_shadow_ward", "df_virulent_strike"], row: 3, col: 1, icon: "\u{1F480}" }
+  ] },
+  // ── WARDEN ──
+  { id: "warden_class", name: "Nature's Embrace", archetype: "Priest", classId: "warden", tabType: "class", nodes: [
+    { id: "wa_natures_embrace", name: "Nature's Embrace", description: "Increases heal amount by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "heal_amount", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 1, icon: "\u{1F33F}" },
+    { id: "wa_thorncoat", name: "Thorncoat", description: "Reduces damage taken by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 2, effectPerRank: 2, requires: [], row: 1, col: 2, icon: "\u{1F335}" },
+    { id: "wa_regrowth", name: "Regrowth", description: "Reduces power costs by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "power_cost_reduction", effectValue: 5, effectPerRank: 5, requires: ["wa_natures_embrace"], row: 2, col: 1, icon: "\u{1F331}" },
+    { id: "wa_verdant_armor", name: "Verdant Armor", description: "Increases max HP by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "max_hp", effectValue: 3, effectPerRank: 3, requires: ["wa_thorncoat"], row: 2, col: 2, icon: "\u{1F343}" },
+    { id: "wa_spirit_nature", name: "Spirit of Nature", description: "Increases heal amount by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "heal_amount", effectValue: 10, effectPerRank: 10, requires: ["wa_regrowth", "wa_verdant_armor"], row: 3, col: 1, icon: "\u{1F333}" }
+  ] },
+  // ── FURY ──
+  { id: "fury_class", name: "Tempest's Call", archetype: "Priest", classId: "fury", tabType: "class", nodes: [
+    { id: "fu_natures_wrath", name: "Nature's Wrath", description: "Increases spell damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "spell_damage", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 1, icon: "\u26C8\uFE0F" },
+    { id: "fu_cyclone", name: "Cyclone", description: "Increases critical hit chance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u{1F32A}\uFE0F" },
+    { id: "fu_stormbringer", name: "Stormbringer", description: "Increases spell piercing by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_piercing", effectValue: 5, effectPerRank: 5, requires: ["fu_natures_wrath"], row: 2, col: 1, icon: "\u26A1" },
+    { id: "fu_tempest", name: "Tempest", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["fu_cyclone"], row: 2, col: 2, icon: "\u{1F30A}" },
+    { id: "fu_avatar_storm", name: "Avatar of Storm", description: "Increases spell damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 12, effectPerRank: 12, requires: ["fu_stormbringer", "fu_tempest"], row: 3, col: 1, icon: "\u{1F31F}" }
+  ] }
+];
+var PRESTIGE_TABS = [
+  {
+    id: "guardian_prestige",
+    name: "Prestige",
+    archetype: "Fighter",
+    classId: "guardian",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Warden's Bastion",
+    prestigeRightName: "War General",
+    nodes: [
+      { id: "gp_l1", name: "Fortress Stance", description: "Reduces all damage taken by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 1, icon: "\u{1F3F0}", prestigePath: "left" },
+      { id: "gp_r1", name: "Battle General", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "\u2694\uFE0F", prestigePath: "right" },
+      { id: "gp_l2", name: "Unyielding", description: "Increases max HP by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "max_hp", effectValue: 10, effectPerRank: 10, requires: ["gp_l1"], row: 2, col: 1, icon: "\u{1F4AA}", prestigePath: "left" },
+      { id: "gp_r2", name: "Devastating Counter", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: ["gp_r1"], row: 2, col: 2, icon: "\u{1F4A5}", prestigePath: "right" },
+      { id: "gp_l3", name: "Immortal Guardian", description: "Reduces all damage taken by an additional 10%", maxRank: 1, pointsPerRank: 3, effect: "dmg_reduction", effectValue: 10, effectPerRank: 0, requires: ["gp_l2"], row: 3, col: 1, icon: "\u{1F31F}", prestigePath: "left" },
+      { id: "gp_r3", name: "Guardian's Wrath", description: "Increases melee damage by 20%", maxRank: 1, pointsPerRank: 3, effect: "melee_damage", effectValue: 20, effectPerRank: 0, requires: ["gp_r2"], row: 3, col: 2, icon: "\u{1F4AB}", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "berserker_prestige",
+    name: "Prestige",
+    archetype: "Fighter",
+    classId: "berserker",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Endless Rage",
+    prestigeRightName: "Tactical Fury",
+    nodes: [
+      { id: "bzp_l1", name: "Endless Rage", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 1, icon: "\u{1F621}", prestigePath: "left" },
+      { id: "bzp_r1", name: "War Cry", description: "Increases haste by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "haste", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 2, icon: "\u{1F4E3}", prestigePath: "right" },
+      { id: "bzp_l2", name: "Bloodlust", description: "Increases extra attack chance by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 8, effectPerRank: 8, requires: ["bzp_l1"], row: 2, col: 1, icon: "\u{1FA78}", prestigePath: "left" },
+      { id: "bzp_r2", name: "Battle Rhythm", description: "Increases double attack chance by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "double_attack", effectValue: 8, effectPerRank: 8, requires: ["bzp_r1"], row: 2, col: 2, icon: "\u{1F941}", prestigePath: "right" },
+      { id: "bzp_l3", name: "Berserk", description: "Increases melee damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "melee_damage", effectValue: 25, effectPerRank: 0, requires: ["bzp_l2"], row: 3, col: 1, icon: "\u{1F480}", prestigePath: "left" },
+      { id: "bzp_r3", name: "Flurry", description: "Increases double attack chance by 20%", maxRank: 1, pointsPerRank: 3, effect: "double_attack", effectValue: 20, effectPerRank: 0, requires: ["bzp_r2"], row: 3, col: 2, icon: "\u26A1", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "paladin_prestige",
+    name: "Prestige",
+    archetype: "Fighter",
+    classId: "paladin",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Knight of Light",
+    prestigeRightName: "Holy Avenger",
+    nodes: [
+      { id: "pap_l1", name: "Knight's Aegis", description: "Increases mitigation by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "mitigation", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 1, icon: "\u{1F6E1}\uFE0F", prestigePath: "left" },
+      { id: "pap_r1", name: "Righteous Wrath", description: "Increases divine damage by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "divine_damage", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "\u26A1", prestigePath: "right" },
+      { id: "pap_l2", name: "Holy Shield", description: "Increases ward absorption by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "ward_absorb", effectValue: 10, effectPerRank: 10, requires: ["pap_l1"], row: 2, col: 1, icon: "\u{1F530}", prestigePath: "left" },
+      { id: "pap_r2", name: "Sacred Fire", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: ["pap_r1"], row: 2, col: 2, icon: "\u{1F525}", prestigePath: "right" },
+      { id: "pap_l3", name: "Bastion of Light", description: "Reduces all damage taken by 15%", maxRank: 1, pointsPerRank: 3, effect: "dmg_reduction", effectValue: 15, effectPerRank: 0, requires: ["pap_l2"], row: 3, col: 1, icon: "\u{1F31F}", prestigePath: "left" },
+      { id: "pap_r3", name: "Holy Fury", description: "Increases divine damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "divine_damage", effectValue: 25, effectPerRank: 0, requires: ["pap_r2"], row: 3, col: 2, icon: "\u{1F4AB}", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "shadowknight_prestige",
+    name: "Prestige",
+    archetype: "Fighter",
+    classId: "shadowknight",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Death Knight",
+    prestigeRightName: "Shadow Lord",
+    nodes: [
+      { id: "skp_l1", name: "Dark Bulwark", description: "Reduces all damage taken by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 1, icon: "\u{1F6E1}\uFE0F", prestigePath: "left" },
+      { id: "skp_r1", name: "Shadow Lord", description: "Increases spell damage by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "\u{1F311}", prestigePath: "right" },
+      { id: "skp_l2", name: "Undying Hunger", description: "Increases heal amount from life drain by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "heal_amount", effectValue: 10, effectPerRank: 10, requires: ["skp_l1"], row: 2, col: 1, icon: "\u{1FA78}", prestigePath: "left" },
+      { id: "skp_r2", name: "Void Touch", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: ["skp_r1"], row: 2, col: 2, icon: "\u{1F49C}", prestigePath: "right" },
+      { id: "skp_l3", name: "Lich Form", description: "Reduces all damage taken by 15%", maxRank: 1, pointsPerRank: 3, effect: "dmg_reduction", effectValue: 15, effectPerRank: 0, requires: ["skp_l2"], row: 3, col: 1, icon: "\u{1F480}", prestigePath: "left" },
+      { id: "skp_r3", name: "Doom", description: "Increases spell damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 25, effectPerRank: 0, requires: ["skp_r2"], row: 3, col: 2, icon: "\u{1F31F}", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "monk_prestige",
+    name: "Prestige",
+    archetype: "Fighter",
+    classId: "monk",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Iron Monk",
+    prestigeRightName: "Shadow Dancer",
+    nodes: [
+      { id: "mop_l1", name: "Iron Skin", description: "Reduces all damage taken by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 1, icon: "\u2699\uFE0F", prestigePath: "left" },
+      { id: "mop_r1", name: "Ghost Step", description: "Increases avoidance by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "avoidance", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "\u{1F47B}", prestigePath: "right" },
+      { id: "mop_l2", name: "Immovable Object", description: "Increases max HP by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "max_hp", effectValue: 10, effectPerRank: 10, requires: ["mop_l1"], row: 2, col: 1, icon: "\u{1F5FF}", prestigePath: "left" },
+      { id: "mop_r2", name: "Phantom Strike", description: "Increases extra attack chance by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 10, effectPerRank: 10, requires: ["mop_r1"], row: 2, col: 2, icon: "\u{1F4A8}", prestigePath: "right" },
+      { id: "mop_l3", name: "Iron Fortress", description: "Reduces all damage taken by 15%", maxRank: 1, pointsPerRank: 3, effect: "dmg_reduction", effectValue: 15, effectPerRank: 0, requires: ["mop_l2"], row: 3, col: 1, icon: "\u{1F3F0}", prestigePath: "left" },
+      { id: "mop_r3", name: "Death Blossom", description: "Increases extra attack chance by 20%", maxRank: 1, pointsPerRank: 3, effect: "extra_attack_chance", effectValue: 20, effectPerRank: 0, requires: ["mop_r2"], row: 3, col: 2, icon: "\u{1F338}", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "bruiser_prestige",
+    name: "Prestige",
+    archetype: "Fighter",
+    classId: "bruiser",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Juggernaut",
+    prestigeRightName: "Street Fighter",
+    nodes: [
+      { id: "brp_l1", name: "Juggernaut", description: "Increases max HP by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "max_hp", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "\u{1F3CB}\uFE0F", prestigePath: "left" },
+      { id: "brp_r1", name: "Street Fighter", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "\u{1F94A}", prestigePath: "right" },
+      { id: "brp_l2", name: "Unbreakable", description: "Reduces all damage taken by 6% per rank", maxRank: 3, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 6, effectPerRank: 6, requires: ["brp_l1"], row: 2, col: 1, icon: "\u{1FAA8}", prestigePath: "left" },
+      { id: "brp_r2", name: "Haymaker", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: ["brp_r1"], row: 2, col: 2, icon: "\u{1F4A5}", prestigePath: "right" },
+      { id: "brp_l3", name: "Living Fortress", description: "Increases max HP by 25%", maxRank: 1, pointsPerRank: 3, effect: "max_hp", effectValue: 25, effectPerRank: 0, requires: ["brp_l2"], row: 3, col: 1, icon: "\u{1F3F0}", prestigePath: "left" },
+      { id: "brp_r3", name: "Knockout", description: "Increases melee damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "melee_damage", effectValue: 25, effectPerRank: 0, requires: ["brp_r2"], row: 3, col: 2, icon: "\u2B50", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "ranger_prestige",
+    name: "Prestige",
+    archetype: "Scout",
+    classId: "ranger",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Hawkeye",
+    prestigeRightName: "Trailblazer",
+    nodes: [
+      { id: "rap_l1", name: "Hawkeye", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "\u{1F985}", prestigePath: "left" },
+      { id: "rap_r1", name: "Rapid Fire", description: "Increases haste by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "haste", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 2, icon: "\u{1F3F9}", prestigePath: "right" },
+      { id: "rap_l2", name: "Piercing Shot", description: "Increases spell piercing by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_piercing", effectValue: 8, effectPerRank: 8, requires: ["rap_l1"], row: 2, col: 1, icon: "\u{1F3AF}", prestigePath: "left" },
+      { id: "rap_r2", name: "Swift Hunter", description: "Increases double attack chance by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "double_attack", effectValue: 8, effectPerRank: 8, requires: ["rap_r1"], row: 2, col: 2, icon: "\u26A1", prestigePath: "right" },
+      { id: "rap_l3", name: "True Shot", description: "Increases crit bonus damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "crit_bonus", effectValue: 25, effectPerRank: 0, requires: ["rap_l2"], row: 3, col: 1, icon: "\u{1F31F}", prestigePath: "left" },
+      { id: "rap_r3", name: "Arrow Storm", description: "Increases double attack chance by 20%", maxRank: 1, pointsPerRank: 3, effect: "double_attack", effectValue: 20, effectPerRank: 0, requires: ["rap_r2"], row: 3, col: 2, icon: "\u{1F32A}\uFE0F", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "assassin_prestige",
+    name: "Prestige",
+    archetype: "Scout",
+    classId: "assassin",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Death's Hand",
+    prestigeRightName: "Ghost Blade",
+    nodes: [
+      { id: "asp_l1", name: "Death's Hand", description: "Increases backstab damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "backstab_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "\u2620\uFE0F", prestigePath: "left" },
+      { id: "asp_r1", name: "Ghost Blade", description: "Increases avoidance by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "avoidance", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "\u{1F47B}", prestigePath: "right" },
+      { id: "asp_l2", name: "Arterial Strike", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: ["asp_l1"], row: 2, col: 1, icon: "\u{1F5E1}\uFE0F", prestigePath: "left" },
+      { id: "asp_r2", name: "Shadow Form", description: "Reduces all damage taken by 6% per rank", maxRank: 3, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 6, effectPerRank: 6, requires: ["asp_r1"], row: 2, col: 2, icon: "\u{1F311}", prestigePath: "right" },
+      { id: "asp_l3", name: "One Shot", description: "Increases backstab damage by 30%", maxRank: 1, pointsPerRank: 3, effect: "backstab_damage", effectValue: 30, effectPerRank: 0, requires: ["asp_l2"], row: 3, col: 1, icon: "\u{1F480}", prestigePath: "left" },
+      { id: "asp_r3", name: "Untouchable", description: "Increases avoidance by 20%", maxRank: 1, pointsPerRank: 3, effect: "avoidance", effectValue: 20, effectPerRank: 0, requires: ["asp_r2"], row: 3, col: 2, icon: "\u{1F31F}", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "swashbuckler_prestige",
+    name: "Prestige",
+    archetype: "Scout",
+    classId: "swashbuckler",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Duelist",
+    prestigeRightName: "Buccaneer",
+    nodes: [
+      { id: "swp_l1", name: "Duelist's Edge", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "\u2694\uFE0F", prestigePath: "left" },
+      { id: "swp_r1", name: "Buccaneer's Fortune", description: "Increases gold earned by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "gold_bonus", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "\u{1F4B0}", prestigePath: "right" },
+      { id: "swp_l2", name: "En Garde", description: "Increases avoidance by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "avoidance", effectValue: 8, effectPerRank: 8, requires: ["swp_l1"], row: 2, col: 1, icon: "\u{1F93A}", prestigePath: "left" },
+      { id: "swp_r2", name: "Pillage", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: ["swp_r1"], row: 2, col: 2, icon: "\u{1F3F4}\u200D\u2620\uFE0F", prestigePath: "right" },
+      { id: "swp_l3", name: "Coup de Grace", description: "Increases crit bonus damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "crit_bonus", effectValue: 25, effectPerRank: 0, requires: ["swp_l2"], row: 3, col: 1, icon: "\u{1F31F}", prestigePath: "left" },
+      { id: "swp_r3", name: "Plunder", description: "Increases gold earned by 25%", maxRank: 1, pointsPerRank: 3, effect: "gold_bonus", effectValue: 25, effectPerRank: 0, requires: ["swp_r2"], row: 3, col: 2, icon: "\u{1F48E}", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "brigand_prestige",
+    name: "Prestige",
+    archetype: "Scout",
+    classId: "brigand",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Kingpin",
+    prestigeRightName: "Cutthroat",
+    nodes: [
+      { id: "bgp_l1", name: "Kingpin", description: "Increases gold earned by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "gold_bonus", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "\u{1F451}", prestigePath: "left" },
+      { id: "bgp_r1", name: "Cutthroat", description: "Increases backstab damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "backstab_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 2, icon: "\u{1F5E1}\uFE0F", prestigePath: "right" },
+      { id: "bgp_l2", name: "Black Market", description: "Increases XP earned by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "xp_bonus", effectValue: 8, effectPerRank: 8, requires: ["bgp_l1"], row: 2, col: 1, icon: "\u{1F4BC}", prestigePath: "left" },
+      { id: "bgp_r2", name: "Predator", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: ["bgp_r1"], row: 2, col: 2, icon: "\u{1F40D}", prestigePath: "right" },
+      { id: "bgp_l3", name: "Crime Lord", description: "Increases gold earned by 30%", maxRank: 1, pointsPerRank: 3, effect: "gold_bonus", effectValue: 30, effectPerRank: 0, requires: ["bgp_l2"], row: 3, col: 1, icon: "\u{1F4B0}", prestigePath: "left" },
+      { id: "bgp_r3", name: "Assassinate", description: "Increases backstab damage by 30%", maxRank: 1, pointsPerRank: 3, effect: "backstab_damage", effectValue: 30, effectPerRank: 0, requires: ["bgp_r2"], row: 3, col: 2, icon: "\u2620\uFE0F", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "troubador_prestige",
+    name: "Prestige",
+    archetype: "Scout",
+    classId: "troubador",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Legend",
+    prestigeRightName: "War Bard",
+    nodes: [
+      { id: "trp_l1", name: "Legend", description: "Increases XP earned by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "xp_bonus", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 1, icon: "\u{1F3BC}", prestigePath: "left" },
+      { id: "trp_r1", name: "Battle Hymn", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "\u2694\uFE0F", prestigePath: "right" },
+      { id: "trp_l2", name: "Epic Ballad", description: "Increases gold earned by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "gold_bonus", effectValue: 8, effectPerRank: 8, requires: ["trp_l1"], row: 2, col: 1, icon: "\u{1F4B0}", prestigePath: "left" },
+      { id: "trp_r2", name: "War Cry", description: "Increases haste by 6% per rank", maxRank: 3, pointsPerRank: 1, effect: "haste", effectValue: 6, effectPerRank: 6, requires: ["trp_r1"], row: 2, col: 2, icon: "\u{1F4E3}", prestigePath: "right" },
+      { id: "trp_l3", name: "Immortal Song", description: "Increases XP earned by 25%", maxRank: 1, pointsPerRank: 3, effect: "xp_bonus", effectValue: 25, effectPerRank: 0, requires: ["trp_l2"], row: 3, col: 1, icon: "\u{1F31F}", prestigePath: "left" },
+      { id: "trp_r3", name: "March of War", description: "Increases melee damage by 20%", maxRank: 1, pointsPerRank: 3, effect: "melee_damage", effectValue: 20, effectPerRank: 0, requires: ["trp_r2"], row: 3, col: 2, icon: "\u{1F3C6}", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "dirge_prestige",
+    name: "Prestige",
+    archetype: "Scout",
+    classId: "dirge",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Death Singer",
+    prestigeRightName: "Dark Minstrel",
+    nodes: [
+      { id: "dip_l1", name: "Death Singer", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "\u{1F480}", prestigePath: "left" },
+      { id: "dip_r1", name: "Dark Melody", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 2, icon: "\u{1F3B5}", prestigePath: "right" },
+      { id: "dip_l2", name: "Requiem", description: "Increases spell piercing by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_piercing", effectValue: 8, effectPerRank: 8, requires: ["dip_l1"], row: 2, col: 1, icon: "\u{1F56F}\uFE0F", prestigePath: "left" },
+      { id: "dip_r2", name: "Dirge of Pain", description: "Increases crit chance by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_chance", effectValue: 5, effectPerRank: 5, requires: ["dip_r1"], row: 2, col: 2, icon: "\u{1F631}", prestigePath: "right" },
+      { id: "dip_l3", name: "Death's Aria", description: "Increases spell damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 25, effectPerRank: 0, requires: ["dip_l2"], row: 3, col: 1, icon: "\u{1F311}", prestigePath: "left" },
+      { id: "dip_r3", name: "Killing Song", description: "Increases crit bonus damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "crit_bonus", effectValue: 25, effectPerRank: 0, requires: ["dip_r2"], row: 3, col: 2, icon: "\u{1F4A5}", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "wizard_prestige",
+    name: "Prestige",
+    archetype: "Mage",
+    classId: "wizard",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Archmage",
+    prestigeRightName: "Spellblade",
+    nodes: [
+      { id: "wzp_l1", name: "Archmage", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "\u{1F52E}", prestigePath: "left" },
+      { id: "wzp_r1", name: "Spellblade", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "\u2694\uFE0F", prestigePath: "right" },
+      { id: "wzp_l2", name: "Arcane Overload", description: "Increases spell crit chance by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_crit_chance", effectValue: 8, effectPerRank: 8, requires: ["wzp_l1"], row: 2, col: 1, icon: "\u26A1", prestigePath: "left" },
+      { id: "wzp_r2", name: "Runic Blade", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: ["wzp_r1"], row: 2, col: 2, icon: "\u{1F5E1}\uFE0F", prestigePath: "right" },
+      { id: "wzp_l3", name: "Grand Arcanist", description: "Increases spell damage by 30%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 30, effectPerRank: 0, requires: ["wzp_l2"], row: 3, col: 1, icon: "\u{1F31F}", prestigePath: "left" },
+      { id: "wzp_r3", name: "Runebound", description: "Increases crit bonus damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "crit_bonus", effectValue: 25, effectPerRank: 0, requires: ["wzp_r2"], row: 3, col: 2, icon: "\u{1F4AB}", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "warlock_prestige",
+    name: "Prestige",
+    archetype: "Mage",
+    classId: "warlock",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Dark Lord",
+    prestigeRightName: "Plague Bearer",
+    nodes: [
+      { id: "wlp_l1", name: "Dark Lord", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "\u{1F5A4}", prestigePath: "left" },
+      { id: "wlp_r1", name: "Plague Bearer", description: "Increases crit chance by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_chance", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 2, icon: "\u2623\uFE0F", prestigePath: "right" },
+      { id: "wlp_l2", name: "Void Mastery", description: "Increases spell piercing by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_piercing", effectValue: 8, effectPerRank: 8, requires: ["wlp_l1"], row: 2, col: 1, icon: "\u{1F300}", prestigePath: "left" },
+      { id: "wlp_r2", name: "Virulence", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: ["wlp_r1"], row: 2, col: 2, icon: "\u{1F49C}", prestigePath: "right" },
+      { id: "wlp_l3", name: "Apocalypse", description: "Increases spell damage by 30%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 30, effectPerRank: 0, requires: ["wlp_l2"], row: 3, col: 1, icon: "\u{1F480}", prestigePath: "left" },
+      { id: "wlp_r3", name: "Pandemic", description: "Increases crit bonus damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "crit_bonus", effectValue: 25, effectPerRank: 0, requires: ["wlp_r2"], row: 3, col: 2, icon: "\u{1F311}", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "conjuror_prestige",
+    name: "Prestige",
+    archetype: "Mage",
+    classId: "conjuror",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Golem Master",
+    prestigeRightName: "Elemental Lord",
+    nodes: [
+      { id: "cop_l1", name: "Golem Mastery", description: "Increases melee damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "melee_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "\u{1F5FF}", prestigePath: "left" },
+      { id: "cop_r1", name: "Elemental Fury", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 2, icon: "\u{1F525}", prestigePath: "right" },
+      { id: "cop_l2", name: "Titan's Fist", description: "Increases extra attack chance by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 10, effectPerRank: 10, requires: ["cop_l1"], row: 2, col: 1, icon: "\u{1F44A}", prestigePath: "left" },
+      { id: "cop_r2", name: "Mana Infusion", description: "Increases spell crit chance by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_crit_chance", effectValue: 8, effectPerRank: 8, requires: ["cop_r1"], row: 2, col: 2, icon: "\u{1F4AB}", prestigePath: "right" },
+      { id: "cop_l3", name: "Avatar", description: "Increases melee damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "melee_damage", effectValue: 25, effectPerRank: 0, requires: ["cop_l2"], row: 3, col: 1, icon: "\u26A1", prestigePath: "left" },
+      { id: "cop_r3", name: "Elemental Mastery", description: "Increases spell damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 25, effectPerRank: 0, requires: ["cop_r2"], row: 3, col: 2, icon: "\u{1F31F}", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "necromancer_prestige",
+    name: "Prestige",
+    archetype: "Mage",
+    classId: "necromancer",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Death Lord",
+    prestigeRightName: "Undying",
+    nodes: [
+      { id: "ncp_l1", name: "Death Lord", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "\u{1F480}", prestigePath: "left" },
+      { id: "ncp_r1", name: "Undying", description: "Increases heal amount from life drain by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "heal_amount", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 2, icon: "\u{1FA78}", prestigePath: "right" },
+      { id: "ncp_l2", name: "Army of the Dead", description: "Increases extra attack chance by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 10, effectPerRank: 10, requires: ["ncp_l1"], row: 2, col: 1, icon: "\u{1F480}", prestigePath: "left" },
+      { id: "ncp_r2", name: "Eternal Hunger", description: "Reduces damage taken by 6% per rank", maxRank: 3, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 6, effectPerRank: 6, requires: ["ncp_r1"], row: 2, col: 2, icon: "\u{1F5A4}", prestigePath: "right" },
+      { id: "ncp_l3", name: "Lich King", description: "Increases spell damage by 30%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 30, effectPerRank: 0, requires: ["ncp_l2"], row: 3, col: 1, icon: "\u{1F451}", prestigePath: "left" },
+      { id: "ncp_r3", name: "Immortal", description: "Reduces all damage taken by 20%", maxRank: 1, pointsPerRank: 3, effect: "dmg_reduction", effectValue: 20, effectPerRank: 0, requires: ["ncp_r2"], row: 3, col: 2, icon: "\u{1F31F}", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "coercer_prestige",
+    name: "Prestige",
+    archetype: "Mage",
+    classId: "coercer",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Mindbreaker",
+    prestigeRightName: "Puppetmaster",
+    nodes: [
+      { id: "cep_l1", name: "Mindbreaker", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "\u{1F9E0}", prestigePath: "left" },
+      { id: "cep_r1", name: "Puppetmaster", description: "Increases extra attack chance by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "\u{1F3AD}", prestigePath: "right" },
+      { id: "cep_l2", name: "Shatter Mind", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: ["cep_l1"], row: 2, col: 1, icon: "\u{1F4A5}", prestigePath: "left" },
+      { id: "cep_r2", name: "Dominate", description: "Increases double attack chance by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "double_attack", effectValue: 8, effectPerRank: 8, requires: ["cep_r1"], row: 2, col: 2, icon: "\u{1F441}\uFE0F", prestigePath: "right" },
+      { id: "cep_l3", name: "Mind Sunder", description: "Increases spell damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 25, effectPerRank: 0, requires: ["cep_l2"], row: 3, col: 1, icon: "\u{1F31F}", prestigePath: "left" },
+      { id: "cep_r3", name: "Total Control", description: "Increases extra attack chance by 20%", maxRank: 1, pointsPerRank: 3, effect: "extra_attack_chance", effectValue: 20, effectPerRank: 0, requires: ["cep_r2"], row: 3, col: 2, icon: "\u{1F4AB}", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "illusionist_prestige",
+    name: "Prestige",
+    archetype: "Mage",
+    classId: "illusionist",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Grand Illusionist",
+    prestigeRightName: "Reality Bender",
+    nodes: [
+      { id: "ilp_l1", name: "Grand Illusion", description: "Increases avoidance by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "avoidance", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "\u{1FA9E}", prestigePath: "left" },
+      { id: "ilp_r1", name: "Reality Bender", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 2, icon: "\u{1F300}", prestigePath: "right" },
+      { id: "ilp_l2", name: "Mirror Army", description: "Increases double attack chance by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "double_attack", effectValue: 8, effectPerRank: 8, requires: ["ilp_l1"], row: 2, col: 1, icon: "\u{1F465}", prestigePath: "left" },
+      { id: "ilp_r2", name: "Warp Reality", description: "Reduces all damage taken by 6% per rank", maxRank: 3, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 6, effectPerRank: 6, requires: ["ilp_r1"], row: 2, col: 2, icon: "\u2728", prestigePath: "right" },
+      { id: "ilp_l3", name: "Infinite Mirrors", description: "Increases avoidance by 20%", maxRank: 1, pointsPerRank: 3, effect: "avoidance", effectValue: 20, effectPerRank: 0, requires: ["ilp_l2"], row: 3, col: 1, icon: "\u{1F31F}", prestigePath: "left" },
+      { id: "ilp_r3", name: "Unreality", description: "Increases spell damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 25, effectPerRank: 0, requires: ["ilp_r2"], row: 3, col: 2, icon: "\u{1F4AB}", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "templar_prestige",
+    name: "Prestige",
+    archetype: "Priest",
+    classId: "templar",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "High Templar",
+    prestigeRightName: "Battle Templar",
+    nodes: [
+      { id: "tep_l1", name: "High Templar", description: "Increases heal amount by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "heal_amount", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "\u{1F49B}", prestigePath: "left" },
+      { id: "tep_r1", name: "Battle Templar", description: "Increases divine damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "divine_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 2, icon: "\u2694\uFE0F", prestigePath: "right" },
+      { id: "tep_l2", name: "Divine Intervention", description: "Increases ward absorption by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "ward_absorb", effectValue: 10, effectPerRank: 10, requires: ["tep_l1"], row: 2, col: 1, icon: "\u{1F530}", prestigePath: "left" },
+      { id: "tep_r2", name: "Crusader", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: ["tep_r1"], row: 2, col: 2, icon: "\u271D\uFE0F", prestigePath: "right" },
+      { id: "tep_l3", name: "Miracle", description: "Increases heal amount by 25%", maxRank: 1, pointsPerRank: 3, effect: "heal_amount", effectValue: 25, effectPerRank: 0, requires: ["tep_l2"], row: 3, col: 1, icon: "\u{1F31F}", prestigePath: "left" },
+      { id: "tep_r3", name: "Holy Wrath", description: "Increases divine damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "divine_damage", effectValue: 25, effectPerRank: 0, requires: ["tep_r2"], row: 3, col: 2, icon: "\u{1F4AB}", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "inquisitor_prestige",
+    name: "Prestige",
+    archetype: "Priest",
+    classId: "inquisitor",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Grand Inquisitor",
+    prestigeRightName: "Zealot",
+    nodes: [
+      { id: "iqp_l1", name: "Grand Inquisitor", description: "Increases divine damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "divine_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "\u{1F441}\uFE0F", prestigePath: "left" },
+      { id: "iqp_r1", name: "Zealot", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "\u{1F525}", prestigePath: "right" },
+      { id: "iqp_l2", name: "Divine Tribunal", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: ["iqp_l1"], row: 2, col: 1, icon: "\u2696\uFE0F", prestigePath: "left" },
+      { id: "iqp_r2", name: "Fanaticism", description: "Increases extra attack chance by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 10, effectPerRank: 10, requires: ["iqp_r1"], row: 2, col: 2, icon: "\u{1F624}", prestigePath: "right" },
+      { id: "iqp_l3", name: "Judgment", description: "Increases divine damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "divine_damage", effectValue: 25, effectPerRank: 0, requires: ["iqp_l2"], row: 3, col: 1, icon: "\u26A1", prestigePath: "left" },
+      { id: "iqp_r3", name: "Crusade", description: "Increases melee damage by 20%", maxRank: 1, pointsPerRank: 3, effect: "melee_damage", effectValue: 20, effectPerRank: 0, requires: ["iqp_r2"], row: 3, col: 2, icon: "\u2694\uFE0F", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "mystic_prestige",
+    name: "Prestige",
+    archetype: "Priest",
+    classId: "mystic",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Ancestral Guardian",
+    prestigeRightName: "Spirit Walker",
+    nodes: [
+      { id: "myp_l1", name: "Ancestral Guardian", description: "Increases ward absorption by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "ward_absorb", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "\u{1F47B}", prestigePath: "left" },
+      { id: "myp_r1", name: "Spirit Walker", description: "Increases avoidance by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "avoidance", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "\u{1F300}", prestigePath: "right" },
+      { id: "myp_l2", name: "Ancient Ward", description: "Reduces all damage taken by 6% per rank", maxRank: 3, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 6, effectPerRank: 6, requires: ["myp_l1"], row: 2, col: 1, icon: "\u{1F6E1}\uFE0F", prestigePath: "left" },
+      { id: "myp_r2", name: "Ethereal Form", description: "Increases max HP by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "max_hp", effectValue: 10, effectPerRank: 10, requires: ["myp_r1"], row: 2, col: 2, icon: "\u2728", prestigePath: "right" },
+      { id: "myp_l3", name: "Ancestral Fortress", description: "Reduces all damage taken by 20%", maxRank: 1, pointsPerRank: 3, effect: "dmg_reduction", effectValue: 20, effectPerRank: 0, requires: ["myp_l2"], row: 3, col: 1, icon: "\u{1F31F}", prestigePath: "left" },
+      { id: "myp_r3", name: "Spirit Ascension", description: "Increases avoidance by 20%", maxRank: 1, pointsPerRank: 3, effect: "avoidance", effectValue: 20, effectPerRank: 0, requires: ["myp_r2"], row: 3, col: 2, icon: "\u{1F4AB}", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "defiler_prestige",
+    name: "Prestige",
+    archetype: "Priest",
+    classId: "defiler",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Plague Lord",
+    prestigeRightName: "Shadow Weaver",
+    nodes: [
+      { id: "dfp_l1", name: "Plague Lord", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "\u2623\uFE0F", prestigePath: "left" },
+      { id: "dfp_r1", name: "Shadow Weaver", description: "Increases ward absorption by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "ward_absorb", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 2, icon: "\u{1F5A4}", prestigePath: "right" },
+      { id: "dfp_l2", name: "Virulent Plague", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: ["dfp_l1"], row: 2, col: 1, icon: "\u{1F49C}", prestigePath: "left" },
+      { id: "dfp_r2", name: "Umbral Shield", description: "Reduces all damage taken by 6% per rank", maxRank: 3, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 6, effectPerRank: 6, requires: ["dfp_r1"], row: 2, col: 2, icon: "\u{1F311}", prestigePath: "right" },
+      { id: "dfp_l3", name: "Death's Apostle", description: "Increases spell damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 25, effectPerRank: 0, requires: ["dfp_l2"], row: 3, col: 1, icon: "\u{1F480}", prestigePath: "left" },
+      { id: "dfp_r3", name: "Shadow Fortress", description: "Reduces all damage taken by 20%", maxRank: 1, pointsPerRank: 3, effect: "dmg_reduction", effectValue: 20, effectPerRank: 0, requires: ["dfp_r2"], row: 3, col: 2, icon: "\u{1F31F}", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "warden_prestige",
+    name: "Prestige",
+    archetype: "Priest",
+    classId: "warden",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Grove Warden",
+    prestigeRightName: "Storm Caller",
+    nodes: [
+      { id: "wap_l1", name: "Grove Warden", description: "Increases heal amount by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "heal_amount", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "\u{1F333}", prestigePath: "left" },
+      { id: "wap_r1", name: "Storm Caller", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 2, icon: "\u26C8\uFE0F", prestigePath: "right" },
+      { id: "wap_l2", name: "Nature's Bounty", description: "Increases max HP by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "max_hp", effectValue: 10, effectPerRank: 10, requires: ["wap_l1"], row: 2, col: 1, icon: "\u{1F33F}", prestigePath: "left" },
+      { id: "wap_r2", name: "Tempest Mastery", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: ["wap_r1"], row: 2, col: 2, icon: "\u{1F32A}\uFE0F", prestigePath: "right" },
+      { id: "wap_l3", name: "Ancient Grove", description: "Increases heal amount by 25%", maxRank: 1, pointsPerRank: 3, effect: "heal_amount", effectValue: 25, effectPerRank: 0, requires: ["wap_l2"], row: 3, col: 1, icon: "\u{1F31F}", prestigePath: "left" },
+      { id: "wap_r3", name: "Hurricane", description: "Increases spell damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 25, effectPerRank: 0, requires: ["wap_r2"], row: 3, col: 2, icon: "\u{1F4AB}", prestigePath: "right" }
+    ]
+  },
+  {
+    id: "fury_prestige",
+    name: "Prestige",
+    archetype: "Priest",
+    classId: "fury",
+    tabType: "prestige",
+    prestigeMinSpent: 50,
+    prestigeLeftName: "Avatar of Storm",
+    prestigeRightName: "Primal Fury",
+    nodes: [
+      { id: "fup_l1", name: "Avatar of Storm", description: "Increases spell damage by 12% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 12, effectPerRank: 12, requires: [], row: 1, col: 1, icon: "\u26C8\uFE0F", prestigePath: "left" },
+      { id: "fup_r1", name: "Primal Fury", description: "Increases crit chance by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_chance", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 2, icon: "\u{1F42F}", prestigePath: "right" },
+      { id: "fup_l2", name: "Eye of the Storm", description: "Increases spell piercing by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_piercing", effectValue: 10, effectPerRank: 10, requires: ["fup_l1"], row: 2, col: 1, icon: "\u{1F300}", prestigePath: "left" },
+      { id: "fup_r2", name: "Nature's Rage", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: ["fup_r1"], row: 2, col: 2, icon: "\u{1F525}", prestigePath: "right" },
+      { id: "fup_l3", name: "Storm Lord", description: "Increases spell damage by 30%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 30, effectPerRank: 0, requires: ["fup_l2"], row: 3, col: 1, icon: "\u{1F31F}", prestigePath: "left" },
+      { id: "fup_r3", name: "Feral Avatar", description: "Increases crit bonus damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "crit_bonus", effectValue: 25, effectPerRank: 0, requires: ["fup_r2"], row: 3, col: 2, icon: "\u{1F4AB}", prestigePath: "right" }
+    ]
+  }
+];
+var TRADESKILL_TAB = {
+  id: "tradeskill",
+  name: "Tradeskill Mastery",
+  archetype: "All",
+  tabType: "tradeskill",
+  nodes: [
+    { id: "ts_gathering_speed", name: "Gatherer's Haste", description: "Increases gathering speed by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "gathering_speed", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 1, icon: "\u26CF\uFE0F" },
+    { id: "ts_craft_yield", name: "Artisan's Touch", description: "Increases crafting yield by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "craft_yield", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 2, icon: "\u{1F528}" },
+    { id: "ts_rare_chance", name: "Lucky Strike", description: "Increases XP earned by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "xp_bonus", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 3, icon: "\u{1F340}" },
+    { id: "ts_resource_mastery", name: "Resource Mastery", description: "Increases gathering speed by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "gathering_speed", effectValue: 8, effectPerRank: 8, requires: ["ts_gathering_speed"], row: 2, col: 1, icon: "\u{1F33F}" },
+    { id: "ts_master_crafter", name: "Master Crafter", description: "Increases crafting yield by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "craft_yield", effectValue: 8, effectPerRank: 8, requires: ["ts_craft_yield"], row: 2, col: 2, icon: "\u2692\uFE0F" },
+    { id: "ts_golden_hands", name: "Golden Hands", description: "Increases gold earned by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "gold_bonus", effectValue: 5, effectPerRank: 5, requires: ["ts_rare_chance"], row: 2, col: 3, icon: "\u270B" },
+    { id: "ts_grandmaster", name: "Grandmaster", description: "Increases both gathering speed and craft yield by 10%", maxRank: 1, pointsPerRank: 3, effect: "gathering_speed", effectValue: 10, effectPerRank: 0, requires: ["ts_resource_mastery", "ts_master_crafter"], row: 3, col: 1, icon: "\u{1F451}" }
+  ]
+};
+var ALL_AA_TABS = [
+  ...AA_TABS,
+  ...CLASS_AA_TABS,
+  ...PRESTIGE_TABS,
+  TRADESKILL_TAB
+];
 var SHOP_ITEMS = [
   { itemId: "health_potion", buyPrice: 50, category: "consumables", zones: ["Commonlands", "Antonica", "Thundering Steppes", "Nektulos Forest", "Everfrost Peaks", "Lavastorm Mountains"] },
   { itemId: "health_potion_major", buyPrice: 200, category: "consumables", zones: ["Thundering Steppes", "Nektulos Forest", "Everfrost Peaks", "Lavastorm Mountains"] },
@@ -68506,32 +69541,34 @@ router4.get("/character/stats", async (req, res) => {
     let gearWeaponDamageMin = 0, gearWeaponDamageMax = 0, gearWeaponDelay = 2;
     let gearHealth = 0, gearPower = 0;
     let hasWeapon = false;
-    const equippedItems = [];
+    let gearStrength = 0, gearAgility = 0, gearStamina = 0;
+    let gearIntelligence = 0, gearWisdom = 0, gearCharisma = 0;
     for (const slotValue of Object.values(gear)) {
       let s = null;
-      let lvl = 1, rar = "common";
       if (typeof slotValue === "string") {
         const item = getItemById(slotValue);
         if (item) {
           s = item.stats;
-          lvl = item.level;
-          rar = item.rarity;
         }
       } else if (slotValue && typeof slotValue === "object") {
         const obj = slotValue;
         if (obj.stats && typeof obj.stats === "object") s = obj.stats;
-        if (typeof obj.level === "number") lvl = obj.level;
-        if (typeof obj.rarity === "string") rar = obj.rarity;
       }
       if (!s) continue;
-      equippedItems.push({ level: lvl, rarity: rar });
       gearAttackRating += s.attackRating || 0;
       gearDefenseRating += s.defenseRating || 0;
       gearMitigation += s.mitigation || 0;
       gearHaste += s.haste || 0;
       gearCritChance += s.critChance || 0;
+      gearCritBonus += s.critBonus || 0;
       gearHealth += s.health || 0;
       gearPower += s.power || 0;
+      gearStrength += s.strength || 0;
+      gearAgility += s.agility || 0;
+      gearStamina += s.stamina || 0;
+      gearIntelligence += s.intelligence || 0;
+      gearWisdom += s.wisdom || 0;
+      gearCharisma += s.charisma || 0;
       if (s.weaponDamageMin) {
         gearWeaponDamageMin = s.weaponDamageMin;
         gearWeaponDamageMax = s.weaponDamageMax || s.weaponDamageMin * 2;
@@ -68564,11 +69601,24 @@ router4.get("/character/stats", async (req, res) => {
       gearWeaponDamageMax,
       gearWeaponDelay,
       gearHealth,
-      gearPower
+      gearPower,
+      gearStrength,
+      gearAgility,
+      gearStamina,
+      gearIntelligence,
+      gearWisdom,
+      gearCharisma,
+      archetype: character.archetype ?? "Fighter"
     }, aaBonuses);
-    const gearScore = computeGearScore(equippedItems);
+    const effStamina = baseStats.stamina + gearStamina;
+    const maxHealth = Math.max(1, Math.floor(
+      (effStamina * 10 + 50 + (character.level - 1) * 15 + gearHealth) * (1 + aaBonuses.maxHpPercent / 100)
+    ));
+    const gearScore = computeGearScore(gear);
     res.json({
       ...computed,
+      maxHealth,
+      maxPower: computed.totalPower,
       spellCritChance: computed.critChance,
       spellCritBonus: computed.critBonus,
       mountSpeedBonus: 0,
@@ -68595,12 +69645,32 @@ router4.get("/character/profile", async (req, res) => {
     const raceDef = RACES.find((r) => r.id === raceId) ?? RACES[0];
     const classDef = CLASSES.find((c) => c.name.toLowerCase() === className.toLowerCase() || c.id === className.toLowerCase()) ?? CLASSES[0];
     const bs = character.baseStats;
+    const gearObj = character.gear ?? {};
+    const gearPrimaryBonuses = {};
+    const PRIMARY_ATTRS = ["strength", "agility", "stamina", "intelligence", "wisdom", "charisma"];
+    for (const slotValue of Object.values(gearObj)) {
+      let s = null;
+      if (typeof slotValue === "string") {
+        const item = getItemById(slotValue);
+        if (item?.stats) s = item.stats;
+      } else if (slotValue && typeof slotValue === "object") {
+        const obj = slotValue;
+        if (obj.stats && typeof obj.stats === "object") s = obj.stats;
+      }
+      if (!s) continue;
+      for (const attr of PRIMARY_ATTRS) {
+        gearPrimaryBonuses[attr] = (gearPrimaryBonuses[attr] ?? 0) + (s[attr] ?? 0);
+      }
+    }
     const statBreakdown = {};
-    for (const stat of ["strength", "agility", "stamina", "intelligence", "wisdom", "charisma"]) {
+    for (const stat of PRIMARY_ATTRS) {
       const raceBonus = raceDef.bonuses[stat] ?? 0;
       const classBonus = classDef.statBonuses[stat] ?? 0;
-      const total = bs[stat] ?? 0;
-      statBreakdown[stat] = { base: total - raceBonus - classBonus, race: raceBonus, class: classBonus, total };
+      const gearBonus = gearPrimaryBonuses[stat] ?? 0;
+      const dbBase = bs[stat] ?? 0;
+      const rawBase = dbBase - raceBonus - classBonus;
+      const total = dbBase + gearBonus;
+      statBreakdown[stat] = { base: rawBase, race: raceBonus, class: classBonus, gear: gearBonus, total };
     }
     const [heroicRow] = await db.select().from(heroicStateTable).where(eq(heroicStateTable.characterId, req.characterId)).limit(1);
     const heroicCompletions = heroicRow?.chain ?? 0;
@@ -68647,8 +69717,27 @@ router4.post("/character/regen", async (req, res) => {
     const [medSkill] = await db.select({ level: skillsTable.level }).from(skillsTable).where(and(eq(skillsTable.characterId, character.id), eq(skillsTable.skillId, "meditation")));
     const meditationLevel = medSkill?.level ?? 1;
     const bs = character.baseStats;
-    const baseHpPerSec = 0.5 + (bs.wisdom ?? 10) * 0.03 + (bs.stamina ?? 14) * 0.02;
-    const basePwrPerSec = 0.3 + (bs.intelligence ?? 10) * 0.03 + (bs.wisdom ?? 10) * 0.02;
+    const gearObj = character.gear ?? {};
+    let gearWisdomRegen = 0, gearIntelligenceRegen = 0, gearStaminaRegen = 0;
+    for (const slotValue of Object.values(gearObj)) {
+      let s = null;
+      if (typeof slotValue === "string") {
+        const item = getItemById(slotValue);
+        if (item?.stats) s = item.stats;
+      } else if (slotValue && typeof slotValue === "object") {
+        const obj = slotValue;
+        if (obj.stats && typeof obj.stats === "object") s = obj.stats;
+      }
+      if (!s) continue;
+      gearWisdomRegen += s.wisdom || 0;
+      gearIntelligenceRegen += s.intelligence || 0;
+      gearStaminaRegen += s.stamina || 0;
+    }
+    const effWisdom = (bs.wisdom ?? 10) + gearWisdomRegen;
+    const effIntelligence = (bs.intelligence ?? 10) + gearIntelligenceRegen;
+    const effStaminaRegen = (bs.stamina ?? 14) + gearStaminaRegen;
+    const baseHpPerSec = 0.5 + effWisdom * 0.03 + effStaminaRegen * 0.02;
+    const basePwrPerSec = 0.3 + effIntelligence * 0.03 + effWisdom * 0.02;
     const medMultiplier = character.isMeditating ? 1 + meditationLevel * 0.05 : 1;
     const regenPerTick = {
       hp: parseFloat((baseHpPerSec * medMultiplier * 3).toFixed(1)),
@@ -68849,7 +69938,7 @@ router4.post("/character/rivals", async (req, res) => {
 var character_default = router4;
 
 // src/routes/combat.ts
-var import_express7 = __toESM(require_express2(), 1);
+var import_express8 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
 init_gameData();
@@ -75855,19 +76944,29 @@ OpenAI.Skills = Skills;
 OpenAI.Videos = Videos;
 
 // ../../lib/integrations-openai-ai-server/src/client.ts
-if (!process.env.AI_INTEGRATIONS_OPENAI_BASE_URL) {
-  throw new Error(
-    "AI_INTEGRATIONS_OPENAI_BASE_URL must be set. Did you forget to provision the OpenAI AI integration?"
-  );
+var _openai = null;
+function getOpenAI() {
+  if (_openai) return _openai;
+  if (!process.env.AI_INTEGRATIONS_OPENAI_BASE_URL) {
+    throw new Error(
+      "AI_INTEGRATIONS_OPENAI_BASE_URL must be set. Did you forget to provision the OpenAI AI integration?"
+    );
+  }
+  if (!process.env.AI_INTEGRATIONS_OPENAI_API_KEY) {
+    throw new Error(
+      "AI_INTEGRATIONS_OPENAI_API_KEY must be set. Did you forget to provision the OpenAI AI integration?"
+    );
+  }
+  _openai = new OpenAI({
+    apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+    baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL
+  });
+  return _openai;
 }
-if (!process.env.AI_INTEGRATIONS_OPENAI_API_KEY) {
-  throw new Error(
-    "AI_INTEGRATIONS_OPENAI_API_KEY must be set. Did you forget to provision the OpenAI AI integration?"
-  );
-}
-var openai = new OpenAI({
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL
+var openai = new Proxy({}, {
+  get(_target, prop) {
+    return getOpenAI()[prop];
+  }
 });
 
 // ../../lib/integrations-openai-ai-server/src/image/client.ts
@@ -76281,11 +77380,558 @@ function serializeForDb(item) {
 
 // src/routes/gm.ts
 init_gameData();
+
+// src/lib/dungeonData.ts
+var DUNGEONS = [
+  {
+    id: "blackburrow",
+    name: "Blackburrow",
+    zone: "Qeynos Hills",
+    description: "The gnoll warrens beneath the Qeynos Hills \u2014 five treacherous floors leading to Overlord Narlock.",
+    lore: "Blackburrow has been a gnoll stronghold since the Age of Turmoil. Carved from living rock, its five floors descend ever deeper into darkness. Generations of gnoll warlords have fortified its passages. Those who reach the throne of Overlord Narlock \u2014 the undisputed master of all gnoll-kind in the Qeynos Hills \u2014 have faced the full might of Blackburrow.",
+    minLevel: 10,
+    maxLevel: 20,
+    mainBossId: "bb_overlord_narlock",
+    spriteId: "dungeon_blackburrow",
+    bossPersonality: "arrogant",
+    bossGrudgeThreshold: 3,
+    floors: [
+      {
+        floorNumber: 1,
+        name: "The Digging Tunnels",
+        description: "Crude excavation tunnels alive with diggers and their overseers.",
+        enemyIds: ["bb_gnoll_digger", "bb_gnoll_pup", "bb_gnoll_scrapper", "bb_gnoll_tunneler", "bb_gnoll_sentry"],
+        miniBossId: "bb_gnoll_overseer",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 2,
+        name: "The Warrior Barracks",
+        description: "Where Blackburrow's warriors train and prepare for raids.",
+        enemyIds: ["bb_gnoll_shaman", "bb_gnoll_warrior", "bb_gnoll_scout", "bb_gnoll_berserker", "bb_gnoll_ward_priest"],
+        miniBossId: "bb_gnoll_battlemaster",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 3,
+        name: "The Shaman Sanctum",
+        description: "Sacred halls where gnoll shamans commune with dark spirits.",
+        enemyIds: ["bb_gnoll_cultist", "bb_gnoll_elder", "bb_gnoll_invoker", "bb_gnoll_runecaster", "bb_gnoll_hexblade"],
+        miniBossId: "bb_gnoll_high_shaman",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 4,
+        name: "The Elite Guard Quarters",
+        description: "Home to Blackburrow's deadliest warriors \u2014 the elite guard.",
+        enemyIds: ["bb_gnoll_blade", "bb_gnoll_warden", "bb_gnoll_reaver", "bb_gnoll_witch", "bb_gnoll_zealot"],
+        miniBossId: "bb_gnoll_general",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 5,
+        name: "The Warlord's Throne Room",
+        description: "The deepest floor \u2014 seat of Overlord Narlock's brutal reign.",
+        enemyIds: ["bb_gnoll_champion", "bb_gnoll_inquisitor", "bb_gnoll_vanguard", "bb_gnoll_deathreaver", "bb_gnoll_shadow_blade"],
+        miniBossId: "bb_gnoll_throne_guardian",
+        normalsRequired: 5
+      }
+    ]
+  },
+  // ── RUINS OF VARSOON (Levels 20-30, Thundering Steppes) ─────────────────
+  {
+    id: "ruins_of_varsoon",
+    name: "Ruins of Varsoon",
+    zone: "Thundering Steppes",
+    description: "The crumbling ruins of Varsoon's ancient tower \u2014 five floors of undead horrors guarded by the Undying Lich himself.",
+    lore: "Varsoon the Undying built his tower ages ago as a sanctuary for his unholy experiments with lichdom. The tower has since crumbled, but its five underground levels remain intact, infested with the fruits of his dark labor. Skeletal warriors, lich guardians, and spectral horrors patrol every corridor. Those brave enough to reach Varsoon's inner sanctum face the lich himself \u2014 an enemy who has never truly been killed.",
+    minLevel: 20,
+    maxLevel: 30,
+    mainBossId: "steppes_boss",
+    spriteId: "dungeon_ruins",
+    bossPersonality: "ancient",
+    bossGrudgeThreshold: 3,
+    floors: [
+      {
+        floorNumber: 1,
+        name: "The Collapsed Entry Hall",
+        description: "Rubble and reanimated bones choke the ancient entry halls.",
+        enemyIds: ["varsoon_skeleton", "varsoon_zombie", "varsoon_skeleton", "varsoon_zombie", "varsoon_skeleton"],
+        miniBossId: "varsoon_lich_guardian",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 2,
+        name: "The Spectral Corridors",
+        description: "Ghostly figures drift through torch-lit corridors, attacking on sight.",
+        enemyIds: ["varsoon_ghost", "varsoon_skeleton", "varsoon_ghost", "varsoon_zombie", "varsoon_ghost"],
+        miniBossId: "varsoon_lich_guardian",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 3,
+        name: "The Bone Laboratory",
+        description: "Where Varsoon once conducted experiments, now guarded by bone golems.",
+        enemyIds: ["varsoon_bone_golem", "varsoon_dark_priest", "varsoon_bone_golem", "varsoon_dark_priest", "varsoon_bone_golem"],
+        miniBossId: "varsoon_wraith_captain",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 4,
+        name: "The Dark Priest Sanctum",
+        description: "Fanatic priests of the Undying hold dark rites in this defiled sanctum.",
+        enemyIds: ["varsoon_dark_priest", "varsoon_ghost", "varsoon_dark_priest", "varsoon_zombie", "varsoon_dark_priest"],
+        miniBossId: "varsoon_wraith_captain",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 5,
+        name: "Varsoon's Inner Sanctum",
+        description: "The deepest chamber \u2014 Varsoon the Undying awaits his next challenger.",
+        enemyIds: ["varsoon_bone_golem", "varsoon_ghost", "varsoon_dark_priest", "varsoon_skeleton", "varsoon_zombie"],
+        miniBossId: "varsoon_wraith_captain",
+        normalsRequired: 5
+      }
+    ]
+  },
+  // ── NEKTROPOS CASTLE (Levels 25-35, Nektulos Forest) ────────────────────
+  {
+    id: "nektropos_castle",
+    name: "Nektropos Castle",
+    zone: "Nektulos Forest",
+    description: "The cursed estate of Lord Everling \u2014 five haunted floors where the living are not welcome.",
+    lore: "Nektropos Castle stands at the heart of Nektulos Forest like a festering wound on the land. Lord Everling, obsessed with immortality, made a terrible bargain with the forces of death. He achieved undeath but at tremendous cost \u2014 his entire household was cursed along with him. Now his spectral family, servants, and knights defend the castle for eternity, loyal beyond death to their undying master.",
+    minLevel: 25,
+    maxLevel: 35,
+    mainBossId: "nektopos_lord_everling",
+    spriteId: "dungeon_castle",
+    bossPersonality: "cunning",
+    bossGrudgeThreshold: 3,
+    floors: [
+      {
+        floorNumber: 1,
+        name: "The Castle Courtyard",
+        description: "Shades and revenants patrol the overgrown courtyard \u2014 the first line of defense.",
+        enemyIds: ["nektopos_shade", "nektopos_revenant", "nektopos_shade", "nektopos_revenant", "nektopos_shade"],
+        miniBossId: "nektopos_high_inquisitor",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 2,
+        name: "The Great Hall",
+        description: "The banquet hall of the damned, where revenant servants forever prepare a feast no one will eat.",
+        enemyIds: ["nektopos_revenant", "nektopos_shade", "nektopos_revenant", "nektopos_banshee", "nektopos_revenant"],
+        miniBossId: "nektopos_gargoyle",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 3,
+        name: "The Keep Dungeons",
+        description: "The dungeon beneath the castle, where banshees wail endlessly.",
+        enemyIds: ["nektopos_banshee", "nektopos_shade", "nektopos_banshee", "nektopos_revenant", "nektopos_banshee"],
+        miniBossId: "nektopos_dark_knight",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 4,
+        name: "The Everling Family Quarters",
+        description: "The private quarters where Everling's cursed family haunts forever.",
+        enemyIds: ["nektopos_everling_guard", "nektopos_banshee", "nektopos_everling_guard", "nektopos_revenant", "nektopos_dark_knight"],
+        miniBossId: "nektopos_high_inquisitor",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 5,
+        name: "Lord Everling's Throne Room",
+        description: "The throne room of the undying lord \u2014 where Everling holds court over his cursed domain.",
+        enemyIds: ["nektopos_everling_guard", "nektopos_dark_knight", "nektopos_banshee", "nektopos_gargoyle", "nektopos_shade"],
+        miniBossId: "nektopos_high_inquisitor",
+        normalsRequired: 5
+      }
+    ]
+  },
+  // ── PERMAFROST KEEP (Levels 35-45, Everfrost Peaks) ─────────────────────
+  {
+    id: "permafrost_keep",
+    name: "Permafrost Keep",
+    zone: "Everfrost Peaks",
+    description: "An ancient fortress entombed in eternal ice \u2014 five floors of frozen horror culminating in the lair of Lady Vox, Queen of Permafrost.",
+    lore: "Permafrost Keep was built ages ago by frost giants who sought to carve a kingdom from the eternal ice of the Everfrost Peaks. The keep was eventually conquered by the ancient white dragon Lady Vox, who transformed it into her frozen palace. Ice golems, frost knights, and blizzard elementals now guard its halls in her name. Those who survive five floors of glacial devastation face Lady Vox herself \u2014 the most deadly cold dragon on all of Norrath.",
+    minLevel: 35,
+    maxLevel: 45,
+    mainBossId: "lady_vox",
+    spriteId: "dungeon_frost",
+    bossPersonality: "cold",
+    bossGrudgeThreshold: 2,
+    floors: [
+      {
+        floorNumber: 1,
+        name: "The Frozen Gates",
+        description: "The entrance to Permafrost, where yeti form the first line of defense.",
+        enemyIds: ["permafrost_yeti", "permafrost_blizzard_elemental", "permafrost_yeti", "permafrost_blizzard_elemental", "permafrost_yeti"],
+        miniBossId: "permafrost_frost_knight",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 2,
+        name: "The Frost Knight Barracks",
+        description: "Where Permafrost's elite frost knights train in the killing cold.",
+        enemyIds: ["permafrost_yeti", "permafrost_blizzard_elemental", "permafrost_yeti", "permafrost_blizzard_elemental", "permafrost_yeti"],
+        miniBossId: "permafrost_ice_golem",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 3,
+        name: "The Blizzard Chamber",
+        description: "A vast chamber where blizzard elementals swirl in an endless storm.",
+        enemyIds: ["permafrost_blizzard_elemental", "permafrost_frost_knight", "permafrost_blizzard_elemental", "permafrost_ice_golem", "permafrost_blizzard_elemental"],
+        miniBossId: "permafrost_ice_witch_guardian",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 4,
+        name: "The Witch's Sanctum",
+        description: "The ice witch's private sanctum, crackling with cryomantic power.",
+        enemyIds: ["permafrost_ice_witch_guardian", "permafrost_blizzard_elemental", "permafrost_frost_knight", "permafrost_ice_golem", "permafrost_blizzard_elemental"],
+        miniBossId: "permafrost_frost_warden",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 5,
+        name: "The Eternal Ice Vault",
+        description: "The deepest vault of Permafrost Keep \u2014 Frost Warden Icegrave awaits amid towering columns of eternal ice.",
+        enemyIds: ["permafrost_blizzard_elemental", "permafrost_frost_knight", "permafrost_ice_golem", "permafrost_ice_witch_guardian", "permafrost_yeti"],
+        miniBossId: "permafrost_frost_warden",
+        normalsRequired: 5
+      }
+    ]
+  },
+  // ── SOLUSEK'S EYE (Levels 42-52, Lavastorm Mountains) ───────────────────
+  {
+    id: "soluseks_eye",
+    name: "Solusek's Eye",
+    zone: "Lavastorm Mountains",
+    description: "The volcanic temple of the fire god Solusek Ro \u2014 five floors of searing heat and fire elementals leading to Lord Nagafen.",
+    lore: "Solusek's Eye is the sacred temple of Solusek Ro, the god of fire, carved into the heart of Lavastorm's most active volcano. Fire giants, lava elementals, and goblin pyromancers serve as the temple's faithful guardians. Deep within the volcanic chambers, Lord Nagafen \u2014 the ancient fire dragon \u2014 makes his lair. Those who survive five floors of volcanic devastation face the most powerful dragon on Norrath.",
+    minLevel: 42,
+    maxLevel: 52,
+    mainBossId: "nagafen",
+    spriteId: "dungeon_volcano",
+    bossPersonality: "arrogant",
+    bossGrudgeThreshold: 2,
+    floors: [
+      {
+        floorNumber: 1,
+        name: "The Volcanic Entry",
+        description: "The scorching entrance to Solusek's Eye, where goblin firestarters patrol the lava flows.",
+        enemyIds: ["solusek_goblin_firestarter", "solusek_archon", "solusek_goblin_firestarter", "solusek_archon", "solusek_goblin_firestarter"],
+        miniBossId: "solusek_lava_walker",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 2,
+        name: "The Lava Caverns",
+        description: "Vast caverns of flowing magma where fire sprites and goblins roam.",
+        enemyIds: ["solusek_goblin_firestarter", "solusek_fire_sprite", "solusek_goblin_firestarter", "solusek_fire_sprite", "solusek_goblin_firestarter"],
+        miniBossId: "solusek_fire_giant",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 3,
+        name: "The Fire Giant Forge",
+        description: "An immense volcanic forge where lava walkers and archons stand guard.",
+        enemyIds: ["solusek_lava_walker", "solusek_archon", "solusek_lava_walker", "solusek_fire_sprite", "solusek_lava_walker"],
+        miniBossId: "solusek_high_priest_ignus",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 4,
+        name: "The Temple of Sol Ro",
+        description: "The sacred inner temple where Solusek Archons perform eternal rites in Sol Ro's name.",
+        enemyIds: ["solusek_archon", "solusek_fire_giant", "solusek_archon", "solusek_lava_walker", "solusek_archon"],
+        miniBossId: "solusek_high_priest_ignus",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 5,
+        name: "Nagafen's Lair",
+        description: "The innermost volcanic chamber \u2014 the ancient fire dragon Lord Nagafen makes his lair here, surrounded by his most devoted servants.",
+        enemyIds: ["solusek_archon", "solusek_fire_giant", "solusek_archon", "solusek_lava_walker", "solusek_goblin_firestarter"],
+        miniBossId: "solusek_high_priest_ignus",
+        normalsRequired: 5
+      }
+    ]
+  }
+];
+function getDungeonById(id) {
+  return DUNGEONS.find((d) => d.id === id);
+}
+var PIECES_BY_DIFFICULTY = {
+  normal: [{ slot: "chest", dropFloor: 3 }, { slot: "legs", dropFloor: 5 }],
+  expert: [{ slot: "head", dropFloor: 2 }, { slot: "chest", dropFloor: 3 }, { slot: "legs", dropFloor: 4 }, { slot: "feet", dropFloor: 5 }],
+  legendary: [{ slot: "head", dropFloor: 1 }, { slot: "shoulder", dropFloor: 2 }, { slot: "chest", dropFloor: 3 }, { slot: "legs", dropFloor: 4 }, { slot: "feet", dropFloor: 5 }],
+  mythical: [{ slot: "head", dropFloor: 1 }, { slot: "shoulder", dropFloor: 2 }, { slot: "chest", dropFloor: 3 }, { slot: "wrist", dropFloor: 4 }, { slot: "legs", dropFloor: 5 }, { slot: "feet", dropFloor: 5 }]
+};
+function fighterBonuses(diff, proc) {
+  if (diff === "normal") return [{ piecesRequired: 2, stat: "attackRating", value: 20, description: "+20 Attack Rating" }];
+  if (diff === "expert") return [
+    { piecesRequired: 2, stat: "attackRating", value: 35, description: "+35 Attack Rating" },
+    { piecesRequired: 4, stat: "critChance", value: 5, description: "+5% Critical Hit Chance" }
+  ];
+  if (diff === "legendary") return [
+    { piecesRequired: 2, stat: "attackRating", value: 50, description: "+50 Attack Rating" },
+    { piecesRequired: 3, stat: "avoidance", value: 6, description: "+6% Avoidance" },
+    { piecesRequired: 5, stat: "mitigation", value: 8, description: "+8% Mitigation" }
+  ];
+  return [
+    { piecesRequired: 2, stat: "attackRating", value: 80, description: "+80 Attack Rating" },
+    { piecesRequired: 4, stat: "critChance", value: 12, description: "+12% Critical Hit Chance" },
+    { piecesRequired: 6, description: `${proc.name}: ${proc.description}`, effect: proc }
+  ];
+}
+function healerBonuses(diff, proc) {
+  if (diff === "normal") return [{ piecesRequired: 2, stat: "maxHpPercent", value: 8, isPercent: true, description: "+8% Max Health" }];
+  if (diff === "expert") return [
+    { piecesRequired: 2, stat: "maxHpPercent", value: 10, isPercent: true, description: "+10% Max Health" },
+    { piecesRequired: 4, stat: "maxPowerPercent", value: 5, isPercent: true, description: "+5% Max Power" }
+  ];
+  if (diff === "legendary") return [
+    { piecesRequired: 2, stat: "maxHpPercent", value: 12, isPercent: true, description: "+12% Max Health" },
+    { piecesRequired: 3, stat: "spellCritChance", value: 5, description: "+5% Spell Critical Chance" },
+    { piecesRequired: 5, stat: "maxPowerPercent", value: 10, isPercent: true, description: "+10% Max Power" }
+  ];
+  return [
+    { piecesRequired: 2, stat: "maxHpPercent", value: 15, isPercent: true, description: "+15% Max Health" },
+    { piecesRequired: 4, stat: "spellCritChance", value: 8, description: "+8% Spell Critical Chance" },
+    { piecesRequired: 6, description: `${proc.name}: ${proc.description}`, effect: proc }
+  ];
+}
+function casterBonuses(diff, proc) {
+  if (diff === "normal") return [{ piecesRequired: 2, stat: "spellCritChance", value: 5, description: "+5% Spell Critical Chance" }];
+  if (diff === "expert") return [
+    { piecesRequired: 2, stat: "spellCritChance", value: 8, description: "+8% Spell Critical Chance" },
+    { piecesRequired: 4, stat: "maxPowerPercent", value: 6, isPercent: true, description: "+6% Max Power" }
+  ];
+  if (diff === "legendary") return [
+    { piecesRequired: 2, stat: "spellDamage", value: 10, isPercent: true, description: "+10% Spell Damage" },
+    { piecesRequired: 3, stat: "spellCritChance", value: 8, description: "+8% Spell Critical Chance" },
+    { piecesRequired: 5, stat: "maxPowerPercent", value: 15, isPercent: true, description: "+15% Max Power" }
+  ];
+  return [
+    { piecesRequired: 2, stat: "spellDamage", value: 15, isPercent: true, description: "+15% Spell Damage" },
+    { piecesRequired: 4, stat: "spellCritChance", value: 12, description: "+12% Spell Critical Chance" },
+    { piecesRequired: 6, description: `${proc.name}: ${proc.description}`, effect: proc }
+  ];
+}
+var GEAR_SET_META = [
+  {
+    dungeonId: "blackburrow",
+    archetypes: {
+      fighter: {
+        difficulties: {
+          normal: { name: "Tunneler's Might", theme: "gnoll warriors burrowing through dark earth with brutal relentlessness" },
+          expert: { name: "Warchief's Arms", theme: "elite gnoll warchiefs who command Blackburrow's armies with an iron fist" },
+          legendary: { name: "Narlock's Vanguard", theme: "the warlord Narlock's personal war guard, the most feared fighters in the Qeynos Hills" },
+          mythical: { name: "Overlord's Dominion", theme: "the absolute dominion of the gnoll Overlord, forged in darkness and conquest" }
+        },
+        mythicalProc: { name: "Gnoll Frenzy", description: "25% chance on hit to gain +80% damage for 3 ticks", triggerChance: 25, effectType: "damage_burst", effectValue: 80, durationTicks: 3 }
+      },
+      healer: {
+        difficulties: {
+          normal: { name: "Burrow Shaman's", theme: "healing charms crafted by gnoll shamans in the dark tunnels of Blackburrow" },
+          expert: { name: "Witch Doctor's Mantle", theme: "mystical regalia of gnoll witch doctors who commune with dark earth spirits" },
+          legendary: { name: "High Shaman's Calling", theme: "sacred vestments of Blackburrow's high shaman empowered by dark spirits" },
+          mythical: { name: "Spirit of Narlock", theme: "shamanic regalia channeling the spiritual power of Overlord Narlock himself" }
+        },
+        mythicalProc: { name: "Earth Spirit Ward", description: "20% chance on taking damage to grant an absorb shield for 40% max HP for 5 ticks", triggerChance: 20, effectType: "absorb_shield", effectValue: 40, durationTicks: 5 }
+      },
+      caster: {
+        difficulties: {
+          normal: { name: "Gnoll Runeweaver's", theme: "arcane runes etched by gnoll invokers in Blackburrow's ritual chambers" },
+          expert: { name: "Dark Shaman's Curse", theme: "cursed robes of gnoll dark shamans who practice forbidden magic in Blackburrow" },
+          legendary: { name: "Shadowcaster's Mantle", theme: "shadowed robes of Blackburrow's elite shadowcasters who weave dark magic" },
+          mythical: { name: "Narlock's Hexblade", theme: "the terrible hex of Overlord Narlock translated into raw arcane power" }
+        },
+        mythicalProc: { name: "Gnoll Hex Burst", description: "25% chance on spell hit to trigger a hex burst for 70% bonus shadow damage", triggerChance: 25, effectType: "damage_burst", effectValue: 70, durationTicks: 1 }
+      }
+    }
+  },
+  {
+    dungeonId: "ruins_of_varsoon",
+    archetypes: {
+      fighter: {
+        difficulties: {
+          normal: { name: "Skeletal Guard's", theme: "armor stripped from Varsoon's skeletal soldier guardians in the outer ruins" },
+          expert: { name: "Lich Knight's Plate", theme: "armor worn by Varsoon's elite lich knights who never tire and never fall" },
+          legendary: { name: "Undying Champion's", theme: "the indestructible armor of Varsoon's undying champion, never defeated in battle" },
+          mythical: { name: "Varsoon's Iron Will", theme: "armor forged from the iron will of the undying lich Varsoon who has conquered death" }
+        },
+        mythicalProc: { name: "Lich Strike", description: "25% chance on hit to trigger an undying surge for 75% bonus necrotic damage for 2 ticks", triggerChance: 25, effectType: "damage_burst", effectValue: 75, durationTicks: 2 }
+      },
+      healer: {
+        difficulties: {
+          normal: { name: "Soul Warden's", theme: "vestments worn by soul wardens who tend to Varsoon's undead thralls" },
+          expert: { name: "Wraith's Mantle", theme: "spectral robes of the wraith healers who restore Varsoon's fallen soldiers" },
+          legendary: { name: "Varsoon's Enduring", theme: "immortal vestments imbued with Varsoon the Undying's essence of eternal resilience" },
+          mythical: { name: "Undying Will", theme: "robes channeling the indestructible will of the lich who has never truly died" }
+        },
+        mythicalProc: { name: "Undying Will", description: "15% chance to negate a lethal blow, surviving with 1 HP", triggerChance: 15, effectType: "negate_death", effectValue: 1, durationTicks: 0 }
+      },
+      caster: {
+        difficulties: {
+          normal: { name: "Lich's Shroud", theme: "shadowed robes imbued with Varsoon's necromantic energies from the outer ruins" },
+          expert: { name: "Necromancer's Grasp", theme: "robes soaked in the dark magic of Varsoon's inner sanctum necromancers" },
+          legendary: { name: "Specter's Dominion", theme: "spectral robes commanding the spirits of the fallen within Varsoon's ruins" },
+          mythical: { name: "Lich Lord's Arcanum", theme: "the supreme arcane power of the lich lord Varsoon distilled into robes" }
+        },
+        mythicalProc: { name: "Spectral Burst", description: "25% chance on spell hit to trigger a spectral explosion for 65% bonus necrotic damage", triggerChance: 25, effectType: "damage_burst", effectValue: 65, durationTicks: 1 }
+      }
+    }
+  },
+  {
+    dungeonId: "nektropos_castle",
+    archetypes: {
+      fighter: {
+        difficulties: {
+          normal: { name: "Everling's Guard", theme: "armor worn by Lord Everling's undead household guardians in Nektropos Castle" },
+          expert: { name: "Castle Knight's Plate", theme: "armor of Nektropos Castle's elite undead knights who protect Everling's secrets" },
+          legendary: { name: "Castle Lord's Will", theme: "the indomitable will of Lord Everling made manifest in formidable battle armor" },
+          mythical: { name: "Everling's Curse", theme: "armor infused with Everling's terrible curse that grants power through eternal haunting" }
+        },
+        mythicalProc: { name: "Phantom Strike", description: "25% chance on hit to trigger a phantom blow for 80% bonus spectral damage for 2 ticks", triggerChance: 25, effectType: "damage_burst", effectValue: 80, durationTicks: 2 }
+      },
+      healer: {
+        difficulties: {
+          normal: { name: "Everling's Whisper", theme: "ghostly healing power whispered by Everling's spectral daughters in Nektropos Castle" },
+          expert: { name: "Spirit Matron's", theme: "vestments of the spirit matrons who maintain Lord Everling's cursed household" },
+          legendary: { name: "Cursed Healer's", theme: "robes of Nektropos Castle's cursed healers who serve Lord Everling in undeath" },
+          mythical: { name: "Everling's Embrace", theme: "the haunted embrace of Lord Everling that sustains his servants through cursed eternal life" }
+        },
+        mythicalProc: { name: "Spirit Ward", description: "20% chance on taking damage to summon a spirit ward absorbing 50% max HP damage for 4 ticks", triggerChance: 20, effectType: "absorb_shield", effectValue: 50, durationTicks: 4 }
+      },
+      caster: {
+        difficulties: {
+          normal: { name: "Specter's Touch", theme: "spectral magic from the ghost mages who haunt the halls of Nektropos Castle" },
+          expert: { name: "Phantom Weaver's", theme: "robes of the phantom weavers who manipulate spectral energies in Everling's service" },
+          legendary: { name: "Haunted Arcanum", theme: "the ancient arcane knowledge of Nektropos Castle's spectral mage council" },
+          mythical: { name: "Everling's Dark Arcanum", theme: "the terrible dark magic of Lord Everling's cursed arcane legacy distilled into robes" }
+        },
+        mythicalProc: { name: "Spectral Chain", description: "25% chance on spell hit to trigger a spectral chain for 60% bonus shadow damage", triggerChance: 25, effectType: "damage_burst", effectValue: 60, durationTicks: 1 }
+      }
+    }
+  },
+  {
+    dungeonId: "permafrost_keep",
+    archetypes: {
+      fighter: {
+        difficulties: {
+          normal: { name: "Frostborn", theme: "armor forged from Permafrost ice by frost giants before Lady Vox conquered the keep" },
+          expert: { name: "Vox's Blessing", theme: "gear blessed by Lady Vox the ancient white dragon queen of Permafrost Keep" },
+          legendary: { name: "Lady's Embrace", theme: "armor frozen in Lady Vox's eternal embrace, encasing the wearer in protective ice" },
+          mythical: { name: "Permafrost Sovereign", theme: "the supreme power of the Permafrost Sovereign forged from the glacier's eternal heart" }
+        },
+        mythicalProc: { name: "Blizzard Shroud", description: "25% chance on being hit to shroud the attacker reducing their damage by 25% for 5 ticks", triggerChance: 25, effectType: "damage_reduction", effectValue: 25, durationTicks: 5 }
+      },
+      healer: {
+        difficulties: {
+          normal: { name: "Frost Shaman's", theme: "vestments of the frost shamans who tend to Lady Vox's wounded ice soldiers" },
+          expert: { name: "Glacial Healer's", theme: "robes of Permafrost Keep's glacial healers who channel cold into restorative power" },
+          legendary: { name: "Vox's Chosen", theme: "sacred vestments bestowed upon Lady Vox's most devoted healer followers" },
+          mythical: { name: "Permafrost Eternal", theme: "vestments channeling the eternal frost magic of Permafrost Keep's deep glacial heart" }
+        },
+        mythicalProc: { name: "Glacial Aegis", description: "20% chance on being struck to form a glacial aegis absorbing 45% max HP damage for 4 ticks", triggerChance: 20, effectType: "absorb_shield", effectValue: 45, durationTicks: 4 }
+      },
+      caster: {
+        difficulties: {
+          normal: { name: "Iceweaver's", theme: "robes threaded with frost magic by the ice mages who study at Lady Vox's feet" },
+          expert: { name: "Glacial Invoker's", theme: "robes of the glacial invokers who channel Lady Vox's freezing breath into spell power" },
+          legendary: { name: "Frostfire Arcanum", theme: "arcane robes combining Permafrost's glacial power with ancient frost rune magic" },
+          mythical: { name: "Vox's Icy Dominion", theme: "robes channeling the supreme ice magic of Lady Vox the white dragon queen" }
+        },
+        mythicalProc: { name: "Frost Nova Burst", description: "25% chance on spell hit to trigger a frost nova for 70% bonus ice damage", triggerChance: 25, effectType: "damage_burst", effectValue: 70, durationTicks: 1 }
+      }
+    }
+  },
+  {
+    dungeonId: "soluseks_eye",
+    archetypes: {
+      fighter: {
+        difficulties: {
+          normal: { name: "Ember's", theme: "gear tempered in volcanic fires of Solusek's Eye glowing with inner flame" },
+          expert: { name: "Nagafen's Fury", theme: "armor infused with Lord Nagafen's volcanic fury and draconic fire magic" },
+          legendary: { name: "Sol Ro's Blessing", theme: "armor blessed by Solusek Ro god of fire granting mastery over flame and combat" },
+          mythical: { name: "Lord Nagafen's", theme: "the supreme power of Lord Nagafen the most feared dragon on all of Norrath" }
+        },
+        mythicalProc: { name: "Dragonfire", description: "30% chance on critical hit to trigger a volcanic burst for 100% bonus fire damage", triggerChance: 30, effectType: "damage_burst", effectValue: 100, durationTicks: 1 }
+      },
+      healer: {
+        difficulties: {
+          normal: { name: "Flame Warden's", theme: "vestments of the flame wardens who tend to Nagafen's wounded fire servants" },
+          expert: { name: "Volcanic Healer's", theme: "robes of Solusek's Eye priests who convert volcanic heat into restorative flame" },
+          legendary: { name: "Sol Ro's Chosen", theme: "sacred vestments chosen by the fire god Sol Ro for his most devoted healer priests" },
+          mythical: { name: "Nagafen's Renewal", theme: "vestments drawing on Lord Nagafen's immortal fire to sustain the wearer eternally" }
+        },
+        mythicalProc: { name: "Volcanic Resurrection", description: "20% chance on near-death to gain a volcanic surge absorbing 60% max HP damage for 3 ticks", triggerChance: 20, effectType: "absorb_shield", effectValue: 60, durationTicks: 3 }
+      },
+      caster: {
+        difficulties: {
+          normal: { name: "Pyromancer's", theme: "robes threaded with fire magic by the pyromancers who study Solusek's Eye" },
+          expert: { name: "Arcane Inferno's", theme: "robes of the arcane inferno mages who master the volcanic energies of Sol Ro" },
+          legendary: { name: "Sol Ro's Arcanum", theme: "arcane robes blessed by Solusek Ro himself granting mastery over all fire magic" },
+          mythical: { name: "Nagafen's Conflagration", theme: "robes channeling the supreme fire power of Lord Nagafen ancient dragon of flame" }
+        },
+        mythicalProc: { name: "Conflagration", description: "30% chance on spell critical hit to trigger a conflagration for 100% bonus fire damage", triggerChance: 30, effectType: "damage_burst", effectValue: 100, durationTicks: 1 }
+      }
+    }
+  }
+];
+var GEAR_SETS = GEAR_SET_META.flatMap(
+  ({ dungeonId, archetypes }) => ["fighter", "healer", "caster"].flatMap((archetype) => {
+    const archetypeData = archetypes[archetype];
+    return ["normal", "expert", "legendary", "mythical"].map((difficulty) => {
+      const meta = archetypeData.difficulties[difficulty];
+      const proc = archetypeData.mythicalProc;
+      const bonusFn = archetype === "fighter" ? fighterBonuses : archetype === "healer" ? healerBonuses : casterBonuses;
+      return {
+        id: `${dungeonId}_${difficulty}_${archetype}`,
+        dungeonId,
+        difficulty,
+        archetype,
+        setNameTemplate: meta.name,
+        theme: meta.theme,
+        pieces: PIECES_BY_DIFFICULTY[difficulty],
+        bonuses: bonusFn(difficulty, proc)
+      };
+    });
+  })
+);
+function getGearSetsForFloor(dungeonId, difficulty, floor, archetype) {
+  const set2 = GEAR_SETS.find((s) => s.dungeonId === dungeonId && s.difficulty === difficulty && s.archetype === archetype);
+  if (!set2) return [];
+  return set2.pieces.filter((p) => p.dropFloor === floor);
+}
+function scaleEnemyForDifficulty(enemy, difficulty, playerLevel, dungeonMinLevel = 10) {
+  const diffMult = DUNGEON_DIFFICULTY_MULTIPLIER[difficulty] ?? 1;
+  const levelFactor = playerLevel ? Math.max(1, playerLevel / dungeonMinLevel) : 1;
+  const mult = diffMult * levelFactor;
+  return {
+    ...enemy,
+    hp: Math.round(enemy.maxHp * mult),
+    maxHp: Math.round(enemy.maxHp * mult),
+    damageMin: Math.round(enemy.damageMin * mult),
+    damageMax: Math.round(enemy.damageMax * mult),
+    xpReward: Math.round(enemy.xpReward * mult),
+    goldMin: Math.round(enemy.goldMin * mult),
+    goldMax: Math.round(enemy.goldMax * mult)
+  };
+}
+
+// src/routes/gm.ts
 var router5 = (0, import_express5.Router)();
 var bossNarrationCache = /* @__PURE__ */ new Map();
 var bossClosingLineCache = /* @__PURE__ */ new Map();
 var ghostQuoteCache = /* @__PURE__ */ new Map();
-async function aiComplete(messages2, model = "gpt-5.2", maxTokens = 300) {
+async function aiComplete(messages2, model = "gpt-4o-mini", maxTokens = 300) {
   const response = await openai.chat.completions.create({
     model,
     max_completion_tokens: maxTokens,
@@ -76336,7 +77982,7 @@ Each quest must have 2-4 objectives mixing types from: kill (with enemy name + c
 Include at least one faction objective per quest that references a faction from the player's current standings.
 Rewards must include realistic xp (100\u20132000), gold (5\u2013200), a specific item name (EQ2 gear/consumable), and aaXp (10\u2013200).
 Make objectives specific to the zone and class. Vary quest themes \u2014 do not repeat same enemy type across quests.`;
-  const raw = await aiComplete([{ role: "user", content: prompt }], "gpt-5.2", Math.min(4e3, count * 900));
+  const raw = await aiComplete([{ role: "user", content: prompt }], "gpt-4o-mini", Math.min(4e3, count * 900));
   let parsed;
   try {
     const jsonStr = raw.replace(/^```json?\s*/i, "").replace(/```\s*$/, "").trim();
@@ -76492,7 +78138,7 @@ Keep responses to 2-4 sentences. Be immersive and lore-appropriate. Use EQ2 lore
     const reply = await aiComplete([
       { role: "system", content: systemPrompt },
       { role: "user", content: playerMessage }
-    ], "gpt-5.2", 200);
+    ], "gpt-4o-mini", 200);
     progressTalkObjectives(npcName).catch(() => {
     });
     res.json({ npcName, reply, role });
@@ -76525,7 +78171,7 @@ Paragraph 2 \u2014 Calling: Describe how they discovered and trained in their cl
 Paragraph 3 \u2014 Current Legend: Describe their current deeds, reputation in ${character.zone}, and the legend forming around their name among Norrath's denizens.
 
 Write in third-person chronicle voice \u2014 evocative, heroic, mythic. Separate paragraphs with a blank line. No headers or bullet points.`;
-    const lore = await aiComplete([{ role: "user", content: prompt }], "gpt-5.2", 700);
+    const lore = await aiComplete([{ role: "user", content: prompt }], "gpt-4o-mini", 700);
     await db.insert(loreCacheTable).values({ cacheKey, content: lore }).onConflictDoUpdate({ target: loreCacheTable.cacheKey, set: { content: lore } });
     res.json({ lore, cached: false });
   } catch (err) {
@@ -76546,13 +78192,13 @@ router5.get("/world/player/by-name/:name/quote", async (req, res) => {
     const player = players.find((p) => p.name.toLowerCase() === playerName.toLowerCase());
     if (!player) {
       const prompt2 = `Generate a short, in-character quote (1-2 sentences) for an adventurer named ${playerName} exploring Norrath. No quotation marks.`;
-      const quote2 = await aiComplete([{ role: "user", content: prompt2 }], "gpt-5.2", 80);
+      const quote2 = await aiComplete([{ role: "user", content: prompt2 }], "gpt-4o-mini", 80);
       if (quote2) ghostQuoteCache.set(cacheKey, quote2);
       res.json({ quote: quote2, cached: false });
       return;
     }
     const prompt = `Generate a short, in-character quote (1-2 sentences) for a ${player.level} ${player.race} ${player.class} adventurer named ${player.name} who has ${player.killCount} kills and is exploring ${player.zone} in Norrath. No quotation marks.`;
-    const quote = await aiComplete([{ role: "user", content: prompt }], "gpt-5.2", 100);
+    const quote = await aiComplete([{ role: "user", content: prompt }], "gpt-4o-mini", 100);
     if (quote) ghostQuoteCache.set(cacheKey, quote);
     res.json({ quote, cached: false });
   } catch (err) {
@@ -76575,7 +78221,7 @@ router5.get("/world/player/:id/quote", async (req, res) => {
     }
     const prompt = `Generate a short, in-character quote (1-2 sentences) for a ${player.level} ${player.race} ${player.class} adventurer named ${player.name} who has ${player.killCount} kills and is exploring ${player.zone} in Norrath.
 Make it feel authentic to their race/class archetype. No quotation marks around the text.`;
-    const quote = await aiComplete([{ role: "user", content: prompt }], "gpt-5.2", 100);
+    const quote = await aiComplete([{ role: "user", content: prompt }], "gpt-4o-mini", 100);
     if (quote) {
       ghostQuoteCache.set(playerId, quote);
     }
@@ -76660,7 +78306,7 @@ async function generateBossNarration(bossId, phase, character, encounterCtx, pla
   const narration = await aiComplete([
     { role: "system", content: "You are a dungeon narrator for an EverQuest 2 idle RPG. Respond only with the requested boss speech \u2014 no quotation marks, no stage directions, no meta-commentary." },
     { role: "user", content: userContent }
-  ], "gpt-5.2", 150);
+  ], "gpt-4o-mini", 150);
   if (narration) bossNarrationCache.set(cacheKey, narration);
   return narration;
 }
@@ -76674,7 +78320,7 @@ async function generateBossClosingLine(bossId, outcome, character, encounterCtx,
   const line2 = await aiComplete([
     { role: "system", content: "You are a boss villain in EverQuest 2. Speak only the closing line \u2014 no quotation marks, no stage directions." },
     { role: "user", content: prompt }
-  ], "gpt-5.2", 100);
+  ], "gpt-4o-mini", 100);
   if (line2) bossClosingLineCache.set(cacheKey, line2);
   return line2;
 }
@@ -76730,7 +78376,7 @@ Respond with ONLY valid JSON array (no markdown):
     "lore": "1-2 sentence item lore tied to ${bossName} and ${zone}. Atmospheric, EQ2-style."
   }
 ]`;
-    const raw = await aiComplete([{ role: "user", content: prompt }], "gpt-5.2", 600);
+    const raw = await aiComplete([{ role: "user", content: prompt }], "gpt-4o-mini", 600);
     let nameLorePairs = [];
     try {
       const jsonStr = raw.replace(/^```json?\s*/i, "").replace(/```\s*$/, "").trim();
@@ -76759,6 +78405,237 @@ Respond with ONLY valid JSON array (no markdown):
     return null;
   }
 }
+var DIFFICULTY_SET_RARITY = {
+  normal: "rare",
+  expert: "legendary",
+  legendary: "fabled",
+  mythical: "mythical"
+};
+async function generateGearSetItem(setId, slot, dungeonName, dungeonZone, difficulty, setTheme, setNameTemplate, level, archetype = "fighter", armorType = "plate") {
+  try {
+    const cacheKey = `gear_set_${setId}`;
+    const [cached2] = await db.select().from(loreCacheTable).where(eq(loreCacheTable.cacheKey, cacheKey)).limit(1);
+    let setDef = null;
+    if (cached2) {
+      try {
+        setDef = JSON.parse(cached2.content);
+      } catch {
+      }
+    }
+    if (!setDef) {
+      const prompt = `You are the item lore writer for an EverQuest 2 idle RPG.
+Theme: ${setTheme}
+Dungeon: ${dungeonName} (${dungeonZone}), difficulty: ${difficulty}, character level ~${level}.
+Default set name: "${setNameTemplate}"
+
+Generate a named gear set for this dungeon. Respond with ONLY valid JSON (no markdown):
+{
+  "setName": "Short 2-4 word set name (e.g. 'Gnollskin Warchief's Raiment')",
+  "lore": "1-2 sentence atmospheric lore for the full set.",
+  "pieceNames": {
+    "head": "Short 3-5 word piece name",
+    "shoulder": "Short 3-5 word piece name",
+    "chest": "Short 3-5 word piece name",
+    "wrist": "Short 3-5 word piece name",
+    "legs": "Short 3-5 word piece name",
+    "feet": "Short 3-5 word piece name"
+  }
+}`;
+      const raw = await aiComplete([{ role: "user", content: prompt }], "gpt-4o-mini", 400);
+      try {
+        const jsonStr = raw.replace(/^```json?\s*/i, "").replace(/```\s*$/, "").trim();
+        const parsed = JSON.parse(jsonStr);
+        if (parsed.setName && parsed.pieceNames) {
+          setDef = parsed;
+        }
+      } catch {
+      }
+      if (!setDef) {
+        setDef = {
+          setName: setNameTemplate,
+          lore: `Armor forged in the depths of ${dungeonName}, imbued with the power of ${dungeonZone}.`,
+          pieceNames: {
+            head: `${setNameTemplate} Helm`,
+            shoulder: `${setNameTemplate} Spaulders`,
+            chest: `${setNameTemplate} Breastplate`,
+            wrist: `${setNameTemplate} Bracers`,
+            legs: `${setNameTemplate} Greaves`,
+            feet: `${setNameTemplate} Boots`
+          }
+        };
+      }
+      const cacheContent = JSON.stringify(setDef);
+      await db.insert(loreCacheTable).values({ cacheKey, content: cacheContent }).onConflictDoUpdate({ target: loreCacheTable.cacheKey, set: { content: cacheContent } });
+    }
+    const rarity = DIFFICULTY_SET_RARITY[difficulty] ?? "rare";
+    const pieceName = setDef.pieceNames[slot] ?? `${setDef.setName} ${slot.charAt(0).toUpperCase() + slot.slice(1)}`;
+    const rarityMult = {
+      normal: 2.5,
+      // rare quality + set premium
+      expert: 4.5,
+      // legendary quality + set premium
+      legendary: 7,
+      // fabled quality + set premium
+      mythical: 10
+      // best-in-slot
+    };
+    const mult = rarityMult[difficulty] ?? 2.5;
+    const slotSizeFactor = {
+      head: 1,
+      shoulder: 0.85,
+      chest: 1.3,
+      wrist: 0.8,
+      legs: 1.1,
+      feet: 0.85
+    };
+    const sizeFactor = slotSizeFactor[slot] ?? 1;
+    const base = Math.max(1, Math.floor(level * 0.8));
+    const pri = Math.round(base * mult * sizeFactor);
+    const sec = Math.round(base * mult * sizeFactor * 0.65);
+    const ter = Math.round(base * mult * sizeFactor * 0.4);
+    const pct = Math.min(20, (difficulty === "normal" ? 2 : difficulty === "expert" ? 5 : difficulty === "legendary" ? 9 : 14) + Math.round(level / 8));
+    const plateStats = {
+      head: { defenseRating: pri, stamina: sec, health: ter },
+      shoulder: { defenseRating: pri, strength: sec, stamina: ter },
+      chest: { defenseRating: pri, stamina: sec, health: ter },
+      wrist: { defenseRating: pri, stamina: sec, strength: ter },
+      legs: { defenseRating: pri, stamina: sec, health: ter },
+      feet: { defenseRating: pri, agility: sec, stamina: ter }
+    };
+    const chainStats = {
+      head: { defenseRating: pri, agility: sec, stamina: ter },
+      shoulder: { attackRating: pri, defenseRating: sec, agility: ter },
+      chest: { defenseRating: pri, attackRating: sec, agility: ter },
+      wrist: { attackRating: pri, agility: sec, haste: pct },
+      legs: { defenseRating: pri, agility: sec, avoidance: pct },
+      feet: { agility: pri, attackRating: sec, haste: pct }
+    };
+    const leatherStats = {
+      head: { agility: pri, attackRating: sec, critChance: pct },
+      shoulder: { attackRating: pri, agility: sec, haste: pct },
+      chest: { agility: pri, attackRating: sec, strength: ter },
+      wrist: { attackRating: pri, haste: pct, critChance: pct },
+      legs: { agility: pri, attackRating: sec, avoidance: pct },
+      feet: { agility: pri, haste: pct, avoidance: pct }
+    };
+    const clothHealerStats = {
+      head: { health: pri, wisdom: sec, intelligence: ter },
+      shoulder: { health: pri, wisdom: sec, spellCritChance: pct },
+      chest: { health: pri, wisdom: sec, intelligence: ter },
+      wrist: { wisdom: sec, spellCritChance: pct, haste: pct },
+      legs: { health: pri, wisdom: sec, spellCritChance: pct },
+      feet: { wisdom: sec, avoidance: pct, haste: pct }
+    };
+    const clothCasterStats = {
+      head: { intelligence: pri, spellDamage: sec, spellCritChance: pct },
+      shoulder: { intelligence: pri, spellDamage: sec, haste: pct },
+      chest: { intelligence: pri, spellDamage: sec, wisdom: ter },
+      wrist: { intelligence: sec, spellCritChance: pct, haste: pct },
+      legs: { intelligence: pri, spellDamage: sec, spellCritChance: pct },
+      feet: { intelligence: sec, avoidance: pct, haste: pct }
+    };
+    let profile;
+    if (armorType === "plate") profile = plateStats;
+    else if (armorType === "chain") profile = chainStats;
+    else if (armorType === "leather") profile = leatherStats;
+    else profile = archetype === "healer" ? clothHealerStats : clothCasterStats;
+    const stats = profile[slot] ?? { attackRating: pri, defenseRating: sec, stamina: ter };
+    const sellPrice = rarity === "mythical" ? 0 : Math.round(level * mult * 3);
+    const gearSetDef = GEAR_SETS.find((s) => s.id === setId);
+    const setBonuses = (gearSetDef?.bonuses ?? []).map((b) => ({
+      piecesRequired: b.piecesRequired,
+      description: b.description,
+      isProc: !!b.effect,
+      procName: b.effect?.name
+    }));
+    const item = {
+      id: `set_${setId}_${slot}`,
+      name: pieceName,
+      description: setDef.lore,
+      type: "armor",
+      armorType,
+      slot,
+      rarity,
+      level,
+      stats,
+      sellPrice,
+      spriteId: `armor_${slot}_${difficulty}`,
+      noSell: rarity === "fabled" || rarity === "mythical",
+      setId,
+      setPieceSlot: slot,
+      setName: setDef.setName,
+      setBonuses
+    };
+    return { item, lore: setDef.lore };
+  } catch {
+    return null;
+  }
+}
+router5.get("/world/events/player-relevant", async (req, res) => {
+  try {
+    const character = await getOrCreateCharacter(req.characterId);
+    const playerLevel = character.level ?? 1;
+    const playerZone = character.zone ?? "Commonlands";
+    const nearbyGhosts = await db.select({ name: worldPlayersTable.name, zone: worldPlayersTable.zone }).from(worldPlayersTable).where(sql`ABS(${worldPlayersTable.level} - ${playerLevel}) <= 15`);
+    const nearbyNames = new Set(nearbyGhosts.map((g) => g.name));
+    const nearbyZones = /* @__PURE__ */ new Set([playerZone, ...nearbyGhosts.map((g) => g.zone)]);
+    const recentEvents = await db.select().from(worldEventsTable).orderBy(desc(worldEventsTable.createdAt)).limit(200);
+    const relevant = recentEvents.filter(
+      (e) => nearbyNames.has(e.playerName) || nearbyZones.has(e.zone) || e.type === "rival_surge" || e.type === "market_surge" || e.type === "market_crash" || e.importance >= 4
+    ).slice(0, 50);
+    return res.json({ events: relevant });
+  } catch (err) {
+    req.log.error({ err }, "Error fetching player-relevant events");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+router5.get("/world/ghost/:id/lineage", async (req, res) => {
+  try {
+    let buildTree2 = function(nodeId, depth) {
+      if (depth > 5) return null;
+      const node = ghostMap.get(nodeId);
+      if (!node) return null;
+      const children = allGhosts.filter((g) => g.parentId === nodeId).map((c) => buildTree2(c.id, depth + 1)).filter(Boolean);
+      return {
+        id: node.id,
+        name: node.name,
+        class: node.class,
+        race: node.race,
+        level: node.level,
+        generation: node.generation ?? 1,
+        inheritedTraits: node.inheritedTraits ?? [],
+        killCount: node.killCount,
+        deathCount: node.deathCount,
+        children
+      };
+    };
+    var buildTree = buildTree2;
+    const ghostId = parseInt(req.params.id, 10);
+    if (isNaN(ghostId)) return res.status(400).json({ error: "Invalid ghost id" });
+    const allGhosts = await db.select({
+      id: worldPlayersTable.id,
+      name: worldPlayersTable.name,
+      class: worldPlayersTable.class,
+      race: worldPlayersTable.race,
+      level: worldPlayersTable.level,
+      generation: worldPlayersTable.generation,
+      parentId: worldPlayersTable.parentId,
+      inheritedTraits: worldPlayersTable.inheritedTraits,
+      killCount: worldPlayersTable.killCount,
+      deathCount: worldPlayersTable.deathCount
+    }).from(worldPlayersTable);
+    const ghostMap = new Map(allGhosts.map((g) => [g.id, g]));
+    let root = ghostMap.get(ghostId);
+    if (!root) return res.status(404).json({ error: "Ghost not found" });
+    while (root.parentId && ghostMap.has(root.parentId)) {
+      root = ghostMap.get(root.parentId);
+    }
+    return res.json({ lineage: buildTree2(root.id, 1) });
+  } catch (err) {
+    req.log.error({ err }, "Error fetching ghost lineage");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
 var gm_default = router5;
 
 // src/lib/questProgress.ts
@@ -77090,309 +78967,6 @@ var achievements_default = router6;
 init_schema2();
 init_drizzle_orm();
 init_gameData();
-
-// src/lib/dungeonData.ts
-var DUNGEONS = [
-  {
-    id: "blackburrow",
-    name: "Blackburrow",
-    zone: "Qeynos Hills",
-    description: "The gnoll warrens beneath the Qeynos Hills \u2014 five treacherous floors leading to Overlord Narlock.",
-    lore: "Blackburrow has been a gnoll stronghold since the Age of Turmoil. Carved from living rock, its five floors descend ever deeper into darkness. Generations of gnoll warlords have fortified its passages. Those who reach the throne of Overlord Narlock \u2014 the undisputed master of all gnoll-kind in the Qeynos Hills \u2014 have faced the full might of Blackburrow.",
-    minLevel: 10,
-    maxLevel: 20,
-    mainBossId: "bb_overlord_narlock",
-    spriteId: "dungeon_blackburrow",
-    bossPersonality: "arrogant",
-    bossGrudgeThreshold: 3,
-    floors: [
-      {
-        floorNumber: 1,
-        name: "The Digging Tunnels",
-        description: "Crude excavation tunnels alive with diggers and their overseers.",
-        enemyIds: ["bb_gnoll_digger", "bb_gnoll_pup", "bb_gnoll_scrapper", "bb_gnoll_tunneler", "bb_gnoll_sentry"],
-        miniBossId: "bb_gnoll_overseer",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 2,
-        name: "The Warrior Barracks",
-        description: "Where Blackburrow's warriors train and prepare for raids.",
-        enemyIds: ["bb_gnoll_shaman", "bb_gnoll_warrior", "bb_gnoll_scout", "bb_gnoll_berserker", "bb_gnoll_ward_priest"],
-        miniBossId: "bb_gnoll_battlemaster",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 3,
-        name: "The Shaman Sanctum",
-        description: "Sacred halls where gnoll shamans commune with dark spirits.",
-        enemyIds: ["bb_gnoll_cultist", "bb_gnoll_elder", "bb_gnoll_invoker", "bb_gnoll_runecaster", "bb_gnoll_hexblade"],
-        miniBossId: "bb_gnoll_high_shaman",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 4,
-        name: "The Elite Guard Quarters",
-        description: "Home to Blackburrow's deadliest warriors \u2014 the elite guard.",
-        enemyIds: ["bb_gnoll_blade", "bb_gnoll_warden", "bb_gnoll_reaver", "bb_gnoll_witch", "bb_gnoll_zealot"],
-        miniBossId: "bb_gnoll_general",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 5,
-        name: "The Warlord's Throne Room",
-        description: "The deepest floor \u2014 seat of Overlord Narlock's brutal reign.",
-        enemyIds: ["bb_gnoll_champion", "bb_gnoll_inquisitor", "bb_gnoll_vanguard", "bb_gnoll_deathreaver", "bb_gnoll_shadow_blade"],
-        miniBossId: "bb_gnoll_throne_guardian",
-        normalsRequired: 5
-      }
-    ]
-  },
-  // ── RUINS OF VARSOON (Levels 20-30, Thundering Steppes) ─────────────────
-  {
-    id: "ruins_of_varsoon",
-    name: "Ruins of Varsoon",
-    zone: "Thundering Steppes",
-    description: "The crumbling ruins of Varsoon's ancient tower \u2014 five floors of undead horrors guarded by the Undying Lich himself.",
-    lore: "Varsoon the Undying built his tower ages ago as a sanctuary for his unholy experiments with lichdom. The tower has since crumbled, but its five underground levels remain intact, infested with the fruits of his dark labor. Skeletal warriors, lich guardians, and spectral horrors patrol every corridor. Those brave enough to reach Varsoon's inner sanctum face the lich himself \u2014 an enemy who has never truly been killed.",
-    minLevel: 20,
-    maxLevel: 30,
-    mainBossId: "steppes_boss",
-    spriteId: "dungeon_ruins",
-    bossPersonality: "ancient",
-    bossGrudgeThreshold: 3,
-    floors: [
-      {
-        floorNumber: 1,
-        name: "The Collapsed Entry Hall",
-        description: "Rubble and reanimated bones choke the ancient entry halls.",
-        enemyIds: ["varsoon_skeleton", "varsoon_zombie", "varsoon_skeleton", "varsoon_zombie", "varsoon_skeleton"],
-        miniBossId: "varsoon_lich_guardian",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 2,
-        name: "The Spectral Corridors",
-        description: "Ghostly figures drift through torch-lit corridors, attacking on sight.",
-        enemyIds: ["varsoon_ghost", "varsoon_skeleton", "varsoon_ghost", "varsoon_zombie", "varsoon_ghost"],
-        miniBossId: "varsoon_lich_guardian",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 3,
-        name: "The Bone Laboratory",
-        description: "Where Varsoon once conducted experiments, now guarded by bone golems.",
-        enemyIds: ["varsoon_bone_golem", "varsoon_dark_priest", "varsoon_bone_golem", "varsoon_dark_priest", "varsoon_bone_golem"],
-        miniBossId: "varsoon_wraith_captain",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 4,
-        name: "The Dark Priest Sanctum",
-        description: "Fanatic priests of the Undying hold dark rites in this defiled sanctum.",
-        enemyIds: ["varsoon_dark_priest", "varsoon_ghost", "varsoon_dark_priest", "varsoon_zombie", "varsoon_dark_priest"],
-        miniBossId: "varsoon_wraith_captain",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 5,
-        name: "Varsoon's Inner Sanctum",
-        description: "The deepest chamber \u2014 Varsoon the Undying awaits his next challenger.",
-        enemyIds: ["varsoon_bone_golem", "varsoon_ghost", "varsoon_dark_priest", "varsoon_skeleton", "varsoon_zombie"],
-        miniBossId: "varsoon_wraith_captain",
-        normalsRequired: 5
-      }
-    ]
-  },
-  // ── NEKTROPOS CASTLE (Levels 25-35, Nektulos Forest) ────────────────────
-  {
-    id: "nektropos_castle",
-    name: "Nektropos Castle",
-    zone: "Nektulos Forest",
-    description: "The cursed estate of Lord Everling \u2014 five haunted floors where the living are not welcome.",
-    lore: "Nektropos Castle stands at the heart of Nektulos Forest like a festering wound on the land. Lord Everling, obsessed with immortality, made a terrible bargain with the forces of death. He achieved undeath but at tremendous cost \u2014 his entire household was cursed along with him. Now his spectral family, servants, and knights defend the castle for eternity, loyal beyond death to their undying master.",
-    minLevel: 25,
-    maxLevel: 35,
-    mainBossId: "nektopos_lord_everling",
-    spriteId: "dungeon_castle",
-    bossPersonality: "cunning",
-    bossGrudgeThreshold: 3,
-    floors: [
-      {
-        floorNumber: 1,
-        name: "The Castle Courtyard",
-        description: "Shades and revenants patrol the overgrown courtyard \u2014 the first line of defense.",
-        enemyIds: ["nektopos_shade", "nektopos_revenant", "nektopos_shade", "nektopos_revenant", "nektopos_shade"],
-        miniBossId: "nektopos_high_inquisitor",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 2,
-        name: "The Great Hall",
-        description: "The banquet hall of the damned, where revenant servants forever prepare a feast no one will eat.",
-        enemyIds: ["nektopos_revenant", "nektopos_shade", "nektopos_revenant", "nektopos_banshee", "nektopos_revenant"],
-        miniBossId: "nektopos_gargoyle",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 3,
-        name: "The Keep Dungeons",
-        description: "The dungeon beneath the castle, where banshees wail endlessly.",
-        enemyIds: ["nektopos_banshee", "nektopos_shade", "nektopos_banshee", "nektopos_revenant", "nektopos_banshee"],
-        miniBossId: "nektopos_dark_knight",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 4,
-        name: "The Everling Family Quarters",
-        description: "The private quarters where Everling's cursed family haunts forever.",
-        enemyIds: ["nektopos_everling_guard", "nektopos_banshee", "nektopos_everling_guard", "nektopos_revenant", "nektopos_dark_knight"],
-        miniBossId: "nektopos_high_inquisitor",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 5,
-        name: "Lord Everling's Throne Room",
-        description: "The throne room of the undying lord \u2014 where Everling holds court over his cursed domain.",
-        enemyIds: ["nektopos_everling_guard", "nektopos_dark_knight", "nektopos_banshee", "nektopos_gargoyle", "nektopos_shade"],
-        miniBossId: "nektopos_high_inquisitor",
-        normalsRequired: 5
-      }
-    ]
-  },
-  // ── PERMAFROST KEEP (Levels 35-45, Everfrost Peaks) ─────────────────────
-  {
-    id: "permafrost_keep",
-    name: "Permafrost Keep",
-    zone: "Everfrost Peaks",
-    description: "An ancient fortress entombed in eternal ice \u2014 five floors of frozen horror culminating in the lair of Lady Vox, Queen of Permafrost.",
-    lore: "Permafrost Keep was built ages ago by frost giants who sought to carve a kingdom from the eternal ice of the Everfrost Peaks. The keep was eventually conquered by the ancient white dragon Lady Vox, who transformed it into her frozen palace. Ice golems, frost knights, and blizzard elementals now guard its halls in her name. Those who survive five floors of glacial devastation face Lady Vox herself \u2014 the most deadly cold dragon on all of Norrath.",
-    minLevel: 35,
-    maxLevel: 45,
-    mainBossId: "lady_vox",
-    spriteId: "dungeon_frost",
-    bossPersonality: "cold",
-    bossGrudgeThreshold: 2,
-    floors: [
-      {
-        floorNumber: 1,
-        name: "The Frozen Gates",
-        description: "The entrance to Permafrost, where yeti form the first line of defense.",
-        enemyIds: ["permafrost_yeti", "permafrost_blizzard_elemental", "permafrost_yeti", "permafrost_blizzard_elemental", "permafrost_yeti"],
-        miniBossId: "permafrost_frost_knight",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 2,
-        name: "The Frost Knight Barracks",
-        description: "Where Permafrost's elite frost knights train in the killing cold.",
-        enemyIds: ["permafrost_yeti", "permafrost_blizzard_elemental", "permafrost_yeti", "permafrost_blizzard_elemental", "permafrost_yeti"],
-        miniBossId: "permafrost_ice_golem",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 3,
-        name: "The Blizzard Chamber",
-        description: "A vast chamber where blizzard elementals swirl in an endless storm.",
-        enemyIds: ["permafrost_blizzard_elemental", "permafrost_frost_knight", "permafrost_blizzard_elemental", "permafrost_ice_golem", "permafrost_blizzard_elemental"],
-        miniBossId: "permafrost_ice_witch_guardian",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 4,
-        name: "The Witch's Sanctum",
-        description: "The ice witch's private sanctum, crackling with cryomantic power.",
-        enemyIds: ["permafrost_ice_witch_guardian", "permafrost_blizzard_elemental", "permafrost_frost_knight", "permafrost_ice_golem", "permafrost_blizzard_elemental"],
-        miniBossId: "permafrost_frost_warden",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 5,
-        name: "The Eternal Ice Vault",
-        description: "The deepest vault of Permafrost Keep \u2014 Frost Warden Icegrave awaits amid towering columns of eternal ice.",
-        enemyIds: ["permafrost_blizzard_elemental", "permafrost_frost_knight", "permafrost_ice_golem", "permafrost_ice_witch_guardian", "permafrost_yeti"],
-        miniBossId: "permafrost_frost_warden",
-        normalsRequired: 5
-      }
-    ]
-  },
-  // ── SOLUSEK'S EYE (Levels 42-52, Lavastorm Mountains) ───────────────────
-  {
-    id: "soluseks_eye",
-    name: "Solusek's Eye",
-    zone: "Lavastorm Mountains",
-    description: "The volcanic temple of the fire god Solusek Ro \u2014 five floors of searing heat and fire elementals leading to Lord Nagafen.",
-    lore: "Solusek's Eye is the sacred temple of Solusek Ro, the god of fire, carved into the heart of Lavastorm's most active volcano. Fire giants, lava elementals, and goblin pyromancers serve as the temple's faithful guardians. Deep within the volcanic chambers, Lord Nagafen \u2014 the ancient fire dragon \u2014 makes his lair. Those who survive five floors of volcanic devastation face the most powerful dragon on Norrath.",
-    minLevel: 42,
-    maxLevel: 52,
-    mainBossId: "nagafen",
-    spriteId: "dungeon_volcano",
-    bossPersonality: "arrogant",
-    bossGrudgeThreshold: 2,
-    floors: [
-      {
-        floorNumber: 1,
-        name: "The Volcanic Entry",
-        description: "The scorching entrance to Solusek's Eye, where goblin firestarters patrol the lava flows.",
-        enemyIds: ["solusek_goblin_firestarter", "solusek_archon", "solusek_goblin_firestarter", "solusek_archon", "solusek_goblin_firestarter"],
-        miniBossId: "solusek_lava_walker",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 2,
-        name: "The Lava Caverns",
-        description: "Vast caverns of flowing magma where fire sprites and goblins roam.",
-        enemyIds: ["solusek_goblin_firestarter", "solusek_fire_sprite", "solusek_goblin_firestarter", "solusek_fire_sprite", "solusek_goblin_firestarter"],
-        miniBossId: "solusek_fire_giant",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 3,
-        name: "The Fire Giant Forge",
-        description: "An immense volcanic forge where lava walkers and archons stand guard.",
-        enemyIds: ["solusek_lava_walker", "solusek_archon", "solusek_lava_walker", "solusek_fire_sprite", "solusek_lava_walker"],
-        miniBossId: "solusek_high_priest_ignus",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 4,
-        name: "The Temple of Sol Ro",
-        description: "The sacred inner temple where Solusek Archons perform eternal rites in Sol Ro's name.",
-        enemyIds: ["solusek_archon", "solusek_fire_giant", "solusek_archon", "solusek_lava_walker", "solusek_archon"],
-        miniBossId: "solusek_high_priest_ignus",
-        normalsRequired: 5
-      },
-      {
-        floorNumber: 5,
-        name: "Nagafen's Lair",
-        description: "The innermost volcanic chamber \u2014 the ancient fire dragon Lord Nagafen makes his lair here, surrounded by his most devoted servants.",
-        enemyIds: ["solusek_archon", "solusek_fire_giant", "solusek_archon", "solusek_lava_walker", "solusek_goblin_firestarter"],
-        miniBossId: "solusek_high_priest_ignus",
-        normalsRequired: 5
-      }
-    ]
-  }
-];
-function getDungeonById(id) {
-  return DUNGEONS.find((d) => d.id === id);
-}
-function scaleEnemyForDifficulty(enemy, difficulty, playerLevel, dungeonMinLevel = 10) {
-  const diffMult = DUNGEON_DIFFICULTY_MULTIPLIER[difficulty] ?? 1;
-  const levelFactor = playerLevel ? Math.max(1, playerLevel / dungeonMinLevel) : 1;
-  const mult = diffMult * levelFactor;
-  return {
-    ...enemy,
-    hp: Math.round(enemy.maxHp * mult),
-    maxHp: Math.round(enemy.maxHp * mult),
-    damageMin: Math.round(enemy.damageMin * mult),
-    damageMax: Math.round(enemy.damageMax * mult),
-    xpReward: Math.round(enemy.xpReward * mult),
-    goldMin: Math.round(enemy.goldMin * mult),
-    goldMax: Math.round(enemy.goldMax * mult)
-  };
-}
-
-// src/lib/dungeonProgress.ts
 async function upsertDungeonKillStats(opts) {
   const {
     characterId,
@@ -77449,14 +79023,16 @@ function weightedRarityPick(difficulty) {
   }
   return "common";
 }
-function generateDungeonLoot(playerLevel, floorNumber, difficulty) {
-  const targetLevel = playerLevel + floorNumber - 1;
+function generateDungeonLoot(playerLevel, floorNumber, difficulty, dungeonMinLevel, dungeonMaxLevel) {
+  const rawTarget = playerLevel + floorNumber - 1;
+  const targetLevel = Math.min(rawTarget, dungeonMaxLevel + floorNumber - 1);
+  const clampedLevel = Math.max(targetLevel, dungeonMinLevel);
   const nonConsumable = ITEMS.filter(
     (item) => item.type !== "material" && item.type !== "consumable" && item.type !== "quest"
   );
-  let pool2 = nonConsumable.filter((item) => item.level === targetLevel);
+  let pool2 = nonConsumable.filter((item) => item.level === clampedLevel);
   for (let delta = 1; delta <= 5 && pool2.length === 0; delta++) {
-    pool2 = nonConsumable.filter((item) => Math.abs(item.level - targetLevel) <= delta);
+    pool2 = nonConsumable.filter((item) => Math.abs(item.level - clampedLevel) <= delta);
   }
   if (pool2.length === 0) pool2 = nonConsumable;
   const diffWeights = { normal: 1, expert: 1.5, legendary: 2, mythical: 3 };
@@ -77578,6 +79154,108 @@ async function progressDungeonKill(enemyId, characterId) {
     mainBossDefeated: run.mainBossDefeated,
     lootAwarded: []
   };
+}
+
+// src/routes/bestiary.ts
+var import_express7 = __toESM(require_express2(), 1);
+init_schema2();
+init_drizzle_orm();
+init_gameData();
+var router7 = (0, import_express7.Router)();
+var LORE_KILL_THRESHOLD = 10;
+router7.get("/bestiary", async (req, res) => {
+  const characterId = req.characterId;
+  const character = await getOrCreateCharacter(characterId);
+  const entries = await db.select().from(bestiaryTable).where(eq(bestiaryTable.characterId, character.id));
+  const entryMap = new Map(entries.map((e) => [e.enemyId, e]));
+  const result = entries.map((e) => {
+    const enemy = ENEMIES.find((en) => en.id === e.enemyId);
+    return {
+      enemyId: e.enemyId,
+      name: enemy?.name ?? e.enemyId,
+      level: enemy?.level ?? 0,
+      zone: enemy?.zone ?? "",
+      type: enemy?.type ?? "humanoid",
+      killCount: e.killCount,
+      firstKillAt: e.firstKillAt,
+      lastKillAt: e.lastKillAt,
+      loreUnlocked: e.loreUnlocked
+    };
+  });
+  return res.json({
+    entries: result,
+    totalDiscovered: entryMap.size,
+    totalEnemies: ENEMIES.length
+  });
+});
+router7.get("/bestiary/:enemyId", async (req, res) => {
+  const characterId = req.characterId;
+  const { enemyId } = req.params;
+  const character = await getOrCreateCharacter(characterId);
+  const enemy = ENEMIES.find((e) => e.id === enemyId);
+  if (!enemy) {
+    return res.status(404).json({ error: "Enemy not found" });
+  }
+  const [entry] = await db.select().from(bestiaryTable).where(
+    and(
+      eq(bestiaryTable.characterId, character.id),
+      eq(bestiaryTable.enemyId, enemyId)
+    )
+  ).limit(1);
+  const loreUnlocked = entry?.loreUnlocked ?? false;
+  return res.json({
+    enemyId: enemy.id,
+    name: enemy.name,
+    level: enemy.level,
+    zone: enemy.zone,
+    killCount: entry?.killCount ?? 0,
+    firstKillAt: entry?.firstKillAt ?? null,
+    lastKillAt: entry?.lastKillAt ?? null,
+    loreUnlocked,
+    description: loreUnlocked ? enemy.description : null,
+    abilities: loreUnlocked ? enemy.abilities : null,
+    resistances: loreUnlocked ? enemy.resistances : null,
+    lootTable: loreUnlocked ? enemy.lootTable : null
+  });
+});
+router7.post("/bestiary/:enemyId/kill", async (req, res) => {
+  const characterId = req.characterId;
+  const { enemyId } = req.params;
+  const character = await getOrCreateCharacter(characterId);
+  const entry = await recordBestiaryKill(character.id, enemyId);
+  return res.json(entry);
+});
+var bestiary_default = router7;
+async function recordBestiaryKill(characterId, enemyId) {
+  const now = /* @__PURE__ */ new Date();
+  const [existing] = await db.select().from(bestiaryTable).where(
+    and(
+      eq(bestiaryTable.characterId, characterId),
+      eq(bestiaryTable.enemyId, enemyId)
+    )
+  ).limit(1);
+  let killCount;
+  let loreUnlocked;
+  let newlyUnlocked = false;
+  if (existing) {
+    killCount = existing.killCount + 1;
+    loreUnlocked = existing.loreUnlocked || killCount >= LORE_KILL_THRESHOLD;
+    newlyUnlocked = !existing.loreUnlocked && loreUnlocked;
+    await db.update(bestiaryTable).set({ killCount, lastKillAt: now, loreUnlocked }).where(eq(bestiaryTable.id, existing.id));
+  } else {
+    killCount = 1;
+    loreUnlocked = killCount >= LORE_KILL_THRESHOLD;
+    newlyUnlocked = loreUnlocked;
+    await db.insert(bestiaryTable).values({
+      characterId,
+      enemyId,
+      killCount,
+      firstKillAt: now,
+      lastKillAt: now,
+      loreUnlocked
+    });
+  }
+  return { enemyId, killCount, loreUnlocked, newlyUnlocked };
 }
 
 // src/lib/partyEngine.ts
@@ -77727,8 +79405,8 @@ function rollZoneQuality(zone) {
   const jitter = Math.floor(Math.random() * 11) - 5;
   return Math.max(1, Math.min(100, base + jitter));
 }
-var router7 = (0, import_express7.Router)();
-var ALL_AA_NODES2 = AA_TABS.flatMap((tab) => tab.nodes);
+var router8 = (0, import_express8.Router)();
+var ALL_AA_NODES2 = ALL_AA_TABS.flatMap((tab) => tab.nodes);
 async function getOrCreateCombatState(characterId) {
   const states = await db.select().from(combatStateTable).where(eq(combatStateTable.characterId, characterId)).limit(1);
   if (states.length > 0) return states[0];
@@ -77776,6 +79454,8 @@ function computeGearStats(gear, baseStats, level) {
   let gearAttackRating = 0, gearDefenseRating = 0, gearMitigation = 0;
   let gearHaste = 0, gearCritChance = 0, gearWeaponDamageMin = 0, gearWeaponDamageMax = 0, gearWeaponDelay = 2;
   let gearHealth = 0, gearPower = 0, hasWeapon = false;
+  let gearStrength = 0, gearAgility = 0, gearStamina = 0;
+  let gearIntelligence = 0, gearWisdom = 0, gearCharisma = 0;
   for (const slotValue of Object.values(gear)) {
     let s = null;
     if (typeof slotValue === "string") {
@@ -77795,6 +79475,12 @@ function computeGearStats(gear, baseStats, level) {
     gearCritChance += s.critChance || 0;
     gearHealth += s.health || 0;
     gearPower += s.power || 0;
+    gearStrength += s.strength || 0;
+    gearAgility += s.agility || 0;
+    gearStamina += s.stamina || 0;
+    gearIntelligence += s.intelligence || 0;
+    gearWisdom += s.wisdom || 0;
+    gearCharisma += s.charisma || 0;
     if (s.weaponDamageMin) {
       gearWeaponDamageMin = s.weaponDamageMin;
       gearWeaponDamageMax = s.weaponDamageMax || s.weaponDamageMin * 2;
@@ -77806,7 +79492,7 @@ function computeGearStats(gear, baseStats, level) {
     gearWeaponDamageMin = baseStats.strength * 0.5 + level;
     gearWeaponDamageMax = baseStats.strength * 1 + level * 2;
   }
-  return { gearAttackRating, gearDefenseRating, gearMitigation, gearHaste, gearCritChance, gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay, gearHealth, gearPower };
+  return { gearAttackRating, gearDefenseRating, gearMitigation, gearHaste, gearCritChance, gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay, gearHealth, gearPower, gearStrength, gearAgility, gearStamina, gearIntelligence, gearWisdom, gearCharisma };
 }
 function shouldEnemyAbilityFirePassive(ability, tick, enemyHp, enemyMaxHp, cooldowns) {
   if (ability.triggerType === "on_hit_proc") return false;
@@ -77830,7 +79516,7 @@ function shouldOnHitProcFire(ability, cooldowns) {
   if (cd > 0) return false;
   return Math.random() * 100 < ability.triggerValue;
 }
-router7.get("/combat/state", async (req, res) => {
+router8.get("/combat/state", async (req, res) => {
   try {
     const characterId = req.characterId;
     res.json(formatCombatState(await getOrCreateCombatState(characterId)));
@@ -77839,7 +79525,7 @@ router7.get("/combat/state", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-router7.post("/combat/start", async (req, res) => {
+router8.post("/combat/start", async (req, res) => {
   try {
     const { enemyId } = req.body;
     const character = await getOrCreateCharacter(req.characterId);
@@ -77966,7 +79652,7 @@ router7.post("/combat/start", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router7.post("/combat/stop", async (req, res) => {
+router8.post("/combat/stop", async (req, res) => {
   try {
     const characterId = req.characterId;
     const state = await getOrCreateCombatState(characterId);
@@ -77994,7 +79680,7 @@ router7.post("/combat/stop", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-router7.post("/combat/tick", async (req, res) => {
+router8.post("/combat/tick", async (req, res) => {
   try {
     const characterId = req.characterId;
     const state = await getOrCreateCombatState(characterId);
@@ -78052,8 +79738,9 @@ router7.post("/combat/tick", async (req, res) => {
       if (sr.skillId === "defense") skillLevels.defense = sr.level;
       if (sr.skillId === "magic") skillLevels.magic = sr.level;
     }
-    const playerStats = computeStats({ level: character.level, ...baseStats, ...gearData, gearCritBonus: 0 }, aaBonuses, skillLevels);
-    const maxHp = Math.max(1, Math.floor((baseStats.stamina * 10 + 50 + (character.level - 1) * 15) * (1 + aaBonuses.maxHpPercent / 100)));
+    const playerStats = computeStats({ level: character.level, ...baseStats, ...gearData, gearCritBonus: 0, archetype: character.archetype ?? "Fighter" }, aaBonuses, skillLevels);
+    const effStamina = baseStats.stamina + gearData.gearStamina;
+    const maxHp = Math.max(1, Math.floor((effStamina * 10 + 50 + (character.level - 1) * 15 + gearData.gearHealth) * (1 + aaBonuses.maxHpPercent / 100)));
     const maxPower = playerStats.totalPower;
     const newTick = state.tick + 1;
     const combatMessages = [];
@@ -78094,7 +79781,7 @@ router7.post("/combat/tick", async (req, res) => {
     for (const key of Object.keys(playerAbilityCooldowns)) {
       if (playerAbilityCooldowns[key] > 0) playerAbilityCooldowns[key]--;
     }
-    const powerRegen = Math.max(1, Math.floor(baseStats.wisdom * 0.2 + 0.5));
+    const powerRegen = Math.max(1, Math.floor((baseStats.wisdom + gearData.gearWisdom) * 0.2 + 0.5));
     playerPower = Math.min(maxPower, playerPower + powerRegen);
     if (powerRegen > 0) {
       if (newTick % 5 === 0) {
@@ -78181,6 +79868,9 @@ router7.post("/combat/tick", async (req, res) => {
           const magicXp = 20 + Math.floor(character.level * 0.5);
           applySkillXp("magic", magicXp, character.id).catch(() => {
           });
+          const evocationXp = 15 + Math.floor(character.level * 0.4);
+          applySkillXp("evocation", evocationXp, character.id).catch(() => {
+          });
         }
       }
     }
@@ -78264,6 +79954,8 @@ router7.post("/combat/tick", async (req, res) => {
             combatMessages.push(da2Msg);
             await db.insert(combatLogTable).values({ characterId, tick: newTick, message: da2Msg, type: "playerCrit", value: dmg2 });
             aaProcs.push("double_attack");
+            applySkillXp("dual_wield", 15, character.id).catch(() => {
+            });
           }
         }
         if (aaBonuses.extraAttackChance > 0 && Math.random() * 100 < aaBonuses.extraAttackChance && enemyHp > 0) {
@@ -78324,6 +80016,8 @@ router7.post("/combat/tick", async (req, res) => {
         }
       }
       progressDungeonKill(enemy.id, characterId).catch(() => {
+      });
+      recordBestiaryKill(character.id, enemy.id).catch(() => {
       });
       progressKillObjectives(enemy.name).then(async (progressResults) => {
         for (const r of progressResults) {
@@ -78490,13 +80184,17 @@ router7.post("/combat/tick", async (req, res) => {
         combatMessages.push(collectMsg);
         await db.insert(combatLogTable).values({ characterId, tick: newTick, message: collectMsg, type: "loot" });
       }
-      const xpMsg = `\u2728 Gained ${xpGained} XP and ${goldGained}g.`;
+      const aaXpRatio = Math.max(0, Math.min(100, character.aaXpRatio ?? 0));
+      const aaXpDiverted = Math.floor(xpGained * aaXpRatio / 100);
+      const levelXpGained = xpGained - aaXpDiverted;
+      const aaPtsFromRatio = Math.floor(aaXpDiverted / 100);
+      const xpMsg = aaXpRatio > 0 ? `\u2728 Gained ${levelXpGained} XP, ${goldGained}g (+${aaPtsFromRatio > 0 ? aaPtsFromRatio + " AA" : aaXpDiverted + " AA XP"} from ${aaXpRatio}% ratio).` : `\u2728 Gained ${xpGained} XP and ${goldGained}g.`;
       combatMessages.push(xpMsg);
       await db.insert(combatLogTable).values({ characterId, tick: newTick, message: xpMsg, type: "info" });
-      let newXp = character.xp + xpGained;
+      let newXp = character.xp + levelXpGained;
       let newLevel = character.level;
       let newXpToNext = character.xpToNextLevel;
-      let aaPtsGained = 0;
+      let aaPtsGained = aaPtsFromRatio;
       while (newXp >= newXpToNext) {
         newXp -= newXpToNext;
         newLevel++;
@@ -78505,8 +80203,15 @@ router7.post("/combat/tick", async (req, res) => {
         await db.insert(combatLogTable).values({ characterId, tick: newTick, message: `\u{1F389} LEVEL UP! You are now level ${newLevel}!`, type: "info" });
       }
       const newGold = character.gold + goldGained;
-      const newMaxHealth = Math.floor((baseStats.stamina * 10 + 50 + (newLevel - 1) * 15) * (1 + aaBonuses.maxHpPercent / 100));
-      const newMaxPower = Math.floor(((baseStats.wisdom + baseStats.intelligence) * 5 + 20 + (newLevel - 1) * 8) * (1 + aaBonuses.maxPowerPercent / 100));
+      const effSta = baseStats.stamina + gearData.gearStamina;
+      const effWis = baseStats.wisdom + gearData.gearWisdom;
+      const effInt = baseStats.intelligence + gearData.gearIntelligence;
+      const newMaxHealth = Math.floor(
+        (effSta * 10 + 50 + (newLevel - 1) * 15 + gearData.gearHealth) * (1 + aaBonuses.maxHpPercent / 100)
+      );
+      const newMaxPower = Math.floor(
+        ((effWis + effInt) * 5 + effSta * 2 + newLevel * 10 + gearData.gearPower) * (1 + aaBonuses.maxPowerPercent / 100)
+      );
       const currentZoneKills = character.zoneKills ?? {};
       const updatedZoneKills = {
         ...currentZoneKills,
@@ -78539,6 +80244,11 @@ router7.post("/combat/tick", async (req, res) => {
         const killSkillXp = 40 + enemy.level * 3;
         applySkillXp(killSkillId, killSkillXp, character.id).catch(() => {
         });
+        if (enemy.type === "beast") {
+          const beastXp = 25 + enemy.level * 2;
+          applySkillXp("beastmastery", beastXp, character.id).catch(() => {
+          });
+        }
       }
       const factionImpact = {
         "Commonlands": 5,
@@ -78559,7 +80269,7 @@ router7.post("/combat/tick", async (req, res) => {
         progressFactionObjectives(alignFactionId, newStanding).catch(() => {
         });
       }
-      if (character.autoLoop) {
+      if (character.autoLoop && activeRunType !== "dungeon") {
         const updatedChar = await getOrCreateCharacter(req.characterId);
         const [updatedState3] = await db.update(combatStateTable).set({
           active: true,
@@ -78883,6 +80593,9 @@ router7.post("/combat/tick", async (req, res) => {
         const msg = `You evade ${enemy.name}'s attack!`;
         combatMessages.push(msg);
         await db.insert(combatLogTable).values({ characterId, tick: newTick, message: msg, type: "info" });
+        const parryXp = 8 + Math.floor(enemy.level * 0.5);
+        applySkillXp("parry", parryXp, character.id).catch(() => {
+        });
       } else {
         enemyActuallyHit = true;
         enemyDamageDealt += enemyAttack.damage;
@@ -79211,7 +80924,7 @@ router7.post("/combat/tick", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router7.get("/combat/log", async (req, res) => {
+router8.get("/combat/log", async (req, res) => {
   try {
     const logs = await db.select().from(combatLogTable).orderBy(desc(combatLogTable.createdAt)).limit(50);
     res.json(logs.reverse().map((l) => ({
@@ -79228,7 +80941,7 @@ router7.get("/combat/log", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-router7.get("/combat/enemies", async (req, res) => {
+router8.get("/combat/enemies", async (req, res) => {
   try {
     res.json(ENEMIES);
   } catch (err) {
@@ -79236,14 +80949,15 @@ router7.get("/combat/enemies", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-var combat_default = router7;
+var combat_default = router8;
 
 // src/routes/inventory.ts
-var import_express8 = __toESM(require_express2(), 1);
+var import_express9 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
 init_gameData();
-var router8 = (0, import_express8.Router)();
+var ALL_AA_NODES3 = AA_TABS.flatMap((tab) => tab.nodes);
+var router9 = (0, import_express9.Router)();
 function itemToRecord(item) {
   return {
     id: item.id,
@@ -79273,7 +80987,88 @@ function gearValue(itemId, itemData) {
   if (!getItemById(itemId)) return { ...itemData, id: itemId };
   return itemId;
 }
-router8.get("/inventory/gear", async (req, res) => {
+async function recomputeMaxStats(character, gear) {
+  const baseStats = character.baseStats;
+  const nodeDefsMap = new Map(ALL_AA_NODES3.map((n) => [n.id, n]));
+  const investedRows = await db.select().from(aaPointsTable).where(and(eq(aaPointsTable.characterId, character.id), gt(aaPointsTable.rank, 0)));
+  const investedNodes = investedRows.map((r) => {
+    const def = nodeDefsMap.get(r.nodeId);
+    if (!def) return null;
+    return { effect: def.effect, currentRank: r.rank, effectValue: def.effectValue, effectPerRank: def.effectPerRank };
+  }).filter((n) => n !== null);
+  const aaBonuses = investedNodes.length > 0 ? applyAABonuses(investedNodes) : makeZeroAABonuses();
+  let gearHealth = 0, gearPower = 0;
+  let gearAttackRating = 0, gearDefenseRating = 0, gearMitigation = 0;
+  let gearHaste = 0, gearCritChance = 0, gearCritBonus = 0;
+  let gearWeaponDamageMin = 0, gearWeaponDamageMax = 0, gearWeaponDelay = 2;
+  let hasWeapon = false;
+  let gearStrength = 0, gearAgility = 0, gearStamina = 0;
+  let gearIntelligence = 0, gearWisdom = 0, gearCharisma = 0;
+  for (const slotValue of Object.values(gear)) {
+    let s = null;
+    if (typeof slotValue === "string") {
+      const it = getItemById(slotValue);
+      if (it?.stats) s = it.stats;
+    } else if (slotValue && typeof slotValue === "object") {
+      const obj = slotValue;
+      if (obj.stats && typeof obj.stats === "object") s = obj.stats;
+    }
+    if (!s) continue;
+    gearHealth += s.health || 0;
+    gearPower += s.power || 0;
+    gearAttackRating += s.attackRating || 0;
+    gearDefenseRating += s.defenseRating || 0;
+    gearMitigation += s.mitigation || 0;
+    gearHaste += s.haste || 0;
+    gearCritChance += s.critChance || 0;
+    gearCritBonus += s.critBonus || 0;
+    gearStrength += s.strength || 0;
+    gearAgility += s.agility || 0;
+    gearStamina += s.stamina || 0;
+    gearIntelligence += s.intelligence || 0;
+    gearWisdom += s.wisdom || 0;
+    gearCharisma += s.charisma || 0;
+    if (s.weaponDamageMin) {
+      gearWeaponDamageMin = s.weaponDamageMin;
+      gearWeaponDamageMax = s.weaponDamageMax || s.weaponDamageMin * 2;
+      gearWeaponDelay = s.weaponDelay || 2;
+      hasWeapon = true;
+    }
+  }
+  if (!hasWeapon) {
+    gearWeaponDamageMin = baseStats.strength * 0.5 + character.level;
+    gearWeaponDamageMax = baseStats.strength * 1 + character.level * 2;
+  }
+  const computed = computeStats({
+    level: character.level,
+    ...baseStats,
+    gearAttackRating,
+    gearDefenseRating,
+    gearMitigation,
+    gearHaste,
+    gearCritChance,
+    gearCritBonus,
+    gearWeaponDamageMin,
+    gearWeaponDamageMax,
+    gearWeaponDelay,
+    gearHealth,
+    gearPower,
+    gearStrength,
+    gearAgility,
+    gearStamina,
+    gearIntelligence,
+    gearWisdom,
+    gearCharisma,
+    archetype: character.archetype ?? "Fighter"
+  }, aaBonuses);
+  const effStamina = baseStats.stamina + gearStamina;
+  const newMaxHealth = Math.max(1, Math.floor(
+    (effStamina * 10 + 50 + (character.level - 1) * 15 + gearHealth) * (1 + aaBonuses.maxHpPercent / 100)
+  ));
+  const newMaxPower = computed.totalPower;
+  return { newMaxHealth, newMaxPower };
+}
+router9.get("/inventory/gear", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const gear = character.gear || {};
@@ -79292,7 +81087,7 @@ router8.get("/inventory/gear", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router8.get("/inventory", async (req, res) => {
+router9.get("/inventory", async (req, res) => {
   try {
     const characterId = req.characterId;
     const items = await db.select().from(inventoryTable).where(eq(inventoryTable.characterId, characterId));
@@ -79306,7 +81101,7 @@ router8.get("/inventory", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router8.post("/inventory/equip", async (req, res) => {
+router9.post("/inventory/equip", async (req, res) => {
   try {
     const characterId = req.characterId;
     const { itemId, slot: rawSlot } = req.body;
@@ -79351,7 +81146,10 @@ router8.post("/inventory/equip", async (req, res) => {
     await db.delete(inventoryTable).where(
       and(eq(inventoryTable.characterId, characterId), eq(inventoryTable.itemId, itemId))
     );
-    await db.update(charactersTable).set({ gear, updatedAt: /* @__PURE__ */ new Date() }).where(eq(charactersTable.id, character.id));
+    const { newMaxHealth, newMaxPower } = await recomputeMaxStats(character, gear);
+    const newHealth = Math.min(character.health, newMaxHealth);
+    const newPower = Math.min(character.power, newMaxPower);
+    await db.update(charactersTable).set({ gear, maxHealth: newMaxHealth, maxPower: newMaxPower, health: newHealth, power: newPower, updatedAt: /* @__PURE__ */ new Date() }).where(eq(charactersTable.id, character.id));
     const formattedGear = {};
     for (const [gSlot, gValue] of Object.entries(gear)) {
       if (typeof gValue === "string") {
@@ -79367,7 +81165,7 @@ router8.post("/inventory/equip", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router8.post("/inventory/unequip", async (req, res) => {
+router9.post("/inventory/unequip", async (req, res) => {
   try {
     const characterId = req.characterId;
     const { slot } = req.body;
@@ -79395,7 +81193,10 @@ router8.post("/inventory/unequip", async (req, res) => {
       }
     }
     delete gear[slot];
-    await db.update(charactersTable).set({ gear, updatedAt: /* @__PURE__ */ new Date() }).where(eq(charactersTable.id, character.id));
+    const { newMaxHealth, newMaxPower } = await recomputeMaxStats(character, gear);
+    const newHealth = Math.min(character.health, newMaxHealth);
+    const newPower = Math.min(character.power, newMaxPower);
+    await db.update(charactersTable).set({ gear, maxHealth: newMaxHealth, maxPower: newMaxPower, health: newHealth, power: newPower, updatedAt: /* @__PURE__ */ new Date() }).where(eq(charactersTable.id, character.id));
     const formattedGear = {};
     for (const [gSlot, gValue] of Object.entries(gear)) {
       if (typeof gValue === "string") {
@@ -79411,7 +81212,7 @@ router8.post("/inventory/unequip", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router8.post("/inventory/sell", async (req, res) => {
+router9.post("/inventory/sell", async (req, res) => {
   try {
     const characterId = req.characterId;
     const { itemId, quantity } = req.body;
@@ -79439,7 +81240,7 @@ router8.post("/inventory/sell", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router8.post("/inventory/use", async (req, res) => {
+router9.post("/inventory/use", async (req, res) => {
   try {
     const characterId = req.characterId;
     const { itemId } = req.body;
@@ -79467,7 +81268,7 @@ router8.post("/inventory/use", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router8.post("/inventory/sell-all", async (req, res) => {
+router9.post("/inventory/sell-all", async (req, res) => {
   try {
     const characterId = req.characterId;
     const character = await getOrCreateCharacter(req.characterId);
@@ -79500,13 +81301,13 @@ router8.post("/inventory/sell-all", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-var inventory_default = router8;
+var inventory_default = router9;
 
 // src/routes/items.ts
-var import_express9 = __toESM(require_express2(), 1);
+var import_express10 = __toESM(require_express2(), 1);
 init_gameData();
-var router9 = (0, import_express9.Router)();
-router9.get("/items", (req, res) => {
+var router10 = (0, import_express10.Router)();
+router10.get("/items", (req, res) => {
   try {
     let items = [...ITEMS];
     const { type, slot, minLevel, maxLevel } = req.query;
@@ -79525,7 +81326,7 @@ router9.get("/items", (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router9.get("/items/:itemId", (req, res) => {
+router10.get("/items/:itemId", (req, res) => {
   try {
     const item = getItemById(req.params.itemId);
     if (!item) return res.status(404).json({ error: "Item not found" });
@@ -79540,7 +81341,7 @@ router9.get("/items/:itemId", (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router9.get("/enemies", (req, res) => {
+router10.get("/enemies", (req, res) => {
   try {
     let enemies = [...ENEMIES];
     const { zone, minLevel, maxLevel } = req.query;
@@ -79552,21 +81353,21 @@ router9.get("/enemies", (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router9.get("/crafting/recipes", (req, res) => {
+router10.get("/crafting/recipes", (req, res) => {
   try {
     return res.json(CRAFTING_RECIPES);
   } catch (err) {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-var items_default = router9;
+var items_default = router10;
 
 // src/routes/crafting.ts
-var import_express10 = __toESM(require_express2(), 1);
+var import_express11 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
 init_gameData();
-var router10 = (0, import_express10.Router)();
+var router11 = (0, import_express11.Router)();
 var JOURNEYMAN_RECIPE_IDS = CRAFTING_RECIPES.filter((r) => r.tier === "journeyman").map((r) => r.id);
 var RARITY_ORDER2 = ["common", "uncommon", "rare", "legendary", "fabled", "mythical"];
 function bumpRarity(rarity) {
@@ -79599,7 +81400,7 @@ function applyFocusBoost(stats, focus, points, resourceQuality) {
   }
   return boostedStats;
 }
-router10.get("/crafting/known-recipes", async (req, res) => {
+router11.get("/crafting/known-recipes", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const known = await db.select({ recipeId: knownRecipesTable.recipeId }).from(knownRecipesTable).where(eq(knownRecipesTable.characterId, character.id));
@@ -79619,7 +81420,7 @@ router10.get("/crafting/known-recipes", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router10.post("/crafting/learn-recipe", async (req, res) => {
+router11.post("/crafting/learn-recipe", async (req, res) => {
   try {
     const { scrollItemId } = req.body;
     if (!scrollItemId) {
@@ -79672,7 +81473,7 @@ router10.post("/crafting/learn-recipe", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router10.post("/crafting/craft", async (req, res) => {
+router11.post("/crafting/craft", async (req, res) => {
   try {
     const {
       recipeId,
@@ -79716,11 +81517,14 @@ router10.post("/crafting/craft", async (req, res) => {
       Math.max(1, experimentPoints ?? maxExperimentPoints)
     );
     const currentInventory = await db.select().from(inventoryTable).where(eq(inventoryTable.characterId, character.id));
+    const bagItems = await db.select().from(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.characterId, character.id));
     const inventoryMap = new Map(currentInventory.map((i) => [i.itemId, i]));
+    const bagMap = new Map(bagItems.map((i) => [i.itemId, i]));
     for (const ingredient of recipe.ingredients) {
-      const invRow = inventoryMap.get(ingredient.itemId);
-      const have = invRow?.quantity || 0;
-      if (have < ingredient.quantity) {
+      const invQty = inventoryMap.get(ingredient.itemId)?.quantity ?? 0;
+      const bagQty = bagMap.get(ingredient.itemId)?.quantity ?? 0;
+      const totalQty = invQty + bagQty;
+      if (totalQty < ingredient.quantity) {
         const ingredientItem = getItemById(ingredient.itemId);
         return res.json({
           success: false,
@@ -79731,10 +81535,24 @@ router10.post("/crafting/craft", async (req, res) => {
     }
     const qualityScores = [];
     for (const ingredient of recipe.ingredients) {
+      let remaining = ingredient.quantity;
       const invRow = inventoryMap.get(ingredient.itemId);
-      const data = invRow?.itemData;
-      const quality = typeof data?.quality === "number" ? data.quality : 50;
-      for (let q = 0; q < ingredient.quantity; q++) qualityScores.push(quality);
+      if (invRow && invRow.quantity > 0) {
+        const invUsed = Math.min(invRow.quantity, remaining);
+        const invData = invRow.itemData;
+        const invQuality = typeof invData?.quality === "number" ? invData.quality : 50;
+        for (let q = 0; q < invUsed; q++) qualityScores.push(invQuality);
+        remaining -= invUsed;
+      }
+      if (remaining > 0) {
+        const bagRow = bagMap.get(ingredient.itemId);
+        if (bagRow) {
+          const bagUsed = Math.min(bagRow.quantity, remaining);
+          const bagData = bagRow.itemData;
+          const bagQuality = typeof bagData?.quality === "number" ? bagData.quality : 50;
+          for (let q = 0; q < bagUsed; q++) qualityScores.push(bagQuality);
+        }
+      }
     }
     const resourceQuality = qualityScores.length > 0 ? Math.round(qualityScores.reduce((a, b) => a + b, 0) / qualityScores.length) : 50;
     const critChance = (skillLevel + resourceQuality) / 200;
@@ -79778,12 +81596,29 @@ router10.post("/crafting/craft", async (req, res) => {
         });
       }
       for (const ingredient of recipe.ingredients) {
+        let remaining = ingredient.quantity;
         const invRow = inventoryMap.get(ingredient.itemId);
-        const remaining = invRow.quantity - ingredient.quantity;
-        if (remaining <= 0) {
-          await tx.delete(inventoryTable).where(and(eq(inventoryTable.characterId, character.id), eq(inventoryTable.itemId, ingredient.itemId)));
-        } else {
-          await tx.update(inventoryTable).set({ quantity: remaining }).where(and(eq(inventoryTable.characterId, character.id), eq(inventoryTable.itemId, ingredient.itemId)));
+        if (invRow && invRow.quantity > 0) {
+          const invUsed = Math.min(invRow.quantity, remaining);
+          const invRemaining = invRow.quantity - invUsed;
+          if (invRemaining <= 0) {
+            await tx.delete(inventoryTable).where(and(eq(inventoryTable.characterId, character.id), eq(inventoryTable.itemId, ingredient.itemId)));
+          } else {
+            await tx.update(inventoryTable).set({ quantity: invRemaining }).where(and(eq(inventoryTable.characterId, character.id), eq(inventoryTable.itemId, ingredient.itemId)));
+          }
+          remaining -= invUsed;
+        }
+        if (remaining > 0) {
+          const bagRow = bagMap.get(ingredient.itemId);
+          if (bagRow) {
+            const bagUsed = Math.min(bagRow.quantity, remaining);
+            const bagRemaining = bagRow.quantity - bagUsed;
+            if (bagRemaining <= 0) {
+              await tx.delete(gatheringBagItemsTable).where(and(eq(gatheringBagItemsTable.characterId, character.id), eq(gatheringBagItemsTable.itemId, ingredient.itemId)));
+            } else {
+              await tx.update(gatheringBagItemsTable).set({ quantity: bagRemaining }).where(and(eq(gatheringBagItemsTable.characterId, character.id), eq(gatheringBagItemsTable.itemId, ingredient.itemId)));
+            }
+          }
         }
       }
       await tx.insert(inventoryTable).values({
@@ -79834,14 +81669,50 @@ router10.post("/crafting/craft", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-var crafting_default = router10;
+router11.get("/crafting/pins", async (req, res) => {
+  try {
+    const character = await getOrCreateCharacter(req.characterId);
+    const pinned = character.pinnedRecipes ?? [];
+    return res.json({ pinned });
+  } catch (err) {
+    req.log.error({ err }, "Error fetching pins");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+router11.post("/crafting/pins", async (req, res) => {
+  try {
+    const { pinned } = req.body;
+    if (!Array.isArray(pinned)) {
+      return res.status(400).json({ error: "pinned must be an array of recipe IDs" });
+    }
+    if (pinned.some((id) => typeof id !== "string")) {
+      return res.status(400).json({ error: "Each pinned entry must be a string recipe ID" });
+    }
+    const uniquePinned = [...new Set(pinned)];
+    if (uniquePinned.length > 10) {
+      return res.status(400).json({ error: "Cannot pin more than 10 recipes" });
+    }
+    const allRecipeIds = new Set(CRAFTING_RECIPES.map((r) => r.id));
+    const invalid = uniquePinned.filter((id) => !allRecipeIds.has(id));
+    if (invalid.length > 0) {
+      return res.status(400).json({ error: `Unknown recipe ID(s): ${invalid.join(", ")}` });
+    }
+    const character = await getOrCreateCharacter(req.characterId);
+    await db.update(charactersTable).set({ pinnedRecipes: uniquePinned, updatedAt: /* @__PURE__ */ new Date() }).where(eq(charactersTable.id, character.id));
+    return res.json({ pinned: uniquePinned });
+  } catch (err) {
+    req.log.error({ err }, "Error saving pins");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+var crafting_default = router11;
 
 // src/routes/game.ts
-var import_express11 = __toESM(require_express2(), 1);
+var import_express12 = __toESM(require_express2(), 1);
 init_drizzle_orm();
 init_schema2();
-var router11 = (0, import_express11.Router)();
-router11.get("/game/summary", async (req, res) => {
+var router12 = (0, import_express12.Router)();
+router12.get("/game/summary", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const characterId = req.characterId;
@@ -79868,16 +81739,16 @@ router11.get("/game/summary", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-var game_default = router11;
+var game_default = router12;
 
 // src/routes/creation.ts
-var import_express12 = __toESM(require_express2(), 1);
+var import_express13 = __toESM(require_express2(), 1);
 init_schema2();
 init_gameData();
 init_drizzle_orm();
 init_drizzle_orm();
-var router12 = (0, import_express12.Router)();
-router12.get("/creation/options", async (req, res) => {
+var router13 = (0, import_express13.Router)();
+router13.get("/creation/options", async (req, res) => {
   try {
     return res.json({
       races: RACES.map((r) => ({
@@ -79913,7 +81784,7 @@ router12.get("/creation/options", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router12.post("/creation/create", async (req, res) => {
+router13.post("/creation/create", async (req, res) => {
   try {
     if (!req.session.userId) {
       return res.status(401).json({ error: "You must be logged in to create a character" });
@@ -80009,13 +81880,13 @@ router12.post("/creation/create", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-var creation_default = router12;
+var creation_default = router13;
 
 // src/routes/abilities.ts
-var import_express13 = __toESM(require_express2(), 1);
+var import_express14 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
-var router13 = (0, import_express13.Router)();
+var router14 = (0, import_express14.Router)();
 var CLASS_FALLBACKS = {
   warrior: "guardian",
   fighter: "guardian",
@@ -80046,7 +81917,7 @@ async function getClassAbilities(className) {
   }
   return CLASSES[0]?.abilities ?? [];
 }
-router13.get("/abilities", async (req, res) => {
+router14.get("/abilities", async (req, res) => {
   try {
     const characterId = req.characterId;
     const character = await getOrCreateCharacter(req.characterId);
@@ -80069,7 +81940,7 @@ router13.get("/abilities", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router13.post("/abilities/:abilityId/activate", async (req, res) => {
+router14.post("/abilities/:abilityId/activate", async (req, res) => {
   try {
     const characterId = req.characterId;
     const { abilityId } = req.params;
@@ -80131,14 +82002,14 @@ router13.post("/abilities/:abilityId/activate", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-var abilities_default = router13;
+var abilities_default = router14;
 
 // src/routes/shop.ts
-var import_express14 = __toESM(require_express2(), 1);
+var import_express15 = __toESM(require_express2(), 1);
 init_schema2();
 init_gameData();
 init_drizzle_orm();
-var router14 = (0, import_express14.Router)();
+var router15 = (0, import_express15.Router)();
 var MOUNT_ITEMS = [
   { id: "horse_brown", name: "Brown Horse", type: "mount", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 500, buyPrice: 1e3, spriteId: "mount_horse_brown", description: "A sturdy riding horse" },
   { id: "horse_black", name: "Black Stallion", type: "mount", slot: "none", rarity: "uncommon", level: 10, stats: {}, sellPrice: 1250, buyPrice: 2500, spriteId: "mount_horse_black", description: "A magnificent black stallion" },
@@ -80161,7 +82032,7 @@ async function getMarketMultipliers() {
     return {};
   }
 }
-router14.get("/shop/market-pulse", async (_req, res) => {
+router15.get("/shop/market-pulse", async (_req, res) => {
   try {
     const rows = await db.select().from(ghostMarketDemandTable);
     const result = rows.map((row) => {
@@ -80189,7 +82060,7 @@ router14.get("/shop/market-pulse", async (_req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router14.get("/shop", async (req, res) => {
+router15.get("/shop", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const zone = req.query.zone || character.zone;
@@ -80259,7 +82130,7 @@ router14.get("/shop", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router14.post("/shop/buy", async (req, res) => {
+router15.post("/shop/buy", async (req, res) => {
   try {
     const { itemId, quantity = 1, merchantStockIndex } = req.body;
     const character = await getOrCreateCharacter(req.characterId);
@@ -80344,14 +82215,14 @@ router14.post("/shop/buy", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-var shop_default = router14;
+var shop_default = router15;
 
 // src/routes/zones.ts
-var import_express15 = __toESM(require_express2(), 1);
+var import_express16 = __toESM(require_express2(), 1);
 init_schema2();
 init_gameData();
 init_drizzle_orm();
-var router15 = (0, import_express15.Router)();
+var router16 = (0, import_express16.Router)();
 var DUNGEON_ENEMY_IDS = /* @__PURE__ */ new Set();
 for (const dungeon of DUNGEONS) {
   DUNGEON_ENEMY_IDS.add(dungeon.mainBossId);
@@ -80360,7 +82231,7 @@ for (const dungeon of DUNGEONS) {
     if (floor.miniBossId) DUNGEON_ENEMY_IDS.add(floor.miniBossId);
   }
 }
-router15.get("/zones", async (req, res) => {
+router16.get("/zones", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const zones = ZONES.map((zone) => {
@@ -80388,7 +82259,7 @@ router15.get("/zones", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router15.post("/zones/:zoneId/travel", async (req, res) => {
+router16.post("/zones/:zoneId/travel", async (req, res) => {
   try {
     const { zoneId } = req.params;
     const character = await getOrCreateCharacter(req.characterId);
@@ -80408,13 +82279,13 @@ router15.post("/zones/:zoneId/travel", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-var zones_default = router15;
+var zones_default = router16;
 
 // src/routes/factions.ts
-var import_express16 = __toESM(require_express2(), 1);
+var import_express17 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
-var router16 = (0, import_express16.Router)();
+var router17 = (0, import_express17.Router)();
 function getStandingTitle(standing) {
   if (standing <= -2e3) return "Hated";
   if (standing <= -1e3) return "Threatening";
@@ -80426,7 +82297,7 @@ function getStandingTitle(standing) {
   if (standing < 2e3) return "Warmly";
   return "Ally";
 }
-router16.get("/factions", async (req, res) => {
+router17.get("/factions", async (req, res) => {
   try {
     const characterId = req.characterId;
     const dbFactions = await db.select().from(factionsTable).where(eq(factionsTable.characterId, characterId));
@@ -80456,99 +82327,186 @@ router16.get("/factions", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-var factions_default = router16;
+var factions_default = router17;
 
 // src/routes/aa.ts
-var import_express17 = __toESM(require_express2(), 1);
+var import_express18 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
-var router17 = (0, import_express17.Router)();
-router17.get("/aa/tree", async (req, res) => {
-  try {
-    const characterId = req.characterId;
-    const character = await getOrCreateCharacter(req.characterId);
-    const dbPoints = await db.select().from(aaPointsTable).where(eq(aaPointsTable.characterId, characterId));
-    const spentMap = new Map(dbPoints.map((p) => [p.nodeId, p.rank]));
-    const archetype = character.archetype ?? "Fighter";
-    const relevantTabs = AA_TABS.filter((tab) => tab.archetype === archetype || tab.archetype === "All");
-    const tabs = relevantTabs.map((tab) => ({
+var router18 = (0, import_express18.Router)();
+function buildTabs(character, spentMap, totalSpent) {
+  const archetype = character.archetype ?? "Fighter";
+  const charClass = (character.class ?? "").toLowerCase();
+  return ALL_AA_TABS.filter((tab) => {
+    if (tab.tabType === "prestige") {
+      return tab.classId === charClass;
+    }
+    if (tab.tabType === "class") {
+      return tab.classId === charClass;
+    }
+    if (tab.tabType === "tradeskill") return true;
+    return tab.archetype === archetype || tab.archetype === "All";
+  }).map((tab) => {
+    const nodesWithRanks = tab.nodes.map((node) => ({
+      ...node,
+      currentRank: spentMap.get(node.id) ?? 0
+    }));
+    let chosenPrestigePath = null;
+    if (tab.tabType === "prestige") {
+      const hasLeft = nodesWithRanks.some((n) => n.prestigePath === "left" && n.currentRank > 0);
+      const hasRight = nodesWithRanks.some((n) => n.prestigePath === "right" && n.currentRank > 0);
+      if (hasLeft) chosenPrestigePath = "left";
+      if (hasRight) chosenPrestigePath = "right";
+    }
+    return {
       id: tab.id,
       name: tab.name,
-      nodes: tab.nodes.map((node) => ({ ...node, currentRank: spentMap.get(node.id) ?? 0 }))
-    }));
+      tabType: tab.tabType ?? "archetype",
+      classId: tab.classId,
+      prestigeMinSpent: tab.prestigeMinSpent,
+      prestigeLeftName: tab.prestigeLeftName,
+      prestigeRightName: tab.prestigeRightName,
+      isLocked: tab.tabType === "prestige" && totalSpent < (tab.prestigeMinSpent ?? 50),
+      chosenPrestigePath,
+      nodes: nodesWithRanks
+    };
+  });
+}
+router18.get("/aa/tree", async (req, res) => {
+  try {
+    const characterId = req.characterId;
+    const character = await getOrCreateCharacter(characterId);
+    const dbPoints = await db.select().from(aaPointsTable).where(eq(aaPointsTable.characterId, characterId));
+    const spentMap = new Map(dbPoints.map((p) => [p.nodeId, p.rank]));
     const totalSpent = dbPoints.reduce((sum, p) => sum + p.rank, 0);
     return res.json({
       totalPoints: character.aaPoints ?? 0,
       spentPoints: totalSpent,
       availablePoints: (character.aaPoints ?? 0) - totalSpent,
-      tabs
+      aaXpRatio: character.aaXpRatio ?? 0,
+      aaRespecUsed: character.aaRespecUsed ?? false,
+      tabs: buildTabs(character, spentMap, totalSpent)
     });
   } catch (err) {
     req.log.error({ err }, "Error getting AA tree");
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router17.post("/aa/spend", async (req, res) => {
+router18.post("/aa/spend", async (req, res) => {
   try {
     const characterId = req.characterId;
     const { nodeId } = req.body;
-    const character = await getOrCreateCharacter(req.characterId);
-    let nodeFound = false;
-    let maxRank = 1;
-    let pointsPerRank = 1;
-    for (const tab of AA_TABS) {
-      const node = tab.nodes.find((n) => n.id === nodeId);
-      if (node) {
-        nodeFound = true;
-        maxRank = node.maxRank;
-        pointsPerRank = node.pointsPerRank;
+    const character = await getOrCreateCharacter(characterId);
+    let foundNode;
+    let foundTab;
+    for (const tab of ALL_AA_TABS) {
+      const n = tab.nodes.find((n2) => n2.id === nodeId);
+      if (n) {
+        foundNode = n;
+        foundTab = tab;
         break;
       }
     }
-    if (!nodeFound) return res.status(404).json({ error: "AA node not found" });
+    if (!foundNode || !foundTab) return res.status(404).json({ error: "AA node not found" });
+    const dbPoints = await db.select().from(aaPointsTable).where(eq(aaPointsTable.characterId, characterId));
+    const spentMap = new Map(dbPoints.map((p) => [p.nodeId, p.rank]));
+    const totalSpent = dbPoints.reduce((sum, p) => sum + p.rank, 0);
+    if (foundTab.tabType === "prestige") {
+      if (totalSpent < (foundTab.prestigeMinSpent ?? 50)) {
+        return res.status(400).json({ error: `Prestige unlocks after spending ${foundTab.prestigeMinSpent ?? 50} AA points` });
+      }
+      if (foundNode.prestigePath) {
+        const otherPath = foundNode.prestigePath === "left" ? "right" : "left";
+        const otherPathNodes = foundTab.nodes.filter((n) => n.prestigePath === otherPath);
+        const hasOtherPath = otherPathNodes.some((n) => (spentMap.get(n.id) ?? 0) > 0);
+        if (hasOtherPath) {
+          return res.status(400).json({ error: "You have already chosen a prestige path" });
+        }
+      }
+    }
+    const currentRank = spentMap.get(nodeId) ?? 0;
+    if (currentRank >= foundNode.maxRank) return res.status(400).json({ error: "Already at maximum rank" });
+    const available = (character.aaPoints ?? 0) - totalSpent;
+    if (available < foundNode.pointsPerRank) return res.status(400).json({ error: "Not enough AA points" });
+    const charClass = (character.class ?? "").toLowerCase();
+    const relevantTabNodes = foundTab.nodes;
+    const prereqsMet = foundNode.requires.every((reqId) => (spentMap.get(reqId) ?? 0) > 0);
+    if (!prereqsMet) return res.status(400).json({ error: "Prerequisites not met" });
     const [existing] = await db.select().from(aaPointsTable).where(
       and(eq(aaPointsTable.characterId, characterId), eq(aaPointsTable.nodeId, nodeId))
     );
-    const currentRank = existing?.rank ?? 0;
-    if (currentRank >= maxRank) return res.status(400).json({ error: "Already at maximum rank" });
-    const dbPoints = await db.select().from(aaPointsTable).where(eq(aaPointsTable.characterId, characterId));
-    const totalSpent = dbPoints.reduce((sum, p) => sum + p.rank, 0);
-    const available = (character.aaPoints ?? 0) - totalSpent;
-    if (available < pointsPerRank) return res.status(400).json({ error: "Not enough AA points" });
     if (existing) {
       await db.update(aaPointsTable).set({ rank: currentRank + 1 }).where(eq(aaPointsTable.id, existing.id));
     } else {
       await db.insert(aaPointsTable).values({ characterId, nodeId, rank: 1 });
     }
-    await db.update(charactersTable).set({ aaPointsSpent: (character.aaPointsSpent ?? 0) + pointsPerRank, updatedAt: /* @__PURE__ */ new Date() }).where(eq(charactersTable.id, character.id));
+    await db.update(charactersTable).set({ aaPointsSpent: (character.aaPointsSpent ?? 0) + foundNode.pointsPerRank, updatedAt: /* @__PURE__ */ new Date() }).where(eq(charactersTable.id, character.id));
     const updatedPoints = await db.select().from(aaPointsTable).where(eq(aaPointsTable.characterId, characterId));
-    const spentMap = new Map(updatedPoints.map((p) => [p.nodeId, p.rank]));
-    const archetype = character.archetype ?? "Fighter";
-    const relevantTabs = AA_TABS.filter((tab) => tab.archetype === archetype || tab.archetype === "All");
-    const tabs = relevantTabs.map((tab) => ({
-      id: tab.id,
-      name: tab.name,
-      nodes: tab.nodes.map((node) => ({ ...node, currentRank: spentMap.get(node.id) ?? 0 }))
-    }));
+    const updatedSpentMap = new Map(updatedPoints.map((p) => [p.nodeId, p.rank]));
     const newTotalSpent = updatedPoints.reduce((sum, p) => sum + p.rank, 0);
     return res.json({
       totalPoints: character.aaPoints ?? 0,
       spentPoints: newTotalSpent,
       availablePoints: (character.aaPoints ?? 0) - newTotalSpent,
-      tabs
+      aaXpRatio: character.aaXpRatio ?? 0,
+      aaRespecUsed: character.aaRespecUsed ?? false,
+      tabs: buildTabs(character, updatedSpentMap, newTotalSpent)
     });
   } catch (err) {
     req.log.error({ err }, "Error spending AA point");
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-var aa_default = router17;
+router18.post("/aa/xp-ratio", async (req, res) => {
+  try {
+    const characterId = req.characterId;
+    const { ratio } = req.body;
+    const parsed = parseInt(ratio, 10);
+    if (isNaN(parsed) || parsed < 0 || parsed > 100) {
+      return res.status(400).json({ error: "Ratio must be 0-100" });
+    }
+    await db.update(charactersTable).set({ aaXpRatio: parsed, updatedAt: /* @__PURE__ */ new Date() }).where(eq(charactersTable.id, (await getOrCreateCharacter(characterId)).id));
+    return res.json({ aaXpRatio: parsed });
+  } catch (err) {
+    req.log.error({ err }, "Error setting AA XP ratio");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+var RESPEC_COST = 1e4;
+router18.post("/aa/respec", async (req, res) => {
+  try {
+    const characterId = req.characterId;
+    const character = await getOrCreateCharacter(characterId);
+    if (character.aaRespecUsed) {
+      return res.status(400).json({ error: "You have already used your respec" });
+    }
+    if ((character.gold ?? 0) < RESPEC_COST) {
+      return res.status(400).json({ error: `Respec costs ${RESPEC_COST.toLocaleString()} gold` });
+    }
+    await db.delete(aaPointsTable).where(eq(aaPointsTable.characterId, characterId));
+    await db.update(charactersTable).set({
+      gold: (character.gold ?? 0) - RESPEC_COST,
+      aaPointsSpent: 0,
+      aaRespecUsed: true,
+      updatedAt: /* @__PURE__ */ new Date()
+    }).where(eq(charactersTable.id, character.id));
+    return res.json({
+      success: true,
+      goldSpent: RESPEC_COST,
+      message: "All AA points have been refunded. Spend them again wisely."
+    });
+  } catch (err) {
+    req.log.error({ err }, "Error processing AA respec");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+var aa_default = router18;
 
 // src/routes/heroic.ts
-var import_express18 = __toESM(require_express2(), 1);
+var import_express19 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
-var router18 = (0, import_express18.Router)();
+var router19 = (0, import_express19.Router)();
 function getChainForClass(className, archetype) {
   if (archetype === "Mage") return HEROIC_CHAINS.find((c) => c.id === "mage_chain");
   if (archetype === "Priest") return HEROIC_CHAINS.find((c) => c.id === "divine_chain");
@@ -80568,7 +82526,7 @@ async function getOrCreateHeroicState(characterId) {
   }).returning();
   return created;
 }
-router18.get("/heroic/state", async (req, res) => {
+router19.get("/heroic/state", async (req, res) => {
   try {
     const characterId = req.characterId;
     const state = await getOrCreateHeroicState(characterId);
@@ -80594,7 +82552,7 @@ router18.get("/heroic/state", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router18.post("/heroic/trigger", async (req, res) => {
+router19.post("/heroic/trigger", async (req, res) => {
   try {
     const characterId = req.characterId;
     const { triggerType } = req.body;
@@ -80654,14 +82612,14 @@ router18.post("/heroic/trigger", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-var heroic_default = router18;
+var heroic_default = router19;
 
 // src/routes/adornments.ts
-var import_express19 = __toESM(require_express2(), 1);
+var import_express20 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
-var router19 = (0, import_express19.Router)();
-router19.get("/adornments", async (req, res) => {
+var router20 = (0, import_express20.Router)();
+router20.get("/adornments", async (req, res) => {
   try {
     const characterId = req.characterId;
     const inventory = await db.select().from(inventoryTable).where(eq(inventoryTable.characterId, characterId));
@@ -80691,7 +82649,7 @@ router19.get("/adornments", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router19.get("/adornments/catalog", async (req, res) => {
+router20.get("/adornments/catalog", async (req, res) => {
   try {
     const characterId = req.characterId;
     const inventory = await db.select().from(inventoryTable).where(eq(inventoryTable.characterId, characterId));
@@ -80725,7 +82683,7 @@ router19.get("/adornments/catalog", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router19.get("/adornments/applied", async (req, res) => {
+router20.get("/adornments/applied", async (req, res) => {
   try {
     const characterId = req.characterId;
     const rows = await db.select().from(adornmentsTable).where(eq(adornmentsTable.characterId, characterId));
@@ -80739,7 +82697,7 @@ router19.get("/adornments/applied", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router19.post("/adornments/apply", async (req, res) => {
+router20.post("/adornments/apply", async (req, res) => {
   try {
     const characterId = req.characterId;
     const { adornmentId, gearSlot, adornmentSlotIndex = 0 } = req.body;
@@ -80764,7 +82722,7 @@ router19.post("/adornments/apply", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router19.delete("/adornments/remove", async (req, res) => {
+router20.delete("/adornments/remove", async (req, res) => {
   try {
     const characterId = req.characterId;
     const { gearSlot } = req.body;
@@ -80778,14 +82736,14 @@ router19.delete("/adornments/remove", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-var adornments_default = router19;
+var adornments_default = router20;
 
 // src/routes/collections.ts
-var import_express20 = __toESM(require_express2(), 1);
+var import_express21 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
-var router20 = (0, import_express20.Router)();
-router20.get("/collections", async (req, res) => {
+var router21 = (0, import_express21.Router)();
+router21.get("/collections", async (req, res) => {
   try {
     const characterId = req.characterId;
     const dbCollections = await db.select().from(collectionsTable).where(eq(collectionsTable.characterId, characterId));
@@ -80815,14 +82773,14 @@ router20.get("/collections", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-var collections_default = router20;
+var collections_default = router21;
 
 // src/routes/mounts.ts
-var import_express21 = __toESM(require_express2(), 1);
+var import_express22 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
-var router21 = (0, import_express21.Router)();
-router21.get("/mounts", async (req, res) => {
+var router22 = (0, import_express22.Router)();
+router22.get("/mounts", async (req, res) => {
   try {
     const characterId = req.characterId;
     const dbMounts = await db.select().from(mountsTable).where(eq(mountsTable.characterId, characterId));
@@ -80846,7 +82804,7 @@ router21.get("/mounts", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router21.post("/mounts/:mountId/equip", async (req, res) => {
+router22.post("/mounts/:mountId/equip", async (req, res) => {
   try {
     const characterId = req.characterId;
     const { mountId } = req.params;
@@ -80872,10 +82830,10 @@ router21.post("/mounts/:mountId/equip", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-var mounts_default = router21;
+var mounts_default = router22;
 
 // src/routes/world.ts
-var import_express22 = __toESM(require_express2(), 1);
+var import_express23 = __toESM(require_express2(), 1);
 
 // ../../node_modules/.pnpm/express-rate-limit@8.3.2_express@5.2.1/node_modules/express-rate-limit/dist/index.mjs
 var import_ip_address = __toESM(require_ip_address(), 1);
@@ -82340,6 +84298,529 @@ var GHOST_SEEDS = [
     totalGoldEarned: 0,
     totalGoldSpent: 0,
     stats: { strength: 18, agility: 42, stamina: 20, intelligence: 18, wisdom: 14, charisma: 45 }
+  },
+  // ── New seeds 31–60 ──────────────────────────────────────────────────────────
+  {
+    name: "Draventhos",
+    race: "Human",
+    class: "Wizard",
+    archetype: "Mage",
+    alignment: "Freeport",
+    personality: "Scholarly",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Commonlands",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 10, agility: 14, stamina: 16, intelligence: 60, wisdom: 32, charisma: 22 }
+  },
+  {
+    name: "Zizzix",
+    race: "Ratonga",
+    class: "Brigand",
+    archetype: "Scout",
+    alignment: "Freeport",
+    personality: "Greedy",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Commonlands",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 18, agility: 52, stamina: 16, intelligence: 20, wisdom: 10, charisma: 28 }
+  },
+  {
+    name: "Brondar",
+    race: "Dwarf",
+    class: "Berserker",
+    archetype: "Fighter",
+    alignment: "Qeynos",
+    personality: "Aggressive",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Antonica",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 58, agility: 16, stamina: 54, intelligence: 8, wisdom: 12, charisma: 10 }
+  },
+  {
+    name: "Lilyath",
+    race: "Fae",
+    class: "Illusionist",
+    archetype: "Mage",
+    alignment: "Qeynos",
+    personality: "Explorer",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Antonica",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 8, agility: 26, stamina: 10, intelligence: 56, wisdom: 24, charisma: 40 }
+  },
+  {
+    name: "Xanthrix",
+    race: "Gnome",
+    class: "Conjuror",
+    archetype: "Mage",
+    alignment: "Neutral",
+    personality: "Scholarly",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Antonica",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 8, agility: 18, stamina: 14, intelligence: 58, wisdom: 26, charisma: 24 }
+  },
+  {
+    name: "Vadira",
+    race: "Dark Elf",
+    class: "Inquisitor",
+    archetype: "Priest",
+    alignment: "Freeport",
+    personality: "Devout",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Commonlands",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 16, agility: 18, stamina: 22, intelligence: 28, wisdom: 56, charisma: 22 }
+  },
+  {
+    name: "Kraggash",
+    race: "Troll",
+    class: "Guardian",
+    archetype: "Fighter",
+    alignment: "Freeport",
+    personality: "Cautious",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Commonlands",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 55, agility: 14, stamina: 60, intelligence: 8, wisdom: 10, charisma: 6 }
+  },
+  {
+    name: "Aelindra",
+    race: "High Elf",
+    class: "Warden",
+    archetype: "Priest",
+    alignment: "Qeynos",
+    personality: "Devout",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Antonica",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 10, agility: 22, stamina: 16, intelligence: 26, wisdom: 54, charisma: 30 }
+  },
+  {
+    name: "Snixpocket",
+    race: "Ratonga",
+    class: "Swashbuckler",
+    archetype: "Scout",
+    alignment: "Neutral",
+    personality: "Explorer",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Antonica",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 20, agility: 50, stamina: 18, intelligence: 16, wisdom: 10, charisma: 32 }
+  },
+  {
+    name: "Quellorith",
+    race: "Erudite",
+    class: "Warlock",
+    archetype: "Mage",
+    alignment: "Freeport",
+    personality: "Greedy",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Commonlands",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 8, agility: 12, stamina: 12, intelligence: 62, wisdom: 28, charisma: 20 }
+  },
+  {
+    name: "Torash",
+    race: "Iksar",
+    class: "Shadowknight",
+    archetype: "Fighter",
+    alignment: "Freeport",
+    personality: "Aggressive",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Commonlands",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 48, agility: 24, stamina: 45, intelligence: 14, wisdom: 10, charisma: 8 }
+  },
+  {
+    name: "Nimblewit",
+    race: "Halfling",
+    class: "Dirge",
+    archetype: "Scout",
+    alignment: "Neutral",
+    personality: "Explorer",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Antonica",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 12, agility: 40, stamina: 14, intelligence: 18, wisdom: 14, charisma: 36 }
+  },
+  {
+    name: "Solvara",
+    race: "Wood Elf",
+    class: "Fury",
+    archetype: "Priest",
+    alignment: "Qeynos",
+    personality: "Cautious",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Antonica",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 10, agility: 32, stamina: 16, intelligence: 20, wisdom: 48, charisma: 26 }
+  },
+  {
+    name: "Graxmir",
+    race: "Sarnak",
+    class: "Bruiser",
+    archetype: "Fighter",
+    alignment: "Freeport",
+    personality: "Aggressive",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Commonlands",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 40, agility: 38, stamina: 44, intelligence: 10, wisdom: 12, charisma: 8 }
+  },
+  {
+    name: "Pebbletop",
+    race: "Halfling",
+    class: "Warden",
+    archetype: "Priest",
+    alignment: "Qeynos",
+    personality: "Cautious",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Antonica",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 10, agility: 26, stamina: 14, intelligence: 16, wisdom: 50, charisma: 28 }
+  },
+  {
+    name: "Zolvara",
+    race: "Arasai",
+    class: "Wizard",
+    archetype: "Mage",
+    alignment: "Freeport",
+    personality: "Greedy",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Commonlands",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 8, agility: 22, stamina: 12, intelligence: 60, wisdom: 20, charisma: 18 }
+  },
+  {
+    name: "Hammerfist",
+    race: "Ogre",
+    class: "Bruiser",
+    archetype: "Fighter",
+    alignment: "Neutral",
+    personality: "Aggressive",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Commonlands",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 58, agility: 20, stamina: 56, intelligence: 8, wisdom: 10, charisma: 8 }
+  },
+  {
+    name: "Faelindra",
+    race: "Half Elf",
+    class: "Ranger",
+    archetype: "Scout",
+    alignment: "Qeynos",
+    personality: "Explorer",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Antonica",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 22, agility: 50, stamina: 22, intelligence: 14, wisdom: 16, charisma: 18 }
+  },
+  {
+    name: "Rikklix",
+    race: "Ratonga",
+    class: "Necromancer",
+    archetype: "Mage",
+    alignment: "Freeport",
+    personality: "Scholarly",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Commonlands",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 10, agility: 24, stamina: 12, intelligence: 56, wisdom: 22, charisma: 16 }
+  },
+  {
+    name: "Storvald",
+    race: "Barbarian",
+    class: "Guardian",
+    archetype: "Fighter",
+    alignment: "Qeynos",
+    personality: "Devout",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Antonica",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 52, agility: 18, stamina: 54, intelligence: 10, wisdom: 14, charisma: 16 }
+  },
+  {
+    name: "Krexxis",
+    race: "Iksar",
+    class: "Defiler",
+    archetype: "Priest",
+    alignment: "Freeport",
+    personality: "Devout",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Commonlands",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 16, agility: 18, stamina: 24, intelligence: 22, wisdom: 55, charisma: 10 }
+  },
+  {
+    name: "Mirandel",
+    race: "Human",
+    class: "Templar",
+    archetype: "Priest",
+    alignment: "Qeynos",
+    personality: "Devout",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Antonica",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 18, agility: 16, stamina: 26, intelligence: 22, wisdom: 56, charisma: 26 }
+  },
+  {
+    name: "Gildrix",
+    race: "Gnome",
+    class: "Coercer",
+    archetype: "Mage",
+    alignment: "Neutral",
+    personality: "Scholarly",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Antonica",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 8, agility: 16, stamina: 10, intelligence: 58, wisdom: 28, charisma: 42 }
+  },
+  {
+    name: "Vexara",
+    race: "Dark Elf",
+    class: "Dirge",
+    archetype: "Scout",
+    alignment: "Freeport",
+    personality: "Cautious",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Commonlands",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 16, agility: 44, stamina: 18, intelligence: 20, wisdom: 14, charisma: 36 }
+  },
+  {
+    name: "Thundrak",
+    race: "Barbarian",
+    class: "Paladin",
+    archetype: "Fighter",
+    alignment: "Qeynos",
+    personality: "Devout",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Antonica",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 44, agility: 18, stamina: 46, intelligence: 12, wisdom: 32, charisma: 20 }
+  },
+  {
+    name: "Merrifax",
+    race: "Froglok",
+    class: "Mystic",
+    archetype: "Priest",
+    alignment: "Qeynos",
+    personality: "Cautious",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Antonica",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 12, agility: 30, stamina: 18, intelligence: 24, wisdom: 54, charisma: 24 }
+  },
+  {
+    name: "Bolgrax",
+    race: "Ogre",
+    class: "Monk",
+    archetype: "Fighter",
+    alignment: "Neutral",
+    personality: "Explorer",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Antonica",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 45, agility: 32, stamina: 46, intelligence: 10, wisdom: 18, charisma: 10 }
+  },
+  {
+    name: "Aelixis",
+    race: "Erudite",
+    class: "Coercer",
+    archetype: "Mage",
+    alignment: "Neutral",
+    personality: "Greedy",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Antonica",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 8, agility: 14, stamina: 12, intelligence: 62, wisdom: 28, charisma: 44 }
+  },
+  {
+    name: "Zythara",
+    race: "Kerra",
+    class: "Assassin",
+    archetype: "Scout",
+    alignment: "Freeport",
+    personality: "Aggressive",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    zone: "Commonlands",
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { strength: 24, agility: 56, stamina: 22, intelligence: 12, wisdom: 10, charisma: 16 }
   }
 ];
 
@@ -82394,7 +84875,148 @@ async function cleanExpiredListings() {
 // src/lib/ghostSimulator.ts
 init_gameData();
 init_schema2();
-var SIMULATOR_VERSION = 2;
+
+// src/lib/raidData.ts
+var RAIDS = [
+  {
+    id: "harla_dar",
+    name: "Temple of Harla Dar",
+    zone: "Tenebrous Tangle",
+    lore: "Harla Dar is an ancient prismatic dragon who guards the upper reaches of the Tenebrous Tangle. She has lived for eons, accumulating a hoard of power that rivals the gods themselves. Only the most disciplined raid parties \u2014 those who can weather her prismatic breath and adapt to her ever-shifting elemental defenses \u2014 have any hope of besting this legendary creature.",
+    description: "Face Harla Dar, the Prismatic Dragon of the Tenebrous Tangle, in a 3-phase encounter of elemental shifting and devastating breath attacks.",
+    minLevel: 55,
+    minGearScore: 400,
+    bossId: "raid_harla_dar",
+    bossName: "Harla Dar",
+    spriteId: "raid_dragon",
+    minPartySize: 4,
+    maxPartySize: 6,
+    lootTier: "fabled",
+    phases: [
+      {
+        phase: 1,
+        name: "Prismatic Awakening",
+        description: "Harla Dar opens with prismatic breath \u2014 her element shifts every 20 seconds between fire, ice, and lightning.",
+        hpThreshold: 100,
+        abilities: ["Prismatic Breath", "Elemental Shift", "Wing Buffet", "Scale Barrage"],
+        damageMultiplier: 1,
+        hpMultiplier: 1
+      },
+      {
+        phase: 2,
+        name: "Chromatic Fury",
+        description: "Below 60% HP, Harla Dar enters a frenzied state \u2014 simultaneous multi-element attacks and aura damage.",
+        hpThreshold: 60,
+        abilities: ["Chromatic Aura", "Twin Breath", "Tail Slam", "Arcane Overload"],
+        damageMultiplier: 1.4,
+        hpMultiplier: 1
+      },
+      {
+        phase: 3,
+        name: "Prismatic Annihilation",
+        description: "At 25% HP, Harla Dar channels all prismatic energy into a devastating final form \u2014 survive the onslaught to claim victory.",
+        hpThreshold: 25,
+        abilities: ["Prismatic Annihilation", "Rainbow Nova", "Ancient Roar", "Final Scale Burst"],
+        damageMultiplier: 1.8,
+        hpMultiplier: 1
+      }
+    ]
+  },
+  {
+    id: "mayong_mistmoore",
+    name: "Mistmoore Catacombs",
+    zone: "Loping Plains",
+    lore: "Mayong Mistmoore is the most ancient and powerful vampire in all of Norrath. He has ruled the Mistmoore bloodline for thousands of years, has survived conflicts that toppled empires, and has achieved a form of dark divinity. Raiding his catacombs beneath the Loping Plains is an act of supreme audacity \u2014 and those who manage it earn the most coveted spoils in the known world.",
+    description: "Delve into Mayong Mistmoore's domain for a legendary battle across 3 phases: mortal, undying, and divine.",
+    minLevel: 65,
+    minGearScore: 550,
+    bossId: "raid_mayong_mistmoore",
+    bossName: "Mayong Mistmoore",
+    spriteId: "raid_vampire",
+    minPartySize: 4,
+    maxPartySize: 6,
+    lootTier: "mythical",
+    phases: [
+      {
+        phase: 1,
+        name: "The Mortal Veil",
+        description: "Mayong tests your resolve in his humanoid form \u2014 devastating melee attacks and life drain.",
+        hpThreshold: 100,
+        abilities: ["Life Drain", "Vampiric Strike", "Bat Swarm", "Blood Frenzy"],
+        damageMultiplier: 1,
+        hpMultiplier: 1
+      },
+      {
+        phase: 2,
+        name: "The Undying Form",
+        description: "At 65% HP, Mayong transforms \u2014 regeneration, necrotic bursts, and charm effects make this phase brutal.",
+        hpThreshold: 65,
+        abilities: ["Necrotic Burst", "Charm of Blood", "Unholy Regeneration", "Shadow Step"],
+        damageMultiplier: 1.5,
+        hpMultiplier: 1
+      },
+      {
+        phase: 3,
+        name: "Dark Apotheosis",
+        description: "Below 30% HP, Mayong ascends to a near-divine state \u2014 only the most coordinated party survives his final transcendence.",
+        hpThreshold: 30,
+        abilities: ["Dark Apotheosis", "Blood God's Wrath", "Ancient Curse", "Eternal Night"],
+        damageMultiplier: 2,
+        hpMultiplier: 1
+      }
+    ]
+  },
+  {
+    id: "trakanon",
+    name: "The Trakanon Depths",
+    zone: "Sebilis",
+    lore: "Trakanon is the undying plague dragon of Sebilis \u2014 a creature of pestilence and death who was once the most feared dragon in the Kunark continent. Killed by adventurers long ago, Trakanon refused to stay dead, rising again as a poison-fueled monstrosity. His breath weapon corrupts everything it touches; his very presence causes disease to spread. Only parties with exceptional healing can hope to survive the plague depths.",
+    description: "Confront Trakanon the undying plague dragon across 3 devastating phases of escalating poison, disease, and pestilence.",
+    minLevel: 60,
+    minGearScore: 475,
+    bossId: "raid_trakanon",
+    bossName: "Trakanon",
+    spriteId: "raid_plague_dragon",
+    minPartySize: 4,
+    maxPartySize: 6,
+    lootTier: "fabled",
+    phases: [
+      {
+        phase: 1,
+        name: "Pestilent Awakening",
+        description: "Trakanon opens with plague breath and persistent DoTs \u2014 healers must stay vigilant.",
+        hpThreshold: 100,
+        abilities: ["Plague Breath", "Infectious Bite", "Tail Sweep", "Venom Spray"],
+        damageMultiplier: 1,
+        hpMultiplier: 1
+      },
+      {
+        phase: 2,
+        name: "Virulent Spread",
+        description: "Below 55% HP, Trakanon begins spreading disease to all party members simultaneously.",
+        hpThreshold: 55,
+        abilities: ["Virulent Contagion", "Mass Infection", "Death Rattle", "Bone Crunch"],
+        damageMultiplier: 1.5,
+        hpMultiplier: 1
+      },
+      {
+        phase: 3,
+        name: "Undying Plague",
+        description: "At 20% HP, Trakanon activates his undying plague form \u2014 the room becomes a miasma of death.",
+        hpThreshold: 20,
+        abilities: ["Undying Plague", "Pestilent Nova", "Corpse Explosion", "Dragon's Demise"],
+        damageMultiplier: 1.9,
+        hpMultiplier: 1
+      }
+    ]
+  }
+];
+function getRaidById(id) {
+  return RAIDS.find((r) => r.id === id);
+}
+
+// src/lib/ghostSimulator.ts
+var SIMULATOR_VERSION = 5;
 var ZONE_LIST = [
   { id: "commonlands", name: "Commonlands", min: 1, max: 10, factionId: "freeport" },
   { id: "antonica", name: "Antonica", min: 1, max: 10, factionId: "qeynos" },
@@ -82948,6 +85570,65 @@ function simulateCombat(player, enemy, enemyLevel) {
 }
 var globalTick = 0;
 var explorerTickTracker = /* @__PURE__ */ new Map();
+var marketEventCooldowns = /* @__PURE__ */ new Map();
+var ARCHETYPE_SLOTS = {
+  Fighter: ["primary", "secondary", "head", "chest", "legs", "shoulder", "hands", "feet", "wrist", "back", "neck", "ringLeft", "ringRight"],
+  Priest: ["primary", "head", "chest", "legs", "shoulder", "hands", "feet", "wrist", "back", "neck", "ringLeft", "ringRight"],
+  Mage: ["primary", "head", "chest", "legs", "shoulder", "hands", "feet", "wrist", "back", "neck", "ringLeft", "ringRight"],
+  Scout: ["primary", "ranged", "head", "chest", "legs", "shoulder", "hands", "feet", "wrist", "back", "neck", "ringLeft", "ringRight"]
+};
+var SLOT_TO_ITEM_SLOT = {
+  primary: ["primary", "mainhand", "weapon", "staff", "sword", "axe", "mace", "dagger"],
+  secondary: ["secondary", "offhand", "shield"],
+  ranged: ["ranged", "bow", "wand"],
+  head: ["head", "helm", "helmet"],
+  chest: ["chest", "breastplate", "robe"],
+  legs: ["legs", "leggings"],
+  shoulder: ["shoulder", "shoulders", "pauldrons"],
+  hands: ["hands", "gloves", "gauntlets"],
+  feet: ["feet", "boots"],
+  wrist: ["wrist", "bracers"],
+  back: ["back", "cloak", "cape"],
+  neck: ["neck", "necklace", "amulet"],
+  ringLeft: ["ringLeft", "ring", "ringright", "ringleft"],
+  ringRight: ["ringRight", "ring", "ringright", "ringleft"]
+};
+var RARITY_WEIGHT = {
+  common: 1,
+  uncommon: 2,
+  rare: 3,
+  legendary: 4,
+  fabled: 5,
+  mythical: 6
+};
+function assignGhostGear(ghost, currentGear) {
+  const slots = ARCHETYPE_SLOTS[ghost.archetype] ?? ARCHETYPE_SLOTS["Fighter"];
+  const newGear = { ...currentGear };
+  const levelMin = ghost.level - 5;
+  const levelMax = ghost.level + 2;
+  const eligibleItems = ITEMS.filter(
+    (item) => item.level >= levelMin && item.level <= levelMax && item.slot && item.slot !== "none"
+  );
+  for (const slot of slots) {
+    const acceptedSlots = SLOT_TO_ITEM_SLOT[slot] ?? [slot];
+    const candidates = eligibleItems.filter(
+      (item) => acceptedSlots.some((s) => (item.slot ?? "").toLowerCase().includes(s.toLowerCase()))
+    );
+    if (candidates.length === 0) continue;
+    candidates.sort((a, b) => {
+      const rarityDiff = (RARITY_WEIGHT[b.rarity] ?? 0) - (RARITY_WEIGHT[a.rarity] ?? 0);
+      if (rarityDiff !== 0) return rarityDiff;
+      return b.level - a.level;
+    });
+    const best = candidates[0];
+    const current = newGear[slot];
+    const currentLevel = current ? current.level ?? 0 : 0;
+    if (best.level > currentLevel) {
+      newGear[slot] = best;
+    }
+  }
+  return newGear;
+}
 var GHOST_LOOT_POOL = [
   { itemId: "ghost_loot_iron_ore", itemName: "Iron Ore", category: "materials", basePrice: 15, rarity: "common", itemData: { id: "ghost_loot_iron_ore", name: "Iron Ore", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 10, description: "Raw iron ore, useful for smithing." } },
   { itemId: "ghost_loot_leather_scraps", itemName: "Leather Scraps", category: "materials", basePrice: 12, rarity: "common", itemData: { id: "ghost_loot_leather_scraps", name: "Leather Scraps", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 8, description: "Rough scraps of cured hide." } },
@@ -82989,7 +85670,7 @@ async function seedGhostPlayersInner() {
   for (const seed of GHOST_SEEDS) {
     const zone = ZONE_LIST.find((z) => z.name === seed.zone) ?? zoneForLevel(seed.level);
     const xpRequired = xpForLevel2(seed.level);
-    await db.insert(worldPlayersTable).values({
+    const [inserted] = await db.insert(worldPlayersTable).values({
       name: seed.name,
       race: seed.race,
       class: seed.class,
@@ -83007,8 +85688,16 @@ async function seedGhostPlayersInner() {
       totalGoldEarned: seed.totalGoldEarned,
       totalGoldSpent: seed.totalGoldSpent,
       stats: seed.stats,
+      gear: {},
+      generation: 1,
       lastTickAt: /* @__PURE__ */ new Date()
-    });
+    }).returning();
+    if (inserted) {
+      const gear = assignGhostGear({ level: inserted.level, archetype: inserted.archetype }, {});
+      if (Object.keys(gear).length > 0) {
+        await db.update(worldPlayersTable).set({ gear }).where(eq(worldPlayersTable.id, inserted.id));
+      }
+    }
   }
 }
 var VERSION_CACHE_KEY = "ghost_sim_version";
@@ -83033,10 +85722,172 @@ async function seedGhostPlayers() {
     }
     return;
   }
-  console.log("[Ghost] Seeding 30 ghost players at level 1...");
+  console.log("[Ghost] Seeding 60 ghost players at level 1...");
   await seedGhostPlayersInner();
   await storeSimVersion(SIMULATOR_VERSION);
   console.log("[Ghost] Seeding complete.");
+}
+var DIFFICULTY_ORDER = ["normal", "expert", "legendary", "mythical"];
+function isBetterDifficulty(a, b) {
+  const aIdx = DIFFICULTY_ORDER.indexOf(a);
+  const bIdx = DIFFICULTY_ORDER.indexOf(b);
+  return (aIdx === -1 ? 0 : aIdx) > (bIdx === -1 ? 0 : bIdx);
+}
+async function ghostDungeonProgressTick(players, tick) {
+  const events = [];
+  const now = /* @__PURE__ */ new Date();
+  for (const ghost of players) {
+    const gearObj = ghost.gear ?? {};
+    const gearScore = computeGearScore(
+      Object.entries(gearObj).map(([slot, val]) => ({
+        level: val?.level ?? 0,
+        rarity: val?.rarity ?? "common",
+        slot
+      }))
+    );
+    if (ghost.level >= 10 && Math.random() < 0.12) {
+      const eligible = DUNGEONS.filter(
+        (d) => ghost.level >= d.minLevel - 2 && ghost.level <= d.maxLevel + 5
+      );
+      if (eligible.length > 0) {
+        const dungeon = eligible[Math.floor(Math.random() * eligible.length)];
+        let difficulty = "normal";
+        if (gearScore >= 250) difficulty = "mythical";
+        else if (gearScore >= 100) difficulty = "legendary";
+        else if (gearScore >= 30) difficulty = "expert";
+        const winChance = Math.max(0.3, Math.min(0.9, 0.6 + (ghost.level - dungeon.minLevel) / 20));
+        if (Math.random() < winChance) {
+          const existing = await db.select().from(ghostDungeonClearsTable).where(and(
+            eq(ghostDungeonClearsTable.ghostId, ghost.id),
+            eq(ghostDungeonClearsTable.dungeonId, dungeon.id)
+          )).limit(1).catch(() => []);
+          if (existing.length > 0) {
+            const newBest = isBetterDifficulty(difficulty, existing[0].bestDifficulty) ? difficulty : existing[0].bestDifficulty;
+            await db.update(ghostDungeonClearsTable).set({
+              clearCount: existing[0].clearCount + 1,
+              bestDifficulty: newBest,
+              lastClearedAt: now
+            }).where(eq(ghostDungeonClearsTable.id, existing[0].id)).catch(() => {
+            });
+          } else {
+            await db.insert(ghostDungeonClearsTable).values({
+              ghostId: ghost.id,
+              dungeonId: dungeon.id,
+              clearCount: 1,
+              bestDifficulty: difficulty,
+              lastClearedAt: now
+            }).onConflictDoNothing().catch(() => {
+            });
+          }
+          events.push({
+            type: "dungeon_clear",
+            message: `${ghost.name} cleared ${dungeon.name} on ${difficulty} difficulty!`,
+            playerName: ghost.name,
+            zone: ghost.zone,
+            importance: 3,
+            tick
+          });
+        }
+      }
+    }
+    if (ghost.level >= 40 && Math.random() < 0.05) {
+      const eligibleRaids = RAIDS.filter((r) => ghost.level >= r.minLevel - 5);
+      if (eligibleRaids.length > 0) {
+        const raid = eligibleRaids[Math.floor(Math.random() * eligibleRaids.length)];
+        const winChance = Math.max(0.2, Math.min(0.8, 0.4 + (ghost.level - raid.minLevel) / 30));
+        if (Math.random() < winChance) {
+          const maxPhase = Math.min(raid.phases.length, 1 + Math.floor(Math.random() * raid.phases.length));
+          const existingRaid = await db.select().from(ghostRaidClearsTable).where(and(
+            eq(ghostRaidClearsTable.ghostId, ghost.id),
+            eq(ghostRaidClearsTable.raidId, raid.id)
+          )).limit(1).catch(() => []);
+          if (existingRaid.length > 0) {
+            await db.update(ghostRaidClearsTable).set({
+              clearCount: existingRaid[0].clearCount + 1,
+              maxPhase: Math.max(existingRaid[0].maxPhase, maxPhase),
+              lastClearedAt: now
+            }).where(eq(ghostRaidClearsTable.id, existingRaid[0].id)).catch(() => {
+            });
+          } else {
+            await db.insert(ghostRaidClearsTable).values({
+              ghostId: ghost.id,
+              raidId: raid.id,
+              clearCount: 1,
+              maxPhase,
+              lastClearedAt: now
+            }).onConflictDoNothing().catch(() => {
+            });
+          }
+          events.push({
+            type: "raid_clear",
+            message: `${ghost.name} defeated ${raid.bossName} in ${raid.name} (Phase ${maxPhase})!`,
+            playerName: ghost.name,
+            zone: ghost.zone,
+            importance: 4,
+            tick
+          });
+        }
+      }
+    }
+  }
+  if (events.length > 0) {
+    await db.insert(worldEventsTable).values(events).catch(() => {
+    });
+  }
+}
+var GENERATION_SUFFIX = ["", "Jr.", "II", "III", "IV", "V"];
+async function spawnChildGhost(parent, tick) {
+  const parentGeneration = parent.generation ?? 1;
+  if (parentGeneration >= 5) return;
+  const childGeneration = parentGeneration + 1;
+  const firstName = parent.name.split(" ")[0] ?? parent.name;
+  const suffix = GENERATION_SUFFIX[childGeneration] ?? "V";
+  const childName = `${firstName} ${suffix}`;
+  const childLevel = Math.max(1, Math.floor(parent.level * 0.3));
+  const childZone = zoneForLevel(childLevel);
+  const parentStats = parent.stats;
+  const parentGear = parent.gear ?? {};
+  const gearEntries = Object.entries(parentGear).filter(([, v]) => v && typeof v === "object").sort((a, b) => (b[1]?.level ?? 0) - (a[1]?.level ?? 0));
+  const inheritedGear = {};
+  for (const [slot, item] of gearEntries.slice(0, 2)) {
+    inheritedGear[slot] = item;
+  }
+  const childGold = Math.floor((parent.gold ?? 0) * 0.2);
+  const [inserted] = await db.insert(worldPlayersTable).values({
+    name: childName,
+    race: parent.race,
+    class: parent.class,
+    archetype: parent.archetype,
+    alignment: parent.alignment,
+    personality: parent.personality,
+    level: childLevel,
+    xp: 0,
+    xpToNextLevel: xpForLevel2(childLevel),
+    gold: childGold,
+    zone: childZone.name,
+    killCount: 0,
+    deathCount: 0,
+    bossKills: 0,
+    totalGoldEarned: 0,
+    totalGoldSpent: 0,
+    stats: { ...parentStats },
+    gear: inheritedGear,
+    generation: childGeneration,
+    parentId: parent.id,
+    inheritedTraits: [parent.personality, parent.alignment],
+    lastTickAt: /* @__PURE__ */ new Date()
+  }).returning().catch(() => []);
+  if (inserted) {
+    await db.insert(worldEventsTable).values({
+      type: "ghost_lineage",
+      message: `A new adventurer rises: ${childName}, child of the legendary ${parent.name}!`,
+      playerName: childName,
+      zone: childZone.name,
+      importance: 5,
+      tick
+    }).catch(() => {
+    });
+  }
 }
 var GHOST_AUCTION_LISTING_DURATION_MS = 24 * 30 * 1e3;
 var MAX_GHOST_ACTIVE_LISTINGS = 80;
@@ -83348,7 +86199,7 @@ async function ghostGatheringTick(players, _events, tick) {
     await db.insert(worldEventsTable).values(gatherEvents);
   }
 }
-async function ghostAuctionTick(players) {
+async function ghostAuctionTick(players, tick) {
   const now = /* @__PURE__ */ new Date();
   await cleanExpiredListings().catch(() => {
   });
@@ -83358,6 +86209,49 @@ async function ghostAuctionTick(players) {
   for (const row of demandRows) {
     demandMultipliers[row.category] = auctionDemandMultiplier(row.demandScore);
     demandScores[row.category] = row.demandScore;
+  }
+  const marketEvents = [];
+  for (const [category, demandScore] of Object.entries(demandScores)) {
+    const surgeKey = `surge_${category}`;
+    const crashKey = `crash_${category}`;
+    const lastSurge = marketEventCooldowns.get(surgeKey) ?? 0;
+    const lastCrash = marketEventCooldowns.get(crashKey) ?? 0;
+    if (demandScore > 75 && tick - lastSurge > 10) {
+      marketEvents.push({
+        type: "market_surge",
+        message: `${category.toUpperCase()} prices are surging! Demand is at ${demandScore.toFixed(0)}`,
+        playerName: "Market",
+        zone: "Commonlands",
+        importance: 3,
+        tick
+      });
+      marketEventCooldowns.set(surgeKey, tick);
+    } else if (demandScore < 15 && tick - lastCrash > 10) {
+      marketEvents.push({
+        type: "market_crash",
+        message: `${category.toUpperCase()} market is crashing! Oversupplied.`,
+        playerName: "Market",
+        zone: "Commonlands",
+        importance: 3,
+        tick
+      });
+      marketEventCooldowns.set(crashKey, tick);
+    }
+  }
+  if (marketEvents.length > 0) {
+    await db.insert(worldEventsTable).values(marketEvents).catch(() => {
+    });
+  }
+  for (const ghost of players) {
+    if (ghost.level >= 25 && Math.random() < 0.05) {
+      await db.execute(sql`
+        UPDATE ghost_inventory SET quantity = GREATEST(0, quantity - 1), updated_at = now()
+        WHERE ghost_id = ${String(ghost.id)} AND item_id = (
+          SELECT item_id FROM ghost_inventory WHERE ghost_id = ${String(ghost.id)} AND quantity > 0 LIMIT 1
+        )
+      `).catch(() => {
+      });
+    }
   }
   const [playerChar] = await db.select({ id: charactersTable.id }).from(charactersTable).limit(1).catch(() => []);
   const [listingCountRow] = await db.select({ count: sql`count(*)` }).from(auctionListingsTable).where(
@@ -83575,6 +86469,19 @@ async function tickGhostSimulation() {
         zone: newZone,
         lastTickAt: /* @__PURE__ */ new Date()
       }).where(eq(worldPlayersTable.id, player.id));
+      if (leveledUp) {
+        const currentGear = player.gear ?? {};
+        const newGear = assignGhostGear({ level: newLevel, archetype: player.archetype }, currentGear);
+        const slotsAdded = Object.keys(newGear).length > Object.keys(currentGear).length;
+        const slotsUpgraded = Object.entries(newGear).some(([slot, val]) => {
+          const cur = currentGear[slot];
+          return !cur || (val?.level ?? 0) > (cur?.level ?? 0);
+        });
+        if (slotsAdded || slotsUpgraded) {
+          await db.update(worldPlayersTable).set({ gear: newGear }).where(eq(worldPlayersTable.id, player.id)).catch(() => {
+          });
+        }
+      }
       if (enemy.factionId) {
         factionDeltas[enemy.factionId] = (factionDeltas[enemy.factionId] ?? 0) - 5;
         const oppFaction = enemy.factionId === "freeport" ? "qeynos" : enemy.factionId === "qeynos" ? "freeport" : null;
@@ -83656,11 +86563,36 @@ async function tickGhostSimulation() {
     } else {
       const saferZones = ZONE_LIST.filter((z) => player.level >= z.min + 3 && player.level > z.min);
       const safeZone = saferZones.length ? pick2(saferZones) : zoneForLevel(Math.max(1, player.level - 5));
+      const newDeathCount = player.deathCount + 1;
       await db.update(worldPlayersTable).set({
-        deathCount: player.deathCount + 1,
+        deathCount: newDeathCount,
         zone: safeZone.name,
         lastTickAt: /* @__PURE__ */ new Date()
       }).where(eq(worldPlayersTable.id, player.id));
+      if (newDeathCount >= 500 && (player.generation ?? 1) < 5) {
+        const freshPlayer = { ...player, deathCount: newDeathCount };
+        await spawnChildGhost(freshPlayer, tick).catch(() => {
+        });
+        await db.delete(worldPlayersTable).where(eq(worldPlayersTable.id, player.id)).catch((e) => {
+          console.error("[Ghost] Failed to delete retired ghost:", e);
+        });
+        await db.delete(ghostDungeonClearsTable).where(eq(ghostDungeonClearsTable.ghostId, player.id)).catch((e) => {
+          console.error("[Ghost] Failed to delete dungeon clears for retired ghost:", e);
+        });
+        await db.delete(ghostRaidClearsTable).where(eq(ghostRaidClearsTable.ghostId, player.id)).catch((e) => {
+          console.error("[Ghost] Failed to delete raid clears for retired ghost:", e);
+        });
+        await db.insert(worldEventsTable).values({
+          type: "ghost_retirement",
+          message: `${player.name} has fought their last battle after 500 deaths \u2014 their legacy lives on!`,
+          playerName: player.name,
+          zone: player.zone,
+          importance: 5,
+          tick
+        }).catch((e) => {
+          console.error("[Ghost] Failed to insert retirement event:", e);
+        });
+      }
     }
   }
   if (events.length > 0) {
@@ -83695,12 +86627,46 @@ async function tickGhostSimulation() {
     } catch {
     }
   }
-  await ghostAuctionTick(players).catch(() => {
+  await ghostAuctionTick(players, tick).catch(() => {
   });
   await ghostCraftingTick(players).catch(() => {
   });
   await ghostGatheringTick(players, events, tick).catch(() => {
   });
+  await ghostDungeonProgressTick(players, tick).catch(() => {
+  });
+  try {
+    const [playerChar] = await db.select().from(charactersTable).limit(1);
+    if (playerChar) {
+      const playerLevel = playerChar.level ?? 1;
+      const playerKills = playerChar.killCount ?? 0;
+      const rivalIds = playerChar.rivals ?? [];
+      for (const ghost of players) {
+        const levelDiff = Math.abs(ghost.level - playerLevel);
+        if (levelDiff > 10) continue;
+        if (rivalIds.includes(ghost.id)) continue;
+        let surgeMsg = null;
+        if (ghost.level > playerLevel) {
+          surgeMsg = `${ghost.name} (Lv ${ghost.level}) has surpassed your level!`;
+        } else if (ghost.killCount > playerKills) {
+          surgeMsg = `${ghost.name} (Lv ${ghost.level}) has more kills than you!`;
+        }
+        if (surgeMsg) {
+          await db.insert(worldEventsTable).values({
+            type: "rival_surge",
+            message: surgeMsg,
+            playerName: ghost.name,
+            zone: ghost.zone,
+            importance: 5,
+            tick
+          }).catch(() => {
+          });
+          break;
+        }
+      }
+    }
+  } catch {
+  }
   const [countRow] = await db.select({ count: sql`count(*)` }).from(worldEventsTable);
   const count = Number(countRow?.count ?? 0);
   if (count > 500) {
@@ -83771,7 +86737,7 @@ function ghostPortraitKey(name, race, cls) {
 function ghostChronicleKey(name) {
   return `ghost_chronicle_${name}_v1`.toLowerCase().replace(/[\s]+/g, "_").replace(/[^a-z0-9_]/g, "");
 }
-var router22 = (0, import_express22.Router)();
+var router23 = (0, import_express23.Router)();
 var worldRateLimit = rate_limit_default({
   windowMs: 60 * 1e3,
   max: 100,
@@ -83779,7 +86745,7 @@ var worldRateLimit = rate_limit_default({
   legacyHeaders: false,
   message: { error: "Too many requests, please try again later." }
 });
-router22.use("/world", worldRateLimit);
+router23.use("/world", worldRateLimit);
 var ZONE_LIST2 = [
   { id: "commonlands", name: "Commonlands", min: 1, max: 10 },
   { id: "antonica", name: "Antonica", min: 1, max: 10 },
@@ -83792,7 +86758,7 @@ var ZONE_LIST2 = [
   { id: "lesser_faydark", name: "Lesser Faydark", min: 35, max: 45 },
   { id: "feerrott", name: "Feerrott", min: 45, max: 55 }
 ];
-router22.get("/world/players", async (_req, res, next) => {
+router23.get("/world/players", async (_req, res, next) => {
   try {
     const ghosts = await db.select().from(worldPlayersTable).orderBy(desc(worldPlayersTable.level), desc(worldPlayersTable.killCount));
     const [char2] = await db.select().from(charactersTable).limit(1);
@@ -83826,7 +86792,7 @@ router22.get("/world/players", async (_req, res, next) => {
     next(err);
   }
 });
-router22.get("/world/player/:id", async (req, res, next) => {
+router23.get("/world/player/:id", async (req, res, next) => {
   try {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id)) {
@@ -83871,7 +86837,7 @@ router22.get("/world/player/:id", async (req, res, next) => {
     next(err);
   }
 });
-router22.get("/world/events", async (req, res, next) => {
+router23.get("/world/events", async (req, res, next) => {
   try {
     const limit2 = Math.min(100, Number(req.query.limit ?? 50));
     const zone = req.query.zone;
@@ -83886,7 +86852,7 @@ router22.get("/world/events", async (req, res, next) => {
     next(err);
   }
 });
-router22.get("/world/leaderboard", async (_req, res, next) => {
+router23.get("/world/leaderboard", async (_req, res, next) => {
   try {
     const ghosts = await db.select({
       id: worldPlayersTable.id,
@@ -83926,7 +86892,7 @@ router22.get("/world/leaderboard", async (_req, res, next) => {
     next(err);
   }
 });
-router22.get("/world/zones", async (_req, res, next) => {
+router23.get("/world/zones", async (_req, res, next) => {
   try {
     const rows = await db.select({
       zone: worldPlayersTable.zone,
@@ -83961,7 +86927,7 @@ router22.get("/world/zones", async (_req, res, next) => {
     next(err);
   }
 });
-router22.get("/world/stats", async (_req, res, next) => {
+router23.get("/world/stats", async (_req, res, next) => {
   try {
     const [totals] = await db.select({
       totalPlayers: sql`count(*)`,
@@ -83985,7 +86951,7 @@ router22.get("/world/stats", async (_req, res, next) => {
     next(err);
   }
 });
-router22.get("/world/player/:id/portrait", async (req, res, next) => {
+router23.get("/world/player/:id/portrait", async (req, res, next) => {
   try {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id) || id < 1) {
@@ -84026,7 +86992,7 @@ router22.get("/world/player/:id/portrait", async (req, res, next) => {
     next(err);
   }
 });
-router22.post("/world/player/:id/portrait/refresh", async (req, res, next) => {
+router23.post("/world/player/:id/portrait/refresh", async (req, res, next) => {
   try {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id) || id < 1) {
@@ -84045,7 +87011,7 @@ router22.post("/world/player/:id/portrait/refresh", async (req, res, next) => {
     next(err);
   }
 });
-router22.get("/world/player/:id/chronicle", async (req, res, next) => {
+router23.get("/world/player/:id/chronicle", async (req, res, next) => {
   try {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id) || id < 1) {
@@ -84128,7 +87094,7 @@ function buildChronicleString(name, detail) {
   if (detail.deeds) parts.push(detail.deeds.trim());
   return parts.slice(0, 3).join(" ");
 }
-router22.get("/world/docs", (_req, res) => {
+router23.get("/world/docs", (_req, res) => {
   res.json({
     openapi: "3.0.3",
     info: {
@@ -84234,7 +87200,7 @@ router22.get("/world/docs", (_req, res) => {
   });
 });
 var resetGhostsLimiter = rate_limit_default({ windowMs: 5 * 60 * 1e3, max: 3 });
-router22.post("/admin/reset-ghosts", resetGhostsLimiter, async (_req, res) => {
+router23.post("/admin/reset-ghosts", resetGhostsLimiter, async (_req, res) => {
   try {
     await resetGhostPlayers();
     return res.json({ ok: true, message: "Ghost players reset successfully." });
@@ -84243,155 +87209,14 @@ router22.post("/admin/reset-ghosts", resetGhostsLimiter, async (_req, res) => {
     return res.status(500).json({ error: "Failed to reset ghost players." });
   }
 });
-var world_default = router22;
+var world_default = router23;
 
 // src/routes/dungeons.ts
-var import_express23 = __toESM(require_express2(), 1);
+var import_express24 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
 init_gameData();
-
-// src/lib/raidData.ts
-var RAIDS = [
-  {
-    id: "harla_dar",
-    name: "Temple of Harla Dar",
-    zone: "Tenebrous Tangle",
-    lore: "Harla Dar is an ancient prismatic dragon who guards the upper reaches of the Tenebrous Tangle. She has lived for eons, accumulating a hoard of power that rivals the gods themselves. Only the most disciplined raid parties \u2014 those who can weather her prismatic breath and adapt to her ever-shifting elemental defenses \u2014 have any hope of besting this legendary creature.",
-    description: "Face Harla Dar, the Prismatic Dragon of the Tenebrous Tangle, in a 3-phase encounter of elemental shifting and devastating breath attacks.",
-    minLevel: 55,
-    minGearScore: 400,
-    bossId: "raid_harla_dar",
-    bossName: "Harla Dar",
-    spriteId: "raid_dragon",
-    minPartySize: 4,
-    maxPartySize: 6,
-    lootTier: "fabled",
-    phases: [
-      {
-        phase: 1,
-        name: "Prismatic Awakening",
-        description: "Harla Dar opens with prismatic breath \u2014 her element shifts every 20 seconds between fire, ice, and lightning.",
-        hpThreshold: 100,
-        abilities: ["Prismatic Breath", "Elemental Shift", "Wing Buffet", "Scale Barrage"],
-        damageMultiplier: 1,
-        hpMultiplier: 1
-      },
-      {
-        phase: 2,
-        name: "Chromatic Fury",
-        description: "Below 60% HP, Harla Dar enters a frenzied state \u2014 simultaneous multi-element attacks and aura damage.",
-        hpThreshold: 60,
-        abilities: ["Chromatic Aura", "Twin Breath", "Tail Slam", "Arcane Overload"],
-        damageMultiplier: 1.4,
-        hpMultiplier: 1
-      },
-      {
-        phase: 3,
-        name: "Prismatic Annihilation",
-        description: "At 25% HP, Harla Dar channels all prismatic energy into a devastating final form \u2014 survive the onslaught to claim victory.",
-        hpThreshold: 25,
-        abilities: ["Prismatic Annihilation", "Rainbow Nova", "Ancient Roar", "Final Scale Burst"],
-        damageMultiplier: 1.8,
-        hpMultiplier: 1
-      }
-    ]
-  },
-  {
-    id: "mayong_mistmoore",
-    name: "Mistmoore Catacombs",
-    zone: "Loping Plains",
-    lore: "Mayong Mistmoore is the most ancient and powerful vampire in all of Norrath. He has ruled the Mistmoore bloodline for thousands of years, has survived conflicts that toppled empires, and has achieved a form of dark divinity. Raiding his catacombs beneath the Loping Plains is an act of supreme audacity \u2014 and those who manage it earn the most coveted spoils in the known world.",
-    description: "Delve into Mayong Mistmoore's domain for a legendary battle across 3 phases: mortal, undying, and divine.",
-    minLevel: 65,
-    minGearScore: 550,
-    bossId: "raid_mayong_mistmoore",
-    bossName: "Mayong Mistmoore",
-    spriteId: "raid_vampire",
-    minPartySize: 4,
-    maxPartySize: 6,
-    lootTier: "mythical",
-    phases: [
-      {
-        phase: 1,
-        name: "The Mortal Veil",
-        description: "Mayong tests your resolve in his humanoid form \u2014 devastating melee attacks and life drain.",
-        hpThreshold: 100,
-        abilities: ["Life Drain", "Vampiric Strike", "Bat Swarm", "Blood Frenzy"],
-        damageMultiplier: 1,
-        hpMultiplier: 1
-      },
-      {
-        phase: 2,
-        name: "The Undying Form",
-        description: "At 65% HP, Mayong transforms \u2014 regeneration, necrotic bursts, and charm effects make this phase brutal.",
-        hpThreshold: 65,
-        abilities: ["Necrotic Burst", "Charm of Blood", "Unholy Regeneration", "Shadow Step"],
-        damageMultiplier: 1.5,
-        hpMultiplier: 1
-      },
-      {
-        phase: 3,
-        name: "Dark Apotheosis",
-        description: "Below 30% HP, Mayong ascends to a near-divine state \u2014 only the most coordinated party survives his final transcendence.",
-        hpThreshold: 30,
-        abilities: ["Dark Apotheosis", "Blood God's Wrath", "Ancient Curse", "Eternal Night"],
-        damageMultiplier: 2,
-        hpMultiplier: 1
-      }
-    ]
-  },
-  {
-    id: "trakanon",
-    name: "The Trakanon Depths",
-    zone: "Sebilis",
-    lore: "Trakanon is the undying plague dragon of Sebilis \u2014 a creature of pestilence and death who was once the most feared dragon in the Kunark continent. Killed by adventurers long ago, Trakanon refused to stay dead, rising again as a poison-fueled monstrosity. His breath weapon corrupts everything it touches; his very presence causes disease to spread. Only parties with exceptional healing can hope to survive the plague depths.",
-    description: "Confront Trakanon the undying plague dragon across 3 devastating phases of escalating poison, disease, and pestilence.",
-    minLevel: 60,
-    minGearScore: 475,
-    bossId: "raid_trakanon",
-    bossName: "Trakanon",
-    spriteId: "raid_plague_dragon",
-    minPartySize: 4,
-    maxPartySize: 6,
-    lootTier: "fabled",
-    phases: [
-      {
-        phase: 1,
-        name: "Pestilent Awakening",
-        description: "Trakanon opens with plague breath and persistent DoTs \u2014 healers must stay vigilant.",
-        hpThreshold: 100,
-        abilities: ["Plague Breath", "Infectious Bite", "Tail Sweep", "Venom Spray"],
-        damageMultiplier: 1,
-        hpMultiplier: 1
-      },
-      {
-        phase: 2,
-        name: "Virulent Spread",
-        description: "Below 55% HP, Trakanon begins spreading disease to all party members simultaneously.",
-        hpThreshold: 55,
-        abilities: ["Virulent Contagion", "Mass Infection", "Death Rattle", "Bone Crunch"],
-        damageMultiplier: 1.5,
-        hpMultiplier: 1
-      },
-      {
-        phase: 3,
-        name: "Undying Plague",
-        description: "At 20% HP, Trakanon activates his undying plague form \u2014 the room becomes a miasma of death.",
-        hpThreshold: 20,
-        abilities: ["Undying Plague", "Pestilent Nova", "Corpse Explosion", "Dragon's Demise"],
-        damageMultiplier: 1.9,
-        hpMultiplier: 1
-      }
-    ]
-  }
-];
-function getRaidById(id) {
-  return RAIDS.find((r) => r.id === id);
-}
-
-// src/routes/dungeons.ts
-var router23 = (0, import_express23.Router)();
+var router24 = (0, import_express24.Router)();
 function buildScaledFloorRoster(dungeonId, floorNumber, difficulty, playerLevel) {
   const dungeon = getDungeonById(dungeonId);
   if (!dungeon) return [];
@@ -84442,7 +87267,17 @@ function formatRun(run) {
     party: run.party ?? []
   };
 }
-router23.get("/dungeons", async (req, res) => {
+async function awardSetPiecesToInventory(pieces, characterId) {
+  for (const { item } of pieces) {
+    await db.insert(inventoryTable).values({
+      characterId,
+      itemId: item["id"],
+      itemData: item,
+      quantity: 1
+    });
+  }
+}
+router24.get("/dungeons", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const gear = character.gear || {};
@@ -84480,7 +87315,7 @@ router23.get("/dungeons", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router23.get("/dungeons/kill-stats", async (req, res) => {
+router24.get("/dungeons/kill-stats", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const [stats, dungeonRuns, raidRuns] = await Promise.all([
@@ -84534,7 +87369,7 @@ router23.get("/dungeons/kill-stats", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router23.get("/dungeons/:dungeonId", (req, res) => {
+router24.get("/dungeons/:dungeonId", (req, res) => {
   const dungeon = getDungeonById(req.params.dungeonId);
   if (!dungeon) return res.status(404).json({ error: "Dungeon not found" });
   const { difficulty = "normal" } = req.query;
@@ -84604,7 +87439,7 @@ var ZONE_ADJACENCY = {
   "Greater Faydark": ["Lesser Faydark", "Butcherblock Mountains"],
   "Butcherblock Mountains": ["Greater Faydark", "Kaladim"]
 };
-router23.get("/dungeons/:dungeonId/party-suggestions", async (req, res) => {
+router24.get("/dungeons/:dungeonId/party-suggestions", async (req, res) => {
   try {
     const dungeon = getDungeonById(req.params.dungeonId);
     if (!dungeon) return res.status(404).json({ error: "Dungeon not found" });
@@ -84627,11 +87462,13 @@ router23.get("/dungeons/:dungeonId/party-suggestions", async (req, res) => {
       const sameZone = g.zone === dungeonZone;
       const adjacent = !sameZone && adjacentZones.includes(g.zone);
       const isRival = Math.abs(g.level - character.level) <= 5;
+      const dungeonAppropriate = g.level >= minLevel;
       let priority;
       if (isRival && sameZone) priority = 4;
       else if (isRival) priority = 3;
       else if (sameZone) priority = 2;
       else if (adjacent) priority = 1;
+      else if (dungeonAppropriate) priority = 1;
       else priority = 0;
       return {
         id: g.id,
@@ -84651,7 +87488,7 @@ router23.get("/dungeons/:dungeonId/party-suggestions", async (req, res) => {
       };
     });
     withPriority.sort((a, b) => b.priority - a.priority || b.level - a.level);
-    const suggestions = withPriority.slice(0, 20);
+    const suggestions = withPriority.slice(0, 30);
     return res.json({ suggestions });
   } catch (err) {
     req.log.error({ err }, "Error fetching party suggestions");
@@ -84664,7 +87501,7 @@ function archetypeToRole(archetype) {
   if (a === "priest") return "Healer";
   return "DPS";
 }
-router23.post("/dungeons/:id/party", async (req, res) => {
+router24.post("/dungeons/:id/party", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const { ghostIds } = req.body;
@@ -84692,7 +87529,7 @@ router23.post("/dungeons/:id/party", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router23.get("/dungeons/run/party", async (req, res) => {
+router24.get("/dungeons/run/party", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const [run] = await db.select().from(dungeonRunsTable).where(
@@ -84720,7 +87557,7 @@ router23.get("/dungeons/run/party", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router23.post("/dungeons/:dungeonId/start", async (req, res) => {
+router24.post("/dungeons/:dungeonId/start", async (req, res) => {
   try {
     const dungeon = getDungeonById(req.params.dungeonId);
     if (!dungeon) return res.status(404).json({ error: "Dungeon not found" });
@@ -84818,7 +87655,7 @@ router23.post("/dungeons/:dungeonId/start", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router23.get("/dungeons/run/current", async (req, res) => {
+router24.get("/dungeons/run/current", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const [run] = await db.select().from(dungeonRunsTable).where(
@@ -84873,7 +87710,7 @@ router23.get("/dungeons/run/current", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router23.post("/dungeons/run/kill", async (req, res) => {
+router24.post("/dungeons/run/kill", async (req, res) => {
   try {
     const { enemyId } = req.body;
     if (!enemyId) return res.status(400).json({ error: "enemyId is required" });
@@ -84888,7 +87725,7 @@ router23.post("/dungeons/run/kill", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router23.post("/dungeons/run/advance", async (req, res) => {
+router24.post("/dungeons/run/advance", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const [run] = await db.select().from(dungeonRunsTable).where(
@@ -84917,10 +87754,69 @@ router23.post("/dungeons/run/advance", async (req, res) => {
     if (isLastFloor && !run.mainBossDefeated) {
       return res.status(400).json({ error: "Final floor not cleared: main boss not yet defeated" });
     }
-    const loot = generateDungeonLoot(character.level, run.currentFloor, run.difficulty);
+    const loot = generateDungeonLoot(character.level, run.currentFloor, run.difficulty, dungeon.minLevel, dungeon.maxLevel);
     await awardItemsToInventory(loot, character.id);
+    const charClass = character.class ?? "Fighter";
+    const setArchetype = charClass === "Priest" ? "healer" : charClass === "Mage" ? "caster" : "fighter";
+    const CLASS_ARMOR_TYPE = {
+      // Plate — heavy fighter tanks
+      Guardian: "plate",
+      Berserker: "plate",
+      Paladin: "plate",
+      Shadowknight: "plate",
+      // Chain — hybrid fighters
+      Monk: "chain",
+      Bruiser: "chain",
+      // Leather — scouts
+      Ranger: "leather",
+      Assassin: "leather",
+      Swashbuckler: "leather",
+      Brigand: "leather",
+      Troubador: "leather",
+      Dirge: "leather",
+      // Cloth — mages & priests
+      Wizard: "cloth",
+      Warlock: "cloth",
+      Conjuror: "cloth",
+      Necromancer: "cloth",
+      Coercer: "cloth",
+      Illusionist: "cloth",
+      Templar: "cloth",
+      Inquisitor: "cloth",
+      Mystic: "cloth",
+      Defiler: "cloth",
+      // Generic fallbacks
+      Fighter: "plate",
+      Scout: "leather",
+      Mage: "cloth",
+      Priest: "cloth"
+    };
+    const setArmorType = CLASS_ARMOR_TYPE[charClass] ?? "plate";
+    const setPieceDefs = getGearSetsForFloor(dungeon.id, run.difficulty, run.currentFloor, setArchetype);
+    const setPieceItems = [];
+    for (const pieceDef of setPieceDefs) {
+      const setDef = GEAR_SETS.find(
+        (s) => s.dungeonId === dungeon.id && s.difficulty === run.difficulty && s.archetype === setArchetype
+      );
+      if (!setDef) continue;
+      const result = await generateGearSetItem(
+        setDef.id,
+        pieceDef.slot,
+        dungeon.name,
+        dungeon.zone,
+        run.difficulty,
+        setDef.theme,
+        setDef.setNameTemplate,
+        character.level,
+        setArchetype,
+        setArmorType
+      );
+      if (result) setPieceItems.push({ item: result.item });
+    }
+    if (setPieceItems.length > 0) await awardSetPiecesToInventory(setPieceItems, character.id);
+    const setPieceIds = setPieceItems.map((p) => p.item["id"]);
     const existingLoot = run.lootEarned ?? [];
-    const newLoot = [...existingLoot, { floor: run.currentFloor, items: loot }];
+    const newLoot = [...existingLoot, { floor: run.currentFloor, items: [...loot, ...setPieceIds] }];
     const currentParty = run.party ?? [];
     if (isLastFloor) {
       const [completed] = await db.update(dungeonRunsTable).set({
@@ -84959,6 +87855,7 @@ router23.post("/dungeons/run/advance", async (req, res) => {
         completed: true,
         abandoned: false,
         lootAwarded: loot,
+        setPiecesAwarded: setPieceItems.map((p) => p.item),
         xpEarned,
         goldEarned,
         party: partyWithInfo,
@@ -84988,6 +87885,7 @@ router23.post("/dungeons/run/advance", async (req, res) => {
       abandoned: false,
       newFloor,
       lootAwarded: loot,
+      setPiecesAwarded: setPieceItems.map((p) => p.item),
       party: revivedParty,
       nextFloor: {
         floorNumber: newFloor,
@@ -85002,7 +87900,7 @@ router23.post("/dungeons/run/advance", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router23.post("/dungeons/run/abandon", async (req, res) => {
+router24.post("/dungeons/run/abandon", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const [updated] = await db.update(dungeonRunsTable).set({ status: "abandoned", abandoned: true, completed: false }).where(
@@ -85018,7 +87916,7 @@ router23.post("/dungeons/run/abandon", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router23.get("/dungeons/:dungeonId/history", async (req, res) => {
+router24.get("/dungeons/:dungeonId/history", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const runs = await db.select().from(dungeonRunsTable).where(eq(dungeonRunsTable.characterId, character.id)).orderBy(dungeonRunsTable.startedAt);
@@ -85028,10 +87926,10 @@ router23.get("/dungeons/:dungeonId/history", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-var dungeons_default = router23;
+var dungeons_default = router24;
 
 // src/routes/raids.ts
-var import_express24 = __toESM(require_express2(), 1);
+var import_express25 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
 init_gameData();
@@ -85064,7 +87962,8 @@ var CLASS_ICONS2 = {
 function getClassIcon2(c) {
   return CLASS_ICONS2[c] ?? "\u2694\uFE0F";
 }
-var router24 = (0, import_express24.Router)();
+var RAID_LEVEL_RANGE = 10;
+var router25 = (0, import_express25.Router)();
 function archetypeToRole2(archetype) {
   const a = archetype.toLowerCase();
   if (a === "fighter") return "Tank";
@@ -85107,9 +88006,12 @@ function buildScaledRaidBoss(raid, playerLevel, phaseDef) {
 function generateRaidLoot(raidId, playerLevel) {
   const raid = getRaidById(raidId);
   const tier = raid?.lootTier ?? "legendary";
+  const raidMinLevel = raid?.minLevel ?? playerLevel;
+  const raidMaxLevel = raidMinLevel + RAID_LEVEL_RANGE;
+  const clampedLevel = Math.min(Math.max(playerLevel, raidMinLevel), raidMaxLevel);
   const pool2 = ITEMS.filter((item) => {
     if (item.type === "material" || item.type === "consumable" || item.type === "quest") return false;
-    if (Math.abs(item.level - playerLevel) > 10) return false;
+    if (Math.abs(item.level - clampedLevel) > RAID_LEVEL_RANGE) return false;
     return true;
   });
   const rarityPools = {
@@ -85126,7 +88028,7 @@ function generateRaidLoot(raidId, playerLevel) {
   }
   return loot;
 }
-router24.get("/raids", async (req, res) => {
+router25.get("/raids", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const gear = character.gear || {};
@@ -85161,7 +88063,7 @@ router24.get("/raids", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router24.get("/raids/party-suggestions", async (req, res) => {
+router25.get("/raids/party-suggestions", async (req, res) => {
   try {
     const { raidId } = req.query;
     const raid = raidId ? getRaidById(raidId) : null;
@@ -85188,7 +88090,7 @@ router24.get("/raids/party-suggestions", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router24.post("/raids/:raidId/start", async (req, res) => {
+router25.post("/raids/:raidId/start", async (req, res) => {
   try {
     const raid = getRaidById(req.params.raidId);
     if (!raid) return res.status(404).json({ error: "Raid not found" });
@@ -85274,7 +88176,7 @@ router24.post("/raids/:raidId/start", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router24.get("/raids/run/current", async (req, res) => {
+router25.get("/raids/run/current", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const [run] = await db.select().from(raidRunsTable).where(
@@ -85314,7 +88216,7 @@ router24.get("/raids/run/current", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router24.post("/raids/run/phase-advance", async (req, res) => {
+router25.post("/raids/run/phase-advance", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const [run] = await db.select().from(raidRunsTable).where(
@@ -85396,7 +88298,7 @@ router24.post("/raids/run/phase-advance", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router24.post("/raids/run/abandon", async (req, res) => {
+router25.post("/raids/run/abandon", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const [updated] = await db.update(raidRunsTable).set({ status: "abandoned", abandoned: true, completed: false }).where(
@@ -85412,7 +88314,7 @@ router24.post("/raids/run/abandon", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router24.post("/raids/:raidId/party", async (req, res) => {
+router25.post("/raids/:raidId/party", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const raid = getRaidById(req.params.raidId);
@@ -85442,14 +88344,14 @@ router24.post("/raids/:raidId/party", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-var raids_default = router24;
+var raids_default = router25;
 
 // src/routes/portrait.ts
-var import_express25 = __toESM(require_express2(), 1);
+var import_express26 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
 init_gameData();
-var router25 = (0, import_express25.Router)();
+var router26 = (0, import_express26.Router)();
 var ARMOR_TIER_LABEL = {
   plate: "full plate armor, heavily armored warrior",
   chain: "chain mail hauberk, medium-armored adventurer",
@@ -85536,7 +88438,7 @@ function detectArmorTierFromGear(gear, classDefault) {
   }
   return classDefault;
 }
-router25.get("/character/portrait", async (req, res) => {
+router26.get("/character/portrait", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const classDef = CLASSES.find((c) => c.id.toLowerCase() === character.class.toLowerCase()) ?? CLASSES.find((c) => c.name.toLowerCase() === character.class.toLowerCase());
@@ -85572,7 +88474,7 @@ router25.get("/character/portrait", async (req, res) => {
     res.status(500).json({ error: "Failed to generate portrait" });
   }
 });
-router25.post("/character/portrait/refresh", async (req, res) => {
+router26.post("/character/portrait/refresh", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const classDef = CLASSES.find((c) => c.id.toLowerCase() === character.class.toLowerCase()) ?? CLASSES.find((c) => c.name.toLowerCase() === character.class.toLowerCase());
@@ -85587,17 +88489,17 @@ router25.post("/character/portrait/refresh", async (req, res) => {
     res.status(500).json({ error: "Failed to refresh portrait" });
   }
 });
-var portrait_default = router25;
+var portrait_default = router26;
 
 // src/routes/auction.ts
-var import_express26 = __toESM(require_express2(), 1);
+var import_express27 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
 init_gameData();
-var router26 = (0, import_express26.Router)();
+var router27 = (0, import_express27.Router)();
 var LISTING_DURATION_MS = 24 * 30 * 1e3;
 var MAX_PLAYER_LISTINGS = 20;
-router26.get("/auction", async (req, res) => {
+router27.get("/auction", async (req, res) => {
   try {
     await cleanExpiredListings().catch(() => {
     });
@@ -85643,7 +88545,7 @@ router26.get("/auction", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router26.get("/auction/my-listings", async (req, res) => {
+router27.get("/auction/my-listings", async (req, res) => {
   try {
     await cleanExpiredListings().catch(() => {
     });
@@ -85670,7 +88572,7 @@ router26.get("/auction/my-listings", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router26.post("/auction/list", async (req, res) => {
+router27.post("/auction/list", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const { itemId, quantity = 1, buyoutPrice, category = "misc" } = req.body;
@@ -85751,7 +88653,7 @@ router26.post("/auction/list", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router26.post("/auction/buy/:listingId", async (req, res) => {
+router27.post("/auction/buy/:listingId", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const listingId = parseInt(req.params.listingId, 10);
@@ -85820,7 +88722,7 @@ router26.post("/auction/buy/:listingId", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router26.delete("/auction/:listingId", async (req, res) => {
+router27.delete("/auction/:listingId", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const listingId = parseInt(req.params.listingId, 10);
@@ -85864,18 +88766,20 @@ router26.delete("/auction/:listingId", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-var auction_default = router26;
+var auction_default = router27;
 
 // src/routes/leaderboard.ts
-var import_express27 = __toESM(require_express2(), 1);
+var import_express28 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
 init_gameData();
-var router27 = (0, import_express27.Router)();
+var router28 = (0, import_express28.Router)();
 function resolveGearStats(gear, level, baseStats) {
   let gearAttackRating = 0, gearDefenseRating = 0, gearMitigation = 0;
   let gearHaste = 0, gearCritChance = 0, gearWeaponDamageMin = 0, gearWeaponDamageMax = 0, gearWeaponDelay = 2;
   let gearHealth = 0, gearPower = 0, hasWeapon = false;
+  let gearStrength = 0, gearAgility = 0, gearStamina = 0;
+  let gearIntelligence = 0, gearWisdom = 0, gearCharisma = 0;
   for (const slotValue of Object.values(gear)) {
     let s = null;
     if (typeof slotValue === "string") {
@@ -85893,6 +88797,12 @@ function resolveGearStats(gear, level, baseStats) {
     gearCritChance += s.critChance || 0;
     gearHealth += s.health || 0;
     gearPower += s.power || 0;
+    gearStrength += s.strength || 0;
+    gearAgility += s.agility || 0;
+    gearStamina += s.stamina || 0;
+    gearIntelligence += s.intelligence || 0;
+    gearWisdom += s.wisdom || 0;
+    gearCharisma += s.charisma || 0;
     if (s.weaponDamageMin) {
       gearWeaponDamageMin = s.weaponDamageMin;
       gearWeaponDamageMax = s.weaponDamageMax || s.weaponDamageMin * 2;
@@ -85904,7 +88814,7 @@ function resolveGearStats(gear, level, baseStats) {
     gearWeaponDamageMin = baseStats.strength * 0.5 + level;
     gearWeaponDamageMax = baseStats.strength * 1 + level * 2;
   }
-  return { gearAttackRating, gearDefenseRating, gearMitigation, gearHaste, gearCritChance, gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay, gearHealth, gearPower };
+  return { gearAttackRating, gearDefenseRating, gearMitigation, gearHaste, gearCritChance, gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay, gearHealth, gearPower, gearStrength, gearAgility, gearStamina, gearIntelligence, gearWisdom, gearCharisma };
 }
 function resolveGearItems(gear) {
   const items = [];
@@ -85926,9 +88836,9 @@ function resolveGearItems(gear) {
   }
   return items;
 }
-router27.get("/leaderboard/overall", async (_req, res) => {
+router28.get("/leaderboard/overall", async (_req, res) => {
   try {
-    const [realPlayers, ghostPlayers, dungeonAgg, raidAgg] = await Promise.all([
+    const [realPlayers, ghostPlayers, dungeonAgg, raidAgg, ghostDungAgg, ghostRaidAgg] = await Promise.all([
       db.select().from(charactersTable).orderBy(asc(charactersTable.id)),
       db.select().from(worldPlayersTable).orderBy(asc(worldPlayersTable.id)),
       db.select({
@@ -85940,10 +88850,21 @@ router27.get("/leaderboard/overall", async (_req, res) => {
         characterId: raidRunsTable.characterId,
         raidsCompleted: sql`count(*)`.as("raids_completed"),
         maxPhase: sql`max(${raidRunsTable.currentPhase})`.as("max_phase")
-      }).from(raidRunsTable).where(eq(raidRunsTable.completed, true)).groupBy(raidRunsTable.characterId)
+      }).from(raidRunsTable).where(eq(raidRunsTable.completed, true)).groupBy(raidRunsTable.characterId),
+      db.select({
+        ghostId: ghostDungeonClearsTable.ghostId,
+        totalClears: sql`sum(${ghostDungeonClearsTable.clearCount})`.as("total_clears")
+      }).from(ghostDungeonClearsTable).groupBy(ghostDungeonClearsTable.ghostId),
+      db.select({
+        ghostId: ghostRaidClearsTable.ghostId,
+        totalClears: sql`sum(${ghostRaidClearsTable.clearCount})`.as("total_clears"),
+        maxPhase: sql`max(${ghostRaidClearsTable.maxPhase})`.as("max_phase")
+      }).from(ghostRaidClearsTable).groupBy(ghostRaidClearsTable.ghostId)
     ]);
     const dungeonMap = new Map(dungeonAgg.map((d) => [d.characterId, d]));
     const raidMap = new Map(raidAgg.map((r) => [r.characterId, r]));
+    const ghostDungMap = new Map(ghostDungAgg.map((d) => [d.ghostId, d]));
+    const ghostRaidMap = new Map(ghostRaidAgg.map((r) => [r.ghostId, r]));
     const entries = [];
     for (const p of realPlayers) {
       const dungData = dungeonMap.get(p.id);
@@ -85970,7 +88891,12 @@ router27.get("/leaderboard/overall", async (_req, res) => {
       });
     }
     for (const g of ghostPlayers) {
-      const score = g.level * 1e3 + g.killCount * 0.5 + g.bossKills * 10;
+      const gDung = ghostDungMap.get(g.id);
+      const gRaid = ghostRaidMap.get(g.id);
+      const dungCompleted = Number(gDung?.totalClears ?? 0);
+      const raidsCompleted = Number(gRaid?.totalClears ?? 0);
+      const maxPhase = Number(gRaid?.maxPhase ?? 0);
+      const score = g.level * 1e3 + g.killCount * 0.5 + g.bossKills * 10 + dungCompleted * 50 + raidsCompleted * 200;
       entries.push({
         id: `ghost_${g.id}`,
         type: "ghost",
@@ -85980,10 +88906,10 @@ router27.get("/leaderboard/overall", async (_req, res) => {
         xp: g.xp,
         killCount: g.killCount,
         bossKills: g.bossKills,
-        dungeonsCompleted: 0,
+        dungeonsCompleted: dungCompleted,
         heroicCompletions: 0,
-        raidsCompleted: 0,
-        highestPhase: 0,
+        raidsCompleted,
+        highestPhase: maxPhase,
         _score: score
       });
     }
@@ -85996,9 +88922,9 @@ router27.get("/leaderboard/overall", async (_req, res) => {
     res.status(500).json({ error: "Failed to fetch leaderboard" });
   }
 });
-router27.get("/leaderboard/dungeons", async (_req, res) => {
+router28.get("/leaderboard/dungeons", async (_req, res) => {
   try {
-    const [realAgg, perDungeonAgg, realPlayers, ghostPlayers] = await Promise.all([
+    const [realAgg, perDungeonAgg, realPlayers, ghostPlayers, ghostDungAgg, ghostPerDungAgg] = await Promise.all([
       db.select({
         characterId: dungeonRunsTable.characterId,
         dungeonsCompleted: sql`count(*)`.as("dungeons_completed"),
@@ -86012,7 +88938,12 @@ router27.get("/leaderboard/dungeons", async (_req, res) => {
         clearCount: sql`count(*)`.as("clear_count")
       }).from(dungeonRunsTable).where(eq(dungeonRunsTable.completed, true)).groupBy(dungeonRunsTable.characterId, dungeonRunsTable.dungeonId, dungeonRunsTable.difficulty),
       db.select().from(charactersTable).orderBy(asc(charactersTable.id)),
-      db.select().from(worldPlayersTable).orderBy(asc(worldPlayersTable.id))
+      db.select().from(worldPlayersTable).orderBy(asc(worldPlayersTable.id)),
+      db.select({
+        ghostId: ghostDungeonClearsTable.ghostId,
+        totalClears: sql`sum(${ghostDungeonClearsTable.clearCount})`.as("total_clears")
+      }).from(ghostDungeonClearsTable).groupBy(ghostDungeonClearsTable.ghostId),
+      db.select().from(ghostDungeonClearsTable)
     ]);
     const realAggMap = new Map(realAgg.map((r) => [r.characterId, r]));
     const perDungeonMap = /* @__PURE__ */ new Map();
@@ -86022,6 +88953,15 @@ router27.get("/leaderboard/dungeons", async (_req, res) => {
       const existing = perDungeonMap.get(row.characterId) ?? [];
       existing.push(entry);
       perDungeonMap.set(row.characterId, existing);
+    }
+    const ghostDungMap = new Map(ghostDungAgg.map((d) => [d.ghostId, d]));
+    const ghostPerDungMap = /* @__PURE__ */ new Map();
+    for (const row of ghostPerDungAgg) {
+      const def = getDungeonById(row.dungeonId);
+      const entry = { dungeonId: row.dungeonId, dungeonName: def?.name ?? row.dungeonId, difficulty: row.bestDifficulty, clearCount: row.clearCount };
+      const existing = ghostPerDungMap.get(row.ghostId) ?? [];
+      existing.push(entry);
+      ghostPerDungMap.set(row.ghostId, existing);
     }
     const entries = [];
     for (const p of realPlayers) {
@@ -86041,15 +88981,17 @@ router27.get("/leaderboard/dungeons", async (_req, res) => {
       });
     }
     for (const g of ghostPlayers) {
+      const gAgg = ghostDungMap.get(g.id);
+      const dungCompleted = Number(gAgg?.totalClears ?? 0);
       entries.push({
         id: `ghost_${g.id}`,
         type: "ghost",
         name: g.name,
-        dungeonsCompleted: 0,
+        dungeonsCompleted: dungCompleted,
         floorsCleared: 0,
         heroicCompletions: 0,
-        dungeonBreakdown: [],
-        _score: 0
+        dungeonBreakdown: ghostPerDungMap.get(g.id) ?? [],
+        _score: dungCompleted * 100
       });
     }
     entries.sort((a, b) => b._score - a._score);
@@ -86061,9 +89003,9 @@ router27.get("/leaderboard/dungeons", async (_req, res) => {
     res.status(500).json({ error: "Failed to fetch dungeon leaderboard" });
   }
 });
-router27.get("/leaderboard/raids", async (_req, res) => {
+router28.get("/leaderboard/raids", async (_req, res) => {
   try {
-    const [raidAgg, realPlayers, ghostPlayers] = await Promise.all([
+    const [raidAgg, realPlayers, ghostPlayers, ghostRaidAgg] = await Promise.all([
       db.select({
         characterId: raidRunsTable.characterId,
         raidsCompleted: sql`count(*)`.as("raids_completed"),
@@ -86071,9 +89013,15 @@ router27.get("/leaderboard/raids", async (_req, res) => {
         totalRaidKills: sql`sum(${raidRunsTable.currentPhase})`.as("total_raid_kills")
       }).from(raidRunsTable).where(eq(raidRunsTable.completed, true)).groupBy(raidRunsTable.characterId),
       db.select().from(charactersTable).orderBy(asc(charactersTable.id)),
-      db.select().from(worldPlayersTable).orderBy(asc(worldPlayersTable.id))
+      db.select().from(worldPlayersTable).orderBy(asc(worldPlayersTable.id)),
+      db.select({
+        ghostId: ghostRaidClearsTable.ghostId,
+        raidsCompleted: sql`sum(${ghostRaidClearsTable.clearCount})`.as("raids_completed"),
+        maxPhase: sql`max(${ghostRaidClearsTable.maxPhase})`.as("max_phase")
+      }).from(ghostRaidClearsTable).groupBy(ghostRaidClearsTable.ghostId)
     ]);
     const raidMap = new Map(raidAgg.map((r) => [r.characterId, r]));
+    const ghostRaidMap = new Map(ghostRaidAgg.map((r) => [r.ghostId, r]));
     const entries = [];
     for (const p of realPlayers) {
       const agg = raidMap.get(p.id);
@@ -86091,14 +89039,17 @@ router27.get("/leaderboard/raids", async (_req, res) => {
       });
     }
     for (const g of ghostPlayers) {
+      const gAgg = ghostRaidMap.get(g.id);
+      const raidsCompleted = Number(gAgg?.raidsCompleted ?? 0);
+      const highestPhase = Number(gAgg?.maxPhase ?? 0);
       entries.push({
         id: `ghost_${g.id}`,
         type: "ghost",
         name: g.name,
-        raidsCompleted: 0,
-        highestPhase: 0,
+        raidsCompleted,
+        highestPhase,
         totalRaidKills: 0,
-        _score: 0
+        _score: raidsCompleted * 1e3 + highestPhase * 100
       });
     }
     entries.sort((a, b) => b._score - a._score);
@@ -86110,7 +89061,7 @@ router27.get("/leaderboard/raids", async (_req, res) => {
     res.status(500).json({ error: "Failed to fetch raid leaderboard" });
   }
 });
-router27.get("/leaderboard/player/:characterId/profile", async (req, res) => {
+router28.get("/leaderboard/player/:characterId/profile", async (req, res) => {
   try {
     const characterId = parseInt(req.params.characterId, 10);
     if (isNaN(characterId)) return res.status(400).json({ error: "Invalid character id" });
@@ -86151,8 +89102,9 @@ router27.get("/leaderboard/player/:characterId/profile", async (req, res) => {
     const baseStats = p.baseStats;
     const gearData = resolveGearStats(gear, p.level, baseStats);
     const aa = makeZeroAABonuses();
-    const computedStats = computeStats({ level: p.level, ...baseStats, ...gearData, gearCritBonus: 0 }, aa);
-    const maxHp = Math.floor(baseStats.stamina * 10 + 50 + (p.level - 1) * 15);
+    const computedStats = computeStats({ level: p.level, ...baseStats, ...gearData, gearCritBonus: 0, archetype: p.archetype ?? "Fighter" }, aa);
+    const effStamina = baseStats.stamina + gearData.gearStamina;
+    const maxHp = Math.floor(effStamina * 10 + 50 + (p.level - 1) * 15 + gearData.gearHealth);
     return res.json({
       characterId,
       name: p.name,
@@ -86180,42 +89132,61 @@ router27.get("/leaderboard/player/:characterId/profile", async (req, res) => {
     return res.status(500).json({ error: "Failed to fetch player profile" });
   }
 });
-router27.get("/leaderboard/ghost/:ghostId/profile", async (req, res) => {
+router28.get("/leaderboard/ghost/:ghostId/profile", async (req, res) => {
   try {
     const ghostId = parseInt(req.params.ghostId, 10);
     if (isNaN(ghostId)) return res.status(400).json({ error: "Invalid ghost id" });
-    const [ghostRows] = await db.select().from(worldPlayersTable).where(eq(worldPlayersTable.id, ghostId)).limit(1);
+    const [ghostResults, dungeonClears, raidClears] = await Promise.all([
+      db.select().from(worldPlayersTable).where(eq(worldPlayersTable.id, ghostId)).limit(1),
+      db.select().from(ghostDungeonClearsTable).where(eq(ghostDungeonClearsTable.ghostId, ghostId)),
+      db.select().from(ghostRaidClearsTable).where(eq(ghostRaidClearsTable.ghostId, ghostId))
+    ]);
+    const ghostRows = ghostResults[0];
     if (!ghostRows) return res.status(404).json({ error: "Ghost not found" });
     const g = ghostRows;
     const baseStats = g.stats;
-    const gearData = {
-      gearAttackRating: 0,
-      gearDefenseRating: 0,
-      gearMitigation: 0,
-      gearHaste: 0,
-      gearCritChance: 0,
-      gearWeaponDamageMin: baseStats.strength * 0.5 + g.level,
-      gearWeaponDamageMax: baseStats.strength * 1 + g.level * 2,
-      gearWeaponDelay: 2,
-      gearHealth: 0,
-      gearPower: 0
-    };
+    const gear = g.gear ?? {};
+    const gearItems = resolveGearItems(gear);
+    const gearScore = computeGearScore(
+      Object.entries(gear).map(([slot, val]) => ({
+        level: val?.level ?? 0,
+        rarity: val?.rarity ?? "common",
+        slot
+      }))
+    );
+    const gearData = resolveGearStats(gear, g.level, baseStats);
     const aa = makeZeroAABonuses();
-    const computedStats = computeStats({ level: g.level, ...baseStats, ...gearData, gearCritBonus: 0 }, aa);
-    const maxHp = Math.floor(baseStats.stamina * 10 + 50 + (g.level - 1) * 15);
+    const computedStats = computeStats({ level: g.level, ...baseStats, ...gearData, gearCritBonus: 0, archetype: g.archetype ?? "Fighter" }, aa);
+    const effStaminaGhost = baseStats.stamina + gearData.gearStamina;
+    const maxHp = Math.floor(effStaminaGhost * 10 + 50 + (g.level - 1) * 15 + gearData.gearHealth);
     return res.json({
       characterId: ghostId,
       ghostId,
       name: g.name,
       class: g.class,
+      race: g.race,
       level: g.level,
       zone: g.zone,
       killCount: g.killCount,
       bossKills: g.bossKills,
+      generation: g.generation ?? 1,
+      parentId: g.parentId ?? null,
+      inheritedTraits: g.inheritedTraits ?? [],
+      gearScore,
       zoneKills: {},
-      dungeonClears: [],
-      raidClears: [],
-      gear: [],
+      dungeonClears: dungeonClears.map((d) => ({
+        dungeonId: d.dungeonId,
+        bestDifficulty: d.bestDifficulty,
+        clearCount: d.clearCount,
+        lastClearedAt: d.lastClearedAt
+      })),
+      raidClears: raidClears.map((r) => ({
+        raidId: r.raidId,
+        maxPhase: r.maxPhase,
+        clearCount: r.clearCount,
+        lastClearedAt: r.lastClearedAt
+      })),
+      gear: gearItems,
       stats: {
         maxHp,
         attackRating: computedStats.attackRating,
@@ -86234,18 +89205,81 @@ router27.get("/leaderboard/ghost/:ghostId/profile", async (req, res) => {
     return res.status(500).json({ error: "Failed to fetch ghost profile" });
   }
 });
-var leaderboard_default = router27;
+router28.get("/leaderboard/ghosts/top-by-role", async (_req, res) => {
+  try {
+    let ghostRole2 = function(archetype, cls) {
+      const archetypeLower = archetype.toLowerCase();
+      const clsLower = cls.toLowerCase();
+      if (archetypeLower === "priest") return "Healer";
+      if (archetypeLower === "fighter") {
+        if (clsLower.includes("monk") || clsLower.includes("bruiser")) return "DPS";
+        return "Tank";
+      }
+      return "DPS";
+    };
+    var ghostRole = ghostRole2;
+    const [ghostPlayers, ghostDungAgg] = await Promise.all([
+      db.select().from(worldPlayersTable),
+      db.select({
+        ghostId: ghostDungeonClearsTable.ghostId,
+        totalClears: sql`sum(${ghostDungeonClearsTable.clearCount})`.as("total_clears")
+      }).from(ghostDungeonClearsTable).groupBy(ghostDungeonClearsTable.ghostId)
+    ]);
+    const dungMap = new Map(ghostDungAgg.map((d) => [d.ghostId, Number(d.totalClears ?? 0)]));
+    const tanks = [];
+    const healers = [];
+    const dps = [];
+    for (const g of ghostPlayers) {
+      const gear = g.gear ?? {};
+      const gearScore = computeGearScore(
+        Object.entries(gear).map(([slot, val]) => ({
+          level: val?.level ?? 0,
+          rarity: val?.rarity ?? "common",
+          slot
+        }))
+      );
+      const dungeonClears = dungMap.get(g.id) ?? 0;
+      const role = ghostRole2(g.archetype, g.class);
+      const score = gearScore * 2 + g.level * 50 + g.killCount * 0.1 + dungeonClears * 100;
+      const entry = {
+        id: g.id,
+        name: g.name,
+        class: g.class,
+        race: g.race,
+        level: g.level,
+        zone: g.zone,
+        killCount: g.killCount,
+        bossKills: g.bossKills,
+        gearScore,
+        dungeonClears,
+        personality: g.personality,
+        role,
+        generation: g.generation ?? 1,
+        _score: score
+      };
+      if (role === "Tank") tanks.push(entry);
+      else if (role === "Healer") healers.push(entry);
+      else dps.push(entry);
+    }
+    const top5 = (arr) => arr.sort((a, b) => b._score - a._score).slice(0, 5).map(({ _score, ...e }) => e);
+    return res.json({ tanks: top5(tanks), healers: top5(healers), dps: top5(dps) });
+  } catch (err) {
+    console.error("leaderboard/ghosts/top-by-role error", err);
+    return res.status(500).json({ error: "Failed to fetch ghost role leaderboard" });
+  }
+});
+var leaderboard_default = router28;
 
 // src/routes/bank.ts
-var import_express28 = __toESM(require_express2(), 1);
+var import_express29 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
-var router28 = (0, import_express28.Router)();
+var router29 = (0, import_express29.Router)();
 async function isInCombat(characterId) {
   const [cs] = await db.select({ active: combatStateTable.active }).from(combatStateTable).where(eq(combatStateTable.characterId, characterId)).limit(1);
   return cs?.active ?? false;
 }
-router28.get("/bank", async (req, res) => {
+router29.get("/bank", async (req, res) => {
   try {
     const characterId = req.characterId;
     const character = await getOrCreateCharacter(req.characterId);
@@ -86260,7 +89294,7 @@ router28.get("/bank", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router28.post("/bank/deposit-item", async (req, res) => {
+router29.post("/bank/deposit-item", async (req, res) => {
   try {
     const characterId = req.characterId;
     if (await isInCombat(characterId)) return res.status(409).json({ error: "Cannot access bank during combat" });
@@ -86291,7 +89325,7 @@ router28.post("/bank/deposit-item", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router28.post("/bank/withdraw-item", async (req, res) => {
+router29.post("/bank/withdraw-item", async (req, res) => {
   try {
     const characterId = req.characterId;
     if (await isInCombat(characterId)) return res.status(409).json({ error: "Cannot access bank during combat" });
@@ -86327,7 +89361,7 @@ router28.post("/bank/withdraw-item", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router28.post("/bank/deposit-gold", async (req, res) => {
+router29.post("/bank/deposit-gold", async (req, res) => {
   try {
     const characterId = req.characterId;
     if (await isInCombat(characterId)) return res.status(409).json({ error: "Cannot access bank during combat" });
@@ -86343,7 +89377,7 @@ router28.post("/bank/deposit-gold", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router28.post("/bank/withdraw-gold", async (req, res) => {
+router29.post("/bank/withdraw-gold", async (req, res) => {
   try {
     const characterId = req.characterId;
     if (await isInCombat(characterId)) return res.status(409).json({ error: "Cannot access bank during combat" });
@@ -86359,14 +89393,14 @@ router28.post("/bank/withdraw-gold", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-var bank_default = router28;
+var bank_default = router29;
 
 // src/routes/gathering.ts
-var import_express29 = __toESM(require_express2(), 1);
+var import_express30 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
 init_gameData();
-var router29 = (0, import_express29.Router)();
+var router30 = (0, import_express30.Router)();
 function yieldBonusQty(baseQuantity, skillLevel) {
   const bonusMultiplier = Math.floor(skillLevel / 25) * 0.1;
   const exactBonus = baseQuantity * bonusMultiplier;
@@ -86398,10 +89432,23 @@ function itemToRecord2(itemId) {
 }
 async function addItemToInventory(characterId, itemId, quantity) {
   const itemData = itemToRecord2(itemId);
+  if (!itemData) {
+    console.warn(`addItemToInventory: unknown itemId "${itemId}" \u2013 skipping`);
+    return;
+  }
+  const existing = await db.select().from(inventoryTable).where(and(eq(inventoryTable.characterId, characterId), eq(inventoryTable.itemId, itemId)));
+  if (existing.length > 0) {
+    await db.update(inventoryTable).set({ quantity: sql`${inventoryTable.quantity} + ${quantity}` }).where(and(eq(inventoryTable.characterId, characterId), eq(inventoryTable.itemId, itemId)));
+  } else {
+    await db.insert(inventoryTable).values({ characterId, itemId, itemData, quantity });
+  }
+}
+async function addItemToGatheringBag(characterId, itemId, quantity) {
+  const itemData = itemToRecord2(itemId);
   if (!itemData) return;
-  const updated = await db.update(inventoryTable).set({ quantity: sql`${inventoryTable.quantity} + ${quantity}` }).where(and(eq(inventoryTable.characterId, characterId), eq(inventoryTable.itemId, itemId))).returning({ id: inventoryTable.id });
+  const updated = await db.update(gatheringBagItemsTable).set({ quantity: sql`${gatheringBagItemsTable.quantity} + ${quantity}`, updatedAt: /* @__PURE__ */ new Date() }).where(and(eq(gatheringBagItemsTable.characterId, characterId), eq(gatheringBagItemsTable.itemId, itemId))).returning({ id: gatheringBagItemsTable.id });
   if (updated.length === 0) {
-    await db.insert(inventoryTable).values({ characterId, itemId, itemData, quantity }).onConflictDoNothing();
+    await db.insert(gatheringBagItemsTable).values({ characterId, itemId, itemData, quantity }).onConflictDoNothing();
   }
 }
 async function awardSkillXp(characterId, skillId, xpAmount) {
@@ -86422,21 +89469,21 @@ async function processGatheringTick(characterId, node, skillLevel) {
   for (const y of node.yields) {
     const bonus = yieldBonusQty(y.baseQuantity, skillLevel);
     const qty = y.baseQuantity + bonus;
-    await addItemToInventory(characterId, y.itemId, qty);
+    await addItemToGatheringBag(characterId, y.itemId, qty);
     results.push({ itemId: y.itemId, quantity: qty });
   }
   let gotRare = false;
   if (node.rareYield) {
     const chance = rareChance(skillLevel);
     if (chance > 0 && Math.random() < chance) {
-      await addItemToInventory(characterId, node.rareYield.itemId, node.rareYield.quantity);
+      await addItemToGatheringBag(characterId, node.rareYield.itemId, node.rareYield.quantity);
       results.push({ itemId: node.rareYield.itemId, quantity: node.rareYield.quantity });
       gotRare = true;
     }
   }
   return { yields: results, gotRare };
 }
-router29.get("/gathering/nodes", async (req, res) => {
+router30.get("/gathering/nodes", async (req, res) => {
   try {
     const characterId = req.characterId;
     await getOrCreateSkills(characterId);
@@ -86460,7 +89507,7 @@ router29.get("/gathering/nodes", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router29.post("/gathering/start", async (req, res) => {
+router30.post("/gathering/start", async (req, res) => {
   try {
     const { skillId, nodeId } = req.body;
     if (!skillId || !nodeId) return res.status(400).json({ error: "skillId and nodeId required" });
@@ -86500,7 +89547,7 @@ router29.post("/gathering/start", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router29.post("/gathering/stop", async (req, res) => {
+router30.post("/gathering/stop", async (req, res) => {
   try {
     const { skillId } = req.body;
     if (!skillId) return res.status(400).json({ error: "skillId required" });
@@ -86516,7 +89563,7 @@ router29.post("/gathering/stop", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router29.get("/gathering/status", async (req, res) => {
+router30.get("/gathering/status", async (req, res) => {
   try {
     const character = await getOrCreateCharacter(req.characterId);
     const characterId = character.id;
@@ -86622,7 +89669,1758 @@ router29.get("/gathering/status", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-var gathering_default = router29;
+router30.get("/gathering/bag", async (req, res) => {
+  try {
+    const character = await getOrCreateCharacter(req.characterId);
+    const items = await db.select().from(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.characterId, character.id));
+    return res.json({ items: items.filter((i) => i.quantity > 0) });
+  } catch (err) {
+    req.log.error({ err }, "Error fetching gathering bag");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+router30.post("/gathering/bag/withdraw-all", async (req, res) => {
+  try {
+    const character = await getOrCreateCharacter(req.characterId);
+    const bagItems = await db.select().from(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.characterId, character.id));
+    for (const item of bagItems) {
+      if (item.quantity <= 0) continue;
+      await addItemToInventory(character.id, item.itemId, item.quantity);
+    }
+    await db.delete(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.characterId, character.id));
+    return res.json({ success: true, moved: bagItems.filter((i) => i.quantity > 0).length });
+  } catch (err) {
+    req.log.error({ err }, "Error withdrawing gathering bag");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+var gathering_default = router30;
+
+// src/routes/gathering-bag.ts
+var import_express31 = __toESM(require_express2(), 1);
+init_schema2();
+init_drizzle_orm();
+var router31 = (0, import_express31.Router)();
+router31.get("/gathering-bag", async (req, res) => {
+  try {
+    const characterId = req.characterId;
+    const items = await db.select().from(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.characterId, characterId)).orderBy(gatheringBagItemsTable.createdAt);
+    const formattedItems = items.map((row) => {
+      const d = row.itemData;
+      return { ...d, id: row.itemId, quantity: row.quantity, rowId: row.id };
+    });
+    return res.json({ items: formattedItems });
+  } catch (err) {
+    req.log.error({ err }, "Error getting gathering bag");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+var gathering_bag_default = router31;
+
+// src/routes/settings.ts
+var import_express32 = __toESM(require_express2(), 1);
+init_schema2();
+init_drizzle_orm();
+var router32 = (0, import_express32.Router)();
+router32.get("/settings", async (req, res) => {
+  const userId = req.userId;
+  const settings = await getOrCreateSettings(userId);
+  return res.json(formatSettings(settings));
+});
+router32.put("/settings", async (req, res) => {
+  const userId = req.userId;
+  const existing = await getOrCreateSettings(userId);
+  const allowed = [
+    "combatSpeed",
+    "autoSell",
+    "autoSellRarity",
+    "showDamageNumbers",
+    "showWorldEvents",
+    "compactMode",
+    "soundEnabled",
+    "musicEnabled",
+    "notificationsEnabled",
+    "theme"
+  ];
+  const patch = { updatedAt: /* @__PURE__ */ new Date() };
+  for (const key of allowed) {
+    if (key in req.body) {
+      patch[key] = req.body[key];
+    }
+  }
+  const [updated] = await db.update(settingsTable).set(patch).where(eq(settingsTable.id, existing.id)).returning();
+  return res.json(formatSettings(updated));
+});
+router32.post("/settings/reset", async (req, res) => {
+  const userId = req.userId;
+  const existing = await getOrCreateSettings(userId);
+  const [reset] = await db.update(settingsTable).set({
+    combatSpeed: "normal",
+    autoSell: false,
+    autoSellRarity: "common",
+    showDamageNumbers: true,
+    showWorldEvents: true,
+    compactMode: false,
+    soundEnabled: true,
+    musicEnabled: true,
+    notificationsEnabled: true,
+    theme: "dark",
+    updatedAt: /* @__PURE__ */ new Date()
+  }).where(eq(settingsTable.id, existing.id)).returning();
+  return res.json(formatSettings(reset));
+});
+var settings_default = router32;
+async function getOrCreateSettings(userId) {
+  const [existing] = await db.select().from(settingsTable).where(eq(settingsTable.userId, userId)).limit(1);
+  if (existing) return existing;
+  const [created] = await db.insert(settingsTable).values({ userId }).returning();
+  return created;
+}
+function formatSettings(s) {
+  return {
+    combatSpeed: s.combatSpeed,
+    autoSell: s.autoSell,
+    autoSellRarity: s.autoSellRarity,
+    showDamageNumbers: s.showDamageNumbers,
+    showWorldEvents: s.showWorldEvents,
+    compactMode: s.compactMode,
+    soundEnabled: s.soundEnabled,
+    musicEnabled: s.musicEnabled,
+    notificationsEnabled: s.notificationsEnabled,
+    theme: s.theme
+  };
+}
+
+// src/routes/gear-sets.ts
+var import_express33 = __toESM(require_express2(), 1);
+init_schema2();
+init_drizzle_orm();
+var router33 = (0, import_express33.Router)();
+var DUNGEON_NAME_MAP = new Map(DUNGEONS.map((d) => [d.id, d.name]));
+router33.get("/gear-sets", async (req, res) => {
+  try {
+    const character = await getOrCreateCharacter(req.characterId);
+    const equippedGear = character.gear ?? {};
+    const charClass = character.class ?? "Fighter";
+    const setArchetype = charClass === "Priest" ? "healer" : charClass === "Mage" ? "caster" : "fighter";
+    const archetypeSets = GEAR_SETS.filter((s) => s.archetype === setArchetype);
+    const inventory = await db.select({ itemId: inventoryTable.itemId, itemData: inventoryTable.itemData }).from(inventoryTable).where(eq(inventoryTable.characterId, character.id));
+    const ownedPieces = /* @__PURE__ */ new Set();
+    for (const row of inventory) {
+      const data = row.itemData;
+      const setId = data["setId"];
+      const slot = data["setPieceSlot"];
+      if (setId && slot) ownedPieces.add(`${setId}:${slot}`);
+    }
+    for (const slotVal of Object.values(equippedGear)) {
+      if (!slotVal || typeof slotVal !== "object") continue;
+      const item = slotVal;
+      const setId = item["setId"];
+      const slot = item["setPieceSlot"];
+      if (setId && slot) ownedPieces.add(`${setId}:${slot}`);
+    }
+    const equippedPiecesBySet = /* @__PURE__ */ new Map();
+    for (const slotVal of Object.values(equippedGear)) {
+      if (!slotVal || typeof slotVal !== "object") continue;
+      const item = slotVal;
+      const setId = item["setId"];
+      if (!setId) continue;
+      equippedPiecesBySet.set(setId, (equippedPiecesBySet.get(setId) ?? 0) + 1);
+    }
+    const result = archetypeSets.map((setDef) => {
+      const equippedCount = equippedPiecesBySet.get(setDef.id) ?? 0;
+      return {
+        id: setDef.id,
+        dungeonId: setDef.dungeonId,
+        dungeonName: DUNGEON_NAME_MAP.get(setDef.dungeonId) ?? setDef.dungeonId,
+        difficulty: setDef.difficulty,
+        setNameTemplate: setDef.setNameTemplate,
+        piecesTotal: setDef.pieces.length,
+        piecesOwned: setDef.pieces.filter((p) => ownedPieces.has(`${setDef.id}:${p.slot}`)).length,
+        piecesEquipped: equippedCount,
+        pieces: setDef.pieces.map((p) => ({
+          slot: p.slot,
+          dropFloor: p.dropFloor,
+          owned: ownedPieces.has(`${setDef.id}:${p.slot}`),
+          equipped: (() => {
+            for (const [, slotVal] of Object.entries(equippedGear)) {
+              if (!slotVal || typeof slotVal !== "object") continue;
+              const item = slotVal;
+              if (item["setId"] === setDef.id && item["setPieceSlot"] === p.slot) return true;
+            }
+            return false;
+          })()
+        })),
+        bonuses: setDef.bonuses.map((b) => ({
+          piecesRequired: b.piecesRequired,
+          description: b.description,
+          active: equippedCount >= b.piecesRequired,
+          isProc: !!b.effect,
+          procName: b.effect?.name
+        }))
+      };
+    });
+    return res.json({ sets: result });
+  } catch (err) {
+    req.log.error({ err }, "Error fetching gear sets");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+router33.get("/gear-sets/active", async (req, res) => {
+  try {
+    const character = await getOrCreateCharacter(req.characterId);
+    const equippedGear = character.gear ?? {};
+    const { summaries, statBoosts } = computeSetBonuses(equippedGear, GEAR_SETS);
+    return res.json({ summaries, statBoosts });
+  } catch (err) {
+    req.log.error({ err }, "Error computing active set bonuses");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+var gear_sets_default = router33;
+
+// src/routes/tradeskills.ts
+var import_express34 = __toESM(require_express2(), 1);
+init_schema2();
+init_drizzle_orm();
+
+// src/lib/tradeskillData.ts
+var TRADESKILL_CLASSES = ["weaponsmith", "armorer", "tailor", "jeweler", "alchemist"];
+var TRADESKILL_MATERIALS = [
+  // ── Smithing ──────────────────────────────────────────────────────────────
+  { id: "ts_metal_flux", name: "Metal Flux", description: "A chemical flux used to refine metals during smithing.", spriteId: "material_flux", vendorCost: 2, usedBy: ["weaponsmith", "armorer"] },
+  { id: "ts_adamantine_ore", name: "Adamantine Ore", description: "An extremely dense ore found only in the deepest mines.", spriteId: "material_ore", vendorCost: 80, usedBy: ["weaponsmith", "armorer"] },
+  // ── Tailoring ──────────────────────────────────────────────────────────────
+  { id: "ts_strong_thread", name: "Strong Thread", description: "Durable thread used to stitch together all manner of cloth and leather.", spriteId: "material_thread", vendorCost: 3, usedBy: ["tailor"] },
+  { id: "ts_linen_bolt", name: "Linen Bolt", description: "A bolt of plain linen cloth, the most basic tailoring material.", spriteId: "material_cloth", vendorCost: 5, usedBy: ["tailor"] },
+  { id: "ts_silk_cloth", name: "Silk Cloth", description: "Fine silk cloth, smooth and light, favored by mid-tier tailors.", spriteId: "material_cloth", vendorCost: 18, usedBy: ["tailor"] },
+  { id: "ts_spidersilk_cloth", name: "Spidersilk Cloth", description: "Cloth woven from giant spider silk \u2014 strong as steel yet light as air.", spriteId: "material_cloth", vendorCost: 45, usedBy: ["tailor"] },
+  { id: "ts_moonweave", name: "Moonweave Cloth", description: "Magical cloth that shimmers with lunar energy. Used in the finest garments.", spriteId: "material_cloth", vendorCost: 90, usedBy: ["tailor"] },
+  { id: "ts_rough_hide", name: "Rough Hide", description: "Thick, unprocessed animal hide. Serviceable for basic leather armor.", spriteId: "material_hide", vendorCost: 6, usedBy: ["tailor"] },
+  { id: "ts_supple_leather", name: "Supple Leather", description: "Well-tanned leather that is both flexible and durable.", spriteId: "material_hide", vendorCost: 25, usedBy: ["tailor"] },
+  // ── Jeweling ──────────────────────────────────────────────────────────────
+  { id: "ts_jewelers_oil", name: "Jeweler's Oil", description: "A precision cutting oil used to shape gems and metals in jewelry work.", spriteId: "material_reagent", vendorCost: 4, usedBy: ["jeweler"] },
+  { id: "ts_rough_ruby", name: "Rough Ruby", description: "An uncut ruby with a deep red glow. Valuable to jewelers.", spriteId: "material_gem", vendorCost: 15, usedBy: ["jeweler"] },
+  { id: "ts_flawless_sapphire", name: "Flawless Sapphire", description: "A perfectly clear sapphire. Commands a high price from jewelers.", spriteId: "material_gem", vendorCost: 40, usedBy: ["jeweler"] },
+  { id: "ts_void_crystal", name: "Void Crystal", description: "A dark crystal suffused with void energy. Prized for high-tier accessories.", spriteId: "material_gem", vendorCost: 75, usedBy: ["jeweler"] },
+  // ── Alchemy ──────────────────────────────────────────────────────────────
+  { id: "ts_empty_vial", name: "Empty Vial", description: "A clean glass vial used as the base for all alchemical potions.", spriteId: "material_vial", vendorCost: 2, usedBy: ["alchemist"] },
+  { id: "ts_mana_shard", name: "Mana Shard", description: "A crystallized fragment of raw magical energy used in potions.", spriteId: "material_reagent", vendorCost: 8, usedBy: ["alchemist"] },
+  { id: "ts_alchemists_coal", name: "Alchemist's Coal", description: "Specially treated coal that burns at a precise temperature for alchemy.", spriteId: "material_reagent", vendorCost: 4, usedBy: ["alchemist"] }
+];
+var APPRENTICE_RECIPES = [
+  // ════ WEAPONSMITH ════════════════════════════════════════════════════════════
+  {
+    name: "Iron Shortsword",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 1,
+    minLevel: 10,
+    craftTimeSeconds: 60,
+    acquisitionType: "vendor",
+    vendorCost: 10,
+    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Forged Iron Shortsword",
+      type: "weapon",
+      slot: "primary",
+      rarity: "common",
+      description: "A simple iron shortsword hammered out by an apprentice smith.",
+      stats: { weaponDamageMin: 8, weaponDamageMax: 14, weaponDelay: 2, attackRating: 12 },
+      sellPrice: 18,
+      quantity: 1,
+      xpGained: 40,
+      spriteId: "weapon_sword"
+    }
+  },
+  {
+    name: "Iron Battle Axe",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 5,
+    minLevel: 12,
+    craftTimeSeconds: 90,
+    acquisitionType: "vendor",
+    vendorCost: 15,
+    ingredients: [{ itemId: "iron_ore", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Forged Iron Battle Axe",
+      type: "weapon",
+      slot: "primary",
+      rarity: "uncommon",
+      description: "A heavy iron axe, slow but powerful.",
+      stats: { weaponDamageMin: 12, weaponDamageMax: 22, weaponDelay: 2.4, attackRating: 10, strength: 4 },
+      sellPrice: 30,
+      quantity: 1,
+      xpGained: 60,
+      spriteId: "weapon_axe"
+    }
+  },
+  {
+    name: "Steel Longsword",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 12,
+    minLevel: 20,
+    craftTimeSeconds: 120,
+    acquisitionType: "vendor",
+    vendorCost: 35,
+    ingredients: [{ itemId: "steel_bar", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Tempered Steel Longsword",
+      type: "weapon",
+      slot: "primary",
+      rarity: "uncommon",
+      description: "A well-balanced steel blade that holds a keen edge.",
+      stats: { weaponDamageMin: 18, weaponDamageMax: 28, weaponDelay: 2, attackRating: 24, strength: 6 },
+      sellPrice: 65,
+      quantity: 1,
+      xpGained: 100,
+      spriteId: "weapon_sword"
+    }
+  },
+  {
+    name: "Steel War Hammer",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 18,
+    minLevel: 22,
+    craftTimeSeconds: 150,
+    acquisitionType: "vendor",
+    vendorCost: 45,
+    ingredients: [{ itemId: "steel_bar", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel War Hammer",
+      type: "weapon",
+      slot: "primary",
+      rarity: "rare",
+      description: "A crushing two-handed hammer favored by fighters.",
+      stats: { weaponDamageMin: 22, weaponDamageMax: 38, weaponDelay: 2.6, attackRating: 20, strength: 10, stamina: 5 },
+      sellPrice: 90,
+      quantity: 1,
+      xpGained: 140,
+      spriteId: "weapon_hammer"
+    }
+  },
+  {
+    name: "Mithril Blade",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 25,
+    minLevel: 30,
+    craftTimeSeconds: 240,
+    acquisitionType: "vendor",
+    vendorCost: 80,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Mithril Blade",
+      type: "weapon",
+      slot: "primary",
+      rarity: "rare",
+      description: "A shimmering mithril sword that never loses its edge.",
+      stats: { weaponDamageMin: 32, weaponDamageMax: 48, weaponDelay: 1.8, attackRating: 42, agility: 8, critChance: 3 },
+      sellPrice: 160,
+      quantity: 1,
+      xpGained: 200,
+      spriteId: "weapon_sword"
+    }
+  },
+  {
+    name: "Mithril Warstaff",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 30,
+    minLevel: 35,
+    craftTimeSeconds: 300,
+    acquisitionType: "vendor",
+    vendorCost: 100,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }, { itemId: "ts_linen_bolt", quantity: 1 }],
+    output: {
+      name: "Mithril-Tipped Warstaff",
+      type: "weapon",
+      slot: "primary",
+      rarity: "rare",
+      description: "A balanced combat staff reinforced with mithril.",
+      stats: { weaponDamageMin: 28, weaponDamageMax: 44, weaponDelay: 2, attackRating: 35, intelligence: 10, wisdom: 8 },
+      sellPrice: 180,
+      quantity: 1,
+      xpGained: 220,
+      spriteId: "weapon_staff"
+    }
+  },
+  {
+    name: "Adamantine Sword",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 36,
+    minLevel: 40,
+    craftTimeSeconds: 480,
+    acquisitionType: "vendor",
+    vendorCost: 160,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Adamantine Sword",
+      type: "weapon",
+      slot: "primary",
+      rarity: "legendary",
+      description: "An indestructible sword forged from the hardest known metal.",
+      stats: { weaponDamageMin: 52, weaponDamageMax: 74, weaponDelay: 1.8, attackRating: 68, strength: 14, critChance: 5 },
+      sellPrice: 400,
+      quantity: 1,
+      xpGained: 380,
+      spriteId: "weapon_sword"
+    }
+  },
+  {
+    name: "Adamantine Greataxe",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 38,
+    minLevel: 42,
+    craftTimeSeconds: 600,
+    acquisitionType: "vendor",
+    vendorCost: 200,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Adamantine Greataxe",
+      type: "weapon",
+      slot: "primary",
+      rarity: "legendary",
+      description: "A massive two-handed axe that cleaves through armor like cloth.",
+      stats: { weaponDamageMin: 65, weaponDamageMax: 95, weaponDelay: 2.6, attackRating: 60, strength: 20, stamina: 10 },
+      sellPrice: 500,
+      quantity: 1,
+      xpGained: 420,
+      spriteId: "weapon_axe"
+    }
+  },
+  // ════ ARMORER ════════════════════════════════════════════════════════════════
+  {
+    name: "Iron Cap",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 1,
+    minLevel: 10,
+    craftTimeSeconds: 60,
+    acquisitionType: "vendor",
+    vendorCost: 10,
+    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Forged Iron Cap",
+      type: "armor",
+      slot: "head",
+      rarity: "common",
+      armorType: "plate",
+      description: "A simple iron helmet offering basic protection.",
+      stats: { defenseRating: 14, stamina: 5 },
+      sellPrice: 16,
+      quantity: 1,
+      xpGained: 40,
+      spriteId: "helm_plate"
+    }
+  },
+  {
+    name: "Iron Chestplate",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 5,
+    minLevel: 10,
+    craftTimeSeconds: 120,
+    acquisitionType: "vendor",
+    vendorCost: 20,
+    ingredients: [{ itemId: "iron_ore", quantity: 4 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Forged Iron Chestplate",
+      type: "armor",
+      slot: "chest",
+      rarity: "common",
+      armorType: "plate",
+      description: "A solid iron breastplate for a beginning armorer.",
+      stats: { defenseRating: 22, stamina: 8, health: 12 },
+      sellPrice: 30,
+      quantity: 1,
+      xpGained: 60,
+      spriteId: "chest_plate"
+    }
+  },
+  {
+    name: "Iron Greaves",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 8,
+    minLevel: 12,
+    craftTimeSeconds: 90,
+    acquisitionType: "vendor",
+    vendorCost: 15,
+    ingredients: [{ itemId: "iron_ore", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Forged Iron Greaves",
+      type: "armor",
+      slot: "legs",
+      rarity: "common",
+      armorType: "plate",
+      description: "Iron leg plates that protect from knee to hip.",
+      stats: { defenseRating: 18, stamina: 6 },
+      sellPrice: 22,
+      quantity: 1,
+      xpGained: 50,
+      spriteId: "legs_plate"
+    }
+  },
+  {
+    name: "Steel Helm",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 12,
+    minLevel: 20,
+    craftTimeSeconds: 120,
+    acquisitionType: "vendor",
+    vendorCost: 35,
+    ingredients: [{ itemId: "steel_bar", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel Helm",
+      type: "armor",
+      slot: "head",
+      rarity: "uncommon",
+      armorType: "plate",
+      description: "A well-crafted steel helmet with cheek guards.",
+      stats: { defenseRating: 28, stamina: 12, health: 18 },
+      sellPrice: 60,
+      quantity: 1,
+      xpGained: 100,
+      spriteId: "helm_plate"
+    }
+  },
+  {
+    name: "Steel Breastplate",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 18,
+    minLevel: 22,
+    craftTimeSeconds: 180,
+    acquisitionType: "vendor",
+    vendorCost: 55,
+    ingredients: [{ itemId: "steel_bar", quantity: 4 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel Breastplate",
+      type: "armor",
+      slot: "chest",
+      rarity: "rare",
+      armorType: "plate",
+      description: "Expertly crafted steel plate that offers serious protection.",
+      stats: { defenseRating: 42, stamina: 20, health: 30, strength: 6 },
+      sellPrice: 110,
+      quantity: 1,
+      xpGained: 150,
+      spriteId: "chest_plate"
+    }
+  },
+  {
+    name: "Mithril Coif",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 25,
+    minLevel: 30,
+    craftTimeSeconds: 240,
+    acquisitionType: "vendor",
+    vendorCost: 80,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Mithril Coif",
+      type: "armor",
+      slot: "head",
+      rarity: "rare",
+      armorType: "plate",
+      description: "A lightweight mithril helmet providing excellent protection.",
+      stats: { defenseRating: 48, stamina: 22, health: 32 },
+      sellPrice: 190,
+      quantity: 1,
+      xpGained: 200,
+      spriteId: "helm_plate"
+    }
+  },
+  {
+    name: "Mithril Plate",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 30,
+    minLevel: 34,
+    craftTimeSeconds: 360,
+    acquisitionType: "vendor",
+    vendorCost: 120,
+    ingredients: [{ itemId: "mithril_ore", quantity: 4 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Mithril Plate",
+      type: "armor",
+      slot: "chest",
+      rarity: "rare",
+      armorType: "plate",
+      description: "Gleaming mithril plate armor, lighter than steel but far stronger.",
+      stats: { defenseRating: 72, stamina: 38, health: 52, strength: 10 },
+      sellPrice: 280,
+      quantity: 1,
+      xpGained: 280,
+      spriteId: "chest_plate"
+    }
+  },
+  {
+    name: "Adamantine Helm",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 36,
+    minLevel: 40,
+    craftTimeSeconds: 480,
+    acquisitionType: "vendor",
+    vendorCost: 160,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Adamantine Helm",
+      type: "armor",
+      slot: "head",
+      rarity: "legendary",
+      armorType: "plate",
+      description: "The pinnacle of plate craftsmanship \u2014 nearly indestructible.",
+      stats: { defenseRating: 86, stamina: 50, health: 70, strength: 14 },
+      sellPrice: 450,
+      quantity: 1,
+      xpGained: 380,
+      spriteId: "helm_plate"
+    }
+  },
+  {
+    name: "Adamantine Breastplate",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 40,
+    minLevel: 44,
+    craftTimeSeconds: 600,
+    acquisitionType: "vendor",
+    vendorCost: 220,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 5 }, { itemId: "ts_metal_flux", quantity: 3 }],
+    output: {
+      name: "Adamantine Breastplate",
+      type: "armor",
+      slot: "chest",
+      rarity: "legendary",
+      armorType: "plate",
+      description: "The mightiest crafted breastplate in all of Norrath.",
+      stats: { defenseRating: 130, stamina: 80, health: 110, strength: 22 },
+      sellPrice: 650,
+      quantity: 1,
+      xpGained: 450,
+      spriteId: "chest_plate"
+    }
+  },
+  // ════ TAILOR ═════════════════════════════════════════════════════════════════
+  {
+    name: "Linen Tunic",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 1,
+    minLevel: 10,
+    craftTimeSeconds: 60,
+    acquisitionType: "vendor",
+    vendorCost: 8,
+    ingredients: [{ itemId: "ts_linen_bolt", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Stitched Linen Tunic",
+      type: "armor",
+      slot: "chest",
+      rarity: "common",
+      armorType: "cloth",
+      description: "A simple cloth tunic stitched together by a novice tailor.",
+      stats: { intelligence: 6, wisdom: 4 },
+      sellPrice: 12,
+      quantity: 1,
+      xpGained: 35,
+      spriteId: "chest_cloth"
+    }
+  },
+  {
+    name: "Rough Leather Vest",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 5,
+    minLevel: 12,
+    craftTimeSeconds: 90,
+    acquisitionType: "vendor",
+    vendorCost: 18,
+    ingredients: [{ itemId: "ts_rough_hide", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Rough Leather Vest",
+      type: "armor",
+      slot: "chest",
+      rarity: "common",
+      armorType: "leather",
+      description: "A serviceable leather vest for scouts and rogues.",
+      stats: { agility: 8, attackRating: 6 },
+      sellPrice: 20,
+      quantity: 1,
+      xpGained: 45,
+      spriteId: "chest_leather"
+    }
+  },
+  {
+    name: "Silk Robe",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 12,
+    minLevel: 20,
+    craftTimeSeconds: 120,
+    acquisitionType: "vendor",
+    vendorCost: 40,
+    ingredients: [{ itemId: "ts_silk_cloth", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Silk Robe",
+      type: "armor",
+      slot: "chest",
+      rarity: "uncommon",
+      armorType: "cloth",
+      description: "A flowing silk robe that channels magical energy.",
+      stats: { intelligence: 18, wisdom: 12, spellCritChance: 3 },
+      sellPrice: 75,
+      quantity: 1,
+      xpGained: 100,
+      spriteId: "chest_cloth"
+    }
+  },
+  {
+    name: "Supple Leather Jerkin",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 18,
+    minLevel: 25,
+    craftTimeSeconds: 150,
+    acquisitionType: "vendor",
+    vendorCost: 55,
+    ingredients: [{ itemId: "ts_supple_leather", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Supple Leather Jerkin",
+      type: "armor",
+      slot: "chest",
+      rarity: "rare",
+      armorType: "leather",
+      description: "Flexible yet tough leather that moves with the wearer.",
+      stats: { agility: 22, attackRating: 16, critChance: 4 },
+      sellPrice: 110,
+      quantity: 1,
+      xpGained: 140,
+      spriteId: "chest_leather"
+    }
+  },
+  {
+    name: "Silk Hood",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 14,
+    minLevel: 20,
+    craftTimeSeconds: 100,
+    acquisitionType: "vendor",
+    vendorCost: 35,
+    ingredients: [{ itemId: "ts_silk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Silk Hood",
+      type: "armor",
+      slot: "head",
+      rarity: "uncommon",
+      armorType: "cloth",
+      description: "A hood woven from fine silk that amplifies mental acuity.",
+      stats: { intelligence: 14, wisdom: 10 },
+      sellPrice: 55,
+      quantity: 1,
+      xpGained: 90,
+      spriteId: "helm_cloth"
+    }
+  },
+  {
+    name: "Spidersilk Vestments",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 26,
+    minLevel: 32,
+    craftTimeSeconds: 270,
+    acquisitionType: "vendor",
+    vendorCost: 100,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Spidersilk Vestments",
+      type: "armor",
+      slot: "chest",
+      rarity: "rare",
+      armorType: "cloth",
+      description: "Incredibly strong yet featherlight vestments woven from spider silk.",
+      stats: { intelligence: 32, wisdom: 22, spellCritChance: 6, spellDamage: 12 },
+      sellPrice: 200,
+      quantity: 1,
+      xpGained: 220,
+      spriteId: "chest_cloth"
+    }
+  },
+  {
+    name: "Spidersilk Scout Armor",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 28,
+    minLevel: 34,
+    craftTimeSeconds: 300,
+    acquisitionType: "vendor",
+    vendorCost: 110,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 2 }, { itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Spidersilk Scout Armor",
+      type: "armor",
+      slot: "chest",
+      rarity: "rare",
+      armorType: "leather",
+      description: "Lightweight scout armor reinforced with spidersilk weave.",
+      stats: { agility: 36, attackRating: 28, critChance: 6, haste: 4 },
+      sellPrice: 220,
+      quantity: 1,
+      xpGained: 240,
+      spriteId: "chest_leather"
+    }
+  },
+  {
+    name: "Moonweave Robe",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 36,
+    minLevel: 40,
+    craftTimeSeconds: 480,
+    acquisitionType: "vendor",
+    vendorCost: 180,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Moonweave Robe",
+      type: "armor",
+      slot: "chest",
+      rarity: "legendary",
+      armorType: "cloth",
+      description: "A robe stitched from moonweave, shimmering with lunar energy.",
+      stats: { intelligence: 60, wisdom: 42, spellCritChance: 10, spellDamage: 24 },
+      sellPrice: 480,
+      quantity: 1,
+      xpGained: 400,
+      spriteId: "chest_cloth"
+    }
+  },
+  {
+    name: "Moonweave Leggings",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 38,
+    minLevel: 42,
+    craftTimeSeconds: 420,
+    acquisitionType: "vendor",
+    vendorCost: 160,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Moonweave Leggings",
+      type: "armor",
+      slot: "legs",
+      rarity: "legendary",
+      armorType: "cloth",
+      description: "Flowing leggings of moonweave that ripple with arcane power.",
+      stats: { intelligence: 50, wisdom: 36, spellCritChance: 8 },
+      sellPrice: 380,
+      quantity: 1,
+      xpGained: 360,
+      spriteId: "legs_cloth"
+    }
+  },
+  // ════ JEWELER ════════════════════════════════════════════════════════════════
+  {
+    name: "Iron Ring",
+    tradeskillClass: "jeweler",
+    tier: "apprentice",
+    minSkill: 1,
+    minLevel: 10,
+    craftTimeSeconds: 45,
+    acquisitionType: "vendor",
+    vendorCost: 8,
+    ingredients: [{ itemId: "iron_ore", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
+    output: {
+      name: "Polished Iron Ring",
+      type: "accessory",
+      slot: "ring",
+      rarity: "common",
+      description: "A simple iron ring, worn smooth by the jeweler's polishing cloth.",
+      stats: { strength: 4, stamina: 3 },
+      sellPrice: 12,
+      quantity: 1,
+      xpGained: 30,
+      spriteId: "ring"
+    }
+  },
+  {
+    name: "Ruby Stud Earring",
+    tradeskillClass: "jeweler",
+    tier: "apprentice",
+    minSkill: 5,
+    minLevel: 12,
+    craftTimeSeconds: 60,
+    acquisitionType: "vendor",
+    vendorCost: 22,
+    ingredients: [{ itemId: "iron_ore", quantity: 1 }, { itemId: "ts_rough_ruby", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
+    output: {
+      name: "Ruby Stud Earring",
+      type: "accessory",
+      slot: "ear",
+      rarity: "uncommon",
+      description: "A gleaming iron earring set with a rough ruby.",
+      stats: { attackRating: 8, critChance: 2 },
+      sellPrice: 35,
+      quantity: 1,
+      xpGained: 55,
+      spriteId: "earring"
+    }
+  },
+  {
+    name: "Steel Band",
+    tradeskillClass: "jeweler",
+    tier: "apprentice",
+    minSkill: 10,
+    minLevel: 18,
+    craftTimeSeconds: 75,
+    acquisitionType: "vendor",
+    vendorCost: 30,
+    ingredients: [{ itemId: "steel_bar", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
+    output: {
+      name: "Polished Steel Band",
+      type: "accessory",
+      slot: "ring",
+      rarity: "uncommon",
+      description: "A smooth steel ring that imparts martial focus.",
+      stats: { attackRating: 12, strength: 6 },
+      sellPrice: 55,
+      quantity: 1,
+      xpGained: 80,
+      spriteId: "ring"
+    }
+  },
+  {
+    name: "Sapphire Pendant",
+    tradeskillClass: "jeweler",
+    tier: "apprentice",
+    minSkill: 15,
+    minLevel: 22,
+    craftTimeSeconds: 100,
+    acquisitionType: "vendor",
+    vendorCost: 60,
+    ingredients: [{ itemId: "steel_bar", quantity: 1 }, { itemId: "ts_flawless_sapphire", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
+    output: {
+      name: "Sapphire Pendant",
+      type: "accessory",
+      slot: "neck",
+      rarity: "rare",
+      description: "A brilliant sapphire set in polished steel, it amplifies the wearer's focus.",
+      stats: { intelligence: 14, wisdom: 10, spellCritChance: 3 },
+      sellPrice: 120,
+      quantity: 1,
+      xpGained: 130,
+      spriteId: "necklace"
+    }
+  },
+  {
+    name: "Mithril Loop",
+    tradeskillClass: "jeweler",
+    tier: "apprentice",
+    minSkill: 22,
+    minLevel: 28,
+    craftTimeSeconds: 150,
+    acquisitionType: "vendor",
+    vendorCost: 80,
+    ingredients: [{ itemId: "mithril_ore", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
+    output: {
+      name: "Mithril Loop",
+      type: "accessory",
+      slot: "ring",
+      rarity: "rare",
+      description: "A seamless ring of pure mithril \u2014 lightweight yet incredibly strong.",
+      stats: { agility: 12, attackRating: 18, avoidance: 3 },
+      sellPrice: 180,
+      quantity: 1,
+      xpGained: 180,
+      spriteId: "ring"
+    }
+  },
+  {
+    name: "Void Crystal Ring",
+    tradeskillClass: "jeweler",
+    tier: "apprentice",
+    minSkill: 30,
+    minLevel: 35,
+    craftTimeSeconds: 240,
+    acquisitionType: "vendor",
+    vendorCost: 130,
+    ingredients: [{ itemId: "mithril_ore", quantity: 1 }, { itemId: "ts_void_crystal", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
+    output: {
+      name: "Void Crystal Ring",
+      type: "accessory",
+      slot: "ring",
+      rarity: "rare",
+      description: "A ring set with a dark crystal that pulses with shadow energy.",
+      stats: { intelligence: 20, spellDamage: 14, spellCritChance: 5 },
+      sellPrice: 260,
+      quantity: 1,
+      xpGained: 250,
+      spriteId: "ring"
+    }
+  },
+  {
+    name: "Adamantine Choker",
+    tradeskillClass: "jeweler",
+    tier: "apprentice",
+    minSkill: 35,
+    minLevel: 40,
+    craftTimeSeconds: 360,
+    acquisitionType: "vendor",
+    vendorCost: 180,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 1 }, { itemId: "ts_rough_ruby", quantity: 2 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
+    output: {
+      name: "Adamantine Choker",
+      type: "accessory",
+      slot: "neck",
+      rarity: "legendary",
+      description: "A sturdy choker of adamantine accented with rubies \u2014 a sign of great wealth and power.",
+      stats: { strength: 18, attackRating: 30, critChance: 6, stamina: 12 },
+      sellPrice: 450,
+      quantity: 1,
+      xpGained: 380,
+      spriteId: "necklace"
+    }
+  },
+  {
+    name: "Moonstone Amulet",
+    tradeskillClass: "jeweler",
+    tier: "apprentice",
+    minSkill: 38,
+    minLevel: 42,
+    craftTimeSeconds: 420,
+    acquisitionType: "vendor",
+    vendorCost: 200,
+    ingredients: [{ itemId: "mithril_ore", quantity: 1 }, { itemId: "ts_flawless_sapphire", quantity: 1 }, { itemId: "ts_void_crystal", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
+    output: {
+      name: "Moonstone Amulet",
+      type: "accessory",
+      slot: "neck",
+      rarity: "legendary",
+      description: "A masterwork amulet combining sapphire clarity with void crystal power.",
+      stats: { intelligence: 38, wisdom: 28, spellCritChance: 9, spellDamage: 22 },
+      sellPrice: 520,
+      quantity: 1,
+      xpGained: 420,
+      spriteId: "necklace"
+    }
+  },
+  // ════ ALCHEMIST ══════════════════════════════════════════════════════════════
+  {
+    name: "Minor Health Potion",
+    tradeskillClass: "alchemist",
+    tier: "apprentice",
+    minSkill: 1,
+    minLevel: 10,
+    craftTimeSeconds: 30,
+    acquisitionType: "vendor",
+    vendorCost: 5,
+    ingredients: [{ itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_alchemists_coal", quantity: 1 }, { itemId: "ts_mana_shard", quantity: 1 }],
+    output: {
+      name: "Minor Health Potion",
+      type: "consumable",
+      slot: "none",
+      rarity: "common",
+      description: "A basic red potion that restores a small amount of health.",
+      stats: {},
+      sellPrice: 8,
+      quantity: 2,
+      xpGained: 25,
+      spriteId: "potion_red",
+      stackable: true,
+      effect: { type: "heal", value: 150 }
+    }
+  },
+  {
+    name: "Minor Power Potion",
+    tradeskillClass: "alchemist",
+    tier: "apprentice",
+    minSkill: 3,
+    minLevel: 10,
+    craftTimeSeconds: 30,
+    acquisitionType: "vendor",
+    vendorCost: 5,
+    ingredients: [{ itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_alchemists_coal", quantity: 1 }, { itemId: "ts_mana_shard", quantity: 1 }],
+    output: {
+      name: "Minor Power Potion",
+      type: "consumable",
+      slot: "none",
+      rarity: "common",
+      description: "A small blue potion that restores magical power.",
+      stats: {},
+      sellPrice: 8,
+      quantity: 2,
+      xpGained: 25,
+      spriteId: "potion_blue",
+      stackable: true,
+      effect: { type: "restore_power", value: 100 }
+    }
+  },
+  {
+    name: "Elixir of Strength",
+    tradeskillClass: "alchemist",
+    tier: "apprentice",
+    minSkill: 8,
+    minLevel: 15,
+    craftTimeSeconds: 60,
+    acquisitionType: "vendor",
+    vendorCost: 20,
+    ingredients: [{ itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_alchemists_coal", quantity: 2 }, { itemId: "ts_mana_shard", quantity: 1 }],
+    output: {
+      name: "Elixir of Strength",
+      type: "consumable",
+      slot: "none",
+      rarity: "uncommon",
+      description: "A fizzing green potion that temporarily boosts physical strength.",
+      stats: {},
+      sellPrice: 35,
+      quantity: 1,
+      xpGained: 60,
+      spriteId: "potion_green",
+      stackable: true,
+      effect: { type: "buff_strength", value: 20 }
+    }
+  },
+  {
+    name: "Health Potion",
+    tradeskillClass: "alchemist",
+    tier: "apprentice",
+    minSkill: 14,
+    minLevel: 20,
+    craftTimeSeconds: 60,
+    acquisitionType: "vendor",
+    vendorCost: 22,
+    ingredients: [{ itemId: "ts_empty_vial", quantity: 2 }, { itemId: "ts_alchemists_coal", quantity: 2 }, { itemId: "ts_mana_shard", quantity: 1 }],
+    output: {
+      name: "Health Potion",
+      type: "consumable",
+      slot: "none",
+      rarity: "uncommon",
+      description: "A reliable health potion that restores a significant amount of health.",
+      stats: {},
+      sellPrice: 40,
+      quantity: 2,
+      xpGained: 90,
+      spriteId: "potion_red",
+      stackable: true,
+      effect: { type: "heal", value: 350 }
+    }
+  },
+  {
+    name: "Elixir of Agility",
+    tradeskillClass: "alchemist",
+    tier: "apprentice",
+    minSkill: 16,
+    minLevel: 22,
+    craftTimeSeconds: 75,
+    acquisitionType: "vendor",
+    vendorCost: 28,
+    ingredients: [{ itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_alchemists_coal", quantity: 2 }, { itemId: "ts_mana_shard", quantity: 2 }],
+    output: {
+      name: "Elixir of Agility",
+      type: "consumable",
+      slot: "none",
+      rarity: "uncommon",
+      description: "A shimmering potion that sharpens reflexes and quickens feet.",
+      stats: {},
+      sellPrice: 45,
+      quantity: 1,
+      xpGained: 100,
+      spriteId: "potion_green",
+      stackable: true,
+      effect: { type: "buff_agility", value: 20 }
+    }
+  },
+  {
+    name: "Elixir of the Warrior",
+    tradeskillClass: "alchemist",
+    tier: "apprentice",
+    minSkill: 22,
+    minLevel: 28,
+    craftTimeSeconds: 120,
+    acquisitionType: "vendor",
+    vendorCost: 55,
+    ingredients: [{ itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_alchemists_coal", quantity: 3 }, { itemId: "ts_mana_shard", quantity: 2 }],
+    output: {
+      name: "Elixir of the Warrior",
+      type: "consumable",
+      slot: "none",
+      rarity: "rare",
+      description: "A potent elixir that enhances the drinker's fighting capability for a short time.",
+      stats: {},
+      sellPrice: 90,
+      quantity: 1,
+      xpGained: 160,
+      spriteId: "potion_orange",
+      stackable: true,
+      effect: { type: "buff_attack", value: 30 }
+    }
+  },
+  {
+    name: "Strong Health Potion",
+    tradeskillClass: "alchemist",
+    tier: "apprentice",
+    minSkill: 28,
+    minLevel: 32,
+    craftTimeSeconds: 120,
+    acquisitionType: "vendor",
+    vendorCost: 65,
+    ingredients: [{ itemId: "ts_empty_vial", quantity: 2 }, { itemId: "ts_alchemists_coal", quantity: 3 }, { itemId: "ts_mana_shard", quantity: 2 }],
+    output: {
+      name: "Strong Health Potion",
+      type: "consumable",
+      slot: "none",
+      rarity: "rare",
+      description: "A concentrated health potion that rapidly restores health.",
+      stats: {},
+      sellPrice: 100,
+      quantity: 2,
+      xpGained: 180,
+      spriteId: "potion_red",
+      stackable: true,
+      effect: { type: "heal", value: 700 }
+    }
+  },
+  {
+    name: "Elixir of Intelligence",
+    tradeskillClass: "alchemist",
+    tier: "apprentice",
+    minSkill: 34,
+    minLevel: 38,
+    craftTimeSeconds: 150,
+    acquisitionType: "vendor",
+    vendorCost: 90,
+    ingredients: [{ itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_alchemists_coal", quantity: 3 }, { itemId: "ts_mana_shard", quantity: 3 }],
+    output: {
+      name: "Elixir of Intelligence",
+      type: "consumable",
+      slot: "none",
+      rarity: "rare",
+      description: "A sparkling golden potion that greatly enhances magical intellect.",
+      stats: {},
+      sellPrice: 140,
+      quantity: 1,
+      xpGained: 240,
+      spriteId: "potion_gold",
+      stackable: true,
+      effect: { type: "buff_intelligence", value: 30 }
+    }
+  },
+  {
+    name: "Flask of Undying Resolve",
+    tradeskillClass: "alchemist",
+    tier: "apprentice",
+    minSkill: 40,
+    minLevel: 44,
+    craftTimeSeconds: 300,
+    acquisitionType: "vendor",
+    vendorCost: 180,
+    ingredients: [{ itemId: "ts_empty_vial", quantity: 2 }, { itemId: "ts_alchemists_coal", quantity: 4 }, { itemId: "ts_mana_shard", quantity: 3 }],
+    output: {
+      name: "Flask of Undying Resolve",
+      type: "consumable",
+      slot: "none",
+      rarity: "legendary",
+      description: "A master alchemist's masterwork \u2014 a flask that dramatically extends the drinker's endurance.",
+      stats: {},
+      sellPrice: 350,
+      quantity: 1,
+      xpGained: 420,
+      spriteId: "potion_purple",
+      stackable: true,
+      effect: { type: "heal", value: 1500 }
+    }
+  }
+];
+var ALL_APPRENTICE_RECIPE_NAMES = new Set(APPRENTICE_RECIPES.map((r) => r.name));
+
+// src/routes/tradeskills.ts
+var router34 = (0, import_express34.Router)();
+function defaultTradeskills() {
+  return { weaponsmith: 0, armorer: 0, tailor: 0, jeweler: 0, alchemist: 0 };
+}
+function xpToSkillLevel(xp) {
+  return Math.min(100, Math.floor(Math.sqrt(xp / 25)));
+}
+var seeded = false;
+async function seedRecipesIfNeeded() {
+  if (seeded) return;
+  seeded = true;
+  try {
+    const [countRow] = await db.select({ count: sql`COUNT(*)::int` }).from(recipesTable);
+    if ((countRow?.count ?? 0) > 0) return;
+    const rows = APPRENTICE_RECIPES.map((r) => ({
+      name: r.name,
+      tradeskillClass: r.tradeskillClass,
+      tier: r.tier,
+      minSkill: r.minSkill,
+      minLevel: r.minLevel,
+      craftTimeSeconds: r.craftTimeSeconds,
+      ingredients: r.ingredients,
+      output: r.output,
+      acquisitionType: r.acquisitionType,
+      vendorCost: r.vendorCost,
+      isOoak: false
+    }));
+    await db.insert(recipesTable).values(rows);
+    console.log(`[tradeskills] Seeded ${rows.length} apprentice recipes.`);
+  } catch (err) {
+    seeded = false;
+    console.error("[tradeskills] Seed error:", err);
+  }
+}
+seedRecipesIfNeeded();
+async function getInventoryMap(characterId) {
+  const rows = await db.select({ itemId: inventoryTable.itemId, quantity: inventoryTable.quantity }).from(inventoryTable).where(eq(inventoryTable.characterId, characterId));
+  const map2 = /* @__PURE__ */ new Map();
+  for (const row of rows) {
+    map2.set(row.itemId, (map2.get(row.itemId) ?? 0) + row.quantity);
+  }
+  return map2;
+}
+async function deductIngredients(characterId, ingredients) {
+  const invMap = await getInventoryMap(characterId);
+  for (const ing of ingredients) {
+    if ((invMap.get(ing.itemId) ?? 0) < ing.quantity) return false;
+  }
+  for (const ing of ingredients) {
+    let remaining = ing.quantity;
+    const rows = await db.select().from(inventoryTable).where(
+      and(
+        eq(inventoryTable.characterId, characterId),
+        eq(inventoryTable.itemId, ing.itemId)
+      )
+    );
+    for (const row of rows) {
+      if (remaining <= 0) break;
+      if (row.quantity <= remaining) {
+        remaining -= row.quantity;
+        await db.delete(inventoryTable).where(eq(inventoryTable.id, row.id));
+      } else {
+        await db.update(inventoryTable).set({ quantity: row.quantity - remaining }).where(eq(inventoryTable.id, row.id));
+        remaining = 0;
+      }
+    }
+  }
+  return true;
+}
+async function refundIngredients(characterId, ingredients) {
+  for (const ing of ingredients) {
+    const [existing] = await db.select().from(inventoryTable).where(
+      and(
+        eq(inventoryTable.characterId, characterId),
+        eq(inventoryTable.itemId, ing.itemId)
+      )
+    ).limit(1);
+    if (existing) {
+      await db.update(inventoryTable).set({ quantity: existing.quantity + ing.quantity }).where(eq(inventoryTable.id, existing.id));
+    } else {
+      await db.insert(inventoryTable).values({
+        characterId,
+        itemId: ing.itemId,
+        quantity: ing.quantity,
+        itemData: { id: ing.itemId, name: ing.itemId }
+      });
+    }
+  }
+}
+async function addCraftedItem(characterId, output, recipeName) {
+  const craftedItemId = `crafted_${recipeName.toLowerCase().replace(/\s+/g, "_")}_${Date.now()}`;
+  const itemData = {
+    id: craftedItemId,
+    name: output.name,
+    description: output.description,
+    type: output.type,
+    slot: output.slot,
+    rarity: output.rarity,
+    stats: output.stats,
+    sellPrice: output.sellPrice,
+    level: 1,
+    spriteId: output.spriteId ?? null,
+    stackable: output.stackable ?? false,
+    crafted: true
+  };
+  if (output.armorType) itemData.armorType = output.armorType;
+  if (output.effect) itemData.effect = output.effect;
+  if (output.stackable) {
+    const [existing] = await db.select().from(inventoryTable).where(
+      and(
+        eq(inventoryTable.characterId, characterId),
+        eq(inventoryTable.itemId, output.name)
+        // use name as stable id for stackables
+      )
+    ).limit(1);
+    if (existing) {
+      await db.update(inventoryTable).set({ quantity: existing.quantity + output.quantity }).where(eq(inventoryTable.id, existing.id));
+      return;
+    }
+    await db.insert(inventoryTable).values({
+      characterId,
+      itemId: output.name,
+      quantity: output.quantity,
+      itemData
+    });
+  } else {
+    await db.insert(inventoryTable).values({
+      characterId,
+      itemId: craftedItemId,
+      quantity: output.quantity,
+      itemData
+    });
+  }
+}
+async function awardTradeskillXp(characterId, tradeskillClass, xpAmount) {
+  const char2 = await getOrCreateCharacter(characterId);
+  const tradeskills = char2.tradeskills ?? defaultTradeskills();
+  const current = tradeskills[tradeskillClass] ?? 0;
+  tradeskills[tradeskillClass] = current + xpAmount;
+  await db.update(charactersTable).set({ tradeskills }).where(eq(charactersTable.id, characterId));
+}
+router34.get("/tradeskills/status", async (req, res) => {
+  await seedRecipesIfNeeded();
+  try {
+    const characterId = req.session.characterId;
+    if (!characterId) return res.status(401).json({ error: "Not authenticated" });
+    const char2 = await getOrCreateCharacter(characterId);
+    const tradeskills = char2.tradeskills ?? defaultTradeskills();
+    const [queueCountRow] = await db.select({ count: sql`COUNT(*)::int` }).from(craftQueueTable).where(
+      and(
+        eq(craftQueueTable.characterId, characterId),
+        eq(craftQueueTable.status, "crafting")
+      )
+    );
+    const tradeskillLevels = {};
+    for (const cls of TRADESKILL_CLASSES) {
+      const xp = tradeskills[cls] ?? 0;
+      tradeskillLevels[cls] = { xp, level: xpToSkillLevel(xp) };
+    }
+    return res.json({
+      tradeskillClass: char2.tradeskillClass ?? null,
+      tradeskills: tradeskillLevels,
+      queueCount: queueCountRow?.count ?? 0
+    });
+  } catch (err) {
+    console.error("[tradeskills] status error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+router34.post("/tradeskills/class", async (req, res) => {
+  try {
+    const characterId = req.session.characterId;
+    if (!characterId) return res.status(401).json({ error: "Not authenticated" });
+    const { tradeskillClass } = req.body;
+    if (!tradeskillClass || !TRADESKILL_CLASSES.includes(tradeskillClass)) {
+      return res.status(400).json({ error: "Invalid tradeskill class" });
+    }
+    const char2 = await getOrCreateCharacter(characterId);
+    if (char2.tradeskillClass) {
+      return res.status(400).json({ error: "Tradeskill class already chosen" });
+    }
+    await db.update(charactersTable).set({ tradeskillClass }).where(eq(charactersTable.id, characterId));
+    return res.json({ tradeskillClass });
+  } catch (err) {
+    console.error("[tradeskills] class error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+router34.get("/tradeskills/vendor/materials", async (req, res) => {
+  try {
+    const characterId = req.session.characterId;
+    if (!characterId) return res.status(401).json({ error: "Not authenticated" });
+    const char2 = await getOrCreateCharacter(characterId);
+    const tsClass = char2.tradeskillClass;
+    const materials = tsClass ? TRADESKILL_MATERIALS.filter((m) => m.usedBy.includes(tsClass)) : TRADESKILL_MATERIALS;
+    return res.json(materials);
+  } catch (err) {
+    console.error("[tradeskills] vendor/materials error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+router34.post("/tradeskills/vendor/materials/purchase", async (req, res) => {
+  try {
+    const characterId = req.session.characterId;
+    if (!characterId) return res.status(401).json({ error: "Not authenticated" });
+    const { itemId, quantity = 1 } = req.body;
+    if (!itemId || quantity < 1) return res.status(400).json({ error: "Invalid itemId or quantity" });
+    const material = TRADESKILL_MATERIALS.find((m) => m.id === itemId);
+    if (!material) return res.status(404).json({ error: "Material not found" });
+    const totalCost = material.vendorCost * quantity;
+    const char2 = await getOrCreateCharacter(characterId);
+    if (char2.gold < totalCost) {
+      return res.status(400).json({ error: "Insufficient gold" });
+    }
+    await db.update(charactersTable).set({ gold: char2.gold - totalCost }).where(eq(charactersTable.id, characterId));
+    const [existing] = await db.select().from(inventoryTable).where(
+      and(
+        eq(inventoryTable.characterId, characterId),
+        eq(inventoryTable.itemId, itemId)
+      )
+    ).limit(1);
+    const itemData = {
+      id: itemId,
+      name: material.name,
+      description: material.description,
+      type: "material",
+      slot: "none",
+      rarity: "common",
+      level: 1,
+      stats: {},
+      sellPrice: Math.floor(material.vendorCost * 0.5),
+      spriteId: material.spriteId,
+      stackable: true
+    };
+    if (existing) {
+      await db.update(inventoryTable).set({ quantity: existing.quantity + quantity }).where(eq(inventoryTable.id, existing.id));
+    } else {
+      await db.insert(inventoryTable).values({
+        characterId,
+        itemId,
+        quantity,
+        itemData
+      });
+    }
+    return res.json({ success: true, goldSpent: totalCost, quantity });
+  } catch (err) {
+    console.error("[tradeskills] vendor/materials/purchase error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+router34.get("/tradeskills/vendor/recipes", async (req, res) => {
+  await seedRecipesIfNeeded();
+  try {
+    const characterId = req.session.characterId;
+    if (!characterId) return res.status(401).json({ error: "Not authenticated" });
+    const char2 = await getOrCreateCharacter(characterId);
+    if (!char2.tradeskillClass) {
+      return res.json([]);
+    }
+    const allRecipes = await db.select().from(recipesTable).where(eq(recipesTable.tradeskillClass, char2.tradeskillClass));
+    const known = await db.select({ recipeId: knownRecipesTable.recipeId }).from(knownRecipesTable).where(eq(knownRecipesTable.characterId, characterId));
+    const knownIds = new Set(known.map((k) => k.recipeId));
+    const available = allRecipes.filter((r) => !knownIds.has(String(r.id)));
+    return res.json(available);
+  } catch (err) {
+    console.error("[tradeskills] vendor/recipes error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+router34.post("/tradeskills/vendor/recipes/purchase", async (req, res) => {
+  try {
+    const characterId = req.session.characterId;
+    if (!characterId) return res.status(401).json({ error: "Not authenticated" });
+    const { recipeId } = req.body;
+    if (!recipeId) return res.status(400).json({ error: "Missing recipeId" });
+    const [recipe] = await db.select().from(recipesTable).where(eq(recipesTable.id, recipeId)).limit(1);
+    if (!recipe) return res.status(404).json({ error: "Recipe not found" });
+    const char2 = await getOrCreateCharacter(characterId);
+    if (char2.tradeskillClass !== recipe.tradeskillClass) {
+      return res.status(403).json({ error: "Wrong tradeskill class for this recipe" });
+    }
+    const cost = recipe.vendorCost ?? 0;
+    if (char2.gold < cost) return res.status(400).json({ error: "Insufficient gold" });
+    const [alreadyKnown] = await db.select().from(knownRecipesTable).where(
+      and(
+        eq(knownRecipesTable.characterId, characterId),
+        eq(knownRecipesTable.recipeId, String(recipeId))
+      )
+    ).limit(1);
+    if (alreadyKnown) return res.status(400).json({ error: "Recipe already known" });
+    await db.update(charactersTable).set({ gold: char2.gold - cost }).where(eq(charactersTable.id, characterId));
+    await db.insert(knownRecipesTable).values({
+      characterId,
+      recipeId: String(recipeId)
+    });
+    return res.json({ success: true, goldSpent: cost });
+  } catch (err) {
+    console.error("[tradeskills] vendor/recipes/purchase error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+router34.get("/tradeskills/recipes", async (req, res) => {
+  await seedRecipesIfNeeded();
+  try {
+    const characterId = req.session.characterId;
+    if (!characterId) return res.status(401).json({ error: "Not authenticated" });
+    const known = await db.select({ recipeId: knownRecipesTable.recipeId, learnedAt: knownRecipesTable.learnedAt }).from(knownRecipesTable).where(eq(knownRecipesTable.characterId, characterId));
+    if (known.length === 0) return res.json([]);
+    const recipeIds = known.map((k) => Number(k.recipeId)).filter((id) => !isNaN(id));
+    if (recipeIds.length === 0) return res.json([]);
+    const recipes = await db.select().from(recipesTable).where(inArray(recipesTable.id, recipeIds));
+    const invMap = await getInventoryMap(characterId);
+    const result = recipes.map((recipe) => {
+      const ingredients = recipe.ingredients;
+      const ingredientsWithCounts = ingredients.map((ing) => ({
+        ...ing,
+        have: invMap.get(ing.itemId) ?? 0,
+        canCraft: (invMap.get(ing.itemId) ?? 0) >= ing.quantity
+      }));
+      const canCraft = ingredientsWithCounts.every((i) => i.canCraft);
+      return {
+        ...recipe,
+        ingredients: ingredientsWithCounts,
+        canCraft
+      };
+    });
+    return res.json(result);
+  } catch (err) {
+    console.error("[tradeskills] recipes error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+router34.post("/tradeskills/queue", async (req, res) => {
+  try {
+    const characterId = req.session.characterId;
+    if (!characterId) return res.status(401).json({ error: "Not authenticated" });
+    const { recipeId, quantity = 1 } = req.body;
+    if (!recipeId || quantity < 1) return res.status(400).json({ error: "Invalid recipeId or quantity" });
+    const [qCountRow] = await db.select({ count: sql`COUNT(*)::int` }).from(craftQueueTable).where(
+      and(
+        eq(craftQueueTable.characterId, characterId),
+        eq(craftQueueTable.status, "crafting")
+      )
+    );
+    if ((qCountRow?.count ?? 0) >= 5) {
+      return res.status(400).json({ error: "Craft queue is full (max 5)" });
+    }
+    const [known] = await db.select().from(knownRecipesTable).where(
+      and(
+        eq(knownRecipesTable.characterId, characterId),
+        eq(knownRecipesTable.recipeId, String(recipeId))
+      )
+    ).limit(1);
+    if (!known) return res.status(403).json({ error: "Recipe not known" });
+    const [recipe] = await db.select().from(recipesTable).where(eq(recipesTable.id, recipeId)).limit(1);
+    if (!recipe) return res.status(404).json({ error: "Recipe not found" });
+    const ingredients = recipe.ingredients;
+    const scaledIngredients = ingredients.map((ing) => ({
+      itemId: ing.itemId,
+      quantity: ing.quantity * quantity
+    }));
+    const ok = await deductIngredients(characterId, scaledIngredients);
+    if (!ok) return res.status(400).json({ error: "Insufficient materials" });
+    const now = /* @__PURE__ */ new Date();
+    const nextCompletesAt = new Date(now.getTime() + recipe.craftTimeSeconds * 1e3);
+    const [inserted] = await db.insert(craftQueueTable).values({
+      characterId,
+      recipeId,
+      quantity,
+      quantityCompleted: 0,
+      startedAt: now,
+      nextCompletesAt,
+      status: "crafting"
+    }).returning();
+    return res.json({ success: true, queueEntry: inserted });
+  } catch (err) {
+    console.error("[tradeskills] queue POST error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+router34.get("/tradeskills/queue", async (req, res) => {
+  try {
+    const characterId = req.session.characterId;
+    if (!characterId) return res.status(401).json({ error: "Not authenticated" });
+    const char2 = await getOrCreateCharacter(characterId);
+    const tsClass = char2.tradeskillClass;
+    const queue = await db.select().from(craftQueueTable).where(
+      and(
+        eq(craftQueueTable.characterId, characterId),
+        eq(craftQueueTable.status, "crafting")
+      )
+    );
+    const now = /* @__PURE__ */ new Date();
+    const updatedQueue = [];
+    for (const entry of queue) {
+      const recipe = await db.select().from(recipesTable).where(eq(recipesTable.id, entry.recipeId)).then((rows) => rows[0]);
+      if (!recipe) continue;
+      const craftTimeMs = recipe.craftTimeSeconds * 1e3;
+      const startedAt = entry.startedAt;
+      const alreadyCompleted = entry.quantityCompleted;
+      const totalQuantity = entry.quantity;
+      const elapsed = now.getTime() - startedAt.getTime();
+      const totalCompleted = Math.min(
+        Math.floor(elapsed / craftTimeMs),
+        totalQuantity
+      );
+      const newlyCompleted = totalCompleted - alreadyCompleted;
+      if (newlyCompleted > 0 && tsClass) {
+        const output = recipe.output;
+        const outputPerCraft = output.quantity;
+        await addCraftedItem(characterId, { ...output, quantity: outputPerCraft * newlyCompleted }, recipe.name);
+        const totalXp = output.xpGained * newlyCompleted;
+        await awardTradeskillXp(characterId, tsClass, totalXp);
+        if (totalCompleted >= totalQuantity) {
+          await db.update(craftQueueTable).set({ quantityCompleted: totalQuantity, status: "completed" }).where(eq(craftQueueTable.id, entry.id));
+        } else {
+          const nextCompletesAt = new Date(
+            startedAt.getTime() + (totalCompleted + 1) * craftTimeMs
+          );
+          await db.update(craftQueueTable).set({ quantityCompleted: totalCompleted, nextCompletesAt }).where(eq(craftQueueTable.id, entry.id));
+          updatedQueue.push({
+            ...entry,
+            quantityCompleted: totalCompleted,
+            nextCompletesAt,
+            recipeName: recipe.name,
+            craftTimeSeconds: recipe.craftTimeSeconds
+          });
+        }
+      } else if (totalCompleted >= totalQuantity && newlyCompleted === 0 && alreadyCompleted >= totalQuantity) {
+        await db.update(craftQueueTable).set({ status: "completed" }).where(eq(craftQueueTable.id, entry.id));
+      } else {
+        updatedQueue.push({
+          ...entry,
+          recipeName: recipe.name,
+          craftTimeSeconds: recipe.craftTimeSeconds
+        });
+      }
+    }
+    return res.json(updatedQueue);
+  } catch (err) {
+    console.error("[tradeskills] queue GET error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+router34.delete("/tradeskills/queue/:id", async (req, res) => {
+  try {
+    const characterId = req.session.characterId;
+    if (!characterId) return res.status(401).json({ error: "Not authenticated" });
+    const queueId = Number(req.params.id);
+    if (isNaN(queueId)) return res.status(400).json({ error: "Invalid queue id" });
+    const [entry] = await db.select().from(craftQueueTable).where(
+      and(
+        eq(craftQueueTable.id, queueId),
+        eq(craftQueueTable.characterId, characterId)
+      )
+    ).limit(1);
+    if (!entry) return res.status(404).json({ error: "Queue entry not found" });
+    if (entry.status !== "crafting") return res.status(400).json({ error: "Cannot cancel completed craft" });
+    const [recipe] = await db.select().from(recipesTable).where(eq(recipesTable.id, entry.recipeId)).limit(1);
+    if (recipe) {
+      const ingredients = recipe.ingredients;
+      const remaining = entry.quantity - entry.quantityCompleted;
+      if (remaining > 0) {
+        const scaledIngredients = ingredients.map((ing) => ({
+          itemId: ing.itemId,
+          quantity: ing.quantity * remaining
+        }));
+        await refundIngredients(characterId, scaledIngredients);
+      }
+    }
+    await db.delete(craftQueueTable).where(eq(craftQueueTable.id, queueId));
+    return res.json({ success: true });
+  } catch (err) {
+    console.error("[tradeskills] queue DELETE error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+var tradeskills_default = router34;
 
 // src/middleware/auth.ts
 function requireAuth(req, res, next) {
@@ -86635,12 +91433,12 @@ function requireAuth(req, res, next) {
 }
 
 // src/routes/index.ts
-var router30 = (0, import_express30.Router)();
-router30.use(health_default);
-router30.use(auth_default);
-router30.use(leaderboard_default);
-router30.use(creation_default);
-var gameRoutes = (0, import_express30.Router)();
+var router35 = (0, import_express35.Router)();
+router35.use(health_default);
+router35.use(auth_default);
+router35.use(leaderboard_default);
+router35.use(creation_default);
+var gameRoutes = (0, import_express35.Router)();
 gameRoutes.use(requireAuth);
 gameRoutes.use(character_default);
 gameRoutes.use(combat_default);
@@ -86667,8 +91465,13 @@ gameRoutes.use(portrait_default);
 gameRoutes.use(auction_default);
 gameRoutes.use(bank_default);
 gameRoutes.use(gathering_default);
-router30.use(gameRoutes);
-var routes_default = router30;
+gameRoutes.use(gathering_bag_default);
+gameRoutes.use(bestiary_default);
+gameRoutes.use(settings_default);
+gameRoutes.use(gear_sets_default);
+gameRoutes.use(tradeskills_default);
+router35.use(gameRoutes);
+var routes_default = router35;
 
 // src/lib/logger.ts
 var import_pino = __toESM(require_pino(), 1);
@@ -86692,7 +91495,7 @@ var logger = (0, import_pino.default)({
 var import_express_session = __toESM(require_express_session(), 1);
 
 // src/app.ts
-var app = (0, import_express31.default)();
+var app = (0, import_express36.default)();
 app.set("trust proxy", 1);
 var allowedOrigins = /* @__PURE__ */ new Set([
   "http://localhost:5173",
@@ -86733,27 +91536,26 @@ app.use(
     credentials: true
   })
 );
-app.use(
-  (0, import_pino_http.default)({
-    logger,
-    serializers: {
-      req(req) {
-        return {
-          id: req.id,
-          method: req.method,
-          url: req.url?.split("?")[0]
-        };
-      },
-      res(res) {
-        return {
-          statusCode: res.statusCode
-        };
-      }
+var pinoMiddleware = (0, import_pino_http.default)({
+  logger,
+  serializers: {
+    req(req) {
+      return {
+        id: req.id,
+        method: req.method,
+        url: req.url?.split("?")[0]
+      };
+    },
+    res(res) {
+      return {
+        statusCode: res.statusCode
+      };
     }
-  })
-);
-app.use(import_express31.default.json());
-app.use(import_express31.default.urlencoded({ extended: true }));
+  }
+});
+app.use(pinoMiddleware);
+app.use(import_express36.default.json());
+app.use(import_express36.default.urlencoded({ extended: true }));
 var SESSION_SECRET = process.env["SESSION_SECRET"] ?? "dev-secret-change-me";
 app.use(
   (0, import_express_session2.default)({
@@ -86785,27 +91587,34 @@ async function setupRealtimeReplication() {
 }
 
 // src/index.ts
-var rawPort = process.env["PORT"];
-if (!rawPort) {
-  throw new Error(
-    "PORT environment variable is required but was not provided."
-  );
-}
-var port = Number(rawPort);
-if (Number.isNaN(port) || port <= 0) {
-  throw new Error(`Invalid PORT value: "${rawPort}"`);
-}
-app_default.listen(port, "0.0.0.0", (err) => {
-  if (err) {
-    logger.error({ err }, "Error listening on port");
-    process.exit(1);
+var src_default = app_default;
+var isVercel = process.env["VERCEL"] === "1";
+if (!isVercel) {
+  const rawPort = process.env["PORT"];
+  if (!rawPort) {
+    throw new Error(
+      "PORT environment variable is required but was not provided."
+    );
   }
-  logger.info({ port, host: "0.0.0.0" }, "Server listening");
-  startGhostSimulation();
-  setupRealtimeReplication().catch(
-    (err2) => logger.warn({ err: err2 }, "Realtime replication setup skipped")
-  );
-});
+  const port = Number(rawPort);
+  if (Number.isNaN(port) || port <= 0) {
+    throw new Error(`Invalid PORT value: "${rawPort}"`);
+  }
+  app_default.listen(port, "0.0.0.0", (err) => {
+    if (err) {
+      logger.error({ err }, "Error listening on port");
+      process.exit(1);
+    }
+    logger.info({ port, host: "0.0.0.0" }, "Server listening");
+    startGhostSimulation();
+    setupRealtimeReplication().catch(
+      (err2) => logger.warn({ err: err2 }, "Realtime replication setup skipped")
+    );
+  });
+}
+export {
+  src_default as default
+};
 /*! Bundled license information:
 
 depd/index.js:
