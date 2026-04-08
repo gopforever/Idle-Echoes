@@ -143,7 +143,7 @@ function RaidCard({ raid, playerGS, playerLevel, onInspectGhost }: { raid: Raid;
   const { data: suggestionsData } = useQuery<{ suggestions: GhostSuggestion[] }>({
     queryKey: ["raid-party-suggestions", raid.id],
     queryFn: async () => {
-      const res = await fetch(apiUrl(`/api/raids/party-suggestions?raidId=${raid.id}`));
+      const res = await fetch(apiUrl(`/api/raids/party-suggestions?raidId=${encodeURIComponent(raid.id)}`));
       if (!res.ok) throw new Error("Failed to load ghosts");
       return res.json();
     },
@@ -151,7 +151,7 @@ function RaidCard({ raid, playerGS, playerLevel, onInspectGhost }: { raid: Raid;
 
   const startMutation = useMutation({
     mutationFn: async (ghostIds: number[]) => {
-      const res = await fetch(apiUrl(`/api/raids/${raid.id}/start`), {
+      const res = await fetch(apiUrl(`/api/raids/${encodeURIComponent(raid.id)}/start`), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ghostIds }),
