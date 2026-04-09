@@ -723,6 +723,39 @@ router.get("/tradeskills/queue", async (req, res) => {
   }
 });
 
+// ─── DELETE /tradeskills/class ────────────────────────────────────────────────
+
+router.delete("/tradeskills/class", async (req, res) => {
+  try {
+    const characterId = req.characterId;
+    if (!characterId) return res.status(401).json({ error: "Not authenticated" });
+
+    // Delete all known recipes for this character
+    await db
+      .delete(knownRecipesTable)
+      .where(eq(knownRecipesTable.characterId, characterId));
+
+    // Delete all active craft queue entries for this character (no refund)
+    await db
+      .delete(craftQueueTable)
+      .where(eq(craftQueueTable.characterId, characterId));
+
+    // Reset tradeskill class and XP on the character
+    await db
+      .update(charactersTable)
+      .set({
+        tradeskillClass: null,
+        tradeskills: defaultTradeskills(),
+      })
+      .where(eq(charactersTable.id, characterId));
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error("[tradeskills] class DELETE error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // ─── DELETE /tradeskills/queue/:id ────────────────────────────────────────────
 
 router.delete("/tradeskills/queue/:id", async (req, res) => {
