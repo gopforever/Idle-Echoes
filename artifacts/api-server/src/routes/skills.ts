@@ -26,7 +26,7 @@ export async function getOrCreateSkills(characterId: number) {
         trainingAction: null,
         xpPerHour: s.xpPerHour,
         icon: s.icon,
-        maxLevel: 100,
+        maxLevel: 70,
       }))
     ).onConflictDoNothing().returning();
     return [...existing, ...inserted];
