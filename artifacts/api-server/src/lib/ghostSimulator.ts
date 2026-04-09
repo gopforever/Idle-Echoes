@@ -50,7 +50,7 @@ import { DUNGEONS } from "./dungeonData.js";
 import { RAIDS } from "./raidData.js";
 
 // ─── Simulator version — bump to force a reset of ghost data ─────────────────
-const SIMULATOR_VERSION = 5;
+const SIMULATOR_VERSION = 6;
 
 // ─── Zone registry ────────────────────────────────────────────────────────────
 
@@ -1779,7 +1779,7 @@ export async function tickGhostSimulation(): Promise<void> {
       const xpRequired = xpForLevel(newLevel);
 
       let leveledUp = false;
-      if (newXp >= xpRequired && newLevel < 50) {
+      if (newXp >= xpRequired && newLevel < 70) {
         newXp -= xpRequired;
         newLevel++;
         leveledUp = true;
