@@ -1397,6 +1397,18 @@ export const ITEMS: Item[] = [
   { id: "relic_fragment", name: "Relic Fragment", description: "A broken piece of an ancient relic", type: "material", slot: "none", rarity: "uncommon", level: 1, stats: {}, sellPrice: 20, spriteId: "mat_iron_ore", stackable: true },
   { id: "engraved_tablet", name: "Engraved Tablet", description: "A stone tablet covered in ancient engravings", type: "material", slot: "none", rarity: "rare", level: 1, stats: {}, sellPrice: 75, spriteId: "mat_iron_ore", stackable: true },
 
+  // ── TRADESKILL HARVESTING MATERIALS ──────────────────────────────────────
+  { id: "shadowroot_timber", name: "Shadowroot Timber", description: "Dark hardwood from shadowroot trees, prized by weaponsmiths and armorers.", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 8, spriteId: "material_wood", stackable: true },
+  { id: "emberstone_fragment", name: "Emberstone Fragment", description: "A shard of volcanic rock imbued with fire energy, used in high-tier smithing.", type: "material", slot: "none", rarity: "uncommon", level: 1, stats: {}, sellPrice: 14, spriteId: "material_ore", stackable: true },
+  { id: "frostbloom_petal", name: "Frostbloom Petal", description: "A petal from a rare ice-zone flower, used in advanced potions and cloth work.", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 6, spriteId: "material_herb", stackable: true },
+  { id: "manaweave_fiber", name: "Manaweave Fiber", description: "Magical plant fiber that resonates with arcane energy, essential for moon-quality cloth.", type: "material", slot: "none", rarity: "uncommon", level: 1, stats: {}, sellPrice: 18, spriteId: "material_herb", stackable: true },
+  { id: "venom_sac", name: "Venom Sac", description: "A sac from venomous creatures, distilled into powerful alchemical poisons.", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 10, spriteId: "material_reagent", stackable: true },
+  { id: "astral_ore", name: "Astral Ore", description: "A shimmering ore that floats faintly, imbued with celestial energy.", type: "material", slot: "none", rarity: "rare", level: 1, stats: {}, sellPrice: 35, spriteId: "material_ore", stackable: true },
+  { id: "corrupted_hide", name: "Corrupted Hide", description: "Thick hide from a corrupted beast, strangely resilient and imbued with dark power.", type: "material", slot: "none", rarity: "uncommon", level: 1, stats: {}, sellPrice: 20, spriteId: "material_hide", stackable: true },
+  { id: "glimmerdust", name: "Glimmerdust", description: "Sparkling magical dust that amplifies gem-cutting precision.", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 12, spriteId: "material_reagent", stackable: true },
+  { id: "deepmoss", name: "Deepmoss", description: "A thick moss that grows only in deep caves, used in restorative alchemy.", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 5, spriteId: "material_herb", stackable: true },
+  { id: "thornvine", name: "Thornvine", description: "A tough fibrous vine with sharp thorns, used as thread reinforcement or bowstrings.", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 7, spriteId: "material_wood", stackable: true },
+
   // ── CRAFTING MATERIALS — WOODWORKING ──────────────────────────────────────
   { id: "lumber", name: "Lumber", description: "Rough-cut lumber suitable for woodworking", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 4, spriteId: "material_wood", stackable: true },
   { id: "hardwood_plank", name: "Hardwood Plank", description: "A smoothed plank of hardwood ready for construction", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 8, spriteId: "material_wood", stackable: true },
@@ -1419,7 +1431,7 @@ export const ITEMS: Item[] = [
     description: "A simple but effective bow crafted from sturdy wood",
     type: "weapon", slot: "mainhand", rarity: "common", level: 5,
     stats: { weaponDamageMin: 8, weaponDamageMax: 16, weaponDelay: 2.5, attackRating: 10 },
-    sellPrice: 40,
+    sellPrice: 40, spriteId: "weapon_bow",
   },
   {
     id: "ash_staff",
@@ -1427,7 +1439,7 @@ export const ITEMS: Item[] = [
     description: "A smooth staff carved from ash wood, favoured by spellcasters",
     type: "weapon", slot: "mainhand", rarity: "uncommon", level: 15,
     stats: { weaponDamageMin: 14, weaponDamageMax: 28, weaponDelay: 3.0, attackRating: 18, intelligence: 5 },
-    sellPrice: 90,
+    sellPrice: 90, spriteId: "weapon_staff",
   },
 
   // ── LEATHERWORKING ARMOR ──────────────────────────────────────────────────
@@ -1437,7 +1449,7 @@ export const ITEMS: Item[] = [
     description: "Simple leather bracers offering basic wrist protection",
     type: "armor", slot: "wrists", rarity: "common", level: 5,
     stats: { defenseRating: 8, mitigation: 4, agility: 2 },
-    sellPrice: 30,
+    sellPrice: 30, spriteId: "wrists_leather",
   },
   {
     id: "supple_leather_gloves",
@@ -1445,7 +1457,7 @@ export const ITEMS: Item[] = [
     description: "Soft, well-fitted gloves crafted from supple leather",
     type: "armor", slot: "hands", rarity: "common", level: 10,
     stats: { defenseRating: 10, mitigation: 5, agility: 3 },
-    sellPrice: 40,
+    sellPrice: 40, spriteId: "hands_leather",
   },
   {
     id: "reinforced_leather_vest",
@@ -1453,7 +1465,7 @@ export const ITEMS: Item[] = [
     description: "A leather vest reinforced with additional hide panels for greater protection",
     type: "armor", slot: "chest", rarity: "uncommon", level: 20,
     stats: { defenseRating: 22, mitigation: 12, stamina: 5, agility: 5 },
-    sellPrice: 85,
+    sellPrice: 85, spriteId: "chest_leather",
   },
 ];
 
@@ -4646,6 +4658,7 @@ export interface GatheringNode {
   yields: Array<{ itemId: string; baseQuantity: number; weight: number }>;
   rareYield?: { itemId: string; quantity: number };
   icon: string;
+  zone?: string;
 }
 
 export const GATHERING_NODES: GatheringNode[] = [
@@ -4881,6 +4894,81 @@ export const GATHERING_NODES: GatheringNode[] = [
   { id: "commonlands_ruins", name: "Commonlands Ruins", icon: "🏛️", description: "Crumbled ruins from an ancient civilization", skillId: "archaeology", requiredLevel: 1, xpPerGather: 16, gatherTimeSeconds: 9, yields: [{ itemId: "ancient_shard", baseQuantity: 1, weight: 1 }] },
   { id: "antonica_dig_site", name: "Antonica Dig Site", icon: "⛏️", description: "A formal dig site uncovering buried relics", skillId: "archaeology", requiredLevel: 15, xpPerGather: 42, gatherTimeSeconds: 14, yields: [{ itemId: "relic_fragment", baseQuantity: 1, weight: 1 }] },
   { id: "feerrott_temple", name: "Feerrott Temple Excavation", icon: "🗿", description: "An overgrown temple filled with ancient tablets", skillId: "archaeology", requiredLevel: 40, xpPerGather: 110, gatherTimeSeconds: 25, yields: [{ itemId: "relic_fragment", baseQuantity: 1, weight: 1 }, { itemId: "ancient_shard", baseQuantity: 1, weight: 1 }], rareYield: { itemId: "engraved_tablet", quantity: 1 } },
+
+  // ── TRADESKILL HARVESTING ──────────────────────────────────────────────────
+  {
+    id: "shadowroot_tree", name: "Shadowroot Tree", icon: "🌑",
+    description: "A gnarled tree with dark bark found in shadowy zones, prized by smiths and armorers",
+    skillId: "woodcutting", requiredLevel: 30, xpPerGather: 80, gatherTimeSeconds: 20,
+    yields: [{ itemId: "shadowroot_timber", baseQuantity: 1, weight: 1 }],
+    rareYield: { itemId: "thornvine", quantity: 2 },
+    zone: "dark",
+  },
+  {
+    id: "emberstone_outcrop", name: "Emberstone Outcrop", icon: "🔥",
+    description: "A volcanic rock outcrop in fire zones that yields emberstone fragments",
+    skillId: "mining", requiredLevel: 35, xpPerGather: 100, gatherTimeSeconds: 25,
+    yields: [{ itemId: "emberstone_fragment", baseQuantity: 1, weight: 1 }],
+    zone: "fire",
+  },
+  {
+    id: "frostbloom_meadow", name: "Frostbloom Meadow", icon: "❄️",
+    description: "A frozen meadow where rare frostbloom flowers grow in ice zones",
+    skillId: "herbalism", requiredLevel: 25, xpPerGather: 70, gatherTimeSeconds: 18,
+    yields: [{ itemId: "frostbloom_petal", baseQuantity: 2, weight: 1 }],
+    zone: "ice",
+  },
+  {
+    id: "manaweave_grove", name: "Manaweave Grove", icon: "🌿",
+    description: "An arcane grove where magical plants grow, their fibers woven with mana",
+    skillId: "herbalism", requiredLevel: 40, xpPerGather: 120, gatherTimeSeconds: 30,
+    yields: [{ itemId: "manaweave_fiber", baseQuantity: 1, weight: 1 }],
+    rareYield: { itemId: "glimmerdust", quantity: 1 },
+    zone: "arcane",
+  },
+  {
+    id: "venom_nest", name: "Venom Nest", icon: "🕷️",
+    description: "A nest of venomous creatures in mid-tier zones, carefully harvested for venom sacs",
+    skillId: "foraging", requiredLevel: 20, xpPerGather: 60, gatherTimeSeconds: 15,
+    yields: [{ itemId: "venom_sac", baseQuantity: 1, weight: 1 }],
+    zone: "swamp",
+  },
+  {
+    id: "astral_vein", name: "Astral Vein", icon: "✨",
+    description: "A rare celestial ore vein found only in high-level arcane zones",
+    skillId: "mining", requiredLevel: 55, xpPerGather: 180, gatherTimeSeconds: 40,
+    yields: [{ itemId: "astral_ore", baseQuantity: 1, weight: 1 }],
+    rareYield: { itemId: "ethereal_crystal", quantity: 1 },
+    zone: "celestial",
+  },
+  {
+    id: "corrupted_hunting_ground", name: "Corrupted Hunting Ground", icon: "☠️",
+    description: "A zone where corrupted beasts roam, yielding thick corrupted hide when skinned",
+    skillId: "skinning", requiredLevel: 35, xpPerGather: 95, gatherTimeSeconds: 22,
+    yields: [{ itemId: "corrupted_hide", baseQuantity: 1, weight: 1 }],
+    zone: "corrupted",
+  },
+  {
+    id: "glimmerdust_hollow", name: "Glimmerdust Hollow", icon: "💫",
+    description: "A hollow where magical crystalline formations shed glimmerdust",
+    skillId: "prospecting", requiredLevel: 30, xpPerGather: 85, gatherTimeSeconds: 20,
+    yields: [{ itemId: "glimmerdust", baseQuantity: 2, weight: 1 }],
+    zone: "arcane",
+  },
+  {
+    id: "deepmoss_cave", name: "Deepmoss Cave", icon: "🍄",
+    description: "Deep caverns where deepmoss grows in thick carpets along cave walls",
+    skillId: "herbalism", requiredLevel: 15, xpPerGather: 45, gatherTimeSeconds: 12,
+    yields: [{ itemId: "deepmoss", baseQuantity: 2, weight: 1 }],
+    zone: "cave",
+  },
+  {
+    id: "thornvine_thicket", name: "Thornvine Thicket", icon: "🌵",
+    description: "A dense thicket of thornvines that must be carefully harvested",
+    skillId: "woodcutting", requiredLevel: 20, xpPerGather: 55, gatherTimeSeconds: 14,
+    yields: [{ itemId: "thornvine", baseQuantity: 2, weight: 1 }],
+    zone: "forest",
+  },
 ];
 
 export function getGatheringNodeById(id: string): GatheringNode | undefined {

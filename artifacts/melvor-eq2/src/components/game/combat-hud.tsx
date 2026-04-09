@@ -661,8 +661,8 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
 
     // Boss closing line: read directly from tick response (synchronous delivery, no polling race)
     if ((data.enemyDied || data.playerDied) && (data as { bossClosingLine?: string }).bossClosingLine) {
-      const line = (data as { bossClosingLine: string; bossClosingOutcome: "playerWon" | "bossWon" }).bossClosingLine;
-      const outcome = (data as { bossClosingOutcome: "playerWon" | "bossWon" }).bossClosingOutcome;
+      const line = (data as unknown as { bossClosingLine: string; bossClosingOutcome: "playerWon" | "bossWon" }).bossClosingLine;
+      const outcome = (data as unknown as { bossClosingOutcome: "playerWon" | "bossWon" }).bossClosingOutcome;
       setBossClosingLine({ text: line, outcome: outcome ?? (data.enemyDied ? "playerWon" : "bossWon") });
       if (closingLineTimerRef.current) clearTimeout(closingLineTimerRef.current);
       closingLineTimerRef.current = setTimeout(() => setBossClosingLine(null), 8000);

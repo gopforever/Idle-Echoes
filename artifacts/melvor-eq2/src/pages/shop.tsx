@@ -444,7 +444,7 @@ function MyListings() {
   const inventory = allInventory;
 
   function shopItemIsNoSell(i: Item): boolean {
-    const rec = i as Record<string, unknown>;
+    const rec = i as unknown as Record<string, unknown>;
     const r = rec.rarity as string | undefined;
     return rec.noSell === true || r === "fabled" || r === "mythical";
   }
@@ -663,7 +663,7 @@ function VendorTab({ character }: { character: Character | undefined }) {
     const payload: Record<string, unknown> = merchantStockIndex !== undefined
       ? { merchantStockIndex, quantity: 1 }
       : { itemId, quantity: 1 };
-    buyItem.mutate({ data: payload }, {
+    buyItem.mutate({ data: payload as any }, {
       onSuccess: (data: BuyResult) => {
         queryClient.invalidateQueries({ queryKey: getGetCharacterQueryKey() });
         queryClient.invalidateQueries({ queryKey: getGetInventoryQueryKey() });
@@ -713,8 +713,8 @@ function VendorTab({ character }: { character: Character | undefined }) {
           }
           const canAfford = (character?.gold ?? 0) >= entry.buyPrice;
           const rarityColor = RARITY_COLORS[item.rarity] ?? "text-slate-400";
-          const isPricedUp = entry.buyPrice > entry.basePrice;
-          const isPricedDown = entry.buyPrice < entry.basePrice;
+          const isPricedUp = entry.buyPrice > (entry as any).basePrice;
+          const isPricedDown = entry.buyPrice < (entry as any).basePrice;
 
           return (
             <Card key={item.id} className="border-slate-800 bg-card/40 backdrop-blur">
@@ -737,7 +737,7 @@ function VendorTab({ character }: { character: Character | undefined }) {
                           </div>
                         </TooltipTrigger>
                         <TooltipContent side="right" className="p-0 border-slate-700 bg-transparent shadow-xl">
-                          <ItemTooltipContent item={item as ItemTooltipData} />
+                          <ItemTooltipContent item={item as unknown as ItemTooltipData} />
                         </TooltipContent>
                       </Tooltip>
                     </ContextMenuTrigger>
@@ -774,7 +774,7 @@ function VendorTab({ character }: { character: Character | undefined }) {
                     </span>
                     {(isPricedUp || isPricedDown) && (
                       <span className={cn("ml-1 text-[10px]", isPricedUp ? "text-red-600" : "text-green-600")}>
-                        ({isPricedUp ? "+" : ""}{Math.round((entry.buyPrice / entry.basePrice - 1) * 100)}%)
+                        ({isPricedUp ? "+" : ""}{Math.round((entry.buyPrice / (entry as any).basePrice - 1) * 100)}%)
                       </span>
                     )}
                   </div>
@@ -831,7 +831,7 @@ function VendorTab({ character }: { character: Character | undefined }) {
                               </div>
                             </TooltipTrigger>
                             <TooltipContent side="right" className="p-0 border-slate-700 bg-transparent shadow-xl">
-                              <ItemTooltipContent item={item as ItemTooltipData} />
+                              <ItemTooltipContent item={item as unknown as ItemTooltipData} />
                             </TooltipContent>
                           </Tooltip>
                         </ContextMenuTrigger>
@@ -867,7 +867,7 @@ function VendorTab({ character }: { character: Character | undefined }) {
                         <span className="text-[10px] text-slate-600">Limited stock</span>
                       </div>
                       <Button size="sm"
-                        onClick={() => handleBuy(item.id, item.name, entry.buyPrice, entry.stockIndex)}
+                        onClick={() => handleBuy(item.id, item.name, entry.buyPrice, (entry as any).stockIndex)}
                         disabled={!canAfford || buyItem.isPending}
                         className={cn("text-xs h-7", canAfford ? "bg-amber-700 hover:bg-amber-600 text-white" : "opacity-40")}
                       >

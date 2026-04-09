@@ -712,6 +712,157 @@ export const MASTER_RECIPES: MasterRecipeSeed[] = [
 
 export const ALL_MASTER_RECIPE_NAMES = new Set(MASTER_RECIPES.map(r => r.name));
 
+export interface JourneymanRecipeSeed {
+  name: string;
+  tradeskillClass: "weaponsmith" | "armorer" | "tailor" | "jeweler" | "alchemist";
+  tier: "journeyman";
+  minSkill: number;
+  minLevel: number;
+  craftTimeSeconds: number;
+  ingredients: Array<{ itemId: string; quantity: number }>;
+  output: {
+    name: string; description: string;
+    type: "weapon" | "armor" | "accessory" | "consumable";
+    slot: string; rarity: "uncommon" | "rare" | "legendary";
+    stats: Record<string, number>; sellPrice: number;
+    armorType?: "plate" | "chain" | "leather" | "cloth";
+    quantity: number; xpGained: number; spriteId?: string;
+    stackable?: boolean; effect?: { type: string; value: number };
+  };
+  acquisitionType: "drop";
+}
+
+export const JOURNEYMAN_TS_RECIPES: JourneymanRecipeSeed[] = [
+  // Weaponsmith
+  {
+    name: "Shadowroot Warclub", tradeskillClass: "weaponsmith", tier: "journeyman",
+    minSkill: 45, minLevel: 45, craftTimeSeconds: 600, acquisitionType: "drop",
+    ingredients: [{ itemId: "shadowroot_timber", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Shadowroot Warclub", type: "weapon", slot: "primary", rarity: "rare",
+      description: "A heavy club of shadowroot wood banded with metal — it carries a dark energy.",
+      stats: { weaponDamageMin: 78, weaponDamageMax: 120, weaponDelay: 2.4, attackRating: 85, strength: 22 },
+      sellPrice: 600, quantity: 1, xpGained: 550, spriteId: "weapon_hammer",
+    },
+  },
+  {
+    name: "Embersteel Sword", tradeskillClass: "weaponsmith", tier: "journeyman",
+    minSkill: 50, minLevel: 48, craftTimeSeconds: 720, acquisitionType: "drop",
+    ingredients: [{ itemId: "emberstone_fragment", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }, { itemId: "ts_adamantine_ore", quantity: 1 }],
+    output: {
+      name: "Embersteel Blade", type: "weapon", slot: "primary", rarity: "rare",
+      description: "A sword forged with emberstone — its edge glows faintly with heat.",
+      stats: { weaponDamageMin: 95, weaponDamageMax: 145, weaponDelay: 1.9, attackRating: 110, agility: 18, critChance: 6 },
+      sellPrice: 800, quantity: 1, xpGained: 700, spriteId: "weapon_sword",
+    },
+  },
+  // Armorer
+  {
+    name: "Emberstone Pauldrons", tradeskillClass: "armorer", tier: "journeyman",
+    minSkill: 45, minLevel: 45, craftTimeSeconds: 600, acquisitionType: "drop",
+    ingredients: [{ itemId: "emberstone_fragment", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Emberstone Pauldrons", type: "armor", slot: "shoulders", rarity: "rare", armorType: "plate",
+      description: "Shoulder armor infused with emberstone heat resistance.",
+      stats: { defenseRating: 95, stamina: 42, health: 60, strength: 16 },
+      sellPrice: 650, quantity: 1, xpGained: 580, spriteId: "shoulders_plate",
+    },
+  },
+  {
+    name: "Corrupted Beast Hauberk", tradeskillClass: "armorer", tier: "journeyman",
+    minSkill: 52, minLevel: 50, craftTimeSeconds: 750, acquisitionType: "drop",
+    ingredients: [{ itemId: "corrupted_hide", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 2 }, { itemId: "ts_adamantine_ore", quantity: 1 }],
+    output: {
+      name: "Corrupted Beast Hauberk", type: "armor", slot: "chest", rarity: "legendary", armorType: "chain",
+      description: "A chain hauberk reinforced with corrupted beast hide — both fierce and eerie.",
+      stats: { defenseRating: 145, stamina: 65, health: 90, strength: 24, mitigation: 12 },
+      sellPrice: 1100, quantity: 1, xpGained: 900, spriteId: "chest_chain",
+    },
+  },
+  // Tailor
+  {
+    name: "Thornvine Trapper's Vest", tradeskillClass: "tailor", tier: "journeyman",
+    minSkill: 45, minLevel: 45, craftTimeSeconds: 540, acquisitionType: "drop",
+    ingredients: [{ itemId: "thornvine", quantity: 3 }, { itemId: "ts_rough_hide", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Thornvine Trapper's Vest", type: "armor", slot: "chest", rarity: "rare", armorType: "leather",
+      description: "A scout's vest reinforced with thornvine binding for resilience in the field.",
+      stats: { agility: 48, attackRating: 38, critChance: 8, haste: 6 },
+      sellPrice: 600, quantity: 1, xpGained: 560, spriteId: "chest_leather",
+    },
+  },
+  {
+    name: "Manaweave Sorcerer's Robe", tradeskillClass: "tailor", tier: "journeyman",
+    minSkill: 52, minLevel: 50, craftTimeSeconds: 720, acquisitionType: "drop",
+    ingredients: [{ itemId: "manaweave_fiber", quantity: 3 }, { itemId: "ts_silk_cloth", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Manaweave Sorcerer's Robe", type: "armor", slot: "chest", rarity: "legendary", armorType: "cloth",
+      description: "A robe woven from manaweave fiber — it hums with absorbed arcane energy.",
+      stats: { intelligence: 82, wisdom: 58, spellCritChance: 12, spellDamage: 32 },
+      sellPrice: 1000, quantity: 1, xpGained: 850, spriteId: "chest_cloth",
+    },
+  },
+  // Jeweler
+  {
+    name: "Glimmerdust Ring", tradeskillClass: "jeweler", tier: "journeyman",
+    minSkill: 45, minLevel: 45, craftTimeSeconds: 480, acquisitionType: "drop",
+    ingredients: [{ itemId: "glimmerdust", quantity: 3 }, { itemId: "mithril_ore", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
+    output: {
+      name: "Glimmerdust Ring", type: "accessory", slot: "ring", rarity: "rare",
+      description: "A ring dusted with glimmerdust that focuses magical energies precisely.",
+      stats: { intelligence: 28, spellCritChance: 7, wisdom: 20 },
+      sellPrice: 550, quantity: 1, xpGained: 520, spriteId: "ring",
+    },
+  },
+  {
+    name: "Astral Pendant", tradeskillClass: "jeweler", tier: "journeyman",
+    minSkill: 55, minLevel: 52, craftTimeSeconds: 720, acquisitionType: "drop",
+    ingredients: [{ itemId: "astral_ore", quantity: 2 }, { itemId: "ts_flawless_sapphire", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 2 }],
+    output: {
+      name: "Astral Pendant", type: "accessory", slot: "neck", rarity: "legendary",
+      description: "A pendant forged from astral ore — it resonates with celestial power.",
+      stats: { intelligence: 52, wisdom: 40, spellDamage: 36, spellCritChance: 12 },
+      sellPrice: 1200, quantity: 1, xpGained: 1000, spriteId: "necklace",
+    },
+  },
+  // Alchemist
+  {
+    name: "Deepmoss Restorative", tradeskillClass: "alchemist", tier: "journeyman",
+    minSkill: 45, minLevel: 45, craftTimeSeconds: 300, acquisitionType: "drop",
+    ingredients: [{ itemId: "deepmoss", quantity: 3 }, { itemId: "ts_empty_vial", quantity: 2 }, { itemId: "ts_mana_shard", quantity: 2 }],
+    output: {
+      name: "Deepmoss Restorative", type: "consumable", slot: "none", rarity: "rare",
+      description: "A powerful restorative brew made from deep cave moss.",
+      stats: {}, sellPrice: 180, quantity: 2, xpGained: 400, spriteId: "potion_green",
+      stackable: true, effect: { type: "heal", value: 1200 },
+    },
+  },
+  {
+    name: "Frostbloom Clarity Draught", tradeskillClass: "alchemist", tier: "journeyman",
+    minSkill: 48, minLevel: 47, craftTimeSeconds: 360, acquisitionType: "drop",
+    ingredients: [{ itemId: "frostbloom_petal", quantity: 3 }, { itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_mana_shard", quantity: 3 }],
+    output: {
+      name: "Frostbloom Clarity Draught", type: "consumable", slot: "none", rarity: "rare",
+      description: "A chilled draught that sharpens mental clarity and boosts intelligence.",
+      stats: {}, sellPrice: 200, quantity: 1, xpGained: 450, spriteId: "potion_blue",
+      stackable: true, effect: { type: "buff_intelligence", value: 45 },
+    },
+  },
+  {
+    name: "Venom Elixir of Shadows", tradeskillClass: "alchemist", tier: "journeyman",
+    minSkill: 52, minLevel: 50, craftTimeSeconds: 480, acquisitionType: "drop",
+    ingredients: [{ itemId: "venom_sac", quantity: 2 }, { itemId: "ts_empty_vial", quantity: 2 }, { itemId: "ts_alchemists_coal", quantity: 3 }, { itemId: "ts_mana_shard", quantity: 2 }],
+    output: {
+      name: "Venom Elixir of Shadows", type: "consumable", slot: "none", rarity: "legendary",
+      description: "A deadly elixir brewed from creature venom — poisons enemies on contact.",
+      stats: {}, sellPrice: 400, quantity: 1, xpGained: 700, spriteId: "potion_purple",
+      stackable: true, effect: { type: "buff_attack", value: 55 },
+    },
+  },
+];
+
+export const ALL_JOURNEYMAN_TS_RECIPE_NAMES = new Set(JOURNEYMAN_TS_RECIPES.map(r => r.name));
+
 // ─── OoaK Name Generator ─────────────────────────────────────────────────────
 // Procedurally generates legendary One-of-a-Kind recipe names.
 // Fully server-side — no external APIs required.

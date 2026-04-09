@@ -422,15 +422,15 @@ export default function AATreePage() {
 
   const tabs = aaTree?.tabs ?? [];
   const currentTab = tabs.find((t: any) => t.id === activeTab);
-  const allNodes: AANode[] = currentTab?.nodes ?? [];
+  const allNodes: AANode[] = (currentTab?.nodes ?? []).map((n: any) => ({ ...n, effect: n.effect ?? "" })) as AANode[];
   const availablePoints: number = aaTree?.availablePoints ?? 0;
   const spentPoints: number    = aaTree?.spentPoints ?? 0;
-  const aaXpRatio: number      = aaTree?.aaXpRatio ?? 0;
-  const aaRespecUsed: boolean  = aaTree?.aaRespecUsed ?? false;
+  const aaXpRatio: number      = (aaTree as any)?.aaXpRatio ?? 0;
+  const aaRespecUsed: boolean  = (aaTree as any)?.aaRespecUsed ?? false;
   const tabMeta = getTabMeta(currentTab ?? {});
   const selectedNode  = selectedNodeId ? allNodes.find(n => n.id === selectedNodeId) : null;
-  const selectedState = selectedNode ? nodeState(selectedNode, allNodes, availablePoints, currentTab?.chosenPrestigePath) : "locked";
-  const isPrestigeTab = currentTab?.tabType === "prestige";
+  const selectedState = selectedNode ? nodeState(selectedNode, allNodes, availablePoints, (currentTab as any)?.chosenPrestigePath) : "locked";
+  const isPrestigeTab = (currentTab as any)?.tabType === "prestige";
 
   // Compute stat bonuses across all tabs
   const allTabNodes = (tabs as any[]).flatMap((t: any) => t.nodes as AANode[]);

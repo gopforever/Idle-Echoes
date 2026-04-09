@@ -157,7 +157,7 @@ export default function CharacterCreation() {
                   <div className="mt-4 p-3 rounded-lg bg-slate-800/50 border border-amber-500/30">
                     <p className="text-xs text-slate-400">{race.lore}</p>
                     <div className="flex flex-wrap gap-2 mt-2">
-                      {Object.entries(race.bonuses as Record<string, number>).filter(([, v]) => v !== 0).map(([k, v]) => (
+                      {Object.entries(race.bonuses as unknown as Record<string, number>).filter(([, v]) => v !== 0).map(([k, v]) => (
                         <span key={k} className={cn("text-xs px-1.5 py-0.5 rounded", v > 0 ? "bg-green-900/50 text-green-400" : "bg-red-900/50 text-red-400")}>
                           {k}: {v > 0 ? "+" : ""}{v}
                         </span>
