@@ -129,6 +129,14 @@ const MASTERWORK_SUFFIXES = [
   "of the Ashen Vale", "the Inexorable",
 ];
 
+/**
+ * Returns a random quality multiplier for a crafted stat based on skill level.
+ *
+ * Tier thresholds and variance ranges:
+ *  - Skill  0–49 : [0.85, 1.15] — wide variance, outcomes can be poor or fine
+ *  - Skill 50–89 : [0.95, 1.15] — narrower floor, min poor outcome removed
+ *  - Skill 90–100: [1.00, 1.20] — guaranteed at-or-above baseline, high ceiling
+ */
 function computeQualityMultiplier(skillLevel: number): number {
   let min: number, max: number;
   if (skillLevel >= 90) { min = 1.0; max = 1.20; }

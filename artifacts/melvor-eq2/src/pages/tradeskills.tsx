@@ -600,6 +600,16 @@ function HarvestNodeCard({
   onStop: () => void;
 }) {
   const [, forceUpdate] = React.useReducer(x => x + 1, 0);
+  // Track when the session data was received so we can compute elapsed time
+  const fetchedAtRef = React.useRef<number>(Date.now());
+  const prevNextTickIn = React.useRef<number | undefined>(undefined);
+
+  // Reset fetchedAt whenever nextTickIn changes (new data arrived)
+  if (session?.nextTickIn !== prevNextTickIn.current) {
+    fetchedAtRef.current = Date.now();
+    prevNextTickIn.current = session?.nextTickIn;
+  }
+
   React.useEffect(() => {
     if (!isActive) return;
     const t = setInterval(forceUpdate, 1000);
@@ -607,7 +617,7 @@ function HarvestNodeCard({
   }, [isActive]);
 
   const secLeft = session
-    ? Math.max(0, Math.ceil(session.nextTickIn - Date.now() / 1000))
+    ? Math.max(0, Math.round(session.nextTickIn - (Date.now() - fetchedAtRef.current) / 1000))
     : 0;
 
   return (
