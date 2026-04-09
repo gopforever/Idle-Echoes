@@ -856,12 +856,10 @@ router.post("/tradeskills/ooak/claim/:recipeId", async (req, res) => {
     if (!recipe) return res.status(404).json({ error: "Recipe not found" });
     if (!recipe.isOoak) return res.status(400).json({ error: "Recipe is not a One-of-a-Kind recipe" });
 
-    const char = await getOrCreateCharacter(characterId);
-
     // Atomic check-and-set: only update if claimedBy IS NULL
     const [updated] = await db
       .update(recipesTable)
-      .set({ claimedBy: String(char.userId ?? characterId) })
+      .set({ claimedBy: String(characterId) })
       .where(and(eq(recipesTable.id, recipeId), isNull(recipesTable.claimedBy)))
       .returning();
 

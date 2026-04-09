@@ -131,6 +131,8 @@ async function awardRaidRecipeDrops(
   raidId: string,
   characterId: number,
   tick: number,
+  characterName?: string,
+  zone?: string,
 ): Promise<RaidRecipeDrop> {
   const result: RaidRecipeDrop = { masterRecipe: null, ooakRecipe: null };
 
@@ -199,25 +201,29 @@ async function awardRaidRecipeDrops(
     }).returning();
 
     if (insertedOoak) {
-      // Immediately claim for the recipient (first-get binding)
-      await db
+      // Atomically claim for the recipient (first-get binding). Verify the update succeeded.
+      const [claimed] = await db
         .update(recipesTable)
         .set({ claimedBy: String(characterId) })
-        .where(and(eq(recipesTable.id, insertedOoak.id), isNull(recipesTable.claimedBy)));
+        .where(and(eq(recipesTable.id, insertedOoak.id), isNull(recipesTable.claimedBy)))
+        .returning({ id: recipesTable.id });
 
-      await db.insert(knownRecipesTable).values({ characterId, recipeId: String(insertedOoak.id) });
+      if (claimed) {
+        await db.insert(knownRecipesTable).values({ characterId, recipeId: String(insertedOoak.id) });
 
-      // Emit a world event for this legendary find
-      await db.insert(worldEventsTable).values({
-        type: "ooak_recipe_drop",
-        message: `A legendary One-of-a-Kind recipe has appeared: [${ooakName}]`,
-        playerName: "The World",
-        zone: "Unknown",
-        importance: 8,
-        tick,
-      }).catch(() => {});
+        // Emit a world event for this legendary find
+        const raid = getRaidById(raidId);
+        await db.insert(worldEventsTable).values({
+          type: "ooak_recipe_drop",
+          message: `${characterName ?? "An adventurer"} has discovered the legendary recipe [${ooakName}] in ${raid?.name ?? raidId}!`,
+          playerName: characterName ?? "Unknown",
+          zone: zone ?? raid?.zone ?? "Unknown",
+          importance: 8,
+          tick,
+        }).catch(() => {});
 
-      result.ooakRecipe = { id: insertedOoak.id, name: insertedOoak.name, tier: insertedOoak.tier };
+        result.ooakRecipe = { id: insertedOoak.id, name: insertedOoak.name, tier: insertedOoak.tier };
+      }
     }
   }
 
@@ -490,7 +496,9 @@ router.post("/raids/run/phase-advance", async (req, res) => {
       await awardGhostContributions(currentParty);
 
       // ── Phase 3: Award Master / OoaK recipe drops ──────────────────────────
-      const recipeDrop = await awardRaidRecipeDrops(run.raidId, character.id, 0).catch(() => ({ masterRecipe: null, ooakRecipe: null }));
+      const recipeDrop = await awardRaidRecipeDrops(
+        run.raidId, character.id, 0, character.name, raid.zone,
+      ).catch(() => ({ masterRecipe: null, ooakRecipe: null }));
 
       const goldEarned = loot.reduce((sum: number, id: string) => {
         const it = getItemById(id);
