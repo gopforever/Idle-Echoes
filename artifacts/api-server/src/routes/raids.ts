@@ -1,15 +1,17 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { raidRunsTable, dungeonRunsTable, worldPlayersTable } from "@workspace/db/schema";
+import { raidRunsTable, dungeonRunsTable, worldPlayersTable, worldEventsTable, recipesTable, knownRecipesTable } from "@workspace/db/schema";
 import { upsertDungeonKillStats } from "../lib/dungeonProgress.js";
 import { checkAndUnlockAchievements } from "./achievements.js";
-import { eq, and } from "drizzle-orm";
+import { eq, and, isNull } from "drizzle-orm";
 import { getOrCreateCharacter } from "./character.js";
 import { getItemById, ITEMS } from "../lib/gameData.js";
 import { computeGearScore } from "../lib/eq2Formulas.js";
 import { RAIDS, getRaidById, type RaidDefinition, type RaidPhase } from "../lib/raidData.js";
 import { initPartyMember, fetchGhostInfo, awardGhostContributions, revivePartyOnFloorAdvance } from "../lib/partyEngine.js";
 import type { PartyMember } from "../lib/partyEngine.js";
+import { MASTER_RECIPES, TRADESKILL_CLASSES, generateOoakName } from "../lib/tradeskillData.js";
+import type { TradeskillClass } from "../lib/tradeskillData.js";
 
 // Class icon helper (mirrors dungeons.ts)
 const CLASS_ICONS: Record<string, string> = {
@@ -110,6 +112,122 @@ function generateRaidLoot(raidId: string, playerLevel: number): string[] {
   if (bossMaterial) loot.push(bossMaterial);
 
   return loot;
+}
+
+// ── Phase 3: Recipe drops from raid boss kills ────────────────────────────────
+
+interface RaidRecipeDrop {
+  masterRecipe: { id: number; name: string; tier: string } | null;
+  ooakRecipe: { id: number; name: string; tier: string } | null;
+}
+
+/**
+ * After a raid boss kill, roll for Master and OoaK recipe drops.
+ * Master recipes: 15% chance, thematically tied to the raid boss.
+ * OoaK recipes:   2% chance, procedurally named and unique.
+ * Side effects: inserts into recipesTable (for OoaK) and knownRecipesTable.
+ */
+async function awardRaidRecipeDrops(
+  raidId: string,
+  characterId: number,
+  tick: number,
+  characterName?: string,
+  zone?: string,
+): Promise<RaidRecipeDrop> {
+  const result: RaidRecipeDrop = { masterRecipe: null, ooakRecipe: null };
+
+  // ─ Master recipe drop (15% chance) ──────────────────────────────────────────
+  if (Math.random() < 0.15) {
+    const candidates = MASTER_RECIPES.filter(r => r.raidBossId === raidId);
+    if (candidates.length > 0) {
+      const picked = candidates[Math.floor(Math.random() * candidates.length)];
+      // Find the DB recipe (seeded on startup)
+      const [dbRecipe] = await db
+        .select({ id: recipesTable.id, name: recipesTable.name, tier: recipesTable.tier })
+        .from(recipesTable)
+        .where(and(eq(recipesTable.name, picked.name), eq(recipesTable.tier, "master")))
+        .limit(1);
+      if (dbRecipe) {
+        // Only grant if not already known
+        const [alreadyKnown] = await db
+          .select()
+          .from(knownRecipesTable)
+          .where(and(eq(knownRecipesTable.characterId, characterId), eq(knownRecipesTable.recipeId, String(dbRecipe.id))))
+          .limit(1);
+        if (!alreadyKnown) {
+          await db.insert(knownRecipesTable).values({ characterId, recipeId: String(dbRecipe.id) });
+        }
+        result.masterRecipe = { id: dbRecipe.id, name: dbRecipe.name, tier: dbRecipe.tier };
+      }
+    }
+  }
+
+  // ─ OoaK recipe drop (2% chance) ─────────────────────────────────────────────
+  if (Math.random() < 0.02) {
+    const tsClass = TRADESKILL_CLASSES[Math.floor(Math.random() * TRADESKILL_CLASSES.length)] as TradeskillClass;
+    const ooakName = generateOoakName(tsClass);
+
+    // Build a legendary output for the OoaK recipe
+    const ooakOutput = {
+      name: ooakName,
+      description: `A legendary One-of-a-Kind creation — ${ooakName}. Only one may ever exist.`,
+      type: "weapon" as const,
+      slot: "primary",
+      rarity: "legendary" as const,
+      stats: { weaponDamageMin: 300, weaponDamageMax: 500, attackRating: 250, strength: 80, critChance: 20 },
+      sellPrice: 50000,
+      quantity: 1,
+      xpGained: 5000,
+      spriteId: "weapon_sword",
+    };
+
+    const [insertedOoak] = await db.insert(recipesTable).values({
+      name: ooakName,
+      tradeskillClass: tsClass,
+      tier: "master",
+      minSkill: 80,
+      minLevel: 60,
+      craftTimeSeconds: 3600,
+      ingredients: [
+        { itemId: "prismatic_dragon_scale", quantity: 1 },
+        { itemId: "vampire_lord_fang", quantity: 1 },
+        { itemId: "plague_dragon_spine", quantity: 1 },
+      ],
+      output: ooakOutput,
+      acquisitionType: "raid",
+      vendorCost: null,
+      isOoak: true,
+      claimedBy: null,
+    }).returning();
+
+    if (insertedOoak) {
+      // Atomically claim for the recipient (first-get binding). Verify the update succeeded.
+      const [claimed] = await db
+        .update(recipesTable)
+        .set({ claimedBy: String(characterId) })
+        .where(and(eq(recipesTable.id, insertedOoak.id), isNull(recipesTable.claimedBy)))
+        .returning({ id: recipesTable.id });
+
+      if (claimed) {
+        await db.insert(knownRecipesTable).values({ characterId, recipeId: String(insertedOoak.id) });
+
+        // Emit a world event for this legendary find
+        const raid = getRaidById(raidId);
+        await db.insert(worldEventsTable).values({
+          type: "ooak_recipe_drop",
+          message: `${characterName ?? "An adventurer"} has discovered the legendary recipe [${ooakName}] in ${raid?.name ?? raidId}!`,
+          playerName: characterName ?? "Unknown",
+          zone: zone ?? raid?.zone ?? "Unknown",
+          importance: 8,
+          tick,
+        }).catch(() => {});
+
+        result.ooakRecipe = { id: insertedOoak.id, name: insertedOoak.name, tier: insertedOoak.tier };
+      }
+    }
+  }
+
+  return result;
 }
 
 // ─── GET /api/raids ───────────────────────────────────────────────────────────
@@ -377,6 +495,11 @@ router.post("/raids/run/phase-advance", async (req, res) => {
 
       await awardGhostContributions(currentParty);
 
+      // ── Phase 3: Award Master / OoaK recipe drops ──────────────────────────
+      const recipeDrop = await awardRaidRecipeDrops(
+        run.raidId, character.id, 0, character.name, raid.zone,
+      ).catch(() => ({ masterRecipe: null, ooakRecipe: null }));
+
       const goldEarned = loot.reduce((sum: number, id: string) => {
         const it = getItemById(id);
         return sum + ((it as unknown as { sellPrice?: number } | null)?.sellPrice ?? 0);
@@ -399,6 +522,7 @@ router.post("/raids/run/phase-advance", async (req, res) => {
         xpEarned,
         goldEarned,
         party: partyWithInfo,
+        recipeDrop,
         message: `${raid.bossName} defeated! ${raid.name} conquered!`,
       });
     }

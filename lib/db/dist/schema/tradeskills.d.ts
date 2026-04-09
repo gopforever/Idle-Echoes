@@ -232,6 +232,23 @@ export declare const recipesTable: import("drizzle-orm/pg-core").PgTableWithColu
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
+        claimedBy: import("drizzle-orm/pg-core").PgColumn<{
+            name: "claimed_by";
+            tableName: "recipes";
+            dataType: "string";
+            columnType: "PgText";
+            data: string;
+            driverParam: string;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: [string, ...string[]];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
         spriteId: import("drizzle-orm/pg-core").PgColumn<{
             name: "sprite_id";
             tableName: "recipes";
@@ -252,6 +269,132 @@ export declare const recipesTable: import("drizzle-orm/pg-core").PgTableWithColu
         createdAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "created_at";
             tableName: "recipes";
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
+            driverParam: string;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+    };
+    dialect: "pg";
+}>;
+export declare const ghostLegacyTable: import("drizzle-orm/pg-core").PgTableWithColumns<{
+    name: "ghost_legacy";
+    schema: undefined;
+    columns: {
+        id: import("drizzle-orm/pg-core").PgColumn<{
+            name: "id";
+            tableName: "ghost_legacy";
+            dataType: "number";
+            columnType: "PgSerial";
+            data: number;
+            driverParam: number;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: true;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        ghostId: import("drizzle-orm/pg-core").PgColumn<{
+            name: "ghost_id";
+            tableName: "ghost_legacy";
+            dataType: "number";
+            columnType: "PgInteger";
+            data: number;
+            driverParam: string | number;
+            notNull: true;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        ghostName: import("drizzle-orm/pg-core").PgColumn<{
+            name: "ghost_name";
+            tableName: "ghost_legacy";
+            dataType: "string";
+            columnType: "PgText";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: [string, ...string[]];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        dropType: import("drizzle-orm/pg-core").PgColumn<{
+            name: "drop_type";
+            tableName: "ghost_legacy";
+            dataType: "string";
+            columnType: "PgText";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: [string, ...string[]];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        dropName: import("drizzle-orm/pg-core").PgColumn<{
+            name: "drop_name";
+            tableName: "ghost_legacy";
+            dataType: "string";
+            columnType: "PgText";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: [string, ...string[]];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        dropReference: import("drizzle-orm/pg-core").PgColumn<{
+            name: "drop_reference";
+            tableName: "ghost_legacy";
+            dataType: "string";
+            columnType: "PgText";
+            data: string;
+            driverParam: string;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: [string, ...string[]];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        createdAt: import("drizzle-orm/pg-core").PgColumn<{
+            name: "created_at";
+            tableName: "ghost_legacy";
             dataType: "date";
             columnType: "PgTimestamp";
             data: Date;
@@ -414,4 +557,5 @@ export declare const craftQueueTable: import("drizzle-orm/pg-core").PgTableWithC
 }>;
 export type Recipe = typeof recipesTable.$inferSelect;
 export type CraftQueue = typeof craftQueueTable.$inferSelect;
+export type GhostLegacy = typeof ghostLegacyTable.$inferSelect;
 //# sourceMappingURL=tradeskills.d.ts.map

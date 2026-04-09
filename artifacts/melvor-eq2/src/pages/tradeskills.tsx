@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { apiUrl } from "@/lib/api";
-import { Hammer, Shield, Scissors, Gem, FlaskConical, Clock, Package, ShoppingBag, BookOpen, Loader2, RotateCcw } from "lucide-react";
+import { Hammer, Shield, Scissors, Gem, FlaskConical, Clock, Package, ShoppingBag, BookOpen, Loader2, RotateCcw, Sparkles } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -66,6 +66,8 @@ interface Recipe {
   output: RecipeOutput;
   vendorCost: number | null;
   canCraft?: boolean;
+  isOoak?: boolean;
+  claimedBy?: string | null;
 }
 
 interface QueueEntry {
@@ -378,26 +380,47 @@ function KnownRecipeCard({
 }) {
   const output = recipe.output;
   const canCraft = recipe.canCraft ?? false;
+  const isOoak = recipe.isOoak === true;
+  const isMaster = recipe.tier === "master";
+
+  const cardBorder = isOoak
+    ? "border-yellow-500 bg-yellow-950/20 shadow-[0_0_12px_2px_rgba(234,179,8,0.25)]"
+    : isMaster
+    ? "border-purple-600 bg-purple-950/20"
+    : "border-slate-700 bg-slate-800";
 
   return (
-    <Card className="bg-slate-800 border-slate-700">
+    <Card className={`${cardBorder}`}>
       <CardContent className="p-3 space-y-2">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-slate-200 font-medium text-sm">{output.name}</span>
+              {isOoak && <Sparkles className="w-4 h-4 text-yellow-400 shrink-0" />}
+              <span className={`font-medium text-sm ${isOoak ? "text-yellow-300" : isMaster ? "text-purple-300" : "text-slate-200"}`}>
+                {output.name}
+              </span>
               <Badge
                 variant={RARITY_BADGE_VARIANTS[output.rarity] ?? "secondary"}
                 className={rarityClass(output.rarity)}
               >
                 {output.rarity}
               </Badge>
+              {isOoak && (
+                <Badge className="bg-yellow-700/60 text-yellow-200 border-yellow-600 text-xs">
+                  ✦ Legendary
+                </Badge>
+              )}
+              {isMaster && !isOoak && (
+                <Badge className="bg-purple-800/60 text-purple-200 border-purple-600 text-xs">
+                  Master
+                </Badge>
+              )}
             </div>
             <div className="text-slate-400 text-xs">{output.description}</div>
           </div>
           <Button
             size="sm"
-            className="shrink-0 bg-amber-600 hover:bg-amber-700 text-white"
+            className={`shrink-0 ${isOoak ? "bg-yellow-600 hover:bg-yellow-700 text-black" : "bg-amber-600 hover:bg-amber-700 text-white"}`}
             onClick={() => onCraft(recipe.id)}
             disabled={!canCraft || crafting || queueFull}
             title={queueFull ? "Queue full (max 5)" : !canCraft ? "Missing materials" : ""}
