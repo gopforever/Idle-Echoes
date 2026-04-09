@@ -118,6 +118,8 @@ seedRecipesIfNeeded();
 
 // ─── Quality variance helpers ─────────────────────────────────────────────────
 
+const MASTERWORK_CHANCE_PER_LEVEL = 0.015;
+
 const MASTERWORK_SUFFIXES = [
   "of the Fallen", "the Unbroken", "of Ashveil", "the Eternal",
   "of the Ember Court", "the Relentless", "of Duskmantle", "the Unyielding",
@@ -776,7 +778,7 @@ router.get("/tradeskills/queue", async (req, res) => {
         // Masterwork check
         let isMasterwork = false;
         let masterworkSuffix = "";
-        if (skillLevel >= 70 && Math.random() < (skillLevel - 69) * 0.015) {
+        if (skillLevel >= 70 && Math.random() < (skillLevel - 69) * MASTERWORK_CHANCE_PER_LEVEL) {
           isMasterwork = true;
           masterworkSuffix = MASTERWORK_SUFFIXES[Math.floor(Math.random() * MASTERWORK_SUFFIXES.length)];
           for (const k of Object.keys(variedStats)) {
