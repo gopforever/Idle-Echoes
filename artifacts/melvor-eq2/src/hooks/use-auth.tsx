@@ -19,6 +19,16 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+const safeJson = async (res: Response): Promise<Record<string, unknown>> => {
+  const text = await res.text();
+  if (!text) return {};
+  try {
+    return JSON.parse(text);
+  } catch {
+    return {};
+  }
+};
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -48,8 +58,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error ?? "Login failed");
+    const data = await safeJson(res);
+    if (!res.ok) throw new Error(typeof data.error === "string" ? data.error : "Login failed");
     await refreshUser();
   }, [refreshUser]);
 
@@ -60,8 +70,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error ?? "Registration failed");
+    const data = await safeJson(res);
+    if (!res.ok) throw new Error(typeof data.error === "string" ? data.error : "Registration failed");
     await refreshUser();
   }, [refreshUser]);
 
@@ -76,8 +86,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error ?? "Failed to select character");
+    const data = await safeJson(res);
+    if (!res.ok) throw new Error(typeof data.error === "string" ? data.error : "Failed to select character");
     await refreshUser();
   }, [refreshUser]);
 
