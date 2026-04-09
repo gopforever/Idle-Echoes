@@ -26,7 +26,7 @@ function xpToSkillLevel(xp: number): number {
   return Math.min(100, Math.floor(Math.sqrt(xp / 25)));
 }
 
-// ─── Seed recipes on startup (once, if table empty) ──────────────────────────
+// ─── Seed recipes on startup (idempotent by name, all tiers) ─────────────────
 
 let seeded = false;
 
@@ -34,12 +34,14 @@ async function seedRecipesIfNeeded(): Promise<void> {
   if (seeded) return;
   seeded = true;
   try {
-    const [countRow] = await db
-      .select({ count: sql<number>`COUNT(*)::int` })
-      .from(recipesTable);
+    // Fetch all existing recipe names once, then seed each tier idempotently.
+    const existing = await db.select({ name: recipesTable.name }).from(recipesTable);
+    const existingNames = new Set(existing.map(r => r.name));
 
-    if ((countRow?.count ?? 0) === 0) {
-      const apprenticeRows = APPRENTICE_RECIPES.map(r => ({
+    // Seed apprentice recipes (idempotent by name)
+    const newApprenticeRows = APPRENTICE_RECIPES
+      .filter(r => !existingNames.has(r.name))
+      .map(r => ({
         name: r.name,
         tradeskillClass: r.tradeskillClass,
         tier: r.tier,
@@ -52,18 +54,35 @@ async function seedRecipesIfNeeded(): Promise<void> {
         vendorCost: r.vendorCost,
         isOoak: false,
       }));
-      await db.insert(recipesTable).values(apprenticeRows);
-      console.log(`[tradeskills] Seeded ${apprenticeRows.length} apprentice recipes.`);
+    if (newApprenticeRows.length > 0) {
+      await db.insert(recipesTable).values(newApprenticeRows);
+      console.log(`[tradeskills] Seeded ${newApprenticeRows.length} apprentice recipes.`);
     }
 
-    // Seed master recipes if not yet present (idempotent by name)
-    const existingMaster = await db
-      .select({ name: recipesTable.name })
-      .from(recipesTable)
-      .where(eq(recipesTable.tier, "master"));
-    const existingMasterNames = new Set(existingMaster.map(r => r.name));
+    // Seed journeyman recipes (idempotent by name)
+    const newJourneymanTsRows = JOURNEYMAN_TS_RECIPES
+      .filter(r => !existingNames.has(r.name))
+      .map(r => ({
+        name: r.name,
+        tradeskillClass: r.tradeskillClass,
+        tier: r.tier,
+        minSkill: r.minSkill,
+        minLevel: r.minLevel,
+        craftTimeSeconds: r.craftTimeSeconds,
+        ingredients: r.ingredients,
+        output: r.output,
+        acquisitionType: r.acquisitionType,
+        vendorCost: null,
+        isOoak: false,
+      }));
+    if (newJourneymanTsRows.length > 0) {
+      await db.insert(recipesTable).values(newJourneymanTsRows);
+      console.log(`[tradeskills] Seeded ${newJourneymanTsRows.length} journeyman recipes.`);
+    }
+
+    // Seed master recipes (idempotent by name)
     const newMasterRows = MASTER_RECIPES
-      .filter(r => !existingMasterNames.has(r.name))
+      .filter(r => !existingNames.has(r.name))
       .map(r => ({
         name: r.name,
         tradeskillClass: r.tradeskillClass,
@@ -80,32 +99,6 @@ async function seedRecipesIfNeeded(): Promise<void> {
     if (newMasterRows.length > 0) {
       await db.insert(recipesTable).values(newMasterRows);
       console.log(`[tradeskills] Seeded ${newMasterRows.length} master recipes.`);
-    }
-
-    // Seed journeyman harvesting recipes if not yet present
-    const existingJourneymanTs = await db
-      .select({ name: recipesTable.name })
-      .from(recipesTable)
-      .where(eq(recipesTable.tier, "journeyman"));
-    const existingJourneymanTsNames = new Set(existingJourneymanTs.map(r => r.name));
-    const newJourneymanTsRows = JOURNEYMAN_TS_RECIPES
-      .filter(r => !existingJourneymanTsNames.has(r.name))
-      .map(r => ({
-        name: r.name,
-        tradeskillClass: r.tradeskillClass,
-        tier: r.tier,
-        minSkill: r.minSkill,
-        minLevel: r.minLevel,
-        craftTimeSeconds: r.craftTimeSeconds,
-        ingredients: r.ingredients,
-        output: r.output,
-        acquisitionType: r.acquisitionType,
-        vendorCost: null,
-        isOoak: false,
-      }));
-    if (newJourneymanTsRows.length > 0) {
-      await db.insert(recipesTable).values(newJourneymanTsRows);
-      console.log(`[tradeskills] Seeded ${newJourneymanTsRows.length} journeyman TS recipes.`);
     }
   } catch (err) {
     seeded = false; // allow retry
