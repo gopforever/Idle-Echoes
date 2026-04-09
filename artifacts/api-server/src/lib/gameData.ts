@@ -1028,7 +1028,7 @@ export const ITEMS: Item[] = [
   // ── PHASE 2: EXPERT (ADEPT) RECIPE SCROLLS — DUNGEON BOSS DROPS ──────────
   // High-chance drops from dungeon main bosses.
   {
-    id: "scroll_adept_warchief_axe",
+    id: "scroll_expert_warchief_axe",
     name: "Expert Recipe: Warchief's Heavy Axe",
     description: "A scroll bearing gnoll war-script, detailing the forging of a brutal warchief's axe. Learning this recipe will consume the scroll.",
     type: "recipe_scroll", slot: "none", rarity: "rare", level: 12,
@@ -1036,7 +1036,7 @@ export const ITEMS: Item[] = [
     recipeId: "recipe_expert_warchief_axe", recipeTier: "expert",
   },
   {
-    id: "scroll_adept_overlord_plate",
+    id: "scroll_expert_overlord_plate",
     name: "Expert Recipe: Overlord's War Plate",
     description: "A gnollish war-scroll inscribed by Narlock's own armorer, detailing reinforced war plate. Learning this recipe will consume the scroll.",
     type: "recipe_scroll", slot: "none", rarity: "rare", level: 22,
@@ -1044,7 +1044,7 @@ export const ITEMS: Item[] = [
     recipeId: "recipe_expert_overlord_war_plate", recipeTier: "expert",
   },
   {
-    id: "scroll_adept_lich_focus",
+    id: "scroll_expert_lich_focus",
     name: "Expert Recipe: Lich's Necrotic Focus",
     description: "A necromantic scroll crackling with dark energy, revealing how to craft a lich-touched focus. Learning this recipe will consume the scroll.",
     type: "recipe_scroll", slot: "none", rarity: "rare", level: 28,
@@ -1052,7 +1052,7 @@ export const ITEMS: Item[] = [
     recipeId: "recipe_expert_lich_focus", recipeTier: "expert",
   },
   {
-    id: "scroll_adept_shadow_mantle",
+    id: "scroll_expert_shadow_mantle",
     name: "Expert Recipe: Shadow Mantle of Everling",
     description: "A cursed scroll bound in dark elf silk, detailing Everling's signature mantle. Learning this recipe will consume the scroll.",
     type: "recipe_scroll", slot: "none", rarity: "rare", level: 37,
@@ -1570,8 +1570,8 @@ export const ENEMIES: Enemy[] = [
       { itemId: "iron_longsword", dropChance: 0.35, minQuantity: 1, maxQuantity: 1 },
       { itemId: "ringmail_chest", dropChance: 0.3, minQuantity: 1, maxQuantity: 1 },
       { itemId: "ring_of_strength", dropChance: 0.15, minQuantity: 1, maxQuantity: 1 },
-      { itemId: "warchief_war_medallion", dropChance: 0.6, minQuantity: 1, maxQuantity: 1 },
-      { itemId: "scroll_adept_warchief_axe", dropChance: 0.5, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "warchief_war_medallion", dropChance: 0.7, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "scroll_expert_warchief_axe", dropChance: 0.5, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_boss_gnoll", type: "humanoid", isBoss: true, personality: "arrogant", grudgeThreshold: 3,
     abilities: [
@@ -2150,7 +2150,7 @@ export const ENEMIES: Enemy[] = [
       { itemId: "ring_of_strength", dropChance: 0.4, minQuantity: 1, maxQuantity: 1 },
       { itemId: "mithril_blade", dropChance: 0.15, minQuantity: 1, maxQuantity: 1 },
       { itemId: "narlock_overlord_seal", dropChance: 0.75, minQuantity: 1, maxQuantity: 1 },
-      { itemId: "scroll_adept_overlord_plate", dropChance: 0.55, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "scroll_expert_overlord_plate", dropChance: 0.55, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_boss_gnoll", type: "humanoid", isBoss: true, personality: "arrogant", grudgeThreshold: 3,
     abilities: [
@@ -2237,7 +2237,7 @@ export const ENEMIES: Enemy[] = [
       { itemId: "necklace_of_the_deep", dropChance: 0.1, minQuantity: 1, maxQuantity: 1 },
       { itemId: "varsoon_lich_crystal", dropChance: 0.2, minQuantity: 1, maxQuantity: 1 },
       { itemId: "varsoon_lich_essence", dropChance: 0.7, minQuantity: 1, maxQuantity: 1 },
-      { itemId: "scroll_adept_lich_focus", dropChance: 0.55, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "scroll_expert_lich_focus", dropChance: 0.55, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_lich", type: "undead", isBoss: true, personality: "ancient", grudgeThreshold: 3,
     abilities: [
@@ -3751,7 +3751,7 @@ export const ENEMIES: Enemy[] = [
       { itemId: "ring_of_the_ancients", dropChance: 0.1, minQuantity: 1, maxQuantity: 1 },
       { itemId: "everling_signet", dropChance: 0.25, minQuantity: 1, maxQuantity: 1 },
       { itemId: "everling_dark_shard", dropChance: 0.7, minQuantity: 1, maxQuantity: 1 },
-      { itemId: "scroll_adept_shadow_mantle", dropChance: 0.55, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "scroll_expert_shadow_mantle", dropChance: 0.55, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_lich", type: "undead", isBoss: true, personality: "cunning", grudgeThreshold: 3,
     abilities: [
@@ -4494,7 +4494,7 @@ export const CRAFTING_RECIPES: CraftingRecipe[] = [
     description: "A journeyman technique for stitching raw beast hide into simple protective bracers.",
     resultItemId: "leather_bracers", resultQuantity: 1,
     ingredients: [{ itemId: "wolf_fang", quantity: 1 }, { itemId: "wolf_hide", quantity: 2 }],
-    requiredSkillLevel: 5, requiredSkillId: "tailoring", craftingTime: 8, xpReward: 35,
+    requiredSkillLevel: 5, requiredSkillId: "leatherworking", craftingTime: 8, xpReward: 35,
     tier: "journeyman" as RecipeTier,
   },
   {
@@ -4510,7 +4510,7 @@ export const CRAFTING_RECIPES: CraftingRecipe[] = [
     id: "recipe_journeyman_bone_dust_powder",
     name: "Grind Bone Dust Powder",
     description: "A journeyman alchemy method for grinding bleached bones into a fine alchemical powder.",
-    resultItemId: "iron_ore", resultQuantity: 2,
+    resultItemId: "enchanting_dust", resultQuantity: 2,
     ingredients: [{ itemId: "bleached_bone", quantity: 3 }, { itemId: "coal", quantity: 1 }],
     requiredSkillLevel: 4, requiredSkillId: "alchemy", craftingTime: 8, xpReward: 30,
     tier: "journeyman" as RecipeTier,
