@@ -1526,8 +1526,6 @@ export const MASTER_RECIPES: MasterRecipeSeed[] = [
       stackable: true, effect: { type: "heal", value: 5000 },
     },
   },
-];
-
   // ── Additional Harla Dar (prismatic dragon) drops ────────────────────────────
   {
     name: "Prismatic Dragon Eye Wand",
