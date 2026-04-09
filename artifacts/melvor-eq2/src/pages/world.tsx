@@ -509,7 +509,7 @@ function LeaderboardRow({ entry, onSelect }: { entry: any; onSelect?: () => void
         </div>
       </div>
       <div className="text-xs font-bold tabular-nums text-amber-400 shrink-0">
-        {entry.killCount.toLocaleString()} kills
+        {(entry.killCount ?? 0).toLocaleString()} kills
       </div>
     </div>
   );
@@ -650,7 +650,7 @@ function ChampionGhostCard({
 
           <div className="mt-1.5 grid grid-cols-3 gap-1 text-[10px]">
             <div className="text-center">
-              <div className="font-bold text-red-400">{ghost.killCount.toLocaleString()}</div>
+              <div className="font-bold text-red-400">{(ghost.killCount ?? 0).toLocaleString()}</div>
               <div className="text-slate-600">Kills</div>
             </div>
             <div className="text-center">
@@ -849,7 +849,7 @@ function PlayerCard({
 
           <div className="mt-2 grid grid-cols-3 gap-1 text-[10px]">
             <div className="text-center">
-              <div className="font-bold text-red-400">{player.killCount.toLocaleString()}</div>
+              <div className="font-bold text-red-400">{(player.killCount ?? 0).toLocaleString()}</div>
               <div className="text-slate-600">Kills</div>
             </div>
             <div className="text-center">
@@ -857,7 +857,7 @@ function PlayerCard({
               <div className="text-slate-600">Bosses</div>
             </div>
             <div className="text-center">
-              <div className="font-bold text-amber-400">{Math.round(player.gold).toLocaleString()}</div>
+              <div className="font-bold text-amber-400">{Math.round(player.gold ?? 0).toLocaleString()}</div>
               <div className="text-slate-600">Gold</div>
             </div>
           </div>
