@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { apiUrl } from "@/lib/api";
-import { Hammer, Shield, Scissors, Gem, FlaskConical, Clock, Package, ShoppingBag, BookOpen, Loader2 } from "lucide-react";
+import { Hammer, Shield, Scissors, Gem, FlaskConical, Clock, Package, ShoppingBag, BookOpen, Loader2, RotateCcw } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -231,7 +231,15 @@ function ClassPicker({ onPick }: { onPick: (cls: string) => void }) {
   );
 }
 
-function SkillHeader({ status }: { status: TradeskillStatus }) {
+function SkillHeader({
+  status,
+  onReset,
+  resetting,
+}: {
+  status: TradeskillStatus;
+  onReset: () => void;
+  resetting: boolean;
+}) {
   const cls = status.tradeskillClass!;
   const info = CLASS_INFO[cls];
   const Icon = info?.icon ?? Hammer;
@@ -259,6 +267,22 @@ function SkillHeader({ status }: { status: TradeskillStatus }) {
             </span>
           </div>
         </div>
+        <Button
+          size="sm"
+          variant="outline"
+          className="shrink-0 border-red-700 text-red-400 hover:bg-red-900/30 text-xs"
+          onClick={onReset}
+          disabled={resetting}
+        >
+          {resetting ? (
+            <Loader2 className="w-3 h-3 animate-spin" />
+          ) : (
+            <>
+              <RotateCcw className="w-3 h-3 mr-1" />
+              Reset Class
+            </>
+          )}
+        </Button>
       </div>
     </div>
   );
@@ -516,6 +540,7 @@ export default function TradeskillsPage() {
   });
 
   // Track which items are currently being purchased/crafted/cancelled
+  const [activeTab, setActiveTab] = React.useState("vendor");
   const [buyingMaterial, setBuyingMaterial] = React.useState<string | null>(null);
   const [buyingRecipe, setBuyingRecipe] = React.useState<number | null>(null);
   const [craftingRecipe, setCraftingRecipe] = React.useState<number | null>(null);
@@ -590,6 +615,15 @@ export default function TradeskillsPage() {
     },
   });
 
+  const resetClassMutation = useMutation({
+    mutationFn: () => deleteJson(apiUrl("/api/tradeskills/class")),
+    onSuccess: () => {
+      toast.success("Tradeskill reset! Choose a new class.");
+      invalidate();
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+
   if (statusLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -614,9 +648,17 @@ export default function TradeskillsPage() {
 
   return (
     <div className="p-4 max-w-4xl mx-auto space-y-4">
-      <SkillHeader status={status} />
+      <SkillHeader
+        status={status}
+        onReset={() => {
+          if (window.confirm("Reset your tradeskill? This will erase all XP, learned recipes, and cancel your craft queue. This cannot be undone.")) {
+            resetClassMutation.mutate();
+          }
+        }}
+        resetting={resetClassMutation.isPending}
+      />
 
-      <Tabs defaultValue="vendor">
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="bg-slate-800 border border-slate-700">
           <TabsTrigger value="vendor" className="data-[state=active]:bg-amber-700 data-[state=active]:text-white">
             <ShoppingBag className="w-4 h-4 mr-1" /> Vendor
