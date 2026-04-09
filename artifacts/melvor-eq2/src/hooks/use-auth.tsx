@@ -59,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       body: JSON.stringify({ username, password }),
     });
     const data = await safeJson(res);
-    if (!res.ok) throw new Error((data.error as string) ?? "Login failed");
+    if (!res.ok) throw new Error(typeof data.error === "string" ? data.error : "Login failed");
     await refreshUser();
   }, [refreshUser]);
 
@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       body: JSON.stringify({ username, password }),
     });
     const data = await safeJson(res);
-    if (!res.ok) throw new Error((data.error as string) ?? "Registration failed");
+    if (!res.ok) throw new Error(typeof data.error === "string" ? data.error : "Registration failed");
     await refreshUser();
   }, [refreshUser]);
 
@@ -87,7 +87,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       headers: { "Content-Type": "application/json" },
     });
     const data = await safeJson(res);
-    if (!res.ok) throw new Error((data.error as string) ?? "Failed to select character");
+    if (!res.ok) throw new Error(typeof data.error === "string" ? data.error : "Failed to select character");
     await refreshUser();
   }, [refreshUser]);
 
