@@ -23,6 +23,7 @@ export function useRealtimeWorldEvents(): boolean {
 
   React.useEffect(() => {
     if (!isRealtimeEnabled || !supabase) return;
+    const sb = supabase;
 
     const invalidateAll = () => {
       void queryClient.invalidateQueries({ queryKey: ["/api/world/events"] });
@@ -32,7 +33,7 @@ export function useRealtimeWorldEvents(): boolean {
       void queryClient.invalidateQueries({ queryKey: ["/api/world/zones"] });
     };
 
-    const channel = supabase
+    const channel = sb
       .channel("world_realtime")
       // New ghost activity events → refresh events + derived stats
       .on(
@@ -55,7 +56,7 @@ export function useRealtimeWorldEvents(): boolean {
       .subscribe();
 
     return () => {
-      void supabase.removeChannel(channel);
+      void sb.removeChannel(channel);
     };
   }, [queryClient]);
 
@@ -74,8 +75,9 @@ export function useRealtimeCombatLog(): boolean {
 
   React.useEffect(() => {
     if (!isRealtimeEnabled || !supabase) return;
+    const sb = supabase;
 
-    const channel = supabase
+    const channel = sb
       .channel("combat_log_inserts")
       .on(
         "postgres_changes",
@@ -87,7 +89,7 @@ export function useRealtimeCombatLog(): boolean {
       .subscribe();
 
     return () => {
-      void supabase.removeChannel(channel);
+      void sb.removeChannel(channel);
     };
   }, [queryClient]);
 

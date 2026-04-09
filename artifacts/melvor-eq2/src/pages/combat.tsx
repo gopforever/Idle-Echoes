@@ -24,7 +24,7 @@ export default function Combat() {
   const startCombat = useStartCombat();
 
   const { data: skillsSummary } = useGetSkillsSummary();
-  const activeSkills = (skillsSummary?.skills ?? []).filter((s: any) => s.isTraining).slice(0, 4);
+  const activeSkills = ((skillsSummary as any)?.skills ?? []).filter((s: any) => s.isTraining).slice(0, 4);
 
   const [autoCombat, setAutoCombat] = React.useState(true);
 

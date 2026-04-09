@@ -17,7 +17,7 @@ export default function SkillsPage() {
   const toggleTraining = useToggleSkillTraining();
 
   const handleToggle = (skillId: string) => {
-    toggleTraining.mutate({ data: { skillId } }, {
+    toggleTraining.mutate({ data: { skillId } } as any, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: getGetSkillsQueryKey() });
         queryClient.invalidateQueries({ queryKey: getGetSkillsSummaryQueryKey() });
@@ -34,6 +34,7 @@ export default function SkillsPage() {
       }, 5000);
       return () => clearInterval(interval);
     }
+    return undefined;
   }, [skills, queryClient]);
 
   if (isLoading || !skills) return <Skeleton className="h-[600px] w-full" />;
@@ -89,7 +90,7 @@ export default function SkillsPage() {
                           <span className="text-green-400">+{skill.xpPerHour} XP/hr</span>
                         )}
                       </div>
-                      <Progress value={xpPercent} className="h-1.5 bg-slate-900" indicatorColor={skill.isTraining ? "bg-primary" : "bg-slate-500"} />
+                      <Progress value={xpPercent} className="h-1.5 bg-slate-900" />
                     </div>
                   </CardContent>
                 </Card>

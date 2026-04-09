@@ -544,7 +544,7 @@ export default function CraftingPage() {
   if (!inventory || !skills) return null;
 
   const invItems: InventoryItem[] = inventory.items.map(i => ({
-    ...(i as Record<string, unknown>),
+    ...(i as unknown as Record<string, unknown>),
     id: i.id,
     name: i.name,
     type: i.type ?? "",

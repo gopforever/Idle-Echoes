@@ -49,7 +49,7 @@ async function recomputeMaxStats(
       if (!def) return null;
       return { effect: def.effect, currentRank: r.rank, effectValue: def.effectValue, effectPerRank: def.effectPerRank };
     })
-    .filter((n: unknown): n is NonNullable<typeof n> => n !== null);
+    .filter((n): n is { effect: string; currentRank: number; effectValue: number; effectPerRank: number } => n !== null);
   const aaBonuses = investedNodes.length > 0 ? applyAABonuses(investedNodes) : makeZeroAABonuses();
 
   let gearHealth = 0, gearPower = 0;

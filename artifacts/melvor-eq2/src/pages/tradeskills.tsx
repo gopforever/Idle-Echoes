@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { apiUrl } from "@/lib/api";
-import { Hammer, Shield, Scissors, Gem, FlaskConical, Clock, Package, ShoppingBag, BookOpen, Loader2, RotateCcw, Sparkles } from "lucide-react";
+import { Hammer, Shield, Scissors, Gem, FlaskConical, Clock, Package, ShoppingBag, BookOpen, Loader2, RotateCcw, Sparkles, Star, Leaf, PlayCircle, StopCircle } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -80,6 +80,9 @@ interface QueueEntry {
   status: string;
   recipeName: string;
   craftTimeSeconds: number;
+  quality?: QualityLabel;
+  isMasterwork?: boolean;
+  suffix?: string;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -129,6 +132,14 @@ const RARITY_BADGE_VARIANTS: Record<string, "secondary" | "outline"> = {
   uncommon: "outline",
   rare: "outline",
   legendary: "outline",
+};
+
+type QualityLabel = "poor" | "normal" | "fine" | "excellent";
+const QUALITY_COLORS: Record<QualityLabel, string> = {
+  poor: "text-gray-400",
+  normal: "text-slate-200",
+  fine: "text-green-400",
+  excellent: "text-blue-400",
 };
 
 function rarityClass(rarity: string): string {
@@ -196,6 +207,46 @@ async function deleteJson<T>(url: string): Promise<T> {
   }
   return res.json() as Promise<T>;
 }
+
+// ─── Gathering types ──────────────────────────────────────────────────────────
+
+interface GatheringNode {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  skillId: string;
+  requiredLevel: number;
+  xpPerGather: number;
+  gatherTimeSeconds: number;
+  unlocked: boolean;
+  skillLevel: number;
+  nextTickIn: number;
+  zone?: string;
+  yields: Array<{ itemId: string; baseQuantity: number; weight: number }>;
+}
+
+interface GatheringSession {
+  skillId: string;
+  nodeId: string;
+  nodeName: string;
+  nodeIcon: string;
+  gatherTimeSeconds: number;
+  skillLevel: number;
+  nextTickIn: number;
+  totalGathered: number;
+}
+
+interface GatheringStatus {
+  sessions: GatheringSession[];
+  yields: Array<{ skillId: string; nodeId: string; items: Array<{ itemId: string; quantity: number }>; rareItemIds: string[] }>;
+}
+
+const TRADESKILL_HARVEST_NODE_IDS = new Set([
+  "shadowroot_tree", "emberstone_outcrop", "frostbloom_meadow", "manaweave_grove",
+  "venom_nest", "astral_vein", "corrupted_hunting_ground", "glimmerdust_hollow",
+  "deepmoss_cave", "thornvine_thicket",
+]);
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -500,7 +551,17 @@ function QueueCard({
       <CardContent className="p-3 space-y-2">
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-slate-200 font-medium text-sm">{entry.recipeName}</div>
+            <div className="text-slate-200 font-medium text-sm">
+              {entry.recipeName}
+              {entry.isMasterwork && (
+                <span className="ml-1 text-amber-400 text-xs font-bold">✦ Masterwork</span>
+              )}
+            </div>
+            {entry.quality && entry.quality !== "normal" && (
+              <div className={`text-xs ${QUALITY_COLORS[entry.quality] ?? "text-slate-400"}`}>
+                {entry.quality.charAt(0).toUpperCase() + entry.quality.slice(1)} quality
+              </div>
+            )}
             <div className="text-slate-400 text-xs">
               {entry.quantityCompleted}/{entry.quantity} complete
             </div>
@@ -520,6 +581,94 @@ function QueueCard({
           <Clock className="w-3 h-3" />
           {secLeft > 0 ? `Next in ${formatSeconds(secLeft)}` : "Completing..."}
         </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function HarvestNodeCard({
+  node,
+  session,
+  isActive,
+  onStart,
+  onStop,
+}: {
+  node: GatheringNode;
+  session?: GatheringSession;
+  isActive: boolean;
+  onStart: () => void;
+  onStop: () => void;
+}) {
+  const [, forceUpdate] = React.useReducer(x => x + 1, 0);
+  React.useEffect(() => {
+    if (!isActive) return;
+    const t = setInterval(forceUpdate, 1000);
+    return () => clearInterval(t);
+  }, [isActive]);
+
+  const secLeft = session
+    ? Math.max(0, Math.ceil(session.nextTickIn - Date.now() / 1000))
+    : 0;
+
+  return (
+    <Card className={`${isActive ? "border-green-600 bg-green-950/20" : "border-slate-700 bg-slate-800"}`}>
+      <CardContent className="p-3 space-y-2">
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-lg">{node.icon}</span>
+              <span className="text-slate-200 font-medium text-sm">{node.name}</span>
+              {node.zone && (
+                <Badge variant="outline" className="text-slate-400 border-slate-600 text-xs capitalize">
+                  {node.zone}
+                </Badge>
+              )}
+              {isActive && (
+                <Badge className="bg-green-700/60 text-green-200 border-green-600 text-xs">
+                  Gathering
+                </Badge>
+              )}
+            </div>
+            <div className="text-slate-400 text-xs mt-0.5">{node.description}</div>
+            <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
+              <span>Skill req: {node.requiredLevel}</span>
+              <span>{node.xpPerGather} XP</span>
+              <span>
+                <Clock className="w-3 h-3 inline mr-0.5" />
+                {formatSeconds(node.gatherTimeSeconds)}
+              </span>
+            </div>
+            <div className="text-xs text-slate-500 mt-0.5">
+              Yields: {node.yields.map(y => y.itemId.replace(/_/g, " ")).join(", ")}
+            </div>
+            {isActive && session && (
+              <div className="mt-1 text-xs text-green-400">
+                <Clock className="w-3 h-3 inline mr-0.5" />
+                {secLeft > 0 ? `Next gather in ${formatSeconds(secLeft)}` : "Gathering..."}
+                {" · "}Total: {session.totalGathered}
+              </div>
+            )}
+          </div>
+          <Button
+            size="sm"
+            variant="outline"
+            className={isActive
+              ? "shrink-0 border-red-700 text-red-400 hover:bg-red-950/30"
+              : "shrink-0 border-green-700 text-green-400 hover:bg-green-950/30"
+            }
+            onClick={isActive ? onStop : onStart}
+            disabled={!node.unlocked && !isActive}
+            title={!node.unlocked && !isActive ? `Requires skill level ${node.requiredLevel}` : ""}
+          >
+            {isActive
+              ? <><StopCircle className="w-3 h-3 mr-1" />Stop</>
+              : <><PlayCircle className="w-3 h-3 mr-1" />Gather</>
+            }
+          </Button>
+        </div>
+        {!node.unlocked && (
+          <div className="text-xs text-red-400">🔒 Requires {node.skillId.replace(/_/g, " ")} level {node.requiredLevel}</div>
+        )}
       </CardContent>
     </Card>
   );
@@ -638,6 +787,38 @@ export default function TradeskillsPage() {
     },
   });
 
+  const { data: gatheringNodes = [] } = useQuery<GatheringNode[]>({
+    queryKey: ["gathering", "nodes"],
+    queryFn: () => fetchJson(apiUrl("/api/gathering/nodes")),
+    enabled: !!status?.tradeskillClass,
+    refetchInterval: 10_000,
+  });
+
+  const { data: gatheringStatus } = useQuery<GatheringStatus>({
+    queryKey: ["gathering", "status"],
+    queryFn: () => fetchJson(apiUrl("/api/gathering/status")),
+    enabled: !!status?.tradeskillClass,
+    refetchInterval: 5_000,
+  });
+
+  const startGatherMutation = useMutation({
+    mutationFn: ({ skillId, nodeId }: { skillId: string; nodeId: string }) =>
+      postJson(apiUrl("/api/gathering/start"), { skillId, nodeId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["gathering"] });
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+
+  const stopGatherMutation = useMutation({
+    mutationFn: (skillId: string) =>
+      postJson(apiUrl("/api/gathering/stop"), { skillId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["gathering"] });
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+
   const resetClassMutation = useMutation({
     mutationFn: () => deleteJson(apiUrl("/api/tradeskills/class")),
     onSuccess: () => {
@@ -669,6 +850,11 @@ export default function TradeskillsPage() {
 
   const queueFull = (status.queueCount ?? queue.length) >= 5;
 
+  const harvestNodes = gatheringNodes.filter(n => TRADESKILL_HARVEST_NODE_IDS.has(n.id));
+  const activeSessionMap = new Map<string, GatheringSession>(
+    (gatheringStatus?.sessions ?? []).map(s => [s.nodeId, s]),
+  );
+
   return (
     <div className="p-4 max-w-4xl mx-auto space-y-4">
       <SkillHeader
@@ -687,7 +873,7 @@ export default function TradeskillsPage() {
             <ShoppingBag className="w-4 h-4 mr-1" /> Vendor
           </TabsTrigger>
           <TabsTrigger value="recipes" className="data-[state=active]:bg-amber-700 data-[state=active]:text-white">
-            <BookOpen className="w-4 h-4 mr-1" /> My Recipes
+            <BookOpen className="w-4 h-4 mr-1" /> Recipes
             {knownRecipes.length > 0 && (
               <Badge variant="secondary" className="ml-1 text-xs">{knownRecipes.length}</Badge>
             )}
@@ -697,6 +883,12 @@ export default function TradeskillsPage() {
             {queue.length > 0 && (
               <Badge variant="secondary" className="ml-1 text-xs">{queue.length}/5</Badge>
             )}
+          </TabsTrigger>
+          <TabsTrigger value="skills" className="data-[state=active]:bg-amber-700 data-[state=active]:text-white">
+            <Star className="w-4 h-4 mr-1" /> Skills
+          </TabsTrigger>
+          <TabsTrigger value="harvest" className="data-[state=active]:bg-amber-700 data-[state=active]:text-white">
+            <Leaf className="w-4 h-4 mr-1" /> Harvest
           </TabsTrigger>
         </TabsList>
 
@@ -753,12 +945,12 @@ export default function TradeskillsPage() {
           </div>
         </TabsContent>
 
-        {/* ── My Recipes Tab ─────────────────────────────────────────────── */}
+        {/* ── Recipe Browser Tab ─────────────────────────────────────────── */}
         <TabsContent value="recipes" className="mt-4 space-y-2">
           {knownRecipes.length === 0 ? (
             <div className="text-center py-12 text-slate-500">
               <BookOpen className="w-10 h-10 mx-auto mb-2 opacity-40" />
-              <p>No recipes learned yet. Visit the Vendor tab to buy recipes.</p>
+              <p>No recipes learned yet. Visit the Vendor tab to buy recipes, or discover them in the world.</p>
             </div>
           ) : (
             <>
@@ -767,18 +959,30 @@ export default function TradeskillsPage() {
                   Craft queue is full (5/5). Wait for a craft to complete or cancel one.
                 </div>
               )}
-              {knownRecipes.map(recipe => (
-                <KnownRecipeCard
-                  key={recipe.id}
-                  recipe={recipe}
-                  crafting={craftingRecipe === recipe.id}
-                  queueFull={queueFull}
-                  onCraft={id => {
-                    setCraftingRecipe(id);
-                    craftMutation.mutate(id);
-                  }}
-                />
-              ))}
+              {(["apprentice", "journeyman", "adept", "master", "ooak"] as const).map(tier => {
+                const tierRecipes = knownRecipes.filter(r =>
+                  tier === "ooak" ? r.isOoak : !r.isOoak && r.tier === tier,
+                );
+                if (tierRecipes.length === 0) return null;
+                const tierLabel = tier === "ooak" ? "✦ Legendary (One-of-a-Kind)" : tier.charAt(0).toUpperCase() + tier.slice(1);
+                return (
+                  <div key={tier} className="space-y-2">
+                    <div className="text-slate-400 text-xs font-semibold uppercase tracking-widest mt-3 mb-1">{tierLabel}</div>
+                    {tierRecipes.map(recipe => (
+                      <KnownRecipeCard
+                        key={recipe.id}
+                        recipe={recipe}
+                        crafting={craftingRecipe === recipe.id}
+                        queueFull={queueFull}
+                        onCraft={id => {
+                          setCraftingRecipe(id);
+                          craftMutation.mutate(id);
+                        }}
+                      />
+                    ))}
+                  </div>
+                );
+              })}
             </>
           )}
         </TabsContent>
@@ -788,7 +992,7 @@ export default function TradeskillsPage() {
           {queue.length === 0 ? (
             <div className="text-center py-12 text-slate-500">
               <Hammer className="w-10 h-10 mx-auto mb-2 opacity-40" />
-              <p>No crafts in progress. Start crafting from the My Recipes tab.</p>
+              <p>No crafts in progress. Start crafting from the Recipes tab.</p>
             </div>
           ) : (
             queue.map(entry => (
@@ -802,6 +1006,64 @@ export default function TradeskillsPage() {
                 }}
               />
             ))
+          )}
+        </TabsContent>
+
+        {/* ── Skills Tab ─────────────────────────────────────────────────── */}
+        <TabsContent value="skills" className="mt-4 space-y-3">
+          {Object.entries(CLASS_INFO).map(([key, info]) => {
+            const Icon = info.icon;
+            const tsLevel = status.tradeskills[key];
+            const level = tsLevel?.level ?? 0;
+            const xp = tsLevel?.xp ?? 0;
+            const isActive = status.tradeskillClass === key;
+            const progress = levelProgress(xp, level);
+            return (
+              <Card key={key} className={`${isActive ? "border-amber-600 bg-amber-950/20" : "border-slate-700 bg-slate-800"}`}>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <Icon className={`w-5 h-5 ${isActive ? "text-amber-400" : "text-slate-400"}`} />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className={`font-semibold ${isActive ? "text-amber-300" : "text-slate-300"}`}>{info.label}</span>
+                        {isActive && <Badge variant="outline" className="text-amber-400 border-amber-500 text-xs">Active</Badge>}
+                        <span className="text-slate-400 text-sm ml-auto">Level {level}</span>
+                      </div>
+                      <Progress value={progress} className="h-1.5 mt-1" />
+                      <div className="flex justify-between text-xs text-slate-500 mt-0.5">
+                        <span>{xp.toLocaleString(undefined, { maximumFractionDigits: 0 })} XP</span>
+                        {level < 100 && <span>{xpToNextLevel(xp, level).toLocaleString(undefined, { maximumFractionDigits: 0 })} to next</span>}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </TabsContent>
+
+        {/* ── Harvest Tab ────────────────────────────────────────────────── */}
+        <TabsContent value="harvest" className="mt-4 space-y-3">
+          {harvestNodes.length === 0 ? (
+            <div className="text-center py-12 text-slate-500">
+              <Package className="w-10 h-10 mx-auto mb-2 opacity-40" />
+              <p>No harvesting nodes available yet. Explore the world to find them.</p>
+            </div>
+          ) : (
+            harvestNodes.map(node => {
+              const session = activeSessionMap.get(node.id);
+              const isActive = !!session;
+              return (
+                <HarvestNodeCard
+                  key={node.id}
+                  node={node}
+                  session={session}
+                  isActive={isActive}
+                  onStart={() => startGatherMutation.mutate({ skillId: node.skillId, nodeId: node.id })}
+                  onStop={() => stopGatherMutation.mutate(node.skillId)}
+                />
+              );
+            })
           )}
         </TabsContent>
       </Tabs>

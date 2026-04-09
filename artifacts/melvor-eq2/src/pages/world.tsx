@@ -913,20 +913,20 @@ export default function WorldPage() {
   const effectiveInterval = autoRefresh && !isRealtime ? POLL_INTERVAL : false;
 
   const { data: stats, isLoading: statsLoading } = useGetWorldStats({
-    query: { refetchInterval: effectiveInterval },
+    query: { refetchInterval: effectiveInterval, queryKey: [] },
   });
   const { data: events, isLoading: eventsLoading } = useGetWorldEvents(
     { limit: 60 },
-    { query: { refetchInterval: effectiveInterval } },
+    { query: { refetchInterval: effectiveInterval, queryKey: [] } },
   );
   const { data: leaderboard, isLoading: lbLoading } = useGetWorldLeaderboard({
-    query: { refetchInterval: effectiveInterval },
+    query: { refetchInterval: effectiveInterval, queryKey: [] },
   });
   const { data: players, isLoading: playersLoading } = useGetWorldPlayers({
-    query: { refetchInterval: effectiveInterval },
+    query: { refetchInterval: effectiveInterval, queryKey: [] },
   });
   const { data: zones, isLoading: zonesLoading } = useGetWorldZones({
-    query: { refetchInterval: effectiveInterval },
+    query: { refetchInterval: effectiveInterval, queryKey: [] },
   });
 
   // Load rivals from server on mount

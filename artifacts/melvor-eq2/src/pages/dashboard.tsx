@@ -333,9 +333,9 @@ export default function Dashboard() {
   const { data: factions } = useGetFactions();
   const { data: achievements } = useGetAchievements();
   const { data: mounts } = useGetMounts();
-  const { data: worldEvents } = useGetWorldEvents({ limit: 5 }, { query: { refetchInterval: 10000 } });
-  const { data: worldStats } = useGetWorldStats({ query: { refetchInterval: 10000 } });
-  const { data: worldZones } = useGetWorldZones({ query: { refetchInterval: 10000 } });
+  const { data: worldEvents } = useGetWorldEvents({ limit: 5 }, { query: { refetchInterval: 10000, queryKey: [] } });
+  const { data: worldStats } = useGetWorldStats({ query: { refetchInterval: 10000, queryKey: [] } });
+  const { data: worldZones } = useGetWorldZones({ query: { refetchInterval: 10000, queryKey: [] } });
 
   const resetCharacter = useMutation({
     mutationFn: deleteCharacter,
@@ -369,7 +369,7 @@ export default function Dashboard() {
   const equippedMount = mounts?.find((m: any) => m.equipped);
   const completedAchievements = achievements?.filter((a: any) => a.completed).length ?? 0;
   const topFactions = (factions ?? []).slice(0, 3);
-  const allSkills = skillsSummary?.skills ?? [];
+  const allSkills = (skillsSummary as any)?.skills ?? [];
 
   return (
     <div className="space-y-4 max-w-7xl mx-auto">

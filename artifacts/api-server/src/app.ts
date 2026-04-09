@@ -66,7 +66,6 @@ app.use(
   }),
 );
 
-// @ts-expect-error pino-http types are incompatible with ESM default export
 const pinoMiddleware: RequestHandler = pinoHttp({
   logger,
   serializers: {

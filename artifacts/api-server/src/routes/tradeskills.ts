@@ -3,7 +3,7 @@ import { db } from "@workspace/db";
 import { inventoryTable, knownRecipesTable, recipesTable, craftQueueTable, charactersTable } from "@workspace/db/schema";
 import { eq, and, sql, lte, inArray, isNull } from "drizzle-orm";
 import { getOrCreateCharacter } from "./character.js";
-import { TRADESKILL_MATERIALS, APPRENTICE_RECIPES, MASTER_RECIPES, ALL_MASTER_RECIPE_NAMES, TRADESKILL_CLASSES, type TradeskillClass } from "../lib/tradeskillData.js";
+import { TRADESKILL_MATERIALS, APPRENTICE_RECIPES, MASTER_RECIPES, JOURNEYMAN_TS_RECIPES, ALL_MASTER_RECIPE_NAMES, TRADESKILL_CLASSES, type TradeskillClass } from "../lib/tradeskillData.js";
 
 const router: IRouter = Router();
 
@@ -81,6 +81,32 @@ async function seedRecipesIfNeeded(): Promise<void> {
       await db.insert(recipesTable).values(newMasterRows);
       console.log(`[tradeskills] Seeded ${newMasterRows.length} master recipes.`);
     }
+
+    // Seed journeyman harvesting recipes if not yet present
+    const existingJourneymanTs = await db
+      .select({ name: recipesTable.name })
+      .from(recipesTable)
+      .where(eq(recipesTable.tier, "journeyman"));
+    const existingJourneymanTsNames = new Set(existingJourneymanTs.map(r => r.name));
+    const newJourneymanTsRows = JOURNEYMAN_TS_RECIPES
+      .filter(r => !existingJourneymanTsNames.has(r.name))
+      .map(r => ({
+        name: r.name,
+        tradeskillClass: r.tradeskillClass,
+        tier: r.tier,
+        minSkill: r.minSkill,
+        minLevel: r.minLevel,
+        craftTimeSeconds: r.craftTimeSeconds,
+        ingredients: r.ingredients,
+        output: r.output,
+        acquisitionType: r.acquisitionType,
+        vendorCost: null,
+        isOoak: false,
+      }));
+    if (newJourneymanTsRows.length > 0) {
+      await db.insert(recipesTable).values(newJourneymanTsRows);
+      console.log(`[tradeskills] Seeded ${newJourneymanTsRows.length} journeyman TS recipes.`);
+    }
   } catch (err) {
     seeded = false; // allow retry
     console.error("[tradeskills] Seed error:", err);
@@ -89,6 +115,32 @@ async function seedRecipesIfNeeded(): Promise<void> {
 
 // Kick off seed immediately
 seedRecipesIfNeeded();
+
+// ─── Quality variance helpers ─────────────────────────────────────────────────
+
+const MASTERWORK_SUFFIXES = [
+  "of the Fallen", "the Unbroken", "of Ashveil", "the Eternal",
+  "of the Ember Court", "the Relentless", "of Duskmantle", "the Unyielding",
+  "of the Voidborn", "the Ancient", "of the Shattered Keep", "the Undying",
+  "of Grimhallow", "the Forsaken", "of the Iron Pact", "the Resolute",
+  "of Nightfall", "the Immovable", "of the Storm's Eye", "the Boundless",
+  "of the Ashen Vale", "the Inexorable",
+];
+
+function computeQualityMultiplier(skillLevel: number): number {
+  let min: number, max: number;
+  if (skillLevel >= 90) { min = 1.0; max = 1.20; }
+  else if (skillLevel >= 50) { min = 0.95; max = 1.15; }
+  else { min = 0.85; max = 1.15; }
+  return min + Math.random() * (max - min);
+}
+
+function qualityLabel(avgMult: number): "poor" | "normal" | "fine" | "excellent" {
+  if (avgMult < 0.92) return "poor";
+  if (avgMult < 1.04) return "normal";
+  if (avgMult < 1.12) return "fine";
+  return "excellent";
+}
 
 // ─── Inventory helpers ────────────────────────────────────────────────────────
 
@@ -200,6 +252,7 @@ async function addCraftedItem(
     effect?: { type: string; value: number };
   },
   recipeName: string,
+  meta?: { quality?: string; isMasterwork?: boolean; suffix?: string },
 ): Promise<void> {
   const craftedItemId = `crafted_${recipeName.toLowerCase().replace(/\s+/g, "_")}_${Date.now()}`;
   const itemData: Record<string, unknown> = {
@@ -215,6 +268,9 @@ async function addCraftedItem(
     spriteId: output.spriteId ?? null,
     stackable: output.stackable ?? false,
     crafted: true,
+    quality: meta?.quality ?? "normal",
+    isMasterwork: meta?.isMasterwork ?? false,
+    suffix: meta?.suffix,
   };
   if (output.armorType) itemData.armorType = output.armorType;
   if (output.effect) itemData.effect = output.effect;
@@ -698,8 +754,48 @@ router.get("/tradeskills/queue", async (req, res) => {
         };
         const outputPerCraft = output.quantity;
 
+        // Compute tradeskill level for quality variance
+        const char = await getOrCreateCharacter(characterId);
+        const tradeskillsMap: Record<string, number> = (char.tradeskills as Record<string, number> | null) ?? {};
+        const tsXp = tradeskillsMap[tsClass] ?? 0;
+        const skillLevel = Math.min(100, Math.floor(Math.sqrt(tsXp / 25)));
+
+        // Roll quality variance for each stat
+        const statMultipliers: number[] = [];
+        const variedStats: Record<string, number> = {};
+        for (const [k, v] of Object.entries(output.stats)) {
+          const mult = computeQualityMultiplier(skillLevel);
+          statMultipliers.push(mult);
+          variedStats[k] = Math.round(v * mult);
+        }
+        const avgMult = statMultipliers.length > 0
+          ? statMultipliers.reduce((a, b) => a + b, 0) / statMultipliers.length
+          : 1.0;
+        const quality = qualityLabel(avgMult);
+
+        // Masterwork check
+        let isMasterwork = false;
+        let masterworkSuffix = "";
+        if (skillLevel >= 70 && Math.random() < (skillLevel - 69) * 0.015) {
+          isMasterwork = true;
+          masterworkSuffix = MASTERWORK_SUFFIXES[Math.floor(Math.random() * MASTERWORK_SUFFIXES.length)];
+          for (const k of Object.keys(variedStats)) {
+            variedStats[k] = Math.round(variedStats[k] * 1.10);
+          }
+        }
+        const finalName = isMasterwork ? `${output.name} ${masterworkSuffix}` : output.name;
+        const variedOutput = {
+          ...output,
+          name: finalName,
+          stats: variedStats,
+        };
+
         // Add items to inventory
-        await addCraftedItem(characterId, { ...output, quantity: outputPerCraft * newlyCompleted }, recipe.name);
+        await addCraftedItem(characterId, { ...variedOutput, quantity: outputPerCraft * newlyCompleted }, recipe.name, {
+          quality,
+          isMasterwork,
+          suffix: masterworkSuffix || undefined,
+        });
 
         // Award XP
         const totalXp = output.xpGained * newlyCompleted;
