@@ -843,6 +843,223 @@ export const ITEMS: Item[] = [
     sellPrice: 7200, spriteId: "armor_fire_chest",
   },
 
+  // ── PHASE 2: MONSTER COMPONENT DROPS ─────────────────────────────────────
+  // Mob-specific crafting components — drop from regular (non-boss) monsters.
+  {
+    id: "wolf_fang",
+    name: "Wolf Fang",
+    description: "A razor-sharp fang from a rabid wolf — valued by leatherworkers and alchemists",
+    type: "material", slot: "none", rarity: "common", level: 1,
+    stats: {}, sellPrice: 4, stackable: true, spriteId: "material_bone",
+  },
+  {
+    id: "goblin_ear",
+    name: "Goblin Ear",
+    description: "A leathery goblin ear — disgusting but useful for certain crude concoctions",
+    type: "material", slot: "none", rarity: "common", level: 2,
+    stats: {}, sellPrice: 3, stackable: true, spriteId: "material_hide",
+  },
+  {
+    id: "bleached_bone",
+    name: "Bleached Bone",
+    description: "Sun-bleached bone from a fallen undead soldier — a useful crafting component",
+    type: "material", slot: "none", rarity: "common", level: 4,
+    stats: {}, sellPrice: 5, stackable: true, spriteId: "material_bone",
+  },
+  {
+    id: "gnoll_fur_tuft",
+    name: "Gnoll Fur Tuft",
+    description: "A coarse tuft of gnoll fur — rough but workable into crude padding",
+    type: "material", slot: "none", rarity: "common", level: 7,
+    stats: {}, sellPrice: 6, stackable: true, spriteId: "material_hide",
+  },
+  {
+    id: "centaur_hoof_chip",
+    name: "Centaur Hoof Chip",
+    description: "A fragment chipped from a centaur hoof — surprisingly strong and dense",
+    type: "material", slot: "none", rarity: "common", level: 11,
+    stats: {}, sellPrice: 9, stackable: true, spriteId: "material_bone",
+  },
+  {
+    id: "harpy_feather",
+    name: "Harpy Feather",
+    description: "A long iridescent feather from a harpy — light and sharp-edged",
+    type: "material", slot: "none", rarity: "common", level: 16,
+    stats: {}, sellPrice: 12, stackable: true, spriteId: "material_feather",
+  },
+  {
+    id: "dark_elf_shadow_dust",
+    name: "Shadow Dust",
+    description: "Powdery residue scraped from dark elf assassin blades — imbued with shadow essence",
+    type: "material", slot: "none", rarity: "uncommon", level: 21,
+    stats: {}, sellPrice: 22, stackable: true, spriteId: "material_dust",
+  },
+  {
+    id: "treant_heartwood_chip",
+    name: "Treant Heartwood Chip",
+    description: "A dense chip of ancient treant heartwood — saturated with life energy",
+    type: "material", slot: "none", rarity: "uncommon", level: 25,
+    stats: {}, sellPrice: 28, stackable: true, spriteId: "material_wood",
+  },
+  {
+    id: "frost_giant_knuckle",
+    name: "Frost Giant Knuckle",
+    description: "A massive knucklebone from a frost giant — cold to the touch and nearly unbreakable",
+    type: "material", slot: "none", rarity: "uncommon", level: 32,
+    stats: {}, sellPrice: 35, stackable: true, spriteId: "material_bone",
+  },
+  {
+    id: "fire_goblin_ash",
+    name: "Fire Goblin Ash",
+    description: "Volcanic ash clinging to a goblin firestarter's remains — still smouldering",
+    type: "material", slot: "none", rarity: "uncommon", level: 42,
+    stats: {}, sellPrice: 42, stackable: true, spriteId: "material_ore",
+  },
+
+  // ── PHASE 2: BOSS CRAFTING MATERIAL DROPS ────────────────────────────────
+  // Rare materials dropped only by dungeon and raid bosses.
+  {
+    id: "warchief_war_medallion",
+    name: "Warchief's War Medallion",
+    description: "A battered medallion worn by Drek'Eth the Gnoll Warchief — radiates brutal authority",
+    type: "material", slot: "none", rarity: "rare", level: 10,
+    stats: {}, sellPrice: 150, stackable: true, spriteId: "material_seal",
+  },
+  {
+    id: "narlock_overlord_seal",
+    name: "Overlord's Fractured Seal",
+    description: "A fragment of Narlock's iron overlord seal — pulsing with gnollish warlord power",
+    type: "material", slot: "none", rarity: "rare", level: 20,
+    stats: {}, sellPrice: 280, stackable: true, spriteId: "material_seal",
+  },
+  {
+    id: "varsoon_lich_essence",
+    name: "Varsoon's Lich Essence",
+    description: "A vial of condensed necrotic energy from Varsoon the Undying — the lich's distilled essence",
+    type: "material", slot: "none", rarity: "rare", level: 25,
+    stats: {}, sellPrice: 320, stackable: true, spriteId: "material_reagent",
+  },
+  {
+    id: "everling_dark_shard",
+    name: "Everling's Dark Shard",
+    description: "A shard of cursed obsidian bearing Lord Everling's necrotic brand",
+    type: "material", slot: "none", rarity: "rare", level: 35,
+    stats: {}, sellPrice: 450, stackable: true, spriteId: "material_gem",
+  },
+  {
+    id: "vox_ice_scale",
+    name: "Vox's Ice Scale",
+    description: "A translucent scale shed by Lady Vox herself — cold enough to freeze the air around it",
+    type: "material", slot: "none", rarity: "rare", level: 45,
+    stats: {}, sellPrice: 600, stackable: true, spriteId: "material_scale",
+  },
+  {
+    id: "nagafen_fire_scale",
+    name: "Nagafen's Fire Scale",
+    description: "A charred scale from Lord Nagafen — it burns to the touch and never truly cools",
+    type: "material", slot: "none", rarity: "rare", level: 50,
+    stats: {}, sellPrice: 750, stackable: true, spriteId: "material_scale",
+  },
+  {
+    id: "prismatic_dragon_scale",
+    name: "Prismatic Dragon Scale",
+    description: "A shimmering scale from Harla Dar the Prismatic Dragon — shifts colour with elemental energy",
+    type: "material", slot: "none", rarity: "legendary", level: 60,
+    stats: {}, sellPrice: 2500, stackable: true, spriteId: "material_scale",
+  },
+  {
+    id: "vampire_lord_fang",
+    name: "Vampire Lord's Fang",
+    description: "A massive fang from Mayong Mistmoore himself — drips with ancient vampiric venom",
+    type: "material", slot: "none", rarity: "legendary", level: 65,
+    stats: {}, sellPrice: 3000, stackable: true, spriteId: "material_bone",
+  },
+  {
+    id: "plague_dragon_spine",
+    name: "Plague Dragon's Spine",
+    description: "A venomous spine ripped from Trakanon's back — corrodes anything it touches",
+    type: "material", slot: "none", rarity: "legendary", level: 62,
+    stats: {}, sellPrice: 2800, stackable: true, spriteId: "material_bone",
+  },
+
+  // ── PHASE 2: JOURNEYMAN RECIPE SCROLLS ───────────────────────────────────
+  // Rare drops from regular (non-boss) monsters.
+  {
+    id: "scroll_journeyman_hide_bracers",
+    name: "Journeyman Recipe: Crude Hide Bracers",
+    description: "A battered scroll describing simple bracers crafted from raw beast hide. Learning this recipe will consume the scroll.",
+    type: "recipe_scroll", slot: "none", rarity: "uncommon", level: 5,
+    stats: {}, sellPrice: 80, stackable: false, spriteId: "scroll_recipe",
+    recipeId: "recipe_journeyman_hide_bracers", recipeTier: "journeyman",
+  },
+  {
+    id: "scroll_journeyman_crude_shortsword",
+    name: "Journeyman Recipe: Crude Iron Shortsword",
+    description: "A grimy scroll showing the basics of forging a crude iron shortsword. Learning this recipe will consume the scroll.",
+    type: "recipe_scroll", slot: "none", rarity: "uncommon", level: 5,
+    stats: {}, sellPrice: 80, stackable: false, spriteId: "scroll_recipe",
+    recipeId: "recipe_journeyman_crude_shortsword", recipeTier: "journeyman",
+  },
+  {
+    id: "scroll_journeyman_bone_dust_powder",
+    name: "Journeyman Recipe: Bone Dust Powder",
+    description: "A yellowed scroll revealing how to grind bleached bones into alchemical powder. Learning this recipe will consume the scroll.",
+    type: "recipe_scroll", slot: "none", rarity: "uncommon", level: 5,
+    stats: {}, sellPrice: 80, stackable: false, spriteId: "scroll_recipe",
+    recipeId: "recipe_journeyman_bone_dust_powder", recipeTier: "journeyman",
+  },
+  {
+    id: "scroll_journeyman_gnoll_tooth_ring",
+    name: "Journeyman Recipe: Gnoll Tooth Ring",
+    description: "A crude scroll scratched on gnoll hide, describing a ring made from gnoll fangs. Learning this recipe will consume the scroll.",
+    type: "recipe_scroll", slot: "none", rarity: "uncommon", level: 8,
+    stats: {}, sellPrice: 100, stackable: false, spriteId: "scroll_recipe",
+    recipeId: "recipe_journeyman_gnoll_tooth_ring", recipeTier: "journeyman",
+  },
+  {
+    id: "scroll_journeyman_feather_quill_amulet",
+    name: "Journeyman Recipe: Feather Quill Amulet",
+    description: "A scroll inscribed with harpy feather ink, detailing a light amulet of swiftness. Learning this recipe will consume the scroll.",
+    type: "recipe_scroll", slot: "none", rarity: "uncommon", level: 18,
+    stats: {}, sellPrice: 140, stackable: false, spriteId: "scroll_recipe",
+    recipeId: "recipe_journeyman_feather_quill_amulet", recipeTier: "journeyman",
+  },
+
+  // ── PHASE 2: EXPERT (ADEPT) RECIPE SCROLLS — DUNGEON BOSS DROPS ──────────
+  // High-chance drops from dungeon main bosses.
+  {
+    id: "scroll_expert_warchief_axe",
+    name: "Expert Recipe: Warchief's Heavy Axe",
+    description: "A scroll bearing gnoll war-script, detailing the forging of a brutal warchief's axe. Learning this recipe will consume the scroll.",
+    type: "recipe_scroll", slot: "none", rarity: "rare", level: 12,
+    stats: {}, sellPrice: 400, stackable: false, spriteId: "scroll_recipe",
+    recipeId: "recipe_expert_warchief_axe", recipeTier: "expert",
+  },
+  {
+    id: "scroll_expert_overlord_plate",
+    name: "Expert Recipe: Overlord's War Plate",
+    description: "A gnollish war-scroll inscribed by Narlock's own armorer, detailing reinforced war plate. Learning this recipe will consume the scroll.",
+    type: "recipe_scroll", slot: "none", rarity: "rare", level: 22,
+    stats: {}, sellPrice: 550, stackable: false, spriteId: "scroll_recipe",
+    recipeId: "recipe_expert_overlord_war_plate", recipeTier: "expert",
+  },
+  {
+    id: "scroll_expert_lich_focus",
+    name: "Expert Recipe: Lich's Necrotic Focus",
+    description: "A necromantic scroll crackling with dark energy, revealing how to craft a lich-touched focus. Learning this recipe will consume the scroll.",
+    type: "recipe_scroll", slot: "none", rarity: "rare", level: 28,
+    stats: {}, sellPrice: 600, stackable: false, spriteId: "scroll_recipe",
+    recipeId: "recipe_expert_lich_focus", recipeTier: "expert",
+  },
+  {
+    id: "scroll_expert_shadow_mantle",
+    name: "Expert Recipe: Shadow Mantle of Everling",
+    description: "A cursed scroll bound in dark elf silk, detailing Everling's signature mantle. Learning this recipe will consume the scroll.",
+    type: "recipe_scroll", slot: "none", rarity: "rare", level: 37,
+    stats: {}, sellPrice: 700, stackable: false, spriteId: "scroll_recipe",
+    recipeId: "recipe_expert_shadow_mantle", recipeTier: "expert",
+  },
+
   // ── MYTHIC CRAFTED ITEMS (one-of-a-kind results) ──────────────────────────
   {
     id: "craft_worldbreaker_blade",
@@ -1271,6 +1488,8 @@ export const ENEMIES: Enemy[] = [
     lootTable: [
       { itemId: "wolf_hide", dropChance: 0.6, minQuantity: 1, maxQuantity: 2 },
       { itemId: "worn_boots", dropChance: 0.05, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "wolf_fang", dropChance: 0.2, minQuantity: 1, maxQuantity: 2 },
+      { itemId: "scroll_journeyman_hide_bracers", dropChance: 0.03, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_wolf", type: "beast", isBoss: false,
     abilities: [
@@ -1289,6 +1508,8 @@ export const ENEMIES: Enemy[] = [
     lootTable: [
       { itemId: "rusty_short_sword", dropChance: 0.15, minQuantity: 1, maxQuantity: 1 },
       { itemId: "iron_ore", dropChance: 0.3, minQuantity: 1, maxQuantity: 3 },
+      { itemId: "goblin_ear", dropChance: 0.2, minQuantity: 1, maxQuantity: 2 },
+      { itemId: "scroll_journeyman_crude_shortsword", dropChance: 0.03, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_goblin", type: "humanoid", isBoss: false,
     abilities: [
@@ -1308,6 +1529,8 @@ export const ENEMIES: Enemy[] = [
       { itemId: "leather_vest", dropChance: 0.12, minQuantity: 1, maxQuantity: 1 },
       { itemId: "wooden_buckler", dropChance: 0.1, minQuantity: 1, maxQuantity: 1 },
       { itemId: "coal", dropChance: 0.4, minQuantity: 1, maxQuantity: 2 },
+      { itemId: "bleached_bone", dropChance: 0.2, minQuantity: 1, maxQuantity: 2 },
+      { itemId: "scroll_journeyman_bone_dust_powder", dropChance: 0.03, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_skeleton", type: "undead", isBoss: false,
     abilities: [
@@ -1326,6 +1549,8 @@ export const ENEMIES: Enemy[] = [
     lootTable: [
       { itemId: "chain_coif", dropChance: 0.08, minQuantity: 1, maxQuantity: 1 },
       { itemId: "iron_ore", dropChance: 0.5, minQuantity: 2, maxQuantity: 5 },
+      { itemId: "gnoll_fur_tuft", dropChance: 0.2, minQuantity: 1, maxQuantity: 2 },
+      { itemId: "scroll_journeyman_gnoll_tooth_ring", dropChance: 0.04, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_gnoll", type: "humanoid", isBoss: false,
     abilities: [
@@ -1345,6 +1570,8 @@ export const ENEMIES: Enemy[] = [
       { itemId: "iron_longsword", dropChance: 0.35, minQuantity: 1, maxQuantity: 1 },
       { itemId: "ringmail_chest", dropChance: 0.3, minQuantity: 1, maxQuantity: 1 },
       { itemId: "ring_of_strength", dropChance: 0.15, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "warchief_war_medallion", dropChance: 0.7, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "scroll_expert_warchief_axe", dropChance: 0.5, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_boss_gnoll", type: "humanoid", isBoss: true, personality: "arrogant", grudgeThreshold: 3,
     abilities: [
@@ -1922,6 +2149,8 @@ export const ENEMIES: Enemy[] = [
       { itemId: "bb_commander_war_helm", dropChance: 0.6, minQuantity: 1, maxQuantity: 1 },
       { itemId: "ring_of_strength", dropChance: 0.4, minQuantity: 1, maxQuantity: 1 },
       { itemId: "mithril_blade", dropChance: 0.15, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "narlock_overlord_seal", dropChance: 0.75, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "scroll_expert_overlord_plate", dropChance: 0.55, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_boss_gnoll", type: "humanoid", isBoss: true, personality: "arrogant", grudgeThreshold: 3,
     abilities: [
@@ -1945,6 +2174,8 @@ export const ENEMIES: Enemy[] = [
       { itemId: "leather_leggings", dropChance: 0.1, minQuantity: 1, maxQuantity: 1 },
       { itemId: "wolf_hide", dropChance: 0.4, minQuantity: 1, maxQuantity: 3 },
       { itemId: "iron_ore", dropChance: 0.25, minQuantity: 1, maxQuantity: 2 },
+      { itemId: "centaur_hoof_chip", dropChance: 0.15, minQuantity: 1, maxQuantity: 2 },
+      { itemId: "scroll_journeyman_feather_quill_amulet", dropChance: 0.03, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_centaur", type: "humanoid", isBoss: false,
     abilities: [
@@ -1983,6 +2214,8 @@ export const ENEMIES: Enemy[] = [
       { itemId: "silver_pendant", dropChance: 0.12, minQuantity: 1, maxQuantity: 1 },
       { itemId: "spider_silk", dropChance: 0.45, minQuantity: 1, maxQuantity: 3 },
       { itemId: "wolf_hide", dropChance: 0.3, minQuantity: 1, maxQuantity: 2 },
+      { itemId: "harpy_feather", dropChance: 0.2, minQuantity: 1, maxQuantity: 3 },
+      { itemId: "scroll_journeyman_feather_quill_amulet", dropChance: 0.04, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_harpy", type: "beast", isBoss: false,
     abilities: [
@@ -2003,6 +2236,8 @@ export const ENEMIES: Enemy[] = [
       { itemId: "steel_platemail", dropChance: 0.15, minQuantity: 1, maxQuantity: 1 },
       { itemId: "necklace_of_the_deep", dropChance: 0.1, minQuantity: 1, maxQuantity: 1 },
       { itemId: "varsoon_lich_crystal", dropChance: 0.2, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "varsoon_lich_essence", dropChance: 0.7, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "scroll_expert_lich_focus", dropChance: 0.55, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_lich", type: "undead", isBoss: true, personality: "ancient", grudgeThreshold: 3,
     abilities: [
@@ -2023,7 +2258,8 @@ export const ENEMIES: Enemy[] = [
     lootTable: [
       { itemId: "mithril_ore", dropChance: 0.25, minQuantity: 1, maxQuantity: 2 },
       { itemId: "ring_of_power", dropChance: 0.08, minQuantity: 1, maxQuantity: 1 },
-    { itemId: "spider_silk", dropChance: 0.35, minQuantity: 1, maxQuantity: 2 },
+      { itemId: "spider_silk", dropChance: 0.35, minQuantity: 1, maxQuantity: 2 },
+      { itemId: "dark_elf_shadow_dust", dropChance: 0.18, minQuantity: 1, maxQuantity: 2 },
     ],
     spriteId: "enemy_dark_elf", type: "humanoid", isBoss: false,
     abilities: [
@@ -2042,7 +2278,8 @@ export const ENEMIES: Enemy[] = [
     lootTable: [
       { itemId: "steel_legplates", dropChance: 0.1, minQuantity: 1, maxQuantity: 1 },
       { itemId: "fire_opal", dropChance: 0.3, minQuantity: 1, maxQuantity: 2 },
-    { itemId: "spider_silk", dropChance: 0.35, minQuantity: 1, maxQuantity: 2 },
+      { itemId: "spider_silk", dropChance: 0.35, minQuantity: 1, maxQuantity: 2 },
+      { itemId: "treant_heartwood_chip", dropChance: 0.18, minQuantity: 1, maxQuantity: 2 },
     ],
     spriteId: "enemy_treant", type: "elemental", isBoss: false,
     abilities: [
@@ -2062,7 +2299,8 @@ export const ENEMIES: Enemy[] = [
     lootTable: [
       { itemId: "steel_pauldrons", dropChance: 0.12, minQuantity: 1, maxQuantity: 1 },
       { itemId: "cloak_of_shadows", dropChance: 0.05, minQuantity: 1, maxQuantity: 1 },
-    { itemId: "everfrost_mammoth_ivory", dropChance: 0.3, minQuantity: 1, maxQuantity: 2 },
+      { itemId: "everfrost_mammoth_ivory", dropChance: 0.3, minQuantity: 1, maxQuantity: 2 },
+      { itemId: "frost_giant_knuckle", dropChance: 0.18, minQuantity: 1, maxQuantity: 2 },
     ],
     spriteId: "enemy_frost_giant", type: "humanoid", isBoss: false,
     abilities: [
@@ -2126,6 +2364,7 @@ export const ENEMIES: Enemy[] = [
       { itemId: "scroll_mythic_worldbreaker", dropChance: 0.04, minQuantity: 1, maxQuantity: 1 },
       { itemId: "scroll_mythic_void_mantle", dropChance: 0.03, minQuantity: 1, maxQuantity: 1 },
       { itemId: "scroll_expert_shadowsteel", dropChance: 0.12, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "nagafen_fire_scale", dropChance: 0.8, minQuantity: 1, maxQuantity: 2 },
     ],
     spriteId: "enemy_nagafen", type: "dragon", isBoss: true, personality: "arrogant", grudgeThreshold: 3,
     abilities: [
@@ -3511,6 +3750,8 @@ export const ENEMIES: Enemy[] = [
       { itemId: "darkblade", dropChance: 0.12, minQuantity: 1, maxQuantity: 1 },
       { itemId: "ring_of_the_ancients", dropChance: 0.1, minQuantity: 1, maxQuantity: 1 },
       { itemId: "everling_signet", dropChance: 0.25, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "everling_dark_shard", dropChance: 0.7, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "scroll_expert_shadow_mantle", dropChance: 0.55, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_lich", type: "undead", isBoss: true, personality: "cunning", grudgeThreshold: 3,
     abilities: [
@@ -3655,6 +3896,7 @@ export const ENEMIES: Enemy[] = [
       { itemId: "permafrost_shard", dropChance: 1.0, minQuantity: 5, maxQuantity: 10 },
       { itemId: "scroll_expert_dragonscale", dropChance: 0.12, minQuantity: 1, maxQuantity: 1 },
       { itemId: "scroll_mythic_eternal_crown", dropChance: 0.03, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "vox_ice_scale", dropChance: 0.8, minQuantity: 1, maxQuantity: 2 },
     ],
     spriteId: "enemy_dragon", type: "dragon", isBoss: true, personality: "arrogant", grudgeThreshold: 3,
     abilities: [
@@ -3679,7 +3921,8 @@ export const ENEMIES: Enemy[] = [
     lootTable: [
       { itemId: "fire_opal", dropChance: 0.55, minQuantity: 1, maxQuantity: 3 },
       { itemId: "coal", dropChance: 0.4, minQuantity: 2, maxQuantity: 4 },
-    { itemId: "lavastorm_magma_slag", dropChance: 0.4, minQuantity: 1, maxQuantity: 3 },
+      { itemId: "lavastorm_magma_slag", dropChance: 0.4, minQuantity: 1, maxQuantity: 3 },
+      { itemId: "fire_goblin_ash", dropChance: 0.18, minQuantity: 1, maxQuantity: 2 },
     ],
     spriteId: "enemy_imp", type: "humanoid", isBoss: false,
     abilities: [
@@ -4243,6 +4486,107 @@ export const CRAFTING_RECIPES: CraftingRecipe[] = [
   { id: "recipe_leather_bracers", name: "Craft Leather Bracers", resultItemId: "leather_bracers", resultQuantity: 1, ingredients: [{ itemId: "scraggly_hide", quantity: 2 }], requiredSkillLevel: 1, requiredSkillId: "leatherworking", craftingTime: 6, xpReward: 20, tier: "journeyman" as RecipeTier },
   { id: "recipe_supple_leather_gloves", name: "Craft Supple Leather Gloves", resultItemId: "supple_leather_gloves", resultQuantity: 1, ingredients: [{ itemId: "sturdy_hide", quantity: 2 }, { itemId: "scraggly_hide", quantity: 1 }], requiredSkillLevel: 10, requiredSkillId: "leatherworking", craftingTime: 12, xpReward: 50, tier: "journeyman" as RecipeTier },
   { id: "recipe_reinforced_leather_vest", name: "Craft Reinforced Leather Vest", resultItemId: "reinforced_leather_vest", resultQuantity: 1, ingredients: [{ itemId: "thick_pelt", quantity: 3 }, { itemId: "sturdy_hide", quantity: 2 }], requiredSkillLevel: 20, requiredSkillId: "leatherworking", craftingTime: 22, xpReward: 100, tier: "expert" as RecipeTier },
+
+  // ── PHASE 2: JOURNEYMAN DROP RECIPES (learned from monster scroll drops) ──
+  {
+    id: "recipe_journeyman_hide_bracers",
+    name: "Craft Crude Hide Bracers",
+    description: "A journeyman technique for stitching raw beast hide into simple protective bracers.",
+    resultItemId: "leather_bracers", resultQuantity: 1,
+    ingredients: [{ itemId: "wolf_fang", quantity: 1 }, { itemId: "wolf_hide", quantity: 2 }],
+    requiredSkillLevel: 5, requiredSkillId: "leatherworking", craftingTime: 8, xpReward: 35,
+    tier: "journeyman" as RecipeTier,
+  },
+  {
+    id: "recipe_journeyman_crude_shortsword",
+    name: "Forge Crude Iron Shortsword",
+    description: "A journeyman forging technique producing a crude but functional iron shortsword.",
+    resultItemId: "rusty_short_sword", resultQuantity: 1,
+    ingredients: [{ itemId: "iron_ore", quantity: 3 }, { itemId: "goblin_ear", quantity: 1 }, { itemId: "coal", quantity: 1 }],
+    requiredSkillLevel: 5, requiredSkillId: "smithing", craftingTime: 10, xpReward: 40,
+    tier: "journeyman" as RecipeTier,
+  },
+  {
+    id: "recipe_journeyman_bone_dust_powder",
+    name: "Grind Bone Dust Powder",
+    description: "A journeyman alchemy method for grinding bleached bones into a fine alchemical powder.",
+    resultItemId: "enchanting_dust", resultQuantity: 2,
+    ingredients: [{ itemId: "bleached_bone", quantity: 3 }, { itemId: "coal", quantity: 1 }],
+    requiredSkillLevel: 4, requiredSkillId: "alchemy", craftingTime: 8, xpReward: 30,
+    tier: "journeyman" as RecipeTier,
+  },
+  {
+    id: "recipe_journeyman_gnoll_tooth_ring",
+    name: "Craft Gnoll Tooth Ring",
+    description: "A journeyman jeweling technique using gnoll fangs wired onto an iron band.",
+    resultItemId: "copper_ring", resultQuantity: 1,
+    ingredients: [{ itemId: "gnoll_fur_tuft", quantity: 2 }, { itemId: "iron_ore", quantity: 1 }],
+    requiredSkillLevel: 8, requiredSkillId: "jeweling", craftingTime: 10, xpReward: 45,
+    tier: "journeyman" as RecipeTier,
+  },
+  {
+    id: "recipe_journeyman_feather_quill_amulet",
+    name: "Craft Feather Quill Amulet",
+    description: "A journeyman jeweling recipe binding harpy feathers into a light amulet of agility.",
+    resultItemId: "rough_amulet", resultQuantity: 1,
+    ingredients: [{ itemId: "harpy_feather", quantity: 3 }, { itemId: "spider_silk", quantity: 2 }],
+    requiredSkillLevel: 18, requiredSkillId: "jeweling", craftingTime: 14, xpReward: 70,
+    tier: "journeyman" as RecipeTier,
+  },
+
+  // ── PHASE 2: EXPERT (ADEPT) DROP RECIPES (learned from dungeon boss drops) ─
+  {
+    id: "recipe_expert_warchief_axe",
+    name: "Forge Warchief's Heavy Axe",
+    description: "An expert smithing technique for crafting the brutal war-axe of a gnoll warchief, using trophy materials.",
+    resultItemId: "iron_longsword", resultQuantity: 1,
+    ingredients: [
+      { itemId: "iron_bar", quantity: 4 },
+      { itemId: "warchief_war_medallion", quantity: 1 },
+      { itemId: "gnoll_fur_tuft", quantity: 2 },
+    ],
+    requiredSkillLevel: 12, requiredSkillId: "smithing", craftingTime: 25, xpReward: 200,
+    tier: "expert" as RecipeTier,
+  },
+  {
+    id: "recipe_expert_overlord_war_plate",
+    name: "Forge Overlord's War Plate",
+    description: "An expert armoring technique using Narlock's fractured seal to craft reinforced warlord-tier chest armor.",
+    resultItemId: "iron_breastplate", resultQuantity: 1,
+    ingredients: [
+      { itemId: "iron_bar", quantity: 5 },
+      { itemId: "narlock_overlord_seal", quantity: 1 },
+      { itemId: "coal", quantity: 3 },
+    ],
+    requiredSkillLevel: 22, requiredSkillId: "smithing", craftingTime: 35, xpReward: 300,
+    tier: "expert" as RecipeTier,
+  },
+  {
+    id: "recipe_expert_lich_focus",
+    name: "Craft Lich's Necrotic Focus",
+    description: "An expert alchemy recipe channeling Varsoon's lich essence into a potent necrotic focus crystal.",
+    resultItemId: "ring_of_power", resultQuantity: 1,
+    ingredients: [
+      { itemId: "varsoon_lich_essence", quantity: 1 },
+      { itemId: "mithril_ore", quantity: 2 },
+      { itemId: "spider_silk", quantity: 3 },
+    ],
+    requiredSkillLevel: 28, requiredSkillId: "alchemy", craftingTime: 40, xpReward: 380,
+    tier: "expert" as RecipeTier,
+  },
+  {
+    id: "recipe_expert_shadow_mantle",
+    name: "Weave Shadow Mantle of Everling",
+    description: "An expert tailoring method weaving Everling's dark shard into a shadow-touched mantle of the night.",
+    resultItemId: "cloak_of_shadows", resultQuantity: 1,
+    ingredients: [
+      { itemId: "everling_dark_shard", quantity: 1 },
+      { itemId: "spider_silk", quantity: 6 },
+      { itemId: "wolf_hide", quantity: 3 },
+    ],
+    requiredSkillLevel: 37, requiredSkillId: "tailoring", craftingTime: 50, xpReward: 480,
+    tier: "expert" as RecipeTier,
+  },
 ].map(r => ({ tier: "journeyman" as RecipeTier, ...r }));
 
 export const INITIAL_SKILLS = [

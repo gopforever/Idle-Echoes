@@ -98,6 +98,17 @@ function generateRaidLoot(raidId: string, playerLevel: number): string[] {
     const picked = targetPool[Math.floor(Math.random() * targetPool.length)];
     if (picked) loot.push(picked.id);
   }
+
+  // ── Phase 2: Boss crafting material drops ─────────────────────────────────
+  // Each raid boss guarantees its unique crafting material on kill.
+  const RAID_BOSS_MATERIALS: Record<string, string> = {
+    harla_dar: "prismatic_dragon_scale",
+    mayong_mistmoore: "vampire_lord_fang",
+    trakanon: "plague_dragon_spine",
+  };
+  const bossMaterial = RAID_BOSS_MATERIALS[raidId];
+  if (bossMaterial) loot.push(bossMaterial);
+
   return loot;
 }
 
