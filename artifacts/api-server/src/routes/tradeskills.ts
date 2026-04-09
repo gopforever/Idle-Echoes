@@ -1,9 +1,9 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
 import { inventoryTable, knownRecipesTable, recipesTable, craftQueueTable, charactersTable } from "@workspace/db/schema";
-import { eq, and, sql, lte, inArray } from "drizzle-orm";
+import { eq, and, sql, lte, inArray, isNull } from "drizzle-orm";
 import { getOrCreateCharacter } from "./character.js";
-import { TRADESKILL_MATERIALS, APPRENTICE_RECIPES, TRADESKILL_CLASSES, type TradeskillClass } from "../lib/tradeskillData.js";
+import { TRADESKILL_MATERIALS, APPRENTICE_RECIPES, MASTER_RECIPES, ALL_MASTER_RECIPE_NAMES, TRADESKILL_CLASSES, type TradeskillClass } from "../lib/tradeskillData.js";
 
 const router: IRouter = Router();
 
@@ -37,23 +37,50 @@ async function seedRecipesIfNeeded(): Promise<void> {
     const [countRow] = await db
       .select({ count: sql<number>`COUNT(*)::int` })
       .from(recipesTable);
-    if ((countRow?.count ?? 0) > 0) return;
 
-    const rows = APPRENTICE_RECIPES.map(r => ({
-      name: r.name,
-      tradeskillClass: r.tradeskillClass,
-      tier: r.tier,
-      minSkill: r.minSkill,
-      minLevel: r.minLevel,
-      craftTimeSeconds: r.craftTimeSeconds,
-      ingredients: r.ingredients,
-      output: r.output,
-      acquisitionType: r.acquisitionType,
-      vendorCost: r.vendorCost,
-      isOoak: false,
-    }));
-    await db.insert(recipesTable).values(rows);
-    console.log(`[tradeskills] Seeded ${rows.length} apprentice recipes.`);
+    if ((countRow?.count ?? 0) === 0) {
+      const apprenticeRows = APPRENTICE_RECIPES.map(r => ({
+        name: r.name,
+        tradeskillClass: r.tradeskillClass,
+        tier: r.tier,
+        minSkill: r.minSkill,
+        minLevel: r.minLevel,
+        craftTimeSeconds: r.craftTimeSeconds,
+        ingredients: r.ingredients,
+        output: r.output,
+        acquisitionType: r.acquisitionType,
+        vendorCost: r.vendorCost,
+        isOoak: false,
+      }));
+      await db.insert(recipesTable).values(apprenticeRows);
+      console.log(`[tradeskills] Seeded ${apprenticeRows.length} apprentice recipes.`);
+    }
+
+    // Seed master recipes if not yet present (idempotent by name)
+    const existingMaster = await db
+      .select({ name: recipesTable.name })
+      .from(recipesTable)
+      .where(eq(recipesTable.tier, "master"));
+    const existingMasterNames = new Set(existingMaster.map(r => r.name));
+    const newMasterRows = MASTER_RECIPES
+      .filter(r => !existingMasterNames.has(r.name))
+      .map(r => ({
+        name: r.name,
+        tradeskillClass: r.tradeskillClass,
+        tier: r.tier,
+        minSkill: r.minSkill,
+        minLevel: r.minLevel,
+        craftTimeSeconds: r.craftTimeSeconds,
+        ingredients: r.ingredients,
+        output: r.output,
+        acquisitionType: r.acquisitionType,
+        vendorCost: null,
+        isOoak: false,
+      }));
+    if (newMasterRows.length > 0) {
+      await db.insert(recipesTable).values(newMasterRows);
+      console.log(`[tradeskills] Seeded ${newMasterRows.length} master recipes.`);
+    }
   } catch (err) {
     seeded = false; // allow retry
     console.error("[tradeskills] Seed error:", err);
@@ -804,6 +831,79 @@ router.delete("/tradeskills/queue/:id", async (req, res) => {
     return res.json({ success: true });
   } catch (err) {
     console.error("[tradeskills] queue DELETE error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// ─── POST /tradeskills/ooak/claim/:recipeId ───────────────────────────────────
+// Atomically claims an unclaimed OoaK recipe for the requesting character.
+// Only the first caller wins; subsequent callers get "already claimed" error.
+
+router.post("/tradeskills/ooak/claim/:recipeId", async (req, res) => {
+  try {
+    const characterId = req.characterId;
+    if (!characterId) return res.status(401).json({ error: "Not authenticated" });
+
+    const recipeId = Number(req.params.recipeId);
+    if (isNaN(recipeId)) return res.status(400).json({ error: "Invalid recipeId" });
+
+    // Fetch the recipe
+    const [recipe] = await db
+      .select()
+      .from(recipesTable)
+      .where(eq(recipesTable.id, recipeId))
+      .limit(1);
+    if (!recipe) return res.status(404).json({ error: "Recipe not found" });
+    if (!recipe.isOoak) return res.status(400).json({ error: "Recipe is not a One-of-a-Kind recipe" });
+
+    const char = await getOrCreateCharacter(characterId);
+
+    // Atomic check-and-set: only update if claimedBy IS NULL
+    const [updated] = await db
+      .update(recipesTable)
+      .set({ claimedBy: String(char.userId ?? characterId) })
+      .where(and(eq(recipesTable.id, recipeId), isNull(recipesTable.claimedBy)))
+      .returning();
+
+    if (!updated) {
+      // Already claimed — fetch current claimant for info
+      const [current] = await db.select({ claimedBy: recipesTable.claimedBy }).from(recipesTable).where(eq(recipesTable.id, recipeId)).limit(1);
+      return res.status(409).json({ error: "This One-of-a-Kind recipe has already been claimed", claimedBy: current?.claimedBy });
+    }
+
+    // Add to character's known recipes
+    const alreadyKnown = await db
+      .select()
+      .from(knownRecipesTable)
+      .where(and(eq(knownRecipesTable.characterId, characterId), eq(knownRecipesTable.recipeId, String(recipeId))))
+      .limit(1);
+    if (alreadyKnown.length === 0) {
+      await db.insert(knownRecipesTable).values({ characterId, recipeId: String(recipeId) });
+    }
+
+    return res.json({
+      success: true,
+      message: `You have claimed the legendary recipe: ${recipe.name}`,
+      recipe: updated,
+    });
+  } catch (err) {
+    console.error("[tradeskills] ooak/claim error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// ─── GET /tradeskills/ooak/unclaimed ─────────────────────────────────────────
+// Returns OoaK recipes that are currently unclaimed (for world display/events).
+
+router.get("/tradeskills/ooak/unclaimed", async (req, res) => {
+  try {
+    const recipes = await db
+      .select()
+      .from(recipesTable)
+      .where(and(eq(recipesTable.isOoak, true), isNull(recipesTable.claimedBy)));
+    return res.json({ recipes });
+  } catch (err) {
+    console.error("[tradeskills] ooak/unclaimed error:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });

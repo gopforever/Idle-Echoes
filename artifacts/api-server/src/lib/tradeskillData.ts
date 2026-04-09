@@ -558,3 +558,211 @@ export const APPRENTICE_RECIPES: RecipeSeed[] = [
 // ─── Seed helper ─────────────────────────────────────────────────────────────
 
 export const ALL_APPRENTICE_RECIPE_NAMES = new Set(APPRENTICE_RECIPES.map(r => r.name));
+
+// ─── Master Recipe Seed ───────────────────────────────────────────────────────
+// Master-tier recipes drop from raid boss kills (10–20% chance).
+// They require Phase 2 boss crafting materials as primary ingredients.
+
+export interface MasterRecipeSeed {
+  name: string;
+  tradeskillClass: "weaponsmith" | "armorer" | "tailor" | "jeweler" | "alchemist";
+  tier: "master";
+  minSkill: number;
+  minLevel: number;
+  craftTimeSeconds: number;
+  ingredients: Array<{ itemId: string; quantity: number }>;
+  output: {
+    name: string;
+    description: string;
+    type: "weapon" | "armor" | "accessory" | "consumable";
+    slot: string;
+    rarity: "legendary";
+    stats: Record<string, number>;
+    sellPrice: number;
+    armorType?: "plate" | "chain" | "leather" | "cloth";
+    quantity: number;
+    xpGained: number;
+    spriteId?: string;
+    stackable?: boolean;
+    effect?: { type: string; value: number };
+  };
+  acquisitionType: "raid";
+  /** Which raid boss drops this recipe (thematic pairing). */
+  raidBossId: string;
+}
+
+export const MASTER_RECIPES: MasterRecipeSeed[] = [
+  // ── Harla Dar (prismatic dragon) drops ──────────────────────────────────────
+  {
+    name: "Prismatic Dragon Fang Blade",
+    tradeskillClass: "weaponsmith", tier: "master",
+    minSkill: 75, minLevel: 55, craftTimeSeconds: 1800, acquisitionType: "raid", raidBossId: "harla_dar",
+    ingredients: [
+      { itemId: "prismatic_dragon_scale", quantity: 3 },
+      { itemId: "ts_adamantine_ore", quantity: 4 },
+      { itemId: "ts_metal_flux", quantity: 2 },
+    ],
+    output: {
+      name: "Prismatic Dragon Fang Blade", type: "weapon", slot: "primary", rarity: "legendary",
+      description: "A greatsword forged from the fangs and scales of Harla Dar — it shifts between elemental damage types as it strikes.",
+      stats: { weaponDamageMin: 220, weaponDamageMax: 380, weaponDelay: 2.8, attackRating: 180, strength: 45, critChance: 12 },
+      sellPrice: 8000, quantity: 1, xpGained: 2500, spriteId: "weapon_sword",
+    },
+  },
+  {
+    name: "Chromatic Dragon Scale Hauberk",
+    tradeskillClass: "armorer", tier: "master",
+    minSkill: 75, minLevel: 55, craftTimeSeconds: 2400, acquisitionType: "raid", raidBossId: "harla_dar",
+    ingredients: [
+      { itemId: "prismatic_dragon_scale", quantity: 5 },
+      { itemId: "ts_adamantine_ore", quantity: 3 },
+      { itemId: "ts_metal_flux", quantity: 2 },
+    ],
+    output: {
+      name: "Chromatic Dragon Scale Hauberk", type: "armor", slot: "chest", rarity: "legendary",
+      description: "A masterwork breastplate fashioned from prismatic dragon scales that cycle through elemental resistances.",
+      stats: { armorClass: 420, stamina: 60, strength: 40, mitigation: 35, avoidance: 18 },
+      sellPrice: 9500, quantity: 1, xpGained: 3000, spriteId: "chest_plate", armorType: "plate",
+    },
+  },
+  // ── Trakanon (plague dragon) drops ──────────────────────────────────────────
+  {
+    name: "Plague Dragon Spine Greatbow",
+    tradeskillClass: "weaponsmith", tier: "master",
+    minSkill: 70, minLevel: 60, craftTimeSeconds: 1800, acquisitionType: "raid", raidBossId: "trakanon",
+    ingredients: [
+      { itemId: "plague_dragon_spine", quantity: 3 },
+      { itemId: "ts_adamantine_ore", quantity: 2 },
+      { itemId: "ts_metal_flux", quantity: 2 },
+    ],
+    output: {
+      name: "Plague Dragon Spine Greatbow", type: "weapon", slot: "ranged", rarity: "legendary",
+      description: "A bow strung with tendons from Trakanon — each arrow carries a virulent plague.",
+      stats: { weaponDamageMin: 190, weaponDamageMax: 340, weaponDelay: 3.2, attackRating: 160, agility: 50, critChance: 10 },
+      sellPrice: 7500, quantity: 1, xpGained: 2200, spriteId: "weapon_bow",
+    },
+  },
+  {
+    name: "Venom-Laced Plague Mantle",
+    tradeskillClass: "tailor", tier: "master",
+    minSkill: 70, minLevel: 60, craftTimeSeconds: 2100, acquisitionType: "raid", raidBossId: "trakanon",
+    ingredients: [
+      { itemId: "plague_dragon_spine", quantity: 2 },
+      { itemId: "ts_spidersilk_cloth", quantity: 4 },
+      { itemId: "ts_strong_thread", quantity: 3 },
+    ],
+    output: {
+      name: "Venom-Laced Plague Mantle", type: "armor", slot: "shoulders", rarity: "legendary",
+      description: "A hooded mantle woven from plague dragon sinew and spidersilk — toxic to the touch.",
+      stats: { armorClass: 220, intelligence: 60, wisdom: 45, spellDamage: 40, spellCritChance: 14 },
+      sellPrice: 7000, quantity: 1, xpGained: 2000, spriteId: "shoulders_cloth", armorType: "cloth",
+    },
+  },
+  // ── Mayong Mistmoore (vampire lord) drops ────────────────────────────────────
+  {
+    name: "Vampire Lord's Fang Dagger",
+    tradeskillClass: "weaponsmith", tier: "master",
+    minSkill: 80, minLevel: 65, craftTimeSeconds: 1500, acquisitionType: "raid", raidBossId: "mayong_mistmoore",
+    ingredients: [
+      { itemId: "vampire_lord_fang", quantity: 2 },
+      { itemId: "ts_adamantine_ore", quantity: 2 },
+      { itemId: "ts_metal_flux", quantity: 1 },
+    ],
+    output: {
+      name: "Vampire Lord's Fang Dagger", type: "weapon", slot: "secondary", rarity: "legendary",
+      description: "A razor dagger carved from Mayong Mistmoore's own fang — it drains the life of those it pierces.",
+      stats: { weaponDamageMin: 160, weaponDamageMax: 260, weaponDelay: 1.6, attackRating: 200, agility: 55, critChance: 18 },
+      sellPrice: 10000, quantity: 1, xpGained: 3200, spriteId: "weapon_dagger",
+    },
+  },
+  {
+    name: "Mistmoore Blood Amulet",
+    tradeskillClass: "jeweler", tier: "master",
+    minSkill: 80, minLevel: 65, craftTimeSeconds: 1200, acquisitionType: "raid", raidBossId: "mayong_mistmoore",
+    ingredients: [
+      { itemId: "vampire_lord_fang", quantity: 1 },
+      { itemId: "ts_void_crystal", quantity: 2 },
+      { itemId: "ts_jewelers_oil", quantity: 2 },
+    ],
+    output: {
+      name: "Mistmoore Blood Amulet", type: "accessory", slot: "neck", rarity: "legendary",
+      description: "An amulet set with Mayong's fang and void crystals — it pulses with dark life-stealing energy.",
+      stats: { intelligence: 70, wisdom: 55, spellDamage: 55, spellCritChance: 18, stamina: 40 },
+      sellPrice: 11000, quantity: 1, xpGained: 3500, spriteId: "necklace",
+    },
+  },
+  {
+    name: "Elixir of Eternal Night",
+    tradeskillClass: "alchemist", tier: "master",
+    minSkill: 80, minLevel: 65, craftTimeSeconds: 900, acquisitionType: "raid", raidBossId: "mayong_mistmoore",
+    ingredients: [
+      { itemId: "vampire_lord_fang", quantity: 1 },
+      { itemId: "ts_empty_vial", quantity: 2 },
+      { itemId: "ts_mana_shard", quantity: 4 },
+      { itemId: "ts_alchemists_coal", quantity: 3 },
+    ],
+    output: {
+      name: "Elixir of Eternal Night", type: "consumable", slot: "none", rarity: "legendary",
+      description: "A draught distilled from Mayong's essence — the drinker heals catastrophically and fights with vampiric fury for a short time.",
+      stats: {}, sellPrice: 5000, quantity: 1, xpGained: 2800, spriteId: "potion_purple",
+      stackable: true, effect: { type: "heal", value: 5000 },
+    },
+  },
+];
+
+export const ALL_MASTER_RECIPE_NAMES = new Set(MASTER_RECIPES.map(r => r.name));
+
+// ─── OoaK Name Generator ─────────────────────────────────────────────────────
+// Procedurally generates legendary One-of-a-Kind recipe names.
+// Fully server-side — no external APIs required.
+
+const OOAK_ADJECTIVES = [
+  "Ashen", "Bloodforged", "Celestial", "Deathmarch", "Emberstoked", "Frosted",
+  "Ghostwalker's", "Hallowed", "Ironbound", "Jagged", "Krait-Touched", "Lifedrinker",
+  "Moonwracked", "Nameless", "Obsidian", "Plagueborn", "Quenched", "Ruinbringer",
+  "Shadowpierced", "Thornwoven", "Umbral", "Voidtouched", "Wraithbone", "Xenolithic",
+  "Ymirborn", "Zealot's",
+];
+
+const OOAK_MATERIALS = [
+  "Adamantine", "Bloodsteel", "Celestite", "Duskweave", "Ebonite", "Frostite",
+  "Ghostsilver", "Hallite", "Ironhide", "Jadesteel", "Kryptonite", "Lifewood",
+  "Moonstone", "Nightshade", "Obsidian", "Plaguesteel", "Quicksilver", "Runite",
+  "Shadowcloth", "Thornhide", "Umbrite", "Voidglass", "Wraithsteel", "Xenite",
+  "Ymirstone", "Zenite",
+];
+
+const OOAK_ITEM_TYPES: Record<string, string[]> = {
+  weaponsmith: ["Greatsword", "Waraxe", "Warhammer", "Glaive", "Spear", "Maul", "Falchion", "Broadsword"],
+  armorer:     ["Breastplate", "Hauberk", "Helm", "Pauldrons", "Vambraces", "Greaves", "Shield"],
+  tailor:      ["Robe", "Mantle", "Vestment", "Cowl", "Girdle", "Cloak", "Shroud"],
+  jeweler:     ["Amulet", "Ring", "Choker", "Signet", "Talisman", "Pendant", "Circlet"],
+  alchemist:   ["Elixir", "Philter", "Tincture", "Draught", "Brew", "Concoction", "Flask"],
+};
+
+const OOAK_SUFFIXES = [
+  "of the Fallen", "of Eternal Ruin", "of the Forsaken", "of Undying Rage",
+  "of the Void", "of the Ancient Pact", "of Shadowflame", "of the Crimson Dawn",
+  "of the Last Stand", "of the Wailing Dark", "of Lost Souls", "of the Sundered Age",
+  "of Bloodmoon", "of the Nightmare Keep", "of the Dying Star", "of Endless Night",
+];
+
+function pick<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+/**
+ * Generate an evocative, unique OoaK recipe name.
+ * If ghostName is provided, the name is prefixed with the ghost's name (e.g. "Thornwick's ...").
+ */
+export function generateOoakName(
+  tradeskillClass: "weaponsmith" | "armorer" | "tailor" | "jeweler" | "alchemist",
+  ghostName?: string,
+): string {
+  const itemTypes = OOAK_ITEM_TYPES[tradeskillClass] ?? ["Relic"];
+  const baseName = `${pick(OOAK_ADJECTIVES)} ${pick(OOAK_MATERIALS)} ${pick(itemTypes)} ${pick(OOAK_SUFFIXES)}`;
+  if (ghostName) {
+    return `${ghostName}'s ${baseName}`;
+  }
+  return baseName;
+}

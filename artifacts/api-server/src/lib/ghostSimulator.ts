@@ -27,7 +27,7 @@ import {
   ghostDungeonClearsTable,
   ghostRaidClearsTable,
 } from "@workspace/db/schema";
-import { and, desc, eq, gt, lt, sql, inArray } from "drizzle-orm";
+import { and, desc, eq, gt, lt, sql, inArray, isNull } from "drizzle-orm";
 import { GHOST_SEEDS, type GhostPersonality } from "./ghostSeeds.js";
 import { xpForLevel, computeStats, computeGearScore } from "./eq2Formulas.js";
 import { cleanExpiredListings } from "./auctionService.js";
@@ -45,9 +45,13 @@ import {
   oneOfAKindCraftedTable,
   inventoryTable,
   ghostInventoryTable,
+  recipesTable,
+  ghostLegacyTable,
 } from "@workspace/db/schema";
 import { DUNGEONS } from "./dungeonData.js";
 import { RAIDS } from "./raidData.js";
+import { generateOoakName, TRADESKILL_CLASSES } from "./tradeskillData.js";
+import type { TradeskillClass } from "./tradeskillData.js";
 
 // ─── Simulator version — bump to force a reset of ghost data ─────────────────
 const SIMULATOR_VERSION = 6;
@@ -1728,6 +1732,133 @@ async function ghostAuctionTick(players: typeof worldPlayersTable.$inferSelect[]
   }
 }
 
+// ─── Ghost Legacy Drop ────────────────────────────────────────────────────────
+// Called when a ghost retires. Gives it a chance to leave behind a recipe or item.
+
+async function generateGhostLegacyDrop(
+  ghost: typeof worldPlayersTable.$inferSelect,
+  tick: number,
+): Promise<void> {
+  const roll = Math.random();
+
+  // 5–10% chance: OoaK recipe named after the ghost
+  if (roll < 0.07) {
+    const tsClass = TRADESKILL_CLASSES[Math.floor(Math.random() * TRADESKILL_CLASSES.length)] as TradeskillClass;
+    const ooakName = generateOoakName(tsClass, ghost.name);
+    const ooakOutput = {
+      name: ooakName,
+      description: `A legendary relic left behind by the ghost of ${ghost.name} — it can never be replicated.`,
+      type: "weapon" as const,
+      slot: "primary",
+      rarity: "legendary" as const,
+      stats: { weaponDamageMin: 280, weaponDamageMax: 460, attackRating: 230, strength: 75, critChance: 18 },
+      sellPrice: 45000,
+      quantity: 1,
+      xpGained: 6000,
+      spriteId: "weapon_sword",
+    };
+    const [inserted] = await db.insert(recipesTable).values({
+      name: ooakName,
+      tradeskillClass: tsClass,
+      tier: "master",
+      minSkill: 80,
+      minLevel: 60,
+      craftTimeSeconds: 3600,
+      ingredients: [
+        { itemId: "prismatic_dragon_scale", quantity: 1 },
+        { itemId: "vampire_lord_fang", quantity: 1 },
+        { itemId: "plague_dragon_spine", quantity: 1 },
+      ],
+      output: ooakOutput,
+      acquisitionType: "raid",
+      vendorCost: null,
+      isOoak: true,
+      claimedBy: null,
+    }).returning();
+
+    if (inserted) {
+      await db.insert(ghostLegacyTable).values({
+        ghostId: ghost.id,
+        ghostName: ghost.name,
+        dropType: "ooak_recipe",
+        dropName: ooakName,
+        dropReference: String(inserted.id),
+      });
+      await db.insert(worldEventsTable).values({
+        type: "ghost_legacy",
+        message: `The ghost of ${ghost.name} has retired and left behind a legendary recipe: [${ooakName}] — unclaimed and waiting for a worthy crafter!`,
+        playerName: ghost.name,
+        zone: ghost.zone,
+        importance: 9,
+        tick,
+      });
+    }
+    return;
+  }
+
+  // ~30% chance: leave behind a known recipe
+  if (roll < 0.37) {
+    const ghostKnown = await db
+      .select({ recipeId: ghostKnownRecipesTable.recipeId })
+      .from(ghostKnownRecipesTable)
+      .where(eq(ghostKnownRecipesTable.ghostId, ghost.id));
+
+    if (ghostKnown.length > 0) {
+      const picked = ghostKnown[Math.floor(Math.random() * ghostKnown.length)];
+      const [recipe] = await db
+        .select({ id: recipesTable.id, name: recipesTable.name, tier: recipesTable.tier })
+        .from(recipesTable)
+        .where(eq(recipesTable.id, Number(picked.recipeId)))
+        .limit(1);
+
+      if (recipe) {
+        await db.insert(ghostLegacyTable).values({
+          ghostId: ghost.id,
+          ghostName: ghost.name,
+          dropType: "recipe",
+          dropName: recipe.name,
+          dropReference: String(recipe.id),
+        });
+        await db.insert(worldEventsTable).values({
+          type: "ghost_legacy",
+          message: `The ghost of ${ghost.name} has retired and left behind the recipe [${recipe.name}] in the world legacy pool.`,
+          playerName: ghost.name,
+          zone: ghost.zone,
+          importance: 6,
+          tick,
+        });
+      }
+      return;
+    }
+  }
+
+  // ~30% chance: leave behind a gear item
+  if (roll < 0.67) {
+    const gearSlots = Object.values((ghost.gear as Record<string, string>) ?? {}).filter(Boolean);
+    if (gearSlots.length > 0) {
+      const itemId = gearSlots[Math.floor(Math.random() * gearSlots.length)];
+      const item = getItemById(itemId);
+      const dropName = item?.name ?? itemId;
+      await db.insert(ghostLegacyTable).values({
+        ghostId: ghost.id,
+        ghostName: ghost.name,
+        dropType: "item",
+        dropName,
+        dropReference: itemId,
+      });
+      await db.insert(worldEventsTable).values({
+        type: "ghost_legacy",
+        message: `The ghost of ${ghost.name} has retired and left behind [${dropName}] in the world legacy pool.`,
+        playerName: ghost.name,
+        zone: ghost.zone,
+        importance: 5,
+        tick,
+      });
+    }
+  }
+  // ~33% chance: no drop (ghost retires quietly)
+}
+
 // ─── Main simulation tick ─────────────────────────────────────────────────────
 
 export async function tickGhostSimulation(): Promise<void> {
@@ -1970,6 +2101,11 @@ export async function tickGhostSimulation(): Promise<void> {
         await db.delete(worldPlayersTable).where(eq(worldPlayersTable.id, player.id)).catch((e) => { console.error("[Ghost] Failed to delete retired ghost:", e); });
         await db.delete(ghostDungeonClearsTable).where(eq(ghostDungeonClearsTable.ghostId, player.id)).catch((e) => { console.error("[Ghost] Failed to delete dungeon clears for retired ghost:", e); });
         await db.delete(ghostRaidClearsTable).where(eq(ghostRaidClearsTable.ghostId, player.id)).catch((e) => { console.error("[Ghost] Failed to delete raid clears for retired ghost:", e); });
+
+        // ── Phase 3: Ghost Legacy Drop ──────────────────────────────────────
+        // Determine what the ghost leaves behind (item, recipe, or OoaK recipe).
+        await generateGhostLegacyDrop(player, tick).catch((e) => { console.error("[Ghost] Failed to generate legacy drop:", e); });
+
         await db.insert(worldEventsTable).values({
           type: "ghost_retirement",
           message: `${player.name} has fought their last battle after 500 deaths — their legacy lives on!`,

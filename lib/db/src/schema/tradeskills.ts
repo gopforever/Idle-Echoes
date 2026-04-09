@@ -34,7 +34,22 @@ export const recipesTable = pgTable("recipes", {
   acquisitionType: text("acquisition_type").notNull().default("vendor"),
   vendorCost: integer("vendor_cost"),
   isOoak: boolean("is_ooak").notNull().default(false),
+  /** For OoaK recipes: the userId of the character who claimed it, or null if unclaimed. */
+  claimedBy: text("claimed_by"),
   spriteId: text("sprite_id"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const ghostLegacyTable = pgTable("ghost_legacy", {
+  id: serial("id").primaryKey(),
+  ghostId: integer("ghost_id").notNull(),
+  ghostName: text("ghost_name").notNull(),
+  /** "item" | "recipe" | "ooak_recipe" */
+  dropType: text("drop_type").notNull(),
+  /** Item/recipe name or OoaK recipe name */
+  dropName: text("drop_name").notNull(),
+  /** For recipes: the DB recipe id. For items: the itemId. */
+  dropReference: text("drop_reference"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -51,3 +66,4 @@ export const craftQueueTable = pgTable("craft_queue", {
 
 export type Recipe = typeof recipesTable.$inferSelect;
 export type CraftQueue = typeof craftQueueTable.$inferSelect;
+export type GhostLegacy = typeof ghostLegacyTable.$inferSelect;
