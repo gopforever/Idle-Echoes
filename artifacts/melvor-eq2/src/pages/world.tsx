@@ -22,7 +22,7 @@ import { apiUrl } from "@/lib/api";
 import {
   Globe2, Users, Sword, Coins, Trophy, ScrollText,
   Zap, Crown, Star, Shield, Map as MapIcon, RefreshCw, TrendingUp, Skull, MessageSquare,
-  UserPlus, UserMinus, BookOpen, Loader2,
+  UserPlus, UserMinus, BookOpen, Loader2, Feather,
 } from "lucide-react";
 import { useRealtimeWorldEvents } from "@/hooks/use-realtime-world";
 import { useToast } from "@/hooks/use-toast";
@@ -96,6 +96,85 @@ function GhostQuote({ playerName }: { playerName: string }) {
       <MessageSquare className="w-2.5 h-2.5 inline mr-0.5 opacity-60" />
       &ldquo;{quote}&rdquo;
     </p>
+  );
+}
+
+// ─── Chronicle of Norrath Card ───────────────────────────────────────────────
+
+interface ChronicleData {
+  text: string;
+  generatedAt: string;
+  cached: boolean;
+}
+
+function NorrathChronicleCard() {
+  const [data, setData] = React.useState<ChronicleData | null>(null);
+  const [loading, setLoading] = React.useState(false);
+  const [lastFetched, setLastFetched] = React.useState<number | null>(null);
+
+  const fetchChronicle = React.useCallback((force = false) => {
+    // Don't re-fetch if cached entry is less than 10 minutes old (unless forced)
+    if (!force && lastFetched && Date.now() - lastFetched < 10 * 60 * 1000) return;
+    setLoading(true);
+    fetch("/api/world/chronicle")
+      .then(r => r.json())
+      .then((d: ChronicleData) => {
+        setData(d);
+        setLastFetched(Date.now());
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [lastFetched]);
+
+  React.useEffect(() => {
+    fetchChronicle();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const timeAgo = data
+    ? (() => {
+        const mins = Math.floor((Date.now() - new Date(data.generatedAt).getTime()) / 60000);
+        if (mins < 1) return "just now";
+        if (mins < 60) return `${mins}m ago`;
+        return `${Math.floor(mins / 60)}h ago`;
+      })()
+    : null;
+
+  return (
+    <div className="border border-amber-900/40 bg-gradient-to-br from-amber-950/20 via-slate-900/60 to-slate-900/80 rounded-xl p-4">
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="text-sm font-semibold text-amber-300 flex items-center gap-1.5">
+          <Feather className="w-3.5 h-3.5 text-amber-400/80" />
+          Chronicle of Norrath
+        </h3>
+        <div className="flex items-center gap-2">
+          {timeAgo && (
+            <span className="text-[10px] text-slate-500">{timeAgo}</span>
+          )}
+          <button
+            onClick={() => fetchChronicle(true)}
+            disabled={loading}
+            className="p-1 rounded text-slate-500 hover:text-amber-400 transition-colors disabled:opacity-40"
+            title="Refresh chronicle"
+          >
+            <RefreshCw className={cn("w-3 h-3", loading && "animate-spin")} />
+          </button>
+        </div>
+      </div>
+      {loading && !data ? (
+        <div className="space-y-2">
+          <Skeleton className="h-3 w-full bg-slate-800/60 rounded" />
+          <Skeleton className="h-3 w-5/6 bg-slate-800/60 rounded" />
+          <Skeleton className="h-3 w-4/5 bg-slate-800/60 rounded" />
+        </div>
+      ) : data ? (
+        <p className="text-xs text-amber-100/75 leading-relaxed italic font-serif">
+          {data.text}
+        </p>
+      ) : (
+        <p className="text-xs text-slate-600 italic">The Chronicle Keeper's quill rests…</p>
+      )}
+    </div>
   );
 }
 
@@ -1074,6 +1153,9 @@ export default function WorldPage() {
 
         {/* ── World Tab ── */}
         <TabsContent value="world" className="mt-4 space-y-5">
+          {/* ── Chronicle of Norrath ── */}
+          <NorrathChronicleCard />
+
           {/* ── World Stats ── */}
           {statsLoading ? (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
