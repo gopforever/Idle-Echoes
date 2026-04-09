@@ -985,6 +985,19 @@ paths:
               schema:
                 $ref: "#/components/schemas/PlayerQuoteResponse"
 
+  /world/chronicle:
+    get:
+      operationId: getWorldChronicle
+      tags: [gm]
+      summary: Get the AI-generated Chronicle of Norrath (cached up to 2 hours)
+      responses:
+        "200":
+          description: Chronicle narrative
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorldChronicleResponse"
+
   /combat/boss-narration/{bossId}:
     get:
       operationId: getBossNarration
@@ -2631,6 +2644,14 @@ components:
         bossId: { type: string }
         phase: { type: string }
       required: [narration, cached, bossId, phase]
+
+    WorldChronicleResponse:
+      type: object
+      properties:
+        text: { type: string, description: "AI-generated Chronicle of Norrath narrative" }
+        generatedAt: { type: string, format: date-time }
+        cached: { type: boolean }
+      required: [text, generatedAt, cached]
 
     # ─── GAME SUMMARY ────────────────────────────────────────────────────────
     GameSummary:

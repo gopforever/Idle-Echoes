@@ -7,7 +7,7 @@ import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
 import { questsTable, charactersTable, factionsTable, loreCacheTable, inventoryTable, bossEncountersTable, worldPlayersTable, worldEventsTable } from "@workspace/db/schema";
 import type { QuestObjective } from "@workspace/db/schema";
-import { eq, desc, and, sql } from "drizzle-orm";
+import { eq, desc, and, sql, gte } from "drizzle-orm";
 import { openai } from "@workspace/integrations-openai-ai-server";
 import { getOrCreateCharacter } from "./character.js";
 import { progressTalkObjectives } from "../lib/questProgress.js";
@@ -22,6 +22,9 @@ const router: IRouter = Router();
 const bossNarrationCache = new Map<string, string>();
 const bossClosingLineCache = new Map<string, string>();
 const ghostQuoteCache = new Map<string, string>();
+// Chronicle cache: one entry, refreshed every 2 hours
+let chronicleCache: { text: string; generatedAt: number } | null = null;
+const CHRONICLE_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours
 // Note: loreCache is DB-backed (loreCacheTable). No in-memory map needed.
 
 // ─── Helper: safe OpenAI call with fallback ─────────────────────────────────
@@ -399,6 +402,65 @@ Make it feel authentic to their race/class archetype. No quotation marks around 
   } catch (err) {
     req.log.error({ err }, "Error generating player quote");
     res.status(500).json({ error: "Failed to generate quote" });
+  }
+});
+
+// ─── GET /world/chronicle ────────────────────────────────────────────────────
+// Returns an AI-generated "Chronicle of Norrath" narrative based on recent
+// world events and top adventurers. Cached for 2 hours to avoid excess AI calls.
+router.get("/world/chronicle", async (req, res) => {
+  try {
+    // Serve from cache if still fresh
+    if (chronicleCache && Date.now() - chronicleCache.generatedAt < CHRONICLE_TTL_MS) {
+      res.json({ text: chronicleCache.text, generatedAt: new Date(chronicleCache.generatedAt).toISOString(), cached: true });
+      return;
+    }
+
+    // Fetch the last 20 world events of importance ≥ 3
+    const recentEvents = await db
+      .select({ message: worldEventsTable.message, zone: worldEventsTable.zone, type: worldEventsTable.type, importance: worldEventsTable.importance })
+      .from(worldEventsTable)
+      .where(gte(worldEventsTable.importance, 3))
+      .orderBy(desc(worldEventsTable.createdAt))
+      .limit(20);
+
+    // Fetch top 5 ghost adventurers by kill count
+    const leaderboard = await db
+      .select({ name: worldPlayersTable.name, level: worldPlayersTable.level, class: worldPlayersTable.class, killCount: worldPlayersTable.killCount, zone: worldPlayersTable.zone })
+      .from(worldPlayersTable)
+      .orderBy(desc(worldPlayersTable.killCount))
+      .limit(5);
+
+    const eventSummary = recentEvents.length > 0
+      ? recentEvents.map(e => `- ${e.message}${e.zone ? ` (${e.zone})` : ""}`).join("\n")
+      : "No major events recorded recently.";
+
+    const leaderboardSummary = leaderboard.length > 0
+      ? leaderboard.map(p => `${p.name} (Level ${p.level} ${p.class ?? "Adventurer"}, ${p.killCount} kills, last seen in ${p.zone ?? "unknown lands"})`).join("; ")
+      : "No known heroes at this time.";
+
+    const text = await aiComplete(
+      [
+        {
+          role: "system",
+          content: "You are the Chronicle Keeper of Norrath, a mystical scribe who records the epic deeds of adventurers in the world of Idle Echoes (an EverQuest 2 inspired realm). Write in a dramatic, epic fantasy tone. Be specific about character names and their deeds. Do not use bullet points or lists — write flowing, vivid prose only. 4-6 sentences.",
+        },
+        {
+          role: "user",
+          content: `Write a Chronicle of Norrath entry summarizing these recent events:\n\n${eventSummary}\n\nMost celebrated adventurers:\n${leaderboardSummary}`,
+        },
+      ],
+      "gpt-4o-mini",
+      280,
+    );
+
+    chronicleCache = { text, generatedAt: Date.now() };
+    res.json({ text, generatedAt: new Date(chronicleCache.generatedAt).toISOString(), cached: false });
+  } catch (err) {
+    req.log.error({ err }, "Error generating world chronicle");
+    // Return a fallback flavour text rather than a 500 if AI fails
+    const fallback = "The Chronicle Keeper rests their quill. The scribes of Norrath whisper that great deeds are afoot, though the full tale has yet to be written.";
+    res.json({ text: fallback, generatedAt: new Date().toISOString(), cached: false });
   }
 });
 

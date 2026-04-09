@@ -160,6 +160,198 @@ export const APPRENTICE_RECIPES: RecipeSeed[] = [
       sellPrice: 500, quantity: 1, xpGained: 420, spriteId: "weapon_axe",
     },
   },
+  // ── Wands (Mage/Caster) ──────────────────────────────────────────────────────
+  {
+    name: "Iron Novice Wand", tradeskillClass: "weaponsmith", tier: "apprentice",
+    minSkill: 2, minLevel: 10, craftTimeSeconds: 45, acquisitionType: "vendor", vendorCost: 10,
+    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_linen_bolt", quantity: 1 }],
+    output: {
+      name: "Iron Novice Wand", type: "weapon", slot: "primary", rarity: "common",
+      description: "A simple wand tipped with iron, favoured by beginning spellcasters.",
+      stats: { weaponDamageMin: 6, weaponDamageMax: 12, weaponDelay: 1.6, attackRating: 8, intelligence: 4, wisdom: 2 },
+      sellPrice: 18, quantity: 1, xpGained: 35, spriteId: "weapon_wand",
+    },
+  },
+  {
+    name: "Steel Arcanist Wand", tradeskillClass: "weaponsmith", tier: "apprentice",
+    minSkill: 14, minLevel: 22, craftTimeSeconds: 120, acquisitionType: "vendor", vendorCost: 40,
+    ingredients: [{ itemId: "steel_bar", quantity: 2 }, { itemId: "ts_silk_cloth", quantity: 1 }],
+    output: {
+      name: "Steel Arcanist Wand", type: "weapon", slot: "primary", rarity: "uncommon",
+      description: "A forged steel wand etched with focusing runes for mid-tier casters.",
+      stats: { weaponDamageMin: 14, weaponDamageMax: 24, weaponDelay: 1.5, attackRating: 18, intelligence: 10, wisdom: 5, spellCritChance: 2 },
+      sellPrice: 80, quantity: 1, xpGained: 110, spriteId: "weapon_wand",
+    },
+  },
+  {
+    name: "Mithril Runewand", tradeskillClass: "weaponsmith", tier: "apprentice",
+    minSkill: 28, minLevel: 34, craftTimeSeconds: 300, acquisitionType: "vendor", vendorCost: 110,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_silk_cloth", quantity: 1 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Mithril Runewand", type: "weapon", slot: "primary", rarity: "rare",
+      description: "A wand tipped with mithril that hums with channelled spell energy.",
+      stats: { weaponDamageMin: 28, weaponDamageMax: 46, weaponDelay: 1.4, attackRating: 38, intelligence: 22, wisdom: 14, spellCritChance: 5, spellDamage: 10 },
+      sellPrice: 480, quantity: 1, xpGained: 240, spriteId: "weapon_wand",
+    },
+  },
+  {
+    name: "Adamantine Sorcerer's Wand", tradeskillClass: "weaponsmith", tier: "apprentice",
+    minSkill: 38, minLevel: 42, craftTimeSeconds: 540, acquisitionType: "vendor", vendorCost: 190,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_moonweave", quantity: 1 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Adamantine Sorcerer's Wand", type: "weapon", slot: "primary", rarity: "legendary",
+      description: "A wand forged from adamantine that crackles with barely-contained arcane power.",
+      stats: { weaponDamageMin: 52, weaponDamageMax: 82, weaponDelay: 1.4, attackRating: 70, intelligence: 38, wisdom: 24, spellCritChance: 9, spellDamage: 22 },
+      sellPrice: 1600, quantity: 1, xpGained: 400, spriteId: "weapon_wand",
+    },
+  },
+  // ── Scepters (Priest/Healer) ──────────────────────────────────────────────────
+  {
+    name: "Iron Confessor's Scepter", tradeskillClass: "weaponsmith", tier: "apprentice",
+    minSkill: 2, minLevel: 10, craftTimeSeconds: 50, acquisitionType: "vendor", vendorCost: 10,
+    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_linen_bolt", quantity: 1 }],
+    output: {
+      name: "Iron Confessor's Scepter", type: "weapon", slot: "primary", rarity: "common",
+      description: "A blunt iron scepter used by novice priests to focus healing prayers.",
+      stats: { weaponDamageMin: 5, weaponDamageMax: 10, weaponDelay: 1.8, attackRating: 6, wisdom: 5, power: 20 },
+      sellPrice: 18, quantity: 1, xpGained: 35, spriteId: "weapon_scepter",
+    },
+  },
+  {
+    name: "Steel Cleric Scepter", tradeskillClass: "weaponsmith", tier: "apprentice",
+    minSkill: 15, minLevel: 22, craftTimeSeconds: 130, acquisitionType: "vendor", vendorCost: 42,
+    ingredients: [{ itemId: "steel_bar", quantity: 2 }, { itemId: "ts_linen_bolt", quantity: 1 }],
+    output: {
+      name: "Steel Cleric Scepter", type: "weapon", slot: "primary", rarity: "uncommon",
+      description: "A blessed steel scepter wielded by mid-tier clerics of Qeynos.",
+      stats: { weaponDamageMin: 12, weaponDamageMax: 20, weaponDelay: 1.8, attackRating: 16, wisdom: 12, power: 45, spellCritChance: 2 },
+      sellPrice: 82, quantity: 1, xpGained: 115, spriteId: "weapon_scepter",
+    },
+  },
+  {
+    name: "Mithril Channeler's Scepter", tradeskillClass: "weaponsmith", tier: "apprentice",
+    minSkill: 28, minLevel: 34, craftTimeSeconds: 300, acquisitionType: "vendor", vendorCost: 112,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_silk_cloth", quantity: 1 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Mithril Channeler's Scepter", type: "weapon", slot: "primary", rarity: "rare",
+      description: "A mithril scepter that resonates with divine healing energy.",
+      stats: { weaponDamageMin: 22, weaponDamageMax: 38, weaponDelay: 1.8, attackRating: 30, wisdom: 26, power: 90, spellCritChance: 4, healBonus: 8 },
+      sellPrice: 500, quantity: 1, xpGained: 245, spriteId: "weapon_scepter",
+    },
+  },
+  {
+    name: "Adamantine High Priest's Scepter", tradeskillClass: "weaponsmith", tier: "apprentice",
+    minSkill: 38, minLevel: 42, craftTimeSeconds: 540, acquisitionType: "vendor", vendorCost: 192,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Adamantine High Priest's Scepter", type: "weapon", slot: "primary", rarity: "legendary",
+      description: "A scepter of adamantine blessed by the highest orders of the Templar church.",
+      stats: { weaponDamageMin: 42, weaponDamageMax: 70, weaponDelay: 1.8, attackRating: 56, wisdom: 44, power: 160, spellCritChance: 7, healBonus: 18 },
+      sellPrice: 1700, quantity: 1, xpGained: 402, spriteId: "weapon_scepter",
+    },
+  },
+  // ── Maces (Fighter/Paladin) ───────────────────────────────────────────────────
+  {
+    name: "Iron Flanged Mace", tradeskillClass: "weaponsmith", tier: "apprentice",
+    minSkill: 4, minLevel: 12, craftTimeSeconds: 80, acquisitionType: "vendor", vendorCost: 14,
+    ingredients: [{ itemId: "iron_ore", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Iron Flanged Mace", type: "weapon", slot: "primary", rarity: "uncommon",
+      description: "A heavy flanged mace that crushes through even solid plate.",
+      stats: { weaponDamageMin: 10, weaponDamageMax: 18, weaponDelay: 2.2, attackRating: 18, strength: 6, stamina: 4 },
+      sellPrice: 30, quantity: 1, xpGained: 55, spriteId: "weapon_mace",
+    },
+  },
+  {
+    name: "Steel War Mace", tradeskillClass: "weaponsmith", tier: "apprentice",
+    minSkill: 16, minLevel: 24, craftTimeSeconds: 160, acquisitionType: "vendor", vendorCost: 50,
+    ingredients: [{ itemId: "steel_bar", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel War Mace", type: "weapon", slot: "primary", rarity: "uncommon",
+      description: "A balanced war mace of tempered steel favoured by crusaders.",
+      stats: { weaponDamageMin: 22, weaponDamageMax: 38, weaponDelay: 2.2, attackRating: 45, strength: 12, stamina: 8 },
+      sellPrice: 120, quantity: 1, xpGained: 130, spriteId: "weapon_mace",
+    },
+  },
+  {
+    name: "Mithril Siege Mace", tradeskillClass: "weaponsmith", tier: "apprentice",
+    minSkill: 27, minLevel: 32, craftTimeSeconds: 270, acquisitionType: "vendor", vendorCost: 90,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Mithril Siege Mace", type: "weapon", slot: "primary", rarity: "rare",
+      description: "A devastating mithril mace used to breach fortifications.",
+      stats: { weaponDamageMin: 40, weaponDamageMax: 65, weaponDelay: 2.3, attackRating: 80, strength: 20, stamina: 14, mitigation: 5 },
+      sellPrice: 520, quantity: 1, xpGained: 220, spriteId: "weapon_mace",
+    },
+  },
+  {
+    name: "Adamantine Judicator's Mace", tradeskillClass: "weaponsmith", tier: "apprentice",
+    minSkill: 37, minLevel: 42, craftTimeSeconds: 560, acquisitionType: "vendor", vendorCost: 195,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Adamantine Judicator's Mace", type: "weapon", slot: "primary", rarity: "legendary",
+      description: "A holy mace of adamantine inlaid with divine scripture.",
+      stats: { weaponDamageMin: 70, weaponDamageMax: 108, weaponDelay: 2.2, attackRating: 140, strength: 32, stamina: 22, mitigation: 10 },
+      sellPrice: 1800, quantity: 1, xpGained: 410, spriteId: "weapon_mace",
+    },
+  },
+  // ── Fist Weapons (Monk/Bruiser) ───────────────────────────────────────────────
+  {
+    name: "Iron Knuckle Wraps", tradeskillClass: "weaponsmith", tier: "apprentice",
+    minSkill: 3, minLevel: 10, craftTimeSeconds: 60, acquisitionType: "vendor", vendorCost: 10,
+    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_rough_hide", quantity: 1 }],
+    output: {
+      name: "Iron Knuckle Wraps", type: "weapon", slot: "primary", rarity: "uncommon",
+      description: "Iron-plated wraps that protect the fists and amplify striking force.",
+      stats: { weaponDamageMin: 8, weaponDamageMax: 15, weaponDelay: 1.6, attackRating: 14, strength: 5, agility: 6 },
+      sellPrice: 25, quantity: 1, xpGained: 50, spriteId: "weapon_fist",
+    },
+  },
+  {
+    name: "Mithril Monk's Wraps", tradeskillClass: "weaponsmith", tier: "apprentice",
+    minSkill: 27, minLevel: 32, craftTimeSeconds: 260, acquisitionType: "vendor", vendorCost: 90,
+    ingredients: [{ itemId: "mithril_ore", quantity: 1 }, { itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Mithril Monk's Wraps", type: "weapon", slot: "primary", rarity: "rare",
+      description: "Woven spidersilk reinforced with mithril rings — for the disciplined monk.",
+      stats: { weaponDamageMin: 30, weaponDamageMax: 50, weaponDelay: 1.5, attackRating: 65, strength: 18, agility: 20, critChance: 5, haste: 4 },
+      sellPrice: 490, quantity: 1, xpGained: 215, spriteId: "weapon_fist",
+    },
+  },
+  {
+    name: "Adamantine Iron Fists", tradeskillClass: "weaponsmith", tier: "apprentice",
+    minSkill: 37, minLevel: 42, craftTimeSeconds: 540, acquisitionType: "vendor", vendorCost: 190,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Adamantine Iron Fists", type: "weapon", slot: "primary", rarity: "legendary",
+      description: "Gauntlets shaped into pointed fists from solid adamantine — brutal and precise.",
+      stats: { weaponDamageMin: 60, weaponDamageMax: 95, weaponDelay: 1.5, attackRating: 120, strength: 30, agility: 26, critChance: 8, haste: 6 },
+      sellPrice: 1750, quantity: 1, xpGained: 398, spriteId: "weapon_fist",
+    },
+  },
+  // ── Crossbows (Scout/Rogue) ───────────────────────────────────────────────────
+  {
+    name: "Steel Crossbow", tradeskillClass: "weaponsmith", tier: "apprentice",
+    minSkill: 13, minLevel: 20, craftTimeSeconds: 130, acquisitionType: "vendor", vendorCost: 38,
+    ingredients: [{ itemId: "steel_bar", quantity: 3 }, { itemId: "ts_rough_hide", quantity: 1 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel Crossbow", type: "weapon", slot: "ranged", rarity: "uncommon",
+      description: "A reliable steel crossbow capable of punching through light armor.",
+      stats: { weaponDamageMin: 18, weaponDamageMax: 32, weaponDelay: 2.8, attackRating: 28, agility: 8 },
+      sellPrice: 80, quantity: 1, xpGained: 105, spriteId: "weapon_crossbow",
+    },
+  },
+  {
+    name: "Mithril Repeating Crossbow", tradeskillClass: "weaponsmith", tier: "apprentice",
+    minSkill: 29, minLevel: 36, craftTimeSeconds: 330, acquisitionType: "vendor", vendorCost: 120,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Mithril Repeating Crossbow", type: "weapon", slot: "ranged", rarity: "rare",
+      description: "A precision mithril crossbow with a rapid-fire repeating mechanism.",
+      stats: { weaponDamageMin: 42, weaponDamageMax: 68, weaponDelay: 2.6, attackRating: 75, agility: 20, critChance: 6 },
+      sellPrice: 600, quantity: 1, xpGained: 250, spriteId: "weapon_crossbow",
+    },
+  },
 
   // ════ ARMORER ════════════════════════════════════════════════════════════════
   {
@@ -261,6 +453,231 @@ export const APPRENTICE_RECIPES: RecipeSeed[] = [
       sellPrice: 650, quantity: 1, xpGained: 450, spriteId: "chest_plate",
     },
   },
+  // ── Shields ──────────────────────────────────────────────────────────────────
+  {
+    name: "Iron Bulwark Shield", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 3, minLevel: 10, craftTimeSeconds: 60, acquisitionType: "vendor", vendorCost: 12,
+    ingredients: [{ itemId: "iron_ore", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Iron Bulwark Shield", type: "armor", slot: "secondary", rarity: "common", armorType: "plate",
+      description: "A sturdy iron shield fashioned in the bulwark style, preferred by city guards.",
+      stats: { defenseRating: 20, stamina: 8, mitigation: 15 },
+      sellPrice: 22, quantity: 1, xpGained: 45, spriteId: "shield_iron",
+    },
+  },
+  {
+    name: "Steel Round Shield", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 15, minLevel: 22, craftTimeSeconds: 150, acquisitionType: "vendor", vendorCost: 45,
+    ingredients: [{ itemId: "steel_bar", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel Round Shield", type: "armor", slot: "secondary", rarity: "uncommon", armorType: "plate",
+      description: "A round steel shield banded with reinforcing strips.",
+      stats: { defenseRating: 40, stamina: 15, mitigation: 28, health: 25 },
+      sellPrice: 95, quantity: 1, xpGained: 130, spriteId: "shield_iron",
+    },
+  },
+  {
+    name: "Mithril Kite Shield", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 26, minLevel: 30, craftTimeSeconds: 270, acquisitionType: "vendor", vendorCost: 90,
+    ingredients: [{ itemId: "mithril_ore", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Mithril Kite Shield", type: "armor", slot: "secondary", rarity: "rare", armorType: "plate",
+      description: "A kite-shaped mithril shield that catches blows at optimal angles.",
+      stats: { defenseRating: 72, stamina: 26, mitigation: 48, health: 50, avoidance: 3 },
+      sellPrice: 240, quantity: 1, xpGained: 210, spriteId: "shield_mithril",
+    },
+  },
+  {
+    name: "Adamantine Tower Shield", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 38, minLevel: 42, craftTimeSeconds: 580, acquisitionType: "vendor", vendorCost: 210,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 4 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Adamantine Tower Shield", type: "armor", slot: "secondary", rarity: "legendary", armorType: "plate",
+      description: "An enormous shield of adamantine that can turn aside siege weapons.",
+      stats: { defenseRating: 160, stamina: 42, mitigation: 120, health: 160, strength: 10 },
+      sellPrice: 2200, quantity: 1, xpGained: 410, spriteId: "shield_legendary",
+    },
+  },
+  // ── Gauntlets (hands) ─────────────────────────────────────────────────────────
+  {
+    name: "Iron Gauntlets", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 6, minLevel: 12, craftTimeSeconds: 70, acquisitionType: "vendor", vendorCost: 12,
+    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Iron Gauntlets", type: "armor", slot: "hands", rarity: "common", armorType: "plate",
+      description: "Heavy iron gauntlets that protect the hands without sacrificing grip.",
+      stats: { defenseRating: 10, stamina: 4, haste: 1 },
+      sellPrice: 16, quantity: 1, xpGained: 42, spriteId: "hands_plate",
+    },
+  },
+  {
+    name: "Steel Gauntlets", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 16, minLevel: 22, craftTimeSeconds: 140, acquisitionType: "vendor", vendorCost: 42,
+    ingredients: [{ itemId: "steel_bar", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel Gauntlets", type: "armor", slot: "hands", rarity: "uncommon", armorType: "plate",
+      description: "Well-crafted steel gauntlets with articulated finger plates.",
+      stats: { defenseRating: 22, stamina: 10, haste: 3, critChance: 1 },
+      sellPrice: 78, quantity: 1, xpGained: 110, spriteId: "hands_plate",
+    },
+  },
+  {
+    name: "Mithril Gauntlets", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 26, minLevel: 32, craftTimeSeconds: 250, acquisitionType: "vendor", vendorCost: 88,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Mithril Gauntlets", type: "armor", slot: "hands", rarity: "rare", armorType: "plate",
+      description: "Gleaming mithril gauntlets offering exceptional protection and dexterity.",
+      stats: { defenseRating: 42, stamina: 20, haste: 5, critChance: 2, attackRating: 18 },
+      sellPrice: 540, quantity: 1, xpGained: 210, spriteId: "hands_plate",
+    },
+  },
+  {
+    name: "Adamantine Gauntlets", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 37, minLevel: 42, craftTimeSeconds: 490, acquisitionType: "vendor", vendorCost: 185,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Adamantine Gauntlets", type: "armor", slot: "hands", rarity: "legendary", armorType: "plate",
+      description: "The pinnacle of hand armour — these gauntlets can crush stone.",
+      stats: { defenseRating: 68, stamina: 36, haste: 8, critChance: 4, attackRating: 32 },
+      sellPrice: 1500, quantity: 1, xpGained: 385, spriteId: "hands_plate",
+    },
+  },
+  // ── Sabatons (feet) ───────────────────────────────────────────────────────────
+  {
+    name: "Iron Sabatons", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 7, minLevel: 12, craftTimeSeconds: 70, acquisitionType: "vendor", vendorCost: 12,
+    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Iron Sabatons", type: "armor", slot: "feet", rarity: "common", armorType: "plate",
+      description: "Heavy iron foot armor that protects from ankle to toe.",
+      stats: { defenseRating: 8, stamina: 3, agility: 2 },
+      sellPrice: 14, quantity: 1, xpGained: 40, spriteId: "feet_plate",
+    },
+  },
+  {
+    name: "Steel Sabatons", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 17, minLevel: 24, craftTimeSeconds: 145, acquisitionType: "vendor", vendorCost: 44,
+    ingredients: [{ itemId: "steel_bar", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel Sabatons", type: "armor", slot: "feet", rarity: "uncommon", armorType: "plate",
+      description: "Articulated steel foot armor that balances protection with mobility.",
+      stats: { defenseRating: 20, stamina: 8, agility: 6, avoidance: 2 },
+      sellPrice: 76, quantity: 1, xpGained: 112, spriteId: "feet_plate",
+    },
+  },
+  {
+    name: "Mithril Sabatons", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 27, minLevel: 32, craftTimeSeconds: 255, acquisitionType: "vendor", vendorCost: 88,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Mithril Sabatons", type: "armor", slot: "feet", rarity: "rare", armorType: "plate",
+      description: "Lightweight mithril foot armor that lets the wearer move swiftly.",
+      stats: { defenseRating: 36, stamina: 16, agility: 14, avoidance: 4, haste: 3 },
+      sellPrice: 530, quantity: 1, xpGained: 212, spriteId: "feet_plate",
+    },
+  },
+  {
+    name: "Adamantine Sabatons", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 37, minLevel: 42, craftTimeSeconds: 490, acquisitionType: "vendor", vendorCost: 185,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Adamantine Sabatons", type: "armor", slot: "feet", rarity: "legendary", armorType: "plate",
+      description: "Boots of adamantine that feel as light as leather despite their strength.",
+      stats: { defenseRating: 56, stamina: 28, agility: 22, avoidance: 6, haste: 5 },
+      sellPrice: 1480, quantity: 1, xpGained: 383, spriteId: "feet_plate",
+    },
+  },
+  // ── Vambraces (wrists) ────────────────────────────────────────────────────────
+  {
+    name: "Iron Vambraces", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 8, minLevel: 14, craftTimeSeconds: 65, acquisitionType: "vendor", vendorCost: 13,
+    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Iron Vambraces", type: "armor", slot: "wrists", rarity: "common", armorType: "plate",
+      description: "Simple iron bracers that guard the forearms in combat.",
+      stats: { defenseRating: 8, strength: 3, stamina: 2 },
+      sellPrice: 13, quantity: 1, xpGained: 38, spriteId: "wrists_plate",
+    },
+  },
+  {
+    name: "Steel Vambraces", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 18, minLevel: 26, craftTimeSeconds: 148, acquisitionType: "vendor", vendorCost: 46,
+    ingredients: [{ itemId: "steel_bar", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel Vambraces", type: "armor", slot: "wrists", rarity: "uncommon", armorType: "plate",
+      description: "Reinforced steel vambraces worn by seasoned fighters.",
+      stats: { defenseRating: 18, strength: 8, attackRating: 10 },
+      sellPrice: 72, quantity: 1, xpGained: 114, spriteId: "wrists_plate",
+    },
+  },
+  {
+    name: "Mithril Vambraces", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 28, minLevel: 34, craftTimeSeconds: 260, acquisitionType: "vendor", vendorCost: 90,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Mithril Vambraces", type: "armor", slot: "wrists", rarity: "rare", armorType: "plate",
+      description: "Lightweight mithril bracers etched with strengthening runes.",
+      stats: { defenseRating: 32, strength: 16, attackRating: 24, critChance: 2 },
+      sellPrice: 520, quantity: 1, xpGained: 214, spriteId: "wrists_plate",
+    },
+  },
+  {
+    name: "Adamantine Vambraces", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 37, minLevel: 42, craftTimeSeconds: 490, acquisitionType: "vendor", vendorCost: 184,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Adamantine Vambraces", type: "armor", slot: "wrists", rarity: "legendary", armorType: "plate",
+      description: "Vambraces of adamantine that protect the wrists while channelling striking force.",
+      stats: { defenseRating: 50, strength: 26, attackRating: 38, critChance: 4 },
+      sellPrice: 1460, quantity: 1, xpGained: 382, spriteId: "wrists_plate",
+    },
+  },
+  // ── Plate Belt (waist) ────────────────────────────────────────────────────────
+  {
+    name: "Iron Plate Belt", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 9, minLevel: 14, craftTimeSeconds: 65, acquisitionType: "vendor", vendorCost: 13,
+    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Iron Plate Belt", type: "armor", slot: "waist", rarity: "common", armorType: "plate",
+      description: "A wide iron belt that provides core protection.",
+      stats: { defenseRating: 8, stamina: 5, strength: 2 },
+      sellPrice: 14, quantity: 1, xpGained: 38, spriteId: "waist_plate",
+    },
+  },
+  {
+    name: "Steel Plate Belt", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 19, minLevel: 26, craftTimeSeconds: 148, acquisitionType: "vendor", vendorCost: 46,
+    ingredients: [{ itemId: "steel_bar", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel Plate Belt", type: "armor", slot: "waist", rarity: "uncommon", armorType: "plate",
+      description: "A reinforced steel belt that doubles as a brace against heavy blows.",
+      stats: { defenseRating: 18, stamina: 12, health: 20, strength: 5 },
+      sellPrice: 74, quantity: 1, xpGained: 114, spriteId: "waist_plate",
+    },
+  },
+  {
+    name: "Mithril Plate Belt", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 28, minLevel: 34, craftTimeSeconds: 258, acquisitionType: "vendor", vendorCost: 90,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Mithril Plate Belt", type: "armor", slot: "waist", rarity: "rare", armorType: "plate",
+      description: "A gleaming mithril belt that braces the torso.",
+      stats: { defenseRating: 30, stamina: 20, health: 35, strength: 10 },
+      sellPrice: 520, quantity: 1, xpGained: 212, spriteId: "waist_plate",
+    },
+  },
+  {
+    name: "Adamantine Plate Belt", tradeskillClass: "armorer", tier: "apprentice",
+    minSkill: 37, minLevel: 42, craftTimeSeconds: 490, acquisitionType: "vendor", vendorCost: 184,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Adamantine Plate Belt", type: "armor", slot: "waist", rarity: "legendary", armorType: "plate",
+      description: "An adamantine belt that doubles as a piece of torso plate — unbreakable.",
+      stats: { defenseRating: 46, stamina: 32, health: 55, mitigation: 10 },
+      sellPrice: 1460, quantity: 1, xpGained: 382, spriteId: "waist_plate",
+    },
+  },
 
   // ════ TAILOR ═════════════════════════════════════════════════════════════════
   {
@@ -360,6 +777,407 @@ export const APPRENTICE_RECIPES: RecipeSeed[] = [
       description: "Flowing leggings of moonweave that ripple with arcane power.",
       stats: { intelligence: 50, wisdom: 36, spellCritChance: 8 },
       sellPrice: 380, quantity: 1, xpGained: 360, spriteId: "legs_cloth",
+    },
+  },
+  // ── Leather/Cloth Gloves (hands) ──────────────────────────────────────────────
+  {
+    name: "Rough Leather Gloves", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 6, minLevel: 12, craftTimeSeconds: 70, acquisitionType: "vendor", vendorCost: 12,
+    ingredients: [{ itemId: "ts_rough_hide", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Rough Leather Gloves", type: "armor", slot: "hands", rarity: "common", armorType: "leather",
+      description: "Thick leather gloves that protect the hands in combat.",
+      stats: { agility: 5, haste: 2, defenseRating: 6 },
+      sellPrice: 14, quantity: 1, xpGained: 38, spriteId: "hands_leather",
+    },
+  },
+  {
+    name: "Supple Leather Scout Gloves", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 19, minLevel: 25, craftTimeSeconds: 140, acquisitionType: "vendor", vendorCost: 42,
+    ingredients: [{ itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Supple Leather Scout Gloves", type: "armor", slot: "hands", rarity: "uncommon", armorType: "leather",
+      description: "Fitted leather gloves for scouts and rogues that leave the fingertips free.",
+      stats: { agility: 10, critChance: 2, haste: 3, attackRating: 8 },
+      sellPrice: 72, quantity: 1, xpGained: 110, spriteId: "hands_leather",
+    },
+  },
+  {
+    name: "Spidersilk Ranger Gloves", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 29, minLevel: 35, craftTimeSeconds: 290, acquisitionType: "vendor", vendorCost: 105,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Spidersilk Ranger Gloves", type: "armor", slot: "hands", rarity: "rare", armorType: "leather",
+      description: "Ranger gloves reinforced with spidersilk weave for superior grip and protection.",
+      stats: { agility: 18, critChance: 4, haste: 5, attackRating: 16 },
+      sellPrice: 520, quantity: 1, xpGained: 215, spriteId: "hands_leather",
+    },
+  },
+  {
+    name: "Moonweave Tracker Gloves", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 38, minLevel: 42, craftTimeSeconds: 450, acquisitionType: "vendor", vendorCost: 168,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 1 }, { itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Moonweave Tracker Gloves", type: "armor", slot: "hands", rarity: "legendary", armorType: "leather",
+      description: "Legendary gloves woven from moonweave that move with supernatural speed.",
+      stats: { agility: 30, critChance: 8, haste: 8, attackRating: 28 },
+      sellPrice: 1520, quantity: 1, xpGained: 375, spriteId: "hands_leather",
+    },
+  },
+  {
+    name: "Linen Cloth Gloves", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 4, minLevel: 10, craftTimeSeconds: 55, acquisitionType: "vendor", vendorCost: 9,
+    ingredients: [{ itemId: "ts_linen_bolt", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Linen Cloth Gloves", type: "armor", slot: "hands", rarity: "common", armorType: "cloth",
+      description: "Simple cloth gloves worn by apprentice mages to protect spell-burned fingers.",
+      stats: { intelligence: 5, wisdom: 3 },
+      sellPrice: 10, quantity: 1, xpGained: 32, spriteId: "hands_cloth",
+    },
+  },
+  {
+    name: "Silk Spell Gloves", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 15, minLevel: 22, craftTimeSeconds: 120, acquisitionType: "vendor", vendorCost: 38,
+    ingredients: [{ itemId: "ts_silk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Silk Spell Gloves", type: "armor", slot: "hands", rarity: "uncommon", armorType: "cloth",
+      description: "Thin silk gloves that focus magical energies through the palms.",
+      stats: { intelligence: 10, wisdom: 6, spellCritChance: 2 },
+      sellPrice: 68, quantity: 1, xpGained: 105, spriteId: "hands_cloth",
+    },
+  },
+  {
+    name: "Spidersilk Mage Gloves", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 28, minLevel: 34, craftTimeSeconds: 285, acquisitionType: "vendor", vendorCost: 103,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Spidersilk Mage Gloves", type: "armor", slot: "hands", rarity: "rare", armorType: "cloth",
+      description: "Delicate spidersilk gloves that amplify spell focus and critical chance.",
+      stats: { intelligence: 20, wisdom: 14, spellCritChance: 5, spellDamage: 8 },
+      sellPrice: 510, quantity: 1, xpGained: 212, spriteId: "hands_cloth",
+    },
+  },
+  {
+    name: "Moonweave Arcane Gloves", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 37, minLevel: 42, craftTimeSeconds: 448, acquisitionType: "vendor", vendorCost: 166,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Moonweave Arcane Gloves", type: "armor", slot: "hands", rarity: "legendary", armorType: "cloth",
+      description: "Moonweave gloves that crackle with trapped arcane energy.",
+      stats: { intelligence: 32, wisdom: 22, spellCritChance: 9, spellDamage: 18 },
+      sellPrice: 1500, quantity: 1, xpGained: 372, spriteId: "hands_cloth",
+    },
+  },
+  // ── Leather/Cloth Boots (feet) ────────────────────────────────────────────────
+  {
+    name: "Rough Leather Boots", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 7, minLevel: 12, craftTimeSeconds: 70, acquisitionType: "vendor", vendorCost: 12,
+    ingredients: [{ itemId: "ts_rough_hide", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Rough Leather Boots", type: "armor", slot: "feet", rarity: "common", armorType: "leather",
+      description: "Sturdy leather boots that can take a beating on the road.",
+      stats: { agility: 5, avoidance: 1, defenseRating: 6 },
+      sellPrice: 14, quantity: 1, xpGained: 38, spriteId: "feet_leather",
+    },
+  },
+  {
+    name: "Supple Leather Ranger Boots", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 20, minLevel: 26, craftTimeSeconds: 148, acquisitionType: "vendor", vendorCost: 44,
+    ingredients: [{ itemId: "ts_supple_leather", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Supple Leather Ranger Boots", type: "armor", slot: "feet", rarity: "uncommon", armorType: "leather",
+      description: "Supple boots crafted for rangers who spend days in the field.",
+      stats: { agility: 10, avoidance: 3, haste: 3 },
+      sellPrice: 74, quantity: 1, xpGained: 112, spriteId: "feet_leather",
+    },
+  },
+  {
+    name: "Spidersilk Scout Boots", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 29, minLevel: 36, craftTimeSeconds: 292, acquisitionType: "vendor", vendorCost: 108,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Spidersilk Scout Boots", type: "armor", slot: "feet", rarity: "rare", armorType: "leather",
+      description: "Near-silent boots woven with spidersilk that enhance a scout's mobility.",
+      stats: { agility: 18, avoidance: 5, haste: 5, critChance: 3 },
+      sellPrice: 525, quantity: 1, xpGained: 218, spriteId: "feet_leather",
+    },
+  },
+  {
+    name: "Moonweave Shadowstep Boots", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 38, minLevel: 42, craftTimeSeconds: 452, acquisitionType: "vendor", vendorCost: 169,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 1 }, { itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Moonweave Shadowstep Boots", type: "armor", slot: "feet", rarity: "legendary", armorType: "leather",
+      description: "Boots enchanted with moonweave that allow the wearer to move like a whisper.",
+      stats: { agility: 30, avoidance: 7, haste: 8, critChance: 4 },
+      sellPrice: 1530, quantity: 1, xpGained: 378, spriteId: "feet_leather",
+    },
+  },
+  {
+    name: "Linen Cloth Sandals", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 5, minLevel: 10, craftTimeSeconds: 55, acquisitionType: "vendor", vendorCost: 9,
+    ingredients: [{ itemId: "ts_linen_bolt", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Linen Cloth Sandals", type: "armor", slot: "feet", rarity: "common", armorType: "cloth",
+      description: "Simple linen sandals enchanted to protect the caster's feet.",
+      stats: { intelligence: 4, power: 15, avoidance: 1 },
+      sellPrice: 10, quantity: 1, xpGained: 32, spriteId: "feet_cloth",
+    },
+  },
+  {
+    name: "Silk Mage Slippers", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 16, minLevel: 22, craftTimeSeconds: 122, acquisitionType: "vendor", vendorCost: 38,
+    ingredients: [{ itemId: "ts_silk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Silk Mage Slippers", type: "armor", slot: "feet", rarity: "uncommon", armorType: "cloth",
+      description: "Enchanted slippers that keep the caster light on their feet.",
+      stats: { intelligence: 8, wisdom: 5, avoidance: 2, power: 28 },
+      sellPrice: 70, quantity: 1, xpGained: 107, spriteId: "feet_cloth",
+    },
+  },
+  {
+    name: "Spidersilk Arcane Slippers", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 29, minLevel: 36, craftTimeSeconds: 292, acquisitionType: "vendor", vendorCost: 108,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Spidersilk Arcane Slippers", type: "armor", slot: "feet", rarity: "rare", armorType: "cloth",
+      description: "Delicate slippers of spidersilk that allow silent movement and quick spellcasting.",
+      stats: { intelligence: 18, wisdom: 12, spellCritChance: 4, avoidance: 3, power: 55 },
+      sellPrice: 518, quantity: 1, xpGained: 215, spriteId: "feet_cloth",
+    },
+  },
+  {
+    name: "Moonweave Ethereal Slippers", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 37, minLevel: 42, craftTimeSeconds: 450, acquisitionType: "vendor", vendorCost: 166,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Moonweave Ethereal Slippers", type: "armor", slot: "feet", rarity: "legendary", armorType: "cloth",
+      description: "Slippers that glow softly with moonweave — the wearer feels as if floating.",
+      stats: { intelligence: 28, wisdom: 18, spellCritChance: 7, avoidance: 4, power: 90 },
+      sellPrice: 1490, quantity: 1, xpGained: 370, spriteId: "feet_cloth",
+    },
+  },
+  // ── Leather/Cloth Bracers (wrists) ────────────────────────────────────────────
+  {
+    name: "Rough Leather Bracers", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 8, minLevel: 14, craftTimeSeconds: 68, acquisitionType: "vendor", vendorCost: 12,
+    ingredients: [{ itemId: "ts_rough_hide", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Rough Leather Bracers", type: "armor", slot: "wrists", rarity: "common", armorType: "leather",
+      description: "Serviceable leather bracers that protect the wrists from blade strikes.",
+      stats: { agility: 4, attackRating: 6, defenseRating: 5 },
+      sellPrice: 12, quantity: 1, xpGained: 36, spriteId: "wrists_leather",
+    },
+  },
+  {
+    name: "Supple Leather Scout Bracers", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 21, minLevel: 28, craftTimeSeconds: 152, acquisitionType: "vendor", vendorCost: 48,
+    ingredients: [{ itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Supple Leather Scout Bracers", type: "armor", slot: "wrists", rarity: "uncommon", armorType: "leather",
+      description: "Flexible leather bracers worn by experienced scouts.",
+      stats: { agility: 8, attackRating: 12, critChance: 2 },
+      sellPrice: 72, quantity: 1, xpGained: 112, spriteId: "wrists_leather",
+    },
+  },
+  {
+    name: "Spidersilk Scout Bracers", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 30, minLevel: 36, craftTimeSeconds: 295, acquisitionType: "vendor", vendorCost: 108,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_rough_hide", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Spidersilk Scout Bracers", type: "armor", slot: "wrists", rarity: "rare", armorType: "leather",
+      description: "Bracers reinforced with spidersilk weave for the quick and the deadly.",
+      stats: { agility: 16, attackRating: 22, critChance: 4, haste: 3 },
+      sellPrice: 524, quantity: 1, xpGained: 218, spriteId: "wrists_leather",
+    },
+  },
+  {
+    name: "Moonweave Marksman Bracers", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 38, minLevel: 42, craftTimeSeconds: 452, acquisitionType: "vendor", vendorCost: 168,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 1 }, { itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Moonweave Marksman Bracers", type: "armor", slot: "wrists", rarity: "legendary", armorType: "leather",
+      description: "Wrists wrapped in moonweave that guide every shot and blow with precision.",
+      stats: { agility: 26, attackRating: 36, critChance: 7, haste: 5 },
+      sellPrice: 1510, quantity: 1, xpGained: 374, spriteId: "wrists_leather",
+    },
+  },
+  {
+    name: "Linen Cloth Bracers", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 5, minLevel: 10, craftTimeSeconds: 55, acquisitionType: "vendor", vendorCost: 9,
+    ingredients: [{ itemId: "ts_linen_bolt", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Linen Cloth Bracers", type: "armor", slot: "wrists", rarity: "common", armorType: "cloth",
+      description: "Linen bracers stitched with basic focusing runes for apprentice casters.",
+      stats: { intelligence: 4, wisdom: 3 },
+      sellPrice: 10, quantity: 1, xpGained: 30, spriteId: "wrists_cloth",
+    },
+  },
+  {
+    name: "Silk Arcanist Bracers", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 17, minLevel: 22, craftTimeSeconds: 124, acquisitionType: "vendor", vendorCost: 40,
+    ingredients: [{ itemId: "ts_silk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Silk Arcanist Bracers", type: "armor", slot: "wrists", rarity: "uncommon", armorType: "cloth",
+      description: "Silk bracers embroidered with runes that amplify spellcasting.",
+      stats: { intelligence: 10, wisdom: 7, spellCritChance: 2 },
+      sellPrice: 68, quantity: 1, xpGained: 106, spriteId: "wrists_cloth",
+    },
+  },
+  {
+    name: "Spidersilk Sorcerer Bracers", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 30, minLevel: 36, craftTimeSeconds: 295, acquisitionType: "vendor", vendorCost: 108,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Spidersilk Sorcerer Bracers", type: "armor", slot: "wrists", rarity: "rare", armorType: "cloth",
+      description: "Arcane bracers of spidersilk that channel excess magical energy safely.",
+      stats: { intelligence: 18, wisdom: 12, spellCritChance: 4, spellDamage: 7 },
+      sellPrice: 514, quantity: 1, xpGained: 216, spriteId: "wrists_cloth",
+    },
+  },
+  {
+    name: "Moonweave Mage Bracers", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 37, minLevel: 42, craftTimeSeconds: 448, acquisitionType: "vendor", vendorCost: 166,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Moonweave Mage Bracers", type: "armor", slot: "wrists", rarity: "legendary", armorType: "cloth",
+      description: "Moonweave bracers that shimmer with stored arcane energy.",
+      stats: { intelligence: 28, wisdom: 18, spellCritChance: 7, spellDamage: 16 },
+      sellPrice: 1490, quantity: 1, xpGained: 370, spriteId: "wrists_cloth",
+    },
+  },
+  // ── Belts/Sashes (waist) ──────────────────────────────────────────────────────
+  {
+    name: "Rough Leather Belt", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 9, minLevel: 14, craftTimeSeconds: 68, acquisitionType: "vendor", vendorCost: 12,
+    ingredients: [{ itemId: "ts_rough_hide", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Rough Leather Belt", type: "armor", slot: "waist", rarity: "common", armorType: "leather",
+      description: "A practical leather belt worn by scouts and wanderers.",
+      stats: { agility: 4, stamina: 3 },
+      sellPrice: 12, quantity: 1, xpGained: 36, spriteId: "waist_leather",
+    },
+  },
+  {
+    name: "Supple Leather Sash", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 22, minLevel: 28, craftTimeSeconds: 154, acquisitionType: "vendor", vendorCost: 48,
+    ingredients: [{ itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Supple Leather Sash", type: "armor", slot: "waist", rarity: "uncommon", armorType: "leather",
+      description: "A well-fitted leather sash that provides mobility and protection.",
+      stats: { agility: 8, stamina: 6, haste: 2, attackRating: 8 },
+      sellPrice: 74, quantity: 1, xpGained: 112, spriteId: "waist_leather",
+    },
+  },
+  {
+    name: "Spidersilk Ranger Belt", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 30, minLevel: 36, craftTimeSeconds: 294, acquisitionType: "vendor", vendorCost: 108,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_rough_hide", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Spidersilk Ranger Belt", type: "armor", slot: "waist", rarity: "rare", armorType: "leather",
+      description: "A ranger's belt reinforced with spidersilk that holds gear and resists cuts.",
+      stats: { agility: 14, stamina: 10, attackRating: 14, haste: 3 },
+      sellPrice: 516, quantity: 1, xpGained: 216, spriteId: "waist_leather",
+    },
+  },
+  {
+    name: "Moonweave Scout Sash", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 38, minLevel: 42, craftTimeSeconds: 450, acquisitionType: "vendor", vendorCost: 167,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 1 }, { itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Moonweave Scout Sash", type: "armor", slot: "waist", rarity: "legendary", armorType: "leather",
+      description: "A sash of moonweave that shimmers with accumulated kinetic energy.",
+      stats: { agility: 24, stamina: 18, attackRating: 24, haste: 6 },
+      sellPrice: 1500, quantity: 1, xpGained: 373, spriteId: "waist_leather",
+    },
+  },
+  {
+    name: "Linen Cloth Sash", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 6, minLevel: 10, craftTimeSeconds: 55, acquisitionType: "vendor", vendorCost: 9,
+    ingredients: [{ itemId: "ts_linen_bolt", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Linen Cloth Sash", type: "armor", slot: "waist", rarity: "common", armorType: "cloth",
+      description: "A basic linen sash worn by novice casters.",
+      stats: { intelligence: 4, wisdom: 3, power: 12 },
+      sellPrice: 10, quantity: 1, xpGained: 30, spriteId: "waist_cloth",
+    },
+  },
+  {
+    name: "Silk Arcanist Sash", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 18, minLevel: 24, craftTimeSeconds: 124, acquisitionType: "vendor", vendorCost: 40,
+    ingredients: [{ itemId: "ts_silk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Silk Arcanist Sash", type: "armor", slot: "waist", rarity: "uncommon", armorType: "cloth",
+      description: "A silk sash that helps contain magical overflow.",
+      stats: { intelligence: 8, wisdom: 6, power: 28 },
+      sellPrice: 68, quantity: 1, xpGained: 106, spriteId: "waist_cloth",
+    },
+  },
+  {
+    name: "Spidersilk Channeler Sash", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 30, minLevel: 36, craftTimeSeconds: 294, acquisitionType: "vendor", vendorCost: 108,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Spidersilk Channeler Sash", type: "armor", slot: "waist", rarity: "rare", armorType: "cloth",
+      description: "A spidersilk sash that acts as a magical reservoir for casters.",
+      stats: { intelligence: 16, wisdom: 10, spellDamage: 8, power: 48 },
+      sellPrice: 512, quantity: 1, xpGained: 214, spriteId: "waist_cloth",
+    },
+  },
+  {
+    name: "Moonweave Archmage Sash", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 37, minLevel: 42, craftTimeSeconds: 450, acquisitionType: "vendor", vendorCost: 166,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Moonweave Archmage Sash", type: "armor", slot: "waist", rarity: "legendary", armorType: "cloth",
+      description: "A sash of moonweave worn by archmages — it stores and releases magical energy on demand.",
+      stats: { intelligence: 26, wisdom: 16, spellDamage: 20, spellCritChance: 5, power: 85 },
+      sellPrice: 1480, quantity: 1, xpGained: 370, spriteId: "waist_cloth",
+    },
+  },
+  // ── Cloaks/Capes (back) ───────────────────────────────────────────────────────
+  {
+    name: "Rough Hide Cloak", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 10, minLevel: 14, craftTimeSeconds: 72, acquisitionType: "vendor", vendorCost: 13,
+    ingredients: [{ itemId: "ts_rough_hide", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Rough Hide Cloak", type: "armor", slot: "back", rarity: "common", armorType: "leather",
+      description: "A thick cloak of rough animal hide, good for cold nights in the field.",
+      stats: { stamina: 5, defenseRating: 6, agility: 2 },
+      sellPrice: 14, quantity: 1, xpGained: 38, spriteId: "back_leather",
+    },
+  },
+  {
+    name: "Supple Leather Cloak", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 22, minLevel: 28, craftTimeSeconds: 155, acquisitionType: "vendor", vendorCost: 50,
+    ingredients: [{ itemId: "ts_supple_leather", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Supple Leather Cloak", type: "armor", slot: "back", rarity: "uncommon", armorType: "leather",
+      description: "A well-tanned leather cloak that offers freedom of movement.",
+      stats: { agility: 8, stamina: 8, avoidance: 3, defenseRating: 14 },
+      sellPrice: 78, quantity: 1, xpGained: 115, spriteId: "back_leather",
+    },
+  },
+  {
+    name: "Spidersilk Cloak", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 31, minLevel: 36, craftTimeSeconds: 298, acquisitionType: "vendor", vendorCost: 110,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Spidersilk Cloak", type: "armor", slot: "back", rarity: "rare", armorType: "cloth",
+      description: "A shimmering cloak of spidersilk that is nearly weightless yet strong as mail.",
+      stats: { agility: 16, stamina: 14, avoidance: 5, critChance: 3, intelligence: 10 },
+      sellPrice: 525, quantity: 1, xpGained: 220, spriteId: "back_silk",
+    },
+  },
+  {
+    name: "Moonweave Arcane Cloak", tradeskillClass: "tailor", tier: "apprentice",
+    minSkill: 38, minLevel: 42, craftTimeSeconds: 455, acquisitionType: "vendor", vendorCost: 170,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Moonweave Arcane Cloak", type: "armor", slot: "back", rarity: "legendary", armorType: "cloth",
+      description: "A cloak woven from moonweave that crackles with stored arcane energy.",
+      stats: { intelligence: 28, wisdom: 20, spellCritChance: 6, stamina: 18, avoidance: 4 },
+      sellPrice: 1550, quantity: 1, xpGained: 378, spriteId: "back_arcane",
     },
   },
 
@@ -706,6 +1524,60 @@ export const MASTER_RECIPES: MasterRecipeSeed[] = [
       description: "A draught distilled from Mayong's essence — the drinker heals catastrophically and fights with vampiric fury for a short time.",
       stats: {}, sellPrice: 5000, quantity: 1, xpGained: 2800, spriteId: "potion_purple",
       stackable: true, effect: { type: "heal", value: 5000 },
+    },
+  },
+];
+
+  // ── Additional Harla Dar (prismatic dragon) drops ────────────────────────────
+  {
+    name: "Prismatic Dragon Eye Wand",
+    tradeskillClass: "weaponsmith", tier: "master",
+    minSkill: 75, minLevel: 55, craftTimeSeconds: 1500, acquisitionType: "raid", raidBossId: "harla_dar",
+    ingredients: [
+      { itemId: "prismatic_dragon_scale", quantity: 2 },
+      { itemId: "ts_adamantine_ore", quantity: 2 },
+      { itemId: "ts_moonweave", quantity: 1 },
+      { itemId: "ts_metal_flux", quantity: 2 },
+    ],
+    output: {
+      name: "Prismatic Dragon Eye Wand", type: "weapon", slot: "primary", rarity: "legendary",
+      description: "A wand tipped with one of Harla Dar's own eyes — it shifts prismatic spell energies into devastating strikes.",
+      stats: { weaponDamageMin: 180, weaponDamageMax: 300, weaponDelay: 1.4, attackRating: 160, intelligence: 75, wisdom: 40, spellCritChance: 20, spellDamage: 55 },
+      sellPrice: 9000, quantity: 1, xpGained: 2800, spriteId: "weapon_wand",
+    },
+  },
+  // ── Additional Mayong Mistmoore (vampire lord) drops ─────────────────────────
+  {
+    name: "Scepter of Undying Faith",
+    tradeskillClass: "weaponsmith", tier: "master",
+    minSkill: 80, minLevel: 65, craftTimeSeconds: 1500, acquisitionType: "raid", raidBossId: "mayong_mistmoore",
+    ingredients: [
+      { itemId: "vampire_lord_fang", quantity: 2 },
+      { itemId: "ts_adamantine_ore", quantity: 2 },
+      { itemId: "ts_spidersilk_cloth", quantity: 1 },
+      { itemId: "ts_metal_flux", quantity: 1 },
+    ],
+    output: {
+      name: "Scepter of Undying Faith", type: "weapon", slot: "primary", rarity: "legendary",
+      description: "A scepter wrought from Mayong's fangs — it channels the darkest healing arts, drawing life from enemies to restore allies.",
+      stats: { weaponDamageMin: 150, weaponDamageMax: 240, weaponDelay: 1.8, attackRating: 170, wisdom: 80, power: 350, spellCritChance: 18, healBonus: 45 },
+      sellPrice: 10500, quantity: 1, xpGained: 3300, spriteId: "weapon_scepter",
+    },
+  },
+  {
+    name: "Paladin's Holy Bulwark",
+    tradeskillClass: "armorer", tier: "master",
+    minSkill: 78, minLevel: 62, craftTimeSeconds: 1800, acquisitionType: "raid", raidBossId: "mayong_mistmoore",
+    ingredients: [
+      { itemId: "vampire_lord_fang", quantity: 1 },
+      { itemId: "ts_adamantine_ore", quantity: 4 },
+      { itemId: "ts_metal_flux", quantity: 2 },
+    ],
+    output: {
+      name: "Paladin's Holy Bulwark", type: "armor", slot: "secondary", rarity: "legendary", armorType: "plate",
+      description: "A shield consecrated with Mayong's own fang as a trophy — it radiates divine protection that repels the undead.",
+      stats: { defenseRating: 240, stamina: 65, mitigation: 180, health: 220, wisdom: 30, power: 120 },
+      sellPrice: 10000, quantity: 1, xpGained: 3000, spriteId: "shield_holy",
     },
   },
 ];
