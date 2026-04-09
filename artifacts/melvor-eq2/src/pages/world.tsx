@@ -972,14 +972,14 @@ export default function WorldPage() {
   }
 
   const sortedEvents = React.useMemo(() => {
-    const all = events ?? [];
+    const all = Array.isArray(events) ? events : [];
     const major = all.filter((e: any) => e.importance >= 3);
     const regular = all.filter((e: any) => e.importance < 3);
     return [...major, ...regular];
   }, [events]);
 
   const zoneNames = React.useMemo(() =>
-    (zones ?? []).filter((z: any) => z.total > 0).map((z: any) => z.name),
+    (Array.isArray(zones) ? zones : []).filter((z: any) => z.total > 0).map((z: any) => z.name),
     [zones]
   );
 
@@ -989,7 +989,7 @@ export default function WorldPage() {
     : sortedEvents;
 
   const majorEvents = React.useMemo(() =>
-    (events ?? []).filter((e: any) => e.importance >= 3).slice(0, 10),
+    (Array.isArray(events) ? events : []).filter((e: any) => e.importance >= 3).slice(0, 10),
     [events]
   );
 
@@ -1205,7 +1205,7 @@ export default function WorldPage() {
                   </CardContent>
                 </Card>
               ) : zones && (
-                <ZoneMapPanel zones={zones} />
+                <ZoneMapPanel zones={Array.isArray(zones) ? zones : []} />
               )}
             </div>
           </div>
