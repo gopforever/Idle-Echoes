@@ -86,27 +86,41 @@ function generateRaidLoot(raidId: string, playerLevel: number): string[] {
   const tier = raid?.lootTier ?? "legendary";
 
   const raidMinLevel = raid?.minLevel ?? playerLevel;
-  const raidMaxLevel = raidMinLevel + RAID_LEVEL_RANGE;
-  const clampedLevel = Math.min(Math.max(playerLevel, raidMinLevel), raidMaxLevel);
+  // Widen the search window so there are always items to draw from
+  const WIDE_RANGE = RAID_LEVEL_RANGE * 2;
+  const clampedLevel = Math.min(Math.max(playerLevel, raidMinLevel), raidMinLevel + RAID_LEVEL_RANGE);
 
   const pool = ITEMS.filter(item => {
     if (item.type === "material" || item.type === "consumable" || item.type === "quest") return false;
-    if (Math.abs(item.level - clampedLevel) > RAID_LEVEL_RANGE) return false;
+    if (Math.abs(item.level - clampedLevel) > WIDE_RANGE) return false;
     return true;
   });
 
-  const rarityPools: Record<string, typeof pool> = {
-    legendary: pool.filter(i => i.rarity === "legendary" || i.rarity === "fabled" || i.rarity === "mythical"),
-    fabled: pool.filter(i => i.rarity === "fabled" || i.rarity === "mythical" || i.rarity === "legendary"),
-    mythical: pool.filter(i => i.rarity === "mythical" || i.rarity === "fabled"),
+  const legendaryPool = pool.filter(i => i.rarity === "legendary" || i.rarity === "fabled" || i.rarity === "mythical");
+  const rarePool      = pool.filter(i => i.rarity === "rare");
+  const fallbackPool  = pool.length > 0 ? pool : ITEMS.filter(i => i.type !== "material" && i.type !== "consumable" && i.type !== "quest");
+
+  const pick = (from: typeof pool): string | null => {
+    const src = from.length > 0 ? from : fallbackPool;
+    const item = src[Math.floor(Math.random() * src.length)];
+    return item?.id ?? null;
   };
 
-  const targetPool = rarityPools[tier]?.length > 0 ? rarityPools[tier] : pool;
-  const count = 3 + Math.floor(Math.random() * 3);
   const loot: string[] = [];
-  for (let i = 0; i < count; i++) {
-    const picked = targetPool[Math.floor(Math.random() * targetPool.length)];
-    if (picked) loot.push(picked.id);
+
+  // Guarantee at least 3 legendary/fabled drops — the whole point of raiding
+  const guaranteedLegCount = tier === "mythical" ? 4 : 3;
+  for (let i = 0; i < guaranteedLegCount; i++) {
+    const id = pick(legendaryPool);
+    if (id) loot.push(id);
+  }
+
+  // Add 2-4 more rare/legendary items for depth
+  const bonusCount = 2 + Math.floor(Math.random() * 3);
+  const bonusPool = [...legendaryPool, ...rarePool];
+  for (let i = 0; i < bonusCount; i++) {
+    const id = pick(bonusPool);
+    if (id) loot.push(id);
   }
 
   // ── Phase 2: Boss crafting material drops ─────────────────────────────────

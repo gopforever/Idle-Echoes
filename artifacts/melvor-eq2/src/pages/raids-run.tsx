@@ -456,6 +456,7 @@ export default function RaidsRunPage() {
 
   const bossId = runState?.scaledBoss?.id ?? "raid_boss";
 
+  // Show the phase-complete / raid-complete banner when bossDefeated is confirmed and combat is idle
   React.useEffect(() => {
     if (!runState?.run?.bossDefeated) return;
     if (!combatState?.active && !completedRun) {
@@ -463,17 +464,29 @@ export default function RaidsRunPage() {
     }
   }, [runState?.run?.bossDefeated, combatState?.active, completedRun]);
 
+  // When combat becomes inactive, immediately refetch runState so bossDefeated is fresh
+  // before the auto-combat timer below can fire — prevents re-engaging a dead boss.
+  const prevCombatActive = React.useRef(combatState?.active);
+  React.useEffect(() => {
+    if (prevCombatActive.current && !combatState?.active) {
+      queryClient.invalidateQueries({ queryKey: ["raid-run-current"] });
+    }
+    prevCombatActive.current = combatState?.active;
+  }, [combatState?.active, queryClient]);
+
   const combatEnemy = combatState?.enemy as Enemy | undefined;
   const combatEnemyId = combatState?.active ? combatEnemy?.id : undefined;
 
   React.useEffect(() => {
     if (combatState?.active || !autoCombat || startCombat.isPending) return;
     if (!runState?.scaledBoss || runState.run?.bossDefeated) return;
+    // Use a delay longer than the invalidation + refetch round-trip so bossDefeated
+    // is guaranteed fresh before we try to re-engage.
     const timer = setTimeout(() => {
       startCombat.mutate({ data: { enemyId: bossId } }, {
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ["raid-run-current"] }),
       });
-    }, 1500);
+    }, 3500);
     return () => clearTimeout(timer);
   }, [combatState?.active, autoCombat, startCombat.isPending, runState?.run?.bossDefeated]);
 
