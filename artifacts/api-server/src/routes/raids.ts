@@ -50,8 +50,10 @@ function formatRaidRun(run: typeof raidRunsTable.$inferSelect) {
 
 function buildScaledRaidBoss(raid: RaidDefinition, playerLevel: number, phaseDef?: RaidPhase): Record<string, unknown> {
   const levelFactor = Math.max(1.0, playerLevel / raid.minLevel);
+  // Cap damage scaling more conservatively so players aren't one-shot
+  const dmgLevelFactor = Math.max(1.0, Math.min(1.5, playerLevel / raid.minLevel));
   const baseHp = 50000;
-  const baseDmg = 400;
+  const baseDmg = 150;
   const phase = phaseDef ?? raid.phases[0];
   const dmgMult = phase.damageMultiplier ?? 1.0;
   const hpMult = phase.hpMultiplier ?? 1.0;
@@ -61,8 +63,8 @@ function buildScaledRaidBoss(raid: RaidDefinition, playerLevel: number, phaseDef
     level: raid.minLevel + 5,
     maxHp: Math.round(baseHp * levelFactor * hpMult),
     hp: Math.round(baseHp * levelFactor * hpMult),
-    damageMin: Math.round(baseDmg * levelFactor * 0.8 * dmgMult),
-    damageMax: Math.round(baseDmg * levelFactor * 1.2 * dmgMult),
+    damageMin: Math.round(baseDmg * dmgLevelFactor * 0.8 * dmgMult),
+    damageMax: Math.round(baseDmg * dmgLevelFactor * 1.2 * dmgMult),
     xpReward: Math.round(5000 * levelFactor),
     goldMin: Math.round(500 * levelFactor),
     goldMax: Math.round(1000 * levelFactor),
