@@ -52,8 +52,8 @@ interface InventoryItem {
   noSell?: boolean;
 }
 
-function inventoryItemIsNoSell(item: InventoryItem): boolean {
-  return item.noSell === true || item.rarity === "fabled" || item.rarity === "mythical";
+function inventoryItemIsNoSell(_item: InventoryItem): boolean {
+  return false;
 }
 type GearMap = Record<string, InventoryItem>;
 
@@ -225,7 +225,6 @@ function ItemCell({
   const gs = computeItemGS(item.level, item.rarity, item.slot ?? undefined);
   const showGS = isGearType(item.type) && gs > 0;
   const isEquipable = item.type !== "material" && item.type !== "quest" && item.type !== "consumable" && item.type !== "crafting_material";
-  const noSell = inventoryItemIsNoSell(item);
 
   const btn = (
     <button
@@ -248,11 +247,6 @@ function ItemCell({
       {showGS && (
         <span className="absolute bottom-0.5 left-0.5 text-[7px] font-black px-0.5 py-0 rounded leading-none bg-black/70 text-amber-300 border border-amber-900/60">
           GS {gs}
-        </span>
-      )}
-      {noSell && (
-        <span className="absolute top-0.5 left-0.5 text-[6px] font-black px-0.5 py-0 rounded leading-none bg-red-950/90 text-red-400 border border-red-800/60 uppercase tracking-tight">
-          NO-DROP
         </span>
       )}
     </button>
@@ -305,7 +299,6 @@ function ComparisonPanel({ item, equipped, onEquip, onSell, onUse, onDeposit, on
   const deltas = statDeltas(item, equipped);
   const isEquipable = item.type !== "material" && item.type !== "quest" && item.type !== "consumable";
   const isProcedural = item.id?.startsWith("proc_") || item.id?.startsWith("named_");
-  const noSell = inventoryItemIsNoSell(item);
 
   return (
     <motion.div
@@ -340,10 +333,7 @@ function ComparisonPanel({ item, equipped, onEquip, onSell, onUse, onDeposit, on
             ? <p className="text-xs italic text-slate-500 leading-relaxed">{item.description}</p>
             : <p className="text-xs italic text-slate-700">No description.</p>
           }
-          {noSell
-            ? <div className="text-xs text-red-400 mt-1.5 font-bold uppercase tracking-wide">No-Drop</div>
-            : <div className="text-xs text-amber-600 mt-1.5 font-medium">Sell: {item.sellPrice}g</div>
-          }
+          <div className="text-xs text-amber-600 mt-1.5 font-medium">Sell: {item.sellPrice}g</div>
         </div>
       </div>
 
@@ -474,35 +464,15 @@ function ComparisonPanel({ item, equipped, onEquip, onSell, onUse, onDeposit, on
               {usePending ? "Using…" : "Use"}
             </Button>
           )}
-          {noSell ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="flex-1">
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    disabled
-                    className="w-full h-8 text-xs opacity-40 cursor-not-allowed"
-                  >
-                    No-Drop
-                  </Button>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent side="top" className="text-xs">
-                This item is No-Drop and cannot be sold.
-              </TooltipContent>
-            </Tooltip>
-          ) : (
-            <Button
-              size="sm"
-              variant="destructive"
-              onClick={onSell}
-              disabled={sellPending}
-              className="flex-1 h-8 text-xs"
-            >
-              {sellPending ? "Selling…" : `Sell ${item.sellPrice}g`}
-            </Button>
-          )}
+          <Button
+            size="sm"
+            variant="destructive"
+            onClick={onSell}
+            disabled={sellPending}
+            className="flex-1 h-8 text-xs"
+          >
+            {sellPending ? "Selling…" : `Sell ${item.sellPrice}g`}
+          </Button>
         </div>
         <Button
           size="sm"

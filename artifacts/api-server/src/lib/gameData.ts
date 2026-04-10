@@ -35,7 +35,7 @@ export interface Item {
   quality?: number;
   recipeId?: string;
   recipeTier?: RecipeTier;
-  /** Fabled and mythical items are No-Drop — cannot be sold to shop or listed on the Auction Hall */
+  /** Retained for data compatibility — no longer enforced; all items are tradeable. */
   noSell?: boolean;
   /** Gear set this item belongs to (e.g. "blackburrow_mythical") */
   setId?: string;
@@ -48,14 +48,10 @@ export interface Item {
 }
 
 /**
- * Returns true if an item is No-Drop (cannot be sold or listed on Auction).
- * Checks the explicit noSell flag first, then falls back to rarity check
- * so procedurally-generated fabled/mythical loot is also protected.
+ * No-Drop restriction removed — all items are tradeable and sellable.
  */
-export function isNoSell(item: Partial<Item> | Record<string, unknown>): boolean {
-  if ((item as Record<string, unknown>).noSell === true) return true;
-  const rarity = (item as Record<string, unknown>).rarity as string | undefined;
-  return rarity === "fabled" || rarity === "mythical";
+export function isNoSell(_item: Partial<Item> | Record<string, unknown>): boolean {
+  return false;
 }
 
 export interface LootEntry {

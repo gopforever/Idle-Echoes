@@ -2,7 +2,7 @@ import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
 import { charactersTable, inventoryTable, aaPointsTable } from "@workspace/db/schema";
 import { eq, and, gt } from "drizzle-orm";
-import { getItemById, isNoSell, type Item } from "../lib/gameData.js";
+import { getItemById, type Item } from "../lib/gameData.js";
 import { getOrCreateCharacter } from "./character.js";
 import { computeStats, applyAABonuses, makeZeroAABonuses } from "../lib/eq2Formulas.js";
 import { AA_TABS } from "../lib/eq2Data.js";
@@ -290,9 +290,6 @@ router.post("/inventory/sell", async (req, res) => {
 
     const itemData = invItem.itemData as Record<string, unknown>;
     const staticItem = getItemById(itemId);
-    if (isNoSell(staticItem ?? itemData)) {
-      return res.status(400).json({ error: "This item is No-Drop and cannot be sold or traded." });
-    }
 
     const sellPrice = staticItem?.sellPrice
       ?? (typeof itemData?.sellPrice === "number" ? itemData.sellPrice : 0);
@@ -367,13 +364,11 @@ router.post("/inventory/sell-all", async (req, res) => {
     }
 
     let goldEarned = 0;
-    let skippedCount = 0;
     const sellableIds: number[] = [];
 
     for (const invItem of items) {
       const itemData = invItem.itemData as Record<string, unknown>;
       const staticItem = getItemById(invItem.itemId);
-      if (isNoSell(staticItem ?? itemData)) { skippedCount++; continue; }
       const sellPrice = staticItem?.sellPrice ?? (typeof itemData?.sellPrice === "number" ? itemData.sellPrice : 0);
       goldEarned += Math.max(1, sellPrice) * invItem.quantity;
       sellableIds.push(invItem.id);
@@ -386,7 +381,7 @@ router.post("/inventory/sell-all", async (req, res) => {
     const newGold = character.gold + goldEarned;
     await db.update(charactersTable).set({ gold: newGold, updatedAt: new Date() }).where(eq(charactersTable.id, character.id));
 
-    return res.json({ goldEarned, newGoldTotal: newGold, itemCount: sellableIds.length, skippedCount });
+    return res.json({ goldEarned, newGoldTotal: newGold, itemCount: sellableIds.length, skippedCount: 0 });
   } catch (err) {
     req.log.error({ err }, "Error selling all items");
     return res.status(500).json({ error: "Internal server error" });
