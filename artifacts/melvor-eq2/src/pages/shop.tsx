@@ -487,7 +487,7 @@ function AuctionBrowse({ gold, onGoldChange, listingsCount }: { gold: number; on
                     const rarity = (item?.rarity as string) ?? "common";
                     const canAfford = gold >= listing.buyoutPrice;
                     const isOwn = listing.isPlayerListing;
-                    const isGhost = !isOwn && !listing.isPlayerListing;
+                    const isGhost = !isOwn;
                     const meta = listing.craftedMeta;
                     const isOneOfAKind = meta?.isOneOfAKind;
                     const isCritCraft = meta?.isCritical;
@@ -581,7 +581,7 @@ function AuctionBrowse({ gold, onGoldChange, listingsCount }: { gold: number; on
                 const rarity = (item?.rarity as string) ?? "common";
                 const canAfford = gold >= listing.buyoutPrice;
                 const isOwn = listing.isPlayerListing;
-                const isGhost = !isOwn && !listing.isPlayerListing;
+                const isGhost = !isOwn;
                 const meta = listing.craftedMeta;
                 const isOneOfAKind = meta?.isOneOfAKind;
                 const isCritCraft = meta?.isCritical;
@@ -687,8 +687,7 @@ function MyListings({ defaultItemId, onListingCountChange }: { defaultItemId?: s
   const [priceSuggestion, setPriceSuggestion] = React.useState<number | null>(null);
   const [suggestionBasis, setSuggestionBasis] = React.useState<string>("");
 
-  const allInventory: Item[] = inventoryData?.items ?? [];
-  const inventory = allInventory;
+  const inventory: Item[] = inventoryData?.items ?? [];
 
   const fetchMyListings = React.useCallback(() => {
     fetch(apiUrl("/api/auction/my-listings"))
@@ -738,7 +737,7 @@ function MyListings({ defaultItemId, onListingCountChange }: { defaultItemId?: s
       .catch(() => { setPriceSuggestion(null); });
   }, [selectedItemId]);
 
-  const handleCancel = async (listingId: number, _itemName: string) => {
+  const handleCancel = async (listingId: number) => {
     setCancelling(listingId);
     try {
       const res = await fetch(apiUrl(`/api/auction/${listingId}`), { method: "DELETE" });
@@ -910,7 +909,7 @@ function MyListings({ defaultItemId, onListingCountChange }: { defaultItemId?: s
                 <div className="text-right shrink-0">
                   <div className="font-bold text-amber-400 text-sm">💰 {listing.buyoutPrice.toLocaleString()}g</div>
                   <Button size="sm" variant="ghost"
-                    onClick={() => handleCancel(listing.id, listing.itemName)}
+                    onClick={() => handleCancel(listing.id)}
                     disabled={cancelling === listing.id}
                     className="text-[10px] h-6 text-red-500 hover:text-red-300 mt-0.5 px-2"
                   >

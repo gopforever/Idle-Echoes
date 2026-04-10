@@ -452,7 +452,10 @@ router.get("/auction/price-suggestion", async (req, res) => {
 
     const perUnit = recent.map(r => Math.floor(r.price / Math.max(1, r.qty)));
     const sorted = [...perUnit].sort((a, b) => a - b);
-    const median = sorted[Math.floor(sorted.length / 2)];
+    const mid = Math.floor(sorted.length / 2);
+    const median = sorted.length % 2 !== 0
+      ? sorted[mid]
+      : Math.floor(((sorted[mid - 1] ?? 0) + (sorted[mid] ?? 0)) / 2);
     return res.json({ suggestion: median, basis: "recent_sales" });
   } catch {
     return res.json({ suggestion: null });
