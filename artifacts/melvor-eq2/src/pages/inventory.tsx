@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/context-menu";
 import { ExamineDialog, type ExamineItem } from "@/components/game/examine-dialog";
 import { Package, Sword, ShieldCheck, Gem, Boxes, X, TrendingUp, TrendingDown, Minus, ChevronRight, ShoppingBag, Pin, BarChart2 } from "lucide-react";
+import { useLocation } from "wouter";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -289,9 +290,9 @@ function EmptyCell() {
   return <div className="aspect-square rounded-lg border border-dashed border-slate-800/40 bg-slate-900/10" />;
 }
 
-function ComparisonPanel({ item, equipped, onEquip, onSell, onUse, onDeposit, onClose, equipPending, sellPending, usePending, depositPending }: {
+function ComparisonPanel({ item, equipped, onEquip, onSell, onUse, onDeposit, onClose, onList, equipPending, sellPending, usePending, depositPending }: {
   item: InventoryItem; equipped?: InventoryItem;
-  onEquip: () => void; onSell: () => void; onUse: () => void; onDeposit: () => void; onClose: () => void;
+  onEquip: () => void; onSell: () => void; onUse: () => void; onDeposit: () => void; onClose: () => void; onList: () => void;
   equipPending: boolean; sellPending: boolean; usePending: boolean; depositPending: boolean;
 }) {
   const rs  = RARITY_STYLES[item.rarity]        ?? RARITY_STYLES.common;
@@ -474,14 +475,24 @@ function ComparisonPanel({ item, equipped, onEquip, onSell, onUse, onDeposit, on
             {sellPending ? "Selling…" : `Sell ${item.sellPrice}g`}
           </Button>
         </div>
-        <Button
-          size="sm"
-          onClick={onDeposit}
-          disabled={depositPending}
-          className="w-full h-8 text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 border-0"
-        >
-          {depositPending ? "Depositing…" : "🏦 Deposit to Bank"}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={onList}
+            className="flex-1 h-8 text-xs border-amber-700/50 text-amber-400 hover:bg-amber-900/20"
+          >
+            List on AH
+          </Button>
+          <Button
+            size="sm"
+            onClick={onDeposit}
+            disabled={depositPending}
+            className="flex-1 h-8 text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 border-0"
+          >
+            {depositPending ? "Depositing…" : "🏦 Bank"}
+          </Button>
+        </div>
       </div>
     </motion.div>
   );
@@ -555,6 +566,7 @@ function GearDetailPanel({ slot, item, onUnequip, unequipPending, onClose }: {
 
 export default function InventoryPage() {
   const queryClient = useQueryClient();
+  const [, navigate] = useLocation();
   const { data: inventory, isLoading } = useGetInventory();
   const { data: character } = useGetCharacter();
   const { data: gear } = useQuery({ queryKey: GEAR_KEY, queryFn: fetchGear });
@@ -1016,6 +1028,7 @@ export default function InventoryPage() {
             onUse={() => handleUse(selectedItem)}
             onDeposit={() => handleDeposit(selectedItem)}
             onClose={() => setSelectedItem(null)}
+            onList={() => navigate(`/shop?quicklist=${selectedItem.id}`)}
             equipPending={equipItem.isPending}
             sellPending={sellItem.isPending}
             usePending={useItemPending}
