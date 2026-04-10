@@ -13,9 +13,7 @@
 
 import { db } from "@workspace/db";
 import { auctionListingsTable, inventoryTable } from "@workspace/db/schema";
-import { and, eq, lt, ne, sql } from "drizzle-orm";
-
-const PLAYER_SELLER_ID = "player";
+import { and, eq, isNotNull, isNull, lt, sql } from "drizzle-orm";
 
 /**
  * Idempotent expiry sweep. For each expired player listing, the cancellation
@@ -30,13 +28,13 @@ const PLAYER_SELLER_ID = "player";
 export async function cleanExpiredListings(): Promise<void> {
   const now = new Date();
 
-  // Find expired unsold player listings (read-only; do NOT mark cancelled yet).
+  // Find expired unsold player listings (characterId IS NOT NULL = player-owned).
   const expiredPlayer = await db
     .select()
     .from(auctionListingsTable)
     .where(
       and(
-        eq(auctionListingsTable.sellerId, PLAYER_SELLER_ID),
+        isNotNull(auctionListingsTable.characterId),
         eq(auctionListingsTable.sold, false),
         eq(auctionListingsTable.cancelled, false),
         lt(auctionListingsTable.expiresAt, now),
@@ -68,10 +66,16 @@ export async function cleanExpiredListings(): Promise<void> {
         const returned = await tx
           .update(inventoryTable)
           .set({ quantity: sql`${inventoryTable.quantity} + ${listing.quantity}` })
-          .where(eq(inventoryTable.itemId, listing.itemId))
+          .where(
+            and(
+              eq(inventoryTable.characterId, listing.characterId!),
+              eq(inventoryTable.itemId, listing.itemId),
+            )
+          )
           .returning({ id: inventoryTable.id });
         if (returned.length === 0) {
           await tx.insert(inventoryTable).values({
+            characterId: listing.characterId!,
             itemId: listing.itemId,
             itemData: listing.itemData,
             quantity: listing.quantity,
@@ -84,15 +88,13 @@ export async function cleanExpiredListings(): Promise<void> {
     }
   }
 
-  // Sweep expired ghost listings only — explicitly exclude player listings so
-  // any player settlement that failed during the per-row loop above is NOT
-  // silently cancelled here; it will be retried on the next sweep.
+  // Sweep expired ghost listings only (characterId IS NULL = ghost-owned).
   await db
     .update(auctionListingsTable)
     .set({ cancelled: true })
     .where(
       and(
-        ne(auctionListingsTable.sellerId, PLAYER_SELLER_ID),
+        isNull(auctionListingsTable.characterId),
         eq(auctionListingsTable.sold, false),
         eq(auctionListingsTable.cancelled, false),
         lt(auctionListingsTable.expiresAt, now),
