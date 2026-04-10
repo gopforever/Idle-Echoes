@@ -14,14 +14,14 @@ const EVENT_TYPES = ["all", "kill", "boss_kill", "level_up", "zone_travel", "loo
 
 function exportCSV(events: WorldEvent[] | undefined) {
   if (!events?.length) return;
-  const header = ["id", "playerName", "eventType", "zone", "description", "timestamp"];
+  const header = ["id", "playerName", "type", "zone", "message", "createdAt"];
   const rows = events.map((e) => [
     e.id,
     e.playerName ?? "",
-    e.eventType,
+    e.type,
     e.zone ?? "",
-    (e.description ?? "").replace(/,/g, ";"),
-    e.timestamp ?? e.createdAt ?? "",
+    (e.message ?? "").replace(/,/g, ";"),
+    e.createdAt ?? "",
   ]);
   const csv = [header, ...rows].map((r) => r.join(",")).join("\n");
   const blob = new Blob([csv], { type: "text/csv" });
@@ -51,8 +51,8 @@ export default function Events() {
 
   const filtered = useMemo(() => {
     return (events ?? []).filter((e) => {
-      if (search && !(e.playerName ?? "").toLowerCase().includes(search.toLowerCase()) && !(e.description ?? "").toLowerCase().includes(search.toLowerCase())) return false;
-      if (typeFilter !== "all" && e.eventType !== typeFilter) return false;
+      if (search && !(e.playerName ?? "").toLowerCase().includes(search.toLowerCase()) && !(e.message ?? "").toLowerCase().includes(search.toLowerCase())) return false;
+      if (typeFilter !== "all" && e.type !== typeFilter) return false;
       if (zoneFilter !== "all" && e.zone !== zoneFilter) return false;
       return true;
     });

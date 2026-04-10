@@ -37,7 +37,7 @@ export default function Dashboard() {
   // Zone heatmap data
   const zoneMap: Record<string, number> = {};
   for (const p of players ?? []) {
-    if (p.currentZone) zoneMap[p.currentZone] = (zoneMap[p.currentZone] ?? 0) + 1;
+    if (p.zone) zoneMap[p.zone] = (zoneMap[p.zone] ?? 0) + 1;
   }
   const zoneData = Object.entries(zoneMap)
     .map(([zone, count]) => ({ zone, count }))

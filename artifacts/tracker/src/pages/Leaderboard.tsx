@@ -26,7 +26,7 @@ function LeaderList({ data, isLoading, isError, refetch, columns }: {
         const name = String(entry.name ?? "Unknown");
         const cls = String(entry.class ?? "");
         const color = classColor(cls);
-        const isGhost = entry.isGhost === true || entry.playerType === "ghost";
+        const isGhost = entry.type === "ghost";
         return (
           <motion.div
             key={String(entry.id ?? i)}
@@ -64,9 +64,7 @@ function LeaderList({ data, isLoading, isError, refetch, columns }: {
 export default function LeaderboardPage() {
   const overview = useQuery({ queryKey: ["lb-overview"], queryFn: api.leaderboardOverview, refetchInterval: 60_000 });
   const kills = useQuery({ queryKey: ["lb-kills"], queryFn: api.leaderboardKills, refetchInterval: 60_000 });
-  const gold = useQuery({ queryKey: ["lb-gold"], queryFn: api.leaderboardGold, refetchInterval: 60_000 });
   const dungeons = useQuery({ queryKey: ["lb-dungeons"], queryFn: api.leaderboardDungeons, refetchInterval: 60_000 });
-  const gathering = useQuery({ queryKey: ["lb-gathering"], queryFn: api.leaderboardGathering, refetchInterval: 60_000 });
 
   return (
     <div className="space-y-5">
@@ -79,9 +77,7 @@ export default function LeaderboardPage() {
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="overall">Overall</TabsTrigger>
           <TabsTrigger value="combat">Combat</TabsTrigger>
-          <TabsTrigger value="wealth">Wealth</TabsTrigger>
           <TabsTrigger value="dungeons">Dungeons</TabsTrigger>
-          <TabsTrigger value="gathering">Gathering</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overall">
@@ -110,19 +106,6 @@ export default function LeaderboardPage() {
           />
         </TabsContent>
 
-        <TabsContent value="wealth">
-          <LeaderList
-            data={gold.data as Array<Record<string, unknown>> | undefined}
-            isLoading={gold.isLoading}
-            isError={gold.isError}
-            refetch={() => void gold.refetch()}
-            columns={[
-              { key: "totalGold", label: "Gold", format: (v) => formatNumber(v as number | null | undefined) },
-              { key: "goldEarned", label: "Earned", format: (v) => formatNumber(v as number | null | undefined) },
-            ]}
-          />
-        </TabsContent>
-
         <TabsContent value="dungeons">
           <LeaderList
             data={dungeons.data as Array<Record<string, unknown>> | undefined}
@@ -130,21 +113,8 @@ export default function LeaderboardPage() {
             isError={dungeons.isError}
             refetch={() => void dungeons.refetch()}
             columns={[
-              { key: "dungeonCompletions", label: "Dungeons" },
-            ]}
-          />
-        </TabsContent>
-
-        <TabsContent value="gathering">
-          <LeaderList
-            data={gathering.data as Array<Record<string, unknown>> | undefined}
-            isLoading={gathering.isLoading}
-            isError={gathering.isError}
-            refetch={() => void gathering.refetch()}
-            columns={[
-              { key: "oresGathered", label: "Ores" },
-              { key: "logsGathered", label: "Logs" },
-              { key: "fishGathered", label: "Fish" },
+              { key: "dungeonsCompleted", label: "Dungeons" },
+              { key: "heroicCompletions", label: "Heroic" },
             ]}
           />
         </TabsContent>
