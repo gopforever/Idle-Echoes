@@ -15,9 +15,9 @@ interface EventCardProps {
 }
 
 export default function EventCard({ event }: EventCardProps) {
-  const config = eventConfig[event.eventType] ?? { icon: Activity, color: "#94a3b8", label: event.eventType };
+  const config = eventConfig[event.type] ?? { icon: Activity, color: "#94a3b8", label: event.type };
   const Icon = config.icon;
-  const ts = event.timestamp ?? event.createdAt;
+  const ts = event.createdAt;
 
   return (
     <div
@@ -32,7 +32,7 @@ export default function EventCard({ event }: EventCardProps) {
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm text-foreground line-clamp-1">
-          {event.description ?? `${event.playerName ?? "Unknown"} — ${config.label}`}
+          {event.message ?? `${event.playerName ?? "Unknown"} — ${config.label}`}
         </p>
         <div className="flex items-center gap-2 mt-0.5">
           {event.zone && (

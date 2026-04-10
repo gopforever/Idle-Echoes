@@ -36,12 +36,12 @@ export default function Ghosts() {
     refetchInterval: 30_000,
   });
 
-  const zones = [...new Set((players ?? []).map((p) => p.currentZone).filter(Boolean) as string[])].sort();
+  const zones = [...new Set((players ?? []).map((p) => p.zone).filter(Boolean) as string[])].sort();
   const races = [...new Set((players ?? []).map((p) => p.race).filter(Boolean) as string[])].sort();
   const classes = [...new Set((players ?? []).map((p) => p.class).filter(Boolean) as string[])].sort();
 
   const filtered = (players ?? [])
-    .filter((p) => zoneFilter === "all" || p.currentZone === zoneFilter)
+    .filter((p) => zoneFilter === "all" || p.zone === zoneFilter)
     .filter((p) => raceFilter === "all" || p.race === raceFilter)
     .filter((p) => classFilter === "all" || p.class === classFilter)
     .sort((a, b) => (b[sortKey] ?? 0) - (a[sortKey] ?? 0));
@@ -129,7 +129,7 @@ export default function Ghosts() {
                     <PlayerBadge playerType="ghost" classArchetype={p.class} />
                   </TableCell>
                   <TableCell>{p.level}</TableCell>
-                  <TableCell className="text-muted-foreground text-xs">{p.currentZone ?? "—"}</TableCell>
+                  <TableCell className="text-muted-foreground text-xs">{p.zone ?? "—"}</TableCell>
                   <TableCell style={{ color: "#ef4444" }}>{formatNumber(p.killCount)}</TableCell>
                   <TableCell style={{ color: "#f59e0b" }}>{formatNumber(p.bossKills)}</TableCell>
                   <TableCell className="text-muted-foreground">{p.deathCount ?? 0}</TableCell>
@@ -160,12 +160,12 @@ export default function Ghosts() {
                 <div>
                   <p className="text-xs text-muted-foreground mb-2 font-semibold uppercase tracking-wider">Base Stats</p>
                   <div className="grid grid-cols-3 gap-2">
-                    {statBox("STR", selected.str, "#ef4444")}
-                    {statBox("AGI", selected.agi, "#22c55e")}
-                    {statBox("STA", selected.sta, "#f97316")}
-                    {statBox("INT", selected.int, "#3b82f6")}
-                    {statBox("WIS", selected.wis, "#eab308")}
-                    {statBox("CHA", selected.cha, "#a855f7")}
+                    {statBox("STR", selected.stats?.strength, "#ef4444")}
+                    {statBox("AGI", selected.stats?.agility, "#22c55e")}
+                    {statBox("STA", selected.stats?.stamina, "#f97316")}
+                    {statBox("INT", selected.stats?.intelligence, "#3b82f6")}
+                    {statBox("WIS", selected.stats?.wisdom, "#eab308")}
+                    {statBox("CHA", selected.stats?.charisma, "#a855f7")}
                   </div>
                 </div>
                 {/* Combat stats */}
@@ -174,16 +174,14 @@ export default function Ghosts() {
                   <div><span className="text-muted-foreground">Boss Kills: </span><span className="text-amber-400 font-semibold">{formatNumber(selected.bossKills)}</span></div>
                   <div><span className="text-muted-foreground">Deaths: </span><span>{selected.deathCount ?? 0}</span></div>
                   <div><span className="text-muted-foreground">Gold: </span><span className="text-yellow-400 font-semibold">{formatNumber(selected.totalGoldEarned)}</span></div>
-                  <div><span className="text-muted-foreground">Dungeon Clears: </span><span>{selected.dungeonClears ?? 0}</span></div>
-                  <div><span className="text-muted-foreground">Raid Clears: </span><span>{selected.raidClears ?? 0}</span></div>
                 </div>
                 {/* Misc */}
                 <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div><span className="text-muted-foreground">Zone: </span><span>{selected.currentZone ?? "—"}</span></div>
+                  <div><span className="text-muted-foreground">Zone: </span><span>{selected.zone ?? "—"}</span></div>
                   <div><span className="text-muted-foreground">Alignment: </span><span>{selected.alignment ?? "—"}</span></div>
                   <div><span className="text-muted-foreground">Personality: </span><span>{selected.personality ?? "—"}</span></div>
                   <div><span className="text-muted-foreground">Generation: </span><span>{selected.generation ?? 1}</span></div>
-                  <div><span className="text-muted-foreground">Last Active: </span><span>{timeAgo(selected.lastActive)}</span></div>
+                  <div><span className="text-muted-foreground">Last Active: </span><span>{timeAgo(selected.lastTickAt)}</span></div>
                   <div><span className="text-muted-foreground">Race: </span><span style={{ color: classColor(selected.race) }}>{selected.race ?? "—"}</span></div>
                 </div>
                 {selected.inheritedTraits && selected.inheritedTraits.length > 0 && (

@@ -21,7 +21,7 @@ export default function Humans() {
 
   const is401 = isError && (error instanceof Error) && error.message.includes("401");
 
-  const humans = (overview ?? []).filter((p) => !p.isGhost && p.playerType !== "ghost");
+  const humans = (overview ?? []).filter((p) => p.type === "player");
 
   if (is401) {
     return (
@@ -53,14 +53,12 @@ export default function Humans() {
               <TableRow style={{ borderColor: "#1f2937", background: "#0d0d14" }}>
                 <TableHead className="w-12">Rank</TableHead>
                 <TableHead>Name</TableHead>
-                <TableHead>Race / Class</TableHead>
+                <TableHead>Class</TableHead>
                 <TableHead>Level</TableHead>
                 <TableHead>Kills</TableHead>
                 <TableHead>Boss K.</TableHead>
-                <TableHead>Deaths</TableHead>
-                <TableHead>Gold</TableHead>
-                <TableHead>Gear Score</TableHead>
                 <TableHead>Dungeons</TableHead>
+                <TableHead>Heroic</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -74,10 +72,8 @@ export default function Humans() {
                   <TableCell>{p.level ?? "—"}</TableCell>
                   <TableCell style={{ color: "#ef4444" }}>{formatNumber(p.killCount)}</TableCell>
                   <TableCell style={{ color: "#f59e0b" }}>{formatNumber(p.bossKills)}</TableCell>
-                  <TableCell className="text-muted-foreground">{p.deathCount ?? 0}</TableCell>
-                  <TableCell style={{ color: "#eab308" }}>{formatNumber(p.totalGold ?? p.goldEarned)}</TableCell>
-                  <TableCell>{p.gearScore ?? "—"}</TableCell>
-                  <TableCell>{p.dungeonCompletions ?? 0}</TableCell>
+                  <TableCell>{p.dungeonsCompleted ?? 0}</TableCell>
+                  <TableCell>{p.heroicCompletions ?? 0}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -99,15 +95,14 @@ export default function Humans() {
                 </DialogDescription>
               </DialogHeader>
               <div className="grid grid-cols-2 gap-3 text-sm">
-                <div><span className="text-muted-foreground">Race: </span><span>{selected.race ?? "—"}</span></div>
                 <div><span className="text-muted-foreground">Class: </span><span>{selected.class ?? "—"}</span></div>
                 <div><span className="text-muted-foreground">Level: </span><span>{selected.level ?? "—"}</span></div>
-                <div><span className="text-muted-foreground">Gear Score: </span><span>{selected.gearScore ?? "—"}</span></div>
                 <div><span className="text-muted-foreground">Kills: </span><span className="text-red-400 font-semibold">{formatNumber(selected.killCount)}</span></div>
                 <div><span className="text-muted-foreground">Boss Kills: </span><span className="text-amber-400 font-semibold">{formatNumber(selected.bossKills)}</span></div>
-                <div><span className="text-muted-foreground">Deaths: </span><span>{selected.deathCount ?? 0}</span></div>
-                <div><span className="text-muted-foreground">Gold: </span><span className="text-yellow-400 font-semibold">{formatNumber(selected.totalGold ?? selected.goldEarned)}</span></div>
-                <div><span className="text-muted-foreground">Dungeons: </span><span>{selected.dungeonCompletions ?? 0}</span></div>
+                <div><span className="text-muted-foreground">Dungeons: </span><span>{selected.dungeonsCompleted ?? 0}</span></div>
+                <div><span className="text-muted-foreground">Heroic: </span><span>{selected.heroicCompletions ?? 0}</span></div>
+                <div><span className="text-muted-foreground">Raids: </span><span>{selected.raidsCompleted ?? 0}</span></div>
+                <div><span className="text-muted-foreground">Highest Phase: </span><span>{selected.highestPhase ?? 0}</span></div>
               </div>
             </>
           )}
