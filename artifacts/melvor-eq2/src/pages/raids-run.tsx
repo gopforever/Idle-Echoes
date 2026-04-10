@@ -356,12 +356,35 @@ function RaidCompleteModal({
             <p className="text-sm text-slate-500 text-center py-4">No items earned.</p>
           ) : (
             <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
-              {lootIds.map((id, idx) => (
-                <div key={idx} className={cn("flex items-center gap-3 px-3 py-2 rounded-lg border", rarityColor("legendary"))}>
-                  <span className="text-lg shrink-0">⚔️</span>
-                  <p className="text-sm font-medium text-orange-200 truncate">{id}</p>
-                </div>
-              ))}
+              {lootIds.map((id, idx) => {
+                // Parse procedural item IDs: proc_zone_slot_rarity_timestamp
+                const parts = id.split("_");
+                const isProcedural = parts[0] === "proc";
+                const VALID_RARITIES = ["common","uncommon","rare","legendary","fabled","mythical"];
+                const VALID_SLOTS = ["primary","secondary","head","chest","shoulder","back","wrist","hands","waist","legs","feet","neck","ear","ring"];
+                const SLOT_ICONS: Record<string, string> = {
+                  primary: "⚔️", secondary: "⚔️",
+                  head: "🛡️", chest: "🛡️",
+                  material: "✨",
+                };
+                const rarity = isProcedural
+                  ? (parts.find(p => VALID_RARITIES.includes(p)) ?? "legendary")
+                  : "legendary";
+                const slot = isProcedural
+                  ? (parts.find(p => VALID_SLOTS.includes(p)) ?? "gear")
+                  : "material";
+                const displayName = isProcedural
+                  ? `${rarity.charAt(0).toUpperCase() + rarity.slice(1)} ${slot.charAt(0).toUpperCase() + slot.slice(1)}`
+                  : id.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+                const icon = SLOT_ICONS[slot] ?? "💎";
+                return (
+                  <div key={idx} className={cn("flex items-center gap-3 px-3 py-2 rounded-lg border", rarityColor(rarity))}>
+                    <span className="text-lg shrink-0">{icon}</span>
+                    <p className="text-sm font-medium truncate">{displayName}</p>
+                    <span className="text-[9px] ml-auto shrink-0 uppercase tracking-widest opacity-70">{rarity}</span>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -393,18 +416,31 @@ function PhaseCompleteBanner({
   onContinue: () => void;
 }) {
   const isFinal = phase >= totalPhases;
+  const [countdown, setCountdown] = React.useState(isFinal ? null : 2);
+
+  React.useEffect(() => {
+    if (isFinal || countdown === null) return;
+    if (countdown <= 0) return;
+    const t = setTimeout(() => setCountdown(c => (c ?? 1) - 1), 1000);
+    return () => clearTimeout(t);
+  }, [countdown, isFinal]);
+
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className={cn(
         "border rounded-2xl px-10 py-8 text-center shadow-2xl max-w-sm w-full mx-4",
         isFinal ? "bg-red-950/90 border-red-700/60" : "bg-slate-900/90 border-slate-700/60",
       )}>
-        <div className="text-5xl mb-3">{isFinal ? "⚔️" : "💀"}</div>
+        <div className="text-5xl mb-3">{isFinal ? "⚔️" : "✅"}</div>
         <p className={cn("text-2xl font-serif font-bold", isFinal ? "text-red-300" : "text-slate-300")}>
           {isFinal ? "Boss Defeated!" : `Phase ${phase} Complete!`}
         </p>
         <p className={cn("text-sm mt-2 mb-6", isFinal ? "text-red-600" : "text-slate-500")}>
-          {isFinal ? "The raid boss has fallen!" : `${totalPhases - phase} phase${totalPhases - phase > 1 ? "s" : ""} remain.`}
+          {isFinal
+            ? "The raid boss has fallen!"
+            : isAdvancing
+              ? "Advancing…"
+              : `${totalPhases - phase} phase${totalPhases - phase > 1 ? "s" : ""} remain. Advancing in ${countdown ?? 0}s…`}
         </p>
         <button
           onClick={onContinue}
@@ -415,7 +451,7 @@ function PhaseCompleteBanner({
               ? "bg-slate-700 text-slate-400 cursor-not-allowed"
               : isFinal
                 ? "bg-red-700 hover:bg-red-600 text-white"
-                : "bg-slate-700 hover:bg-slate-600 text-white",
+                : "bg-slate-600 hover:bg-slate-500 text-white",
           )}
         >
           {isAdvancing ? "Loading…" : isFinal ? "⚔️ Claim Raid Rewards!" : "Next Phase →"}
@@ -461,6 +497,15 @@ export default function RaidsRunPage() {
     if (!runState?.run?.bossDefeated) return;
     if (!combatState?.active && !completedRun) {
       setShowBanner(true);
+
+      // Auto-advance non-final phases after 2 seconds
+      const isFinalPhase = (runState.run?.currentPhase ?? 1) >= (runState.run?.totalPhases ?? 3);
+      if (!isFinalPhase) {
+        const timer = setTimeout(() => {
+          advanceMutation.mutate();
+        }, 2000);
+        return () => clearTimeout(timer);
+      }
     }
   }, [runState?.run?.bossDefeated, combatState?.active, completedRun]);
 
