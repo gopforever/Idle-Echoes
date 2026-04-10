@@ -839,7 +839,7 @@ export default function CharacterSheet() {
 
   const worldEventsQ = useQuery<{ events: Array<{ id: number; type: string; message: string; playerName: string; zone: string; importance: number; tick: number; createdAt: string }> }>({
     queryKey: ["world-events-relevant"],
-    queryFn: () => fetch(apiUrl("/api/gm/world/events/player-relevant")).then(r => r.json()),
+    queryFn: () => fetch(apiUrl("/api/world/events/player-relevant")).then(r => r.json()),
     refetchInterval: 30_000,
   });
   const { data: combatState } = useGetCombatState();
