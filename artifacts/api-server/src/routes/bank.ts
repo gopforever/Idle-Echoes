@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { charactersTable, inventoryTable, bankItemsTable, combatStateTable } from "@workspace/db/schema";
+import { charactersTable, inventoryTable, bankItemsTable, combatStateTable, gatheringBagItemsTable } from "@workspace/db/schema";
 import { eq, and } from "drizzle-orm";
 import { getOrCreateCharacter } from "./character.js";
 
@@ -42,12 +42,21 @@ router.post("/bank/deposit-item", async (req, res) => {
     const { itemId, quantity } = req.body;
     if (!itemId) return res.status(400).json({ error: "itemId required" });
 
+    // Check inventory first, then fall back to gathering bag
     const [invItem] = await db.select().from(inventoryTable)
       .where(and(eq(inventoryTable.characterId, characterId), eq(inventoryTable.itemId, itemId)))
       .limit(1);
-    if (!invItem) return res.status(404).json({ error: "Item not in inventory" });
 
-    const qty = Math.min(quantity ?? invItem.quantity, invItem.quantity);
+    const [bagItem] = !invItem
+      ? await db.select().from(gatheringBagItemsTable)
+          .where(and(eq(gatheringBagItemsTable.characterId, characterId), eq(gatheringBagItemsTable.itemId, itemId)))
+          .limit(1)
+      : [undefined];
+
+    if (!invItem && !bagItem) return res.status(404).json({ error: "Item not in inventory" });
+
+    const sourceItem = invItem ?? bagItem!;
+    const qty = Math.min(quantity ?? sourceItem.quantity, sourceItem.quantity);
 
     const [existingBank] = await db.select().from(bankItemsTable)
       .where(and(eq(bankItemsTable.characterId, characterId), eq(bankItemsTable.itemId, itemId)))
@@ -59,14 +68,22 @@ router.post("/bank/deposit-item", async (req, res) => {
         .where(eq(bankItemsTable.id, existingBank.id));
     } else {
       await db.insert(bankItemsTable).values({
-        characterId, itemId, itemData: invItem.itemData as Record<string, unknown>, quantity: qty,
+        characterId, itemId, itemData: sourceItem.itemData as Record<string, unknown>, quantity: qty,
       });
     }
 
-    if (invItem.quantity <= qty) {
-      await db.delete(inventoryTable).where(eq(inventoryTable.id, invItem.id));
+    if (invItem) {
+      if (invItem.quantity <= qty) {
+        await db.delete(inventoryTable).where(eq(inventoryTable.id, invItem.id));
+      } else {
+        await db.update(inventoryTable).set({ quantity: invItem.quantity - qty }).where(eq(inventoryTable.id, invItem.id));
+      }
     } else {
-      await db.update(inventoryTable).set({ quantity: invItem.quantity - qty }).where(eq(inventoryTable.id, invItem.id));
+      if (bagItem!.quantity <= qty) {
+        await db.delete(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.id, bagItem!.id));
+      } else {
+        await db.update(gatheringBagItemsTable).set({ quantity: bagItem!.quantity - qty }).where(eq(gatheringBagItemsTable.id, bagItem!.id));
+      }
     }
 
     return res.json({ success: true, itemId, quantity: qty });
