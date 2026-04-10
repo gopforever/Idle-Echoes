@@ -362,7 +362,15 @@ function AuctionBrowse({ gold, onGoldChange, listingsCount }: { gold: number; on
     const url = apiUrl(`/api/auction${qs ? `?${qs}` : ""}`);
     fetch(url)
       .then(r => r.json())
-      .then((data: AuctionListing[]) => { setListings(data); setLoading(false); })
+      .then((data: unknown) => {
+        if (Array.isArray(data)) {
+          setListings(data as AuctionListing[]);
+        } else {
+          console.error("Unexpected /api/auction response:", data);
+          setListings([]);
+        }
+        setLoading(false);
+      })
       .catch(() => setLoading(false));
   }, [category, craftedOnly]);
 
