@@ -163,6 +163,16 @@ function RaidCard({ raid, playerGS, playerLevel, onInspectGhost }: { raid: Raid;
     onSuccess: () => navigate("/dungeons/raids/run"),
   });
 
+  const abandonActiveMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(apiUrl("/api/raids/active"), { method: "DELETE" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Failed to abandon raid");
+      return data;
+    },
+    onSuccess: () => startMutation.reset(),
+  });
+
   const unlocked = raid.unlocked;
   const maxGhosts = raid.maxPartySize - 1;
   const minGhosts = raid.minPartySize - 1;
@@ -310,8 +320,17 @@ function RaidCard({ raid, playerGS, playerLevel, onInspectGhost }: { raid: Raid;
 
         {/* Error */}
         {startMutation.isError && (
-          <div className="text-xs text-red-400 bg-red-950/30 border border-red-800/40 rounded px-3 py-2">
-            {(startMutation.error as Error).message}
+          <div className="text-xs text-red-400 bg-red-950/30 border border-red-800/40 rounded px-3 py-2 space-y-2">
+            <div>{(startMutation.error as Error).message}</div>
+            {(startMutation.error as Error).message === "You already have an active raid run" && (
+              <button
+                onClick={() => abandonActiveMutation.mutate()}
+                disabled={abandonActiveMutation.isPending}
+                className="text-xs bg-red-900/60 hover:bg-red-800/60 border border-red-700/60 text-red-300 px-3 py-1.5 rounded transition-colors disabled:opacity-50"
+              >
+                {abandonActiveMutation.isPending ? "Abandoning…" : "Abandon Active Raid"}
+              </button>
+            )}
           </div>
         )}
 

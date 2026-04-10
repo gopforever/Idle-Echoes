@@ -353,7 +353,17 @@ router.post("/raids/:raidId/start", async (req, res) => {
         eq(raidRunsTable.status, "active"),
       )
     ).limit(1);
-    if (activeRaid) return res.status(400).json({ error: "You already have an active raid run", run: formatRaidRun(activeRaid) });
+    if (activeRaid) {
+      const STALE_MS = 24 * 60 * 60 * 1000;
+      const isStale = Date.now() - new Date(activeRaid.startedAt).getTime() > STALE_MS;
+      if (isStale) {
+        await db.update(raidRunsTable)
+          .set({ status: "abandoned", abandoned: true })
+          .where(eq(raidRunsTable.id, activeRaid.id));
+      } else {
+        return res.status(400).json({ error: "You already have an active raid run", run: formatRaidRun(activeRaid) });
+      }
+    }
 
     const [activeDungeon] = await db.select().from(dungeonRunsTable).where(
       and(
@@ -573,6 +583,27 @@ router.post("/raids/run/abandon", async (req, res) => {
     return res.json({ success: true, run: formatRaidRun(updated), abandoned: true, message: "Raid run abandoned." });
   } catch (err) {
     req.log.error({ err }, "Error abandoning raid run");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// ─── DELETE /api/raids/active ─────────────────────────────────────────────────
+router.delete("/raids/active", async (req, res) => {
+  try {
+    const character = await getOrCreateCharacter(req.characterId);
+    const [updated] = await db.update(raidRunsTable)
+      .set({ status: "abandoned", abandoned: true, completed: false })
+      .where(
+        and(
+          eq(raidRunsTable.characterId, character.id),
+          eq(raidRunsTable.status, "active"),
+        )
+      ).returning();
+
+    if (!updated) return res.status(404).json({ error: "No active raid run found" });
+    return res.json({ ok: true });
+  } catch (err) {
+    req.log.error({ err }, "Error abandoning active raid run");
     return res.status(500).json({ error: "Internal server error" });
   }
 });
