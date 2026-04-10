@@ -1,7 +1,7 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
 import { auctionListingsTable, charactersTable, inventoryTable } from "@workspace/db/schema";
-import { and, eq, gt, sql } from "drizzle-orm";
+import { and, desc, eq, gt, sql } from "drizzle-orm";
 import { getOrCreateCharacter } from "./character.js";
 import { cleanExpiredListings } from "../lib/auctionService.js";
 
@@ -246,7 +246,7 @@ router.post("/auction/buy/:listingId", async (req, res) => {
       // Step 1: claim listing atomically
       const [c] = await tx
         .update(auctionListingsTable)
-        .set({ sold: true })
+        .set({ sold: true, soldAt: new Date() })
         .where(
           and(
             eq(auctionListingsTable.id, listingId),
@@ -390,6 +390,75 @@ router.delete("/auction/:listingId", async (req, res) => {
   } catch (err) {
     console.error("[Auction] DELETE /auction error:", err);
     return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// ─── GET /auction/recent-sales ────────────────────────────────────────────────
+
+router.get("/auction/recent-sales", async (_req, res) => {
+  try {
+    const sales = await db
+      .select()
+      .from(auctionListingsTable)
+      .where(eq(auctionListingsTable.sold, true))
+      .orderBy(desc(auctionListingsTable.soldAt))
+      .limit(15);
+    return res.json(sales.map(s => ({
+      id: s.id,
+      itemName: s.itemName,
+      itemId: s.itemId,
+      itemData: s.itemData,
+      buyoutPrice: s.buyoutPrice,
+      sellerName: s.sellerName,
+      quantity: s.quantity,
+      soldAt: s.soldAt,
+    })));
+  } catch (err) {
+    console.error("[Auction] GET /auction/recent-sales error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// ─── GET /auction/price-suggestion ────────────────────────────────────────────
+
+router.get("/auction/price-suggestion", async (req, res) => {
+  try {
+    const itemId = req.query.itemId as string;
+    if (!itemId) return res.json({ suggestion: null });
+
+    // Get last 5 sold listings for this item
+    const recent = await db
+      .select({ price: auctionListingsTable.buyoutPrice, qty: auctionListingsTable.quantity })
+      .from(auctionListingsTable)
+      .where(and(eq(auctionListingsTable.itemId, itemId), eq(auctionListingsTable.sold, true)))
+      .orderBy(desc(auctionListingsTable.soldAt))
+      .limit(5);
+
+    if (recent.length === 0) {
+      // Fall back to current active listings
+      const active = await db
+        .select({ price: auctionListingsTable.buyoutPrice })
+        .from(auctionListingsTable)
+        .where(and(
+          eq(auctionListingsTable.itemId, itemId),
+          eq(auctionListingsTable.sold, false),
+          eq(auctionListingsTable.cancelled, false),
+        ))
+        .limit(10);
+      if (active.length === 0) return res.json({ suggestion: null });
+      const avg = Math.floor(active.reduce((s, r) => s + r.price, 0) / active.length);
+      return res.json({ suggestion: avg, basis: "active_listings" });
+    }
+
+    const perUnit = recent.map(r => Math.floor(r.price / Math.max(1, r.qty)));
+    const sorted = [...perUnit].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    const median = sorted.length % 2 !== 0
+      ? sorted[mid]
+      : Math.floor(((sorted[mid - 1] ?? 0) + (sorted[mid] ?? 0)) / 2);
+    return res.json({ suggestion: median, basis: "recent_sales" });
+  } catch {
+    return res.json({ suggestion: null });
   }
 });
 

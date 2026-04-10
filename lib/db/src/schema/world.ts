@@ -62,6 +62,8 @@ export const auctionListingsTable = pgTable("auction_listings", {
   expiresAt: timestamp("expires_at").notNull(),
   sold: boolean("sold").notNull().default(false),
   cancelled: boolean("cancelled").notNull().default(false),
+  soldAt: timestamp("sold_at"),
+  sellerPersonality: text("seller_personality"),
 });
 
 export const knownRecipesTable = pgTable("known_recipes", {

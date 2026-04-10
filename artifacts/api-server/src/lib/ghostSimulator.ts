@@ -52,6 +52,7 @@ import { DUNGEONS } from "./dungeonData.js";
 import { RAIDS } from "./raidData.js";
 import { generateOoakName, TRADESKILL_CLASSES } from "./tradeskillData.js";
 import type { TradeskillClass } from "./tradeskillData.js";
+import { rollItem, type ProceduralRarity } from "./proceduralItems.js";
 
 // ─── Simulator version — bump to force a reset of ghost data ─────────────────
 const SIMULATOR_VERSION = 6;
@@ -1486,6 +1487,7 @@ async function ghostGatheringTick(
         expiresAt: new Date(now.getTime() + listingDuration),
         sold: false,
         cancelled: false,
+        sellerPersonality: personality,
       }).catch(() => {});
 
       // Reset stash quantity after listing
@@ -1606,49 +1608,112 @@ async function ghostAuctionTick(players: typeof worldPlayersTable.$inferSelect[]
     // Ghost posts a loot item (uses personality lootChance, capped total)
     // Use activeGhostListings + ghostListingsInserted to prevent mid-tick overshoot
     if (Math.random() < pCfg.lootChance && (activeGhostListings + ghostListingsInserted) < MAX_GHOST_ACTIVE_LISTINGS) {
-      // Prefer items from personality's weighted spend categories (90% aligned, 10% wild)
-      const preferredCat = Math.random() < 0.90
-        ? weightedPick(pCfg.spendCategories).cat
-        : null;
-      const eligible = GHOST_LOOT_POOL.filter(l =>
-        preferredCat === null || l.category === preferredCat || Math.random() < 0.15
-      );
-      const pool = eligible.length > 0 ? eligible : GHOST_LOOT_POOL;
-      const template = pool[Math.floor(Math.random() * pool.length)];
-      const qty = Math.random() < 0.3 ? Math.floor(Math.random() * 4) + 2 : 1;
-
-      // Price: base × level multiplier × personality multiplier × demand multiplier × variance (±30%)
       const levelMult = 1 + (ghost.level - 1) * 0.02;
-      const demandMult = demandMultipliers[template.category] ?? 1.0;
-      // Scholarly ghosts add extra premium on their preferred cats (materials / adornments)
-      const scholarlyCatBonus =
-        personality === "Scholarly" && (template.category === "materials" || template.category === "adornments")
-          ? 1.10 : 1.0;
-      const variance = 0.7 + Math.random() * 0.6;
-      const price = Math.max(1, Math.floor(
-        template.basePrice * levelMult * personalityPriceMult * scholarlyCatBonus * demandMult * variance
-      ));
       const expiresAt = new Date(now.getTime() + GHOST_AUCTION_LISTING_DURATION_MS);
 
-      const inserted = await db.insert(auctionListingsTable).values({
-        sellerId: String(ghost.id),
-        sellerName: ghost.name,
-        itemId: template.itemId,
-        itemName: template.itemName,
-        itemData: template.itemData,
-        quantity: qty,
-        buyoutPrice: price,
-        category: template.category,
-        postedAt: now,
-        expiresAt,
-        sold: false,
-        cancelled: false,
-      }).returning({ id: auctionListingsTable.id })
-        .catch((err: unknown) => {
-          console.error("[Auction] Ghost listing insert failed:", err);
-          return [] as { id: number }[];
-        });
-      if (inserted.length > 0) ghostListingsInserted++;
+      // 60% chance: use procedural item based on ghost zone/level
+      // 40% chance: use legacy GHOST_LOOT_POOL for variety
+      if (Math.random() < 0.6) {
+        const rarityRoll = Math.random();
+        const rarity: ProceduralRarity = ghost.level >= 50
+          ? (rarityRoll < 0.15 ? "fabled" : rarityRoll < 0.45 ? "legendary" : "rare")
+          : ghost.level >= 30
+            ? (rarityRoll < 0.05 ? "fabled" : rarityRoll < 0.25 ? "legendary" : rarityRoll < 0.55 ? "rare" : "uncommon")
+            : (rarityRoll < 0.15 ? "rare" : rarityRoll < 0.45 ? "uncommon" : "common");
+
+        const procItem = rollItem(ghost.zone ?? "commonlands", ghost.level, rarity);
+        const basePrice = procItem.sellPrice ?? Math.max(10, ghost.level * 15);
+        const demandMult = demandMultipliers[procItem.type === "weapon" ? "weapons" : procItem.type === "armor" ? "armor" : "misc"] ?? 1.0;
+        const variance = 0.7 + Math.random() * 0.6;
+        const listPrice = Math.max(1, Math.floor(basePrice * levelMult * personalityPriceMult * demandMult * variance));
+
+        const category = procItem.type === "weapon" ? "weapons"
+          : procItem.type === "armor" ? "armor"
+          : procItem.type === "accessory" ? "accessories"
+          : "misc";
+
+        const inserted = await db.insert(auctionListingsTable).values({
+          sellerId: String(ghost.id),
+          sellerName: ghost.name,
+          itemId: procItem.id,
+          itemName: procItem.name,
+          itemData: procItem as unknown as Record<string, unknown>,
+          quantity: 1,
+          buyoutPrice: listPrice,
+          category,
+          postedAt: now,
+          expiresAt,
+          sold: false,
+          cancelled: false,
+          sellerPersonality: personality,
+        }).returning({ id: auctionListingsTable.id })
+          .catch(() => [] as { id: number }[]);
+        if (inserted.length > 0) ghostListingsInserted++;
+      } else {
+        // Legacy GHOST_LOOT_POOL path
+        const preferredCat = Math.random() < 0.90
+          ? weightedPick(pCfg.spendCategories).cat
+          : null;
+        const eligible = GHOST_LOOT_POOL.filter(l =>
+          preferredCat === null || l.category === preferredCat || Math.random() < 0.15
+        );
+        const pool = eligible.length > 0 ? eligible : GHOST_LOOT_POOL;
+        const template = pool[Math.floor(Math.random() * pool.length)];
+        const qty = Math.random() < 0.3 ? Math.floor(Math.random() * 4) + 2 : 1;
+
+        const demandMult = demandMultipliers[template.category] ?? 1.0;
+        const scholarlyCatBonus =
+          personality === "Scholarly" && (template.category === "materials" || template.category === "adornments")
+            ? 1.10 : 1.0;
+        const variance = 0.7 + Math.random() * 0.6;
+        const price = Math.max(1, Math.floor(
+          template.basePrice * levelMult * personalityPriceMult * scholarlyCatBonus * demandMult * variance
+        ));
+
+        const inserted = await db.insert(auctionListingsTable).values({
+          sellerId: String(ghost.id),
+          sellerName: ghost.name,
+          itemId: template.itemId,
+          itemName: template.itemName,
+          itemData: template.itemData,
+          quantity: qty,
+          buyoutPrice: price,
+          category: template.category,
+          postedAt: now,
+          expiresAt,
+          sold: false,
+          cancelled: false,
+          sellerPersonality: personality,
+        }).returning({ id: auctionListingsTable.id })
+          .catch((err: unknown) => {
+            console.error("[Auction] Ghost listing insert failed:", err);
+            return [] as { id: number }[];
+          });
+        if (inserted.length > 0) ghostListingsInserted++;
+      }
+
+      // High-level ghosts (50+) occasionally post raid-tier loot
+      if (ghost.level >= 50 && Math.random() < 0.10 && (activeGhostListings + ghostListingsInserted) < MAX_GHOST_ACTIVE_LISTINGS) {
+        const raidRarity: ProceduralRarity = Math.random() < 0.3 ? "fabled" : "legendary";
+        const raidItem = rollItem(ghost.zone ?? "commonlands", ghost.level, raidRarity);
+        const raidPrice = Math.max(500, (raidItem.sellPrice ?? 500) * (3 + Math.random() * 2) * personalityPriceMult);
+        await db.insert(auctionListingsTable).values({
+          sellerId: String(ghost.id),
+          sellerName: ghost.name,
+          itemId: raidItem.id,
+          itemName: raidItem.name,
+          itemData: raidItem as unknown as Record<string, unknown>,
+          quantity: 1,
+          buyoutPrice: Math.floor(raidPrice),
+          category: raidItem.type === "weapon" ? "weapons" : "armor",
+          postedAt: now,
+          expiresAt: new Date(now.getTime() + GHOST_AUCTION_LISTING_DURATION_MS * 2),
+          sold: false,
+          cancelled: false,
+          sellerPersonality: personality,
+        }).catch(() => {});
+        ghostListingsInserted++;
+      }
     }
 
     // Ghost buys player listings (uses personality spendChance)
