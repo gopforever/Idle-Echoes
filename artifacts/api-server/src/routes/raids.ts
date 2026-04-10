@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { raidRunsTable, dungeonRunsTable, worldPlayersTable, worldEventsTable, recipesTable, knownRecipesTable } from "@workspace/db/schema";
+import { raidRunsTable, dungeonRunsTable, worldPlayersTable, worldEventsTable, recipesTable, knownRecipesTable, inventoryTable } from "@workspace/db/schema";
 import { upsertDungeonKillStats } from "../lib/dungeonProgress.js";
 import { checkAndUnlockAchievements } from "./achievements.js";
 import { eq, and, isNull } from "drizzle-orm";
@@ -9,6 +9,7 @@ import { getItemById, ITEMS } from "../lib/gameData.js";
 import { computeGearScore } from "../lib/eq2Formulas.js";
 import { RAIDS, getRaidById, type RaidDefinition, type RaidPhase } from "../lib/raidData.js";
 import { initPartyMember, fetchGhostInfo, awardGhostContributions, revivePartyOnFloorAdvance } from "../lib/partyEngine.js";
+import { rollItem, serializeForDb } from "../lib/proceduralItems.js";
 import type { PartyMember } from "../lib/partyEngine.js";
 import { MASTER_RECIPES, TRADESKILL_CLASSES, generateOoakName } from "../lib/tradeskillData.js";
 import type { TradeskillClass } from "../lib/tradeskillData.js";
@@ -108,15 +109,15 @@ function generateRaidLoot(raidId: string, playerLevel: number): string[] {
 
   const loot: string[] = [];
 
-  // Guarantee at least 3 legendary/fabled drops — the whole point of raiding
-  const guaranteedLegCount = tier === "mythical" ? 4 : 3;
+  // Guarantee at least 6 legendary/fabled drops — the whole point of raiding
+  const guaranteedLegCount = tier === "mythical" ? 8 : 6;
   for (let i = 0; i < guaranteedLegCount; i++) {
     const id = pick(legendaryPool);
     if (id) loot.push(id);
   }
 
-  // Add 2-4 more rare/legendary items for depth
-  const bonusCount = 2 + Math.floor(Math.random() * 3);
+  // Add 4-6 more rare/legendary items for depth
+  const bonusCount = 4 + Math.floor(Math.random() * 3);
   const bonusPool = [...legendaryPool, ...rarePool];
   for (let i = 0; i < bonusCount; i++) {
     const id = pick(bonusPool);
@@ -507,6 +508,25 @@ router.post("/raids/run/phase-advance", async (req, res) => {
 
     if (isFinalPhase) {
       const loot = generateRaidLoot(run.raidId, character.level);
+
+      // ── Bonus procedural drops — raid-tier gear ──────────────────────────────
+      // Generate 3–5 legendary/fabled procedural items and add to inventory
+      const raidZone = raid?.zone ?? character.zone;
+      const proceduralBonusCount = 3 + Math.floor(Math.random() * 3); // 3, 4, or 5
+      const proceduralRarities: Array<"legendary" | "fabled"> = ["legendary", "legendary", "fabled", "legendary", "fabled"];
+      for (let i = 0; i < proceduralBonusCount; i++) {
+        const rarity = proceduralRarities[i % proceduralRarities.length];
+        const procItem = rollItem(raidZone, character.level, rarity);
+        loot.push(procItem.id);
+        const [existingProc] = await db.select().from(inventoryTable)
+          .where(and(eq(inventoryTable.characterId, character.id), eq(inventoryTable.itemId, procItem.id)));
+        if (existingProc) {
+          await db.update(inventoryTable).set({ quantity: existingProc.quantity + 1 }).where(eq(inventoryTable.id, existingProc.id));
+        } else {
+          await db.insert(inventoryTable).values({ characterId: character.id, itemId: procItem.id, itemData: serializeForDb(procItem), quantity: 1 });
+        }
+      }
+      // ─────────────────────────────────────────────────────────────────────────
       const [completed] = await db.update(raidRunsTable).set({
         status: "completed",
         completed: true,
@@ -562,6 +582,21 @@ router.post("/raids/run/phase-advance", async (req, res) => {
     const revivedParty = revivePartyOnFloorAdvance(currentParty);
     const newPhase = run.currentPhase + 1;
     const nextPhaseDef = raid.phases.find(p => p.phase === newPhase)!;
+
+    // ── Per-phase loot bonus ─────────────────────────────────────────────────
+    const phaseZone = raid?.zone ?? character.zone;
+    for (let i = 0; i < 2; i++) {
+      const rarity = Math.random() < 0.4 ? "fabled" as const : "legendary" as const;
+      const procItem = rollItem(phaseZone, character.level, rarity);
+      const [existingProc] = await db.select().from(inventoryTable)
+        .where(and(eq(inventoryTable.characterId, character.id), eq(inventoryTable.itemId, procItem.id)));
+      if (existingProc) {
+        await db.update(inventoryTable).set({ quantity: existingProc.quantity + 1 }).where(eq(inventoryTable.id, existingProc.id));
+      } else {
+        await db.insert(inventoryTable).values({ characterId: character.id, itemId: procItem.id, itemData: serializeForDb(procItem), quantity: 1 });
+      }
+    }
+    // ─────────────────────────────────────────────────────────────────────────
 
     // Rebuild scaled boss with next phase's multipliers so combat gets harder
     const nextScaledBoss = buildScaledRaidBoss(raid, character.level, nextPhaseDef);
