@@ -65,6 +65,12 @@ function buildScaledRaidBoss(raid: RaidDefinition, playerLevel: number, phaseDef
     hp: Math.round(baseHp * levelFactor * hpMult),
     damageMin: Math.round(baseDmg * dmgLevelFactor * 0.8 * dmgMult),
     damageMax: Math.round(baseDmg * dmgLevelFactor * 1.2 * dmgMult),
+    // Combat formula fields — required to prevent NaN in calculateEnemyDamage / calculatePlayerDamage
+    attackRating: Math.round(600 * levelFactor),
+    defenseRating: Math.round(480 * levelFactor),
+    mitigation: 50,   // %-based; capped at 75 in formula → ~50% melee damage reduction
+    avoidance: 15,    // % avoidance roll against player attacks
+    resistances: {},  // no elemental resistances by default; phases may override
     xpReward: Math.round(5000 * levelFactor),
     goldMin: Math.round(500 * levelFactor),
     goldMax: Math.round(1000 * levelFactor),
