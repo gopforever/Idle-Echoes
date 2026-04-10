@@ -145,8 +145,8 @@ const ARMOR_TYPE_STYLE: Record<string, { label: string; text: string; border: st
   cloth:   { label: "Cloth",   text: "text-blue-400",   border: "border-blue-600/60",  bg: "bg-blue-950/60"   },
 };
 
-function itemIsNoSell(item: ItemTooltipData): boolean {
-  return item.noSell === true || item.rarity === "fabled" || item.rarity === "mythical";
+function itemIsNoSell(_item: ItemTooltipData): boolean {
+  return false;
 }
 
 export function ItemTooltipContent({ item }: { item: ItemTooltipData }) {
@@ -258,17 +258,10 @@ export function ItemTooltipContent({ item }: { item: ItemTooltipData }) {
           </div>
         )}
 
-        {/* No-Drop warning */}
-        {itemIsNoSell(item) && (
-          <div className="text-[10px] font-bold text-red-400 tracking-wide uppercase text-center py-0.5 bg-red-950/40 rounded border border-red-900/40">
-            No-Drop
-          </div>
-        )}
-
         {/* Footer: rarity + sell price */}
         <div className="flex justify-between items-center pt-1 border-t border-slate-700/40 text-[11px]">
           <span className={cn("capitalize font-semibold", rarityText)}>{rarity}</span>
-          {!itemIsNoSell(item) && item.sellPrice != null && item.sellPrice > 0 && (
+          {item.sellPrice != null && item.sellPrice > 0 && (
             <span className="text-amber-400">Sell: {item.sellPrice}g</span>
           )}
         </div>

@@ -4,7 +4,6 @@ import { auctionListingsTable, charactersTable, inventoryTable } from "@workspac
 import { and, eq, gt, sql } from "drizzle-orm";
 import { getOrCreateCharacter } from "./character.js";
 import { cleanExpiredListings } from "../lib/auctionService.js";
-import { getItemById, isNoSell } from "../lib/gameData.js";
 
 export { cleanExpiredListings };
 
@@ -144,15 +143,9 @@ router.post("/auction/list", async (req, res) => {
       return res.json({ success: false, message: "You don't have enough of that item." });
     }
 
-    // Block listing No-Drop items on the Auction Hall
-    const itemData = invRow.itemData as Record<string, unknown>;
-    const staticItem = getItemById(itemId);
-    if (isNoSell(staticItem ?? itemData)) {
-      return res.status(400).json({ success: false, message: "This item is No-Drop and cannot be sold or traded." });
-    }
-
     const now = new Date();
     const expiresAt = new Date(now.getTime() + LISTING_DURATION_MS);
+    const itemData = invRow.itemData as Record<string, unknown>;
     const itemName = (itemData?.name as string) ?? itemId;
 
     // Transactional: conditional inventory deduct + listing insert.

@@ -443,10 +443,8 @@ function MyListings() {
   const allInventory: Item[] = inventoryData?.items ?? [];
   const inventory = allInventory;
 
-  function shopItemIsNoSell(i: Item): boolean {
-    const rec = i as unknown as Record<string, unknown>;
-    const r = rec.rarity as string | undefined;
-    return rec.noSell === true || r === "fabled" || r === "mythical";
+  function shopItemIsNoSell(_i: Item): boolean {
+    return false;
   }
 
   const fetchMyListings = React.useCallback(() => {
@@ -482,10 +480,6 @@ function MyListings() {
 
   const handleList = async () => {
     if (!selectedItemId || listPrice <= 0) return;
-    if (selectedInvItem && shopItemIsNoSell(selectedInvItem)) {
-      setMessage({ text: "This item is No-Drop and cannot be sold or traded.", ok: false });
-      return;
-    }
     setSubmitting(true);
     try {
       const res = await fetch(apiUrl("/api/auction/list"), {
@@ -556,10 +550,9 @@ function MyListings() {
               >
                 <option value="">— Select from inventory —</option>
                 {inventory.map(inv => {
-                  const nd = shopItemIsNoSell(inv);
                   return (
-                    <option key={inv.id} value={inv.id} disabled={nd}>
-                      {nd ? "🚫 " : ""}{inv.name ?? inv.id} ×{inv.quantity ?? 1}{nd ? " (No-Drop)" : ""}
+                    <option key={inv.id} value={inv.id}>
+                      {inv.name ?? inv.id} ×{inv.quantity ?? 1}
                     </option>
                   );
                 })}

@@ -23,8 +23,8 @@ export interface ExamineItem {
   noSell?: boolean;
 }
 
-function examineItemIsNoSell(item: ExamineItem): boolean {
-  return item.noSell === true || item.rarity === "fabled" || item.rarity === "mythical";
+function examineItemIsNoSell(_item: ExamineItem): boolean {
+  return false;
 }
 
 // ── Styling helpers ────────────────────────────────────────────────────────────
@@ -146,11 +146,6 @@ export function ExamineDialog({ item, open, onClose }: ExamineDialogProps) {
                     GS {gs}
                   </span>
                 )}
-                {examineItemIsNoSell(item) && (
-                  <span className="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wide bg-red-950/60 text-red-400 border border-red-900/50">
-                    No-Drop
-                  </span>
-                )}
               </div>
             </div>
           </div>
@@ -201,16 +196,8 @@ export function ExamineDialog({ item, open, onClose }: ExamineDialogProps) {
               </div>
             )}
 
-            {/* No-Drop notice */}
-            {examineItemIsNoSell(item) && (
-              <div className="flex justify-between items-center text-sm pt-1 border-t border-slate-800/60">
-                <span className="text-slate-500">No-Drop</span>
-                <span className="text-red-400 font-bold">Cannot be sold or traded</span>
-              </div>
-            )}
-
-            {/* Sell price (only for sellable items) */}
-            {!examineItemIsNoSell(item) && item.sellPrice != null && item.sellPrice > 0 && (
+            {/* Sell price */}
+            {item.sellPrice != null && item.sellPrice > 0 && (
               <div className="flex justify-between items-center text-sm pt-1 border-t border-slate-800/60">
                 <span className="text-slate-500">Sell Price</span>
                 <span className="text-amber-400 font-bold">{item.sellPrice.toLocaleString()}g</span>
