@@ -74,7 +74,14 @@ function formatRun(run: typeof dungeonRunsTable.$inferSelect) {
     items: floorLoot.items.map(idOrObj => {
       if (typeof idOrObj !== "string") return idOrObj;
       const item = getItemById(idOrObj);
-      return item ?? { id: idOrObj, name: idOrObj, rarity: "common", level: 1, type: "unknown", slot: null };
+      return item ?? {
+        id: idOrObj,
+        name: idOrObj,
+        rarity: "common",
+        level: 1,
+        type: idOrObj.startsWith("adorn_") ? "adornment" : "unknown",
+        slot: null,
+      };
     }),
   }));
 
@@ -646,7 +653,7 @@ router.post("/dungeons/run/advance", async (req, res) => {
       return res.status(400).json({ error: "Final floor not cleared: main boss not yet defeated" });
     }
 
-    const loot = generateDungeonLoot(character.level, run.currentFloor, run.difficulty, dungeon.minLevel, dungeon.maxLevel);
+    const loot = generateDungeonLoot(character.level, run.currentFloor, run.difficulty, dungeon.minLevel, dungeon.maxLevel, isLastFloor ? "finalboss" : (currentFloorDef.miniBossId ? "miniboss" : "normal"));
     await awardItemsToInventory(loot, character.id);
 
     // ── Gear set piece drops ──────────────────────────────────────────────────
