@@ -440,7 +440,8 @@ export default function AATreePage() {
     return acc;
   }, {});
 
-  const rows = [1, 2, 3];
+  const maxRow = allNodes.reduce((max, n) => Math.max(max, n.row), 3);
+  const rows = Array.from({ length: maxRow }, (_, i) => i + 1);
   const tierHasActive = (row: number) => allNodes.filter(n => n.row === row - 1).some(n => n.currentRank > 0);
 
   // Group tabs by type for the tab bar
