@@ -5,6 +5,11 @@ import {
   useGetWorldLeaderboard,
   useGetWorldStats,
   useGetWorldZones,
+  getGetWorldPlayersQueryKey,
+  getGetWorldEventsQueryKey,
+  getGetWorldLeaderboardQueryKey,
+  getGetWorldStatsQueryKey,
+  getGetWorldZonesQueryKey,
 } from "@workspace/api-client-react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -197,6 +202,13 @@ function GhostPortraitAvatar({ playerId, size = 32, personality, className }: {
   const [src, setSrc] = React.useState<string | null>(portraitCache.get(playerId) ?? null);
   const [loading, setLoading] = React.useState(false);
   const [failed, setFailed] = React.useState(false);
+
+  // Reset state when playerId changes (e.g. after ghost reset with new IDs)
+  React.useEffect(() => {
+    setSrc(portraitCache.get(playerId) ?? null);
+    setFailed(false);
+    setLoading(false);
+  }, [playerId]);
 
   React.useEffect(() => {
     if (src || loading || failed) return;
@@ -996,21 +1008,34 @@ export default function WorldPage() {
   const effectiveInterval = autoRefresh && !isRealtime ? POLL_INTERVAL : false;
 
   const { data: stats, isLoading: statsLoading } = useGetWorldStats({
-    query: { refetchInterval: effectiveInterval, queryKey: [] },
+    query: { refetchInterval: effectiveInterval, queryKey: getGetWorldStatsQueryKey() },
   });
   const { data: events, isLoading: eventsLoading } = useGetWorldEvents(
     { limit: 60 },
-    { query: { refetchInterval: effectiveInterval, queryKey: [] } },
+    { query: { refetchInterval: effectiveInterval, queryKey: getGetWorldEventsQueryKey({ limit: 60 }) } },
   );
   const { data: leaderboard, isLoading: lbLoading } = useGetWorldLeaderboard({
-    query: { refetchInterval: effectiveInterval, queryKey: [] },
+    query: { refetchInterval: effectiveInterval, queryKey: getGetWorldLeaderboardQueryKey() },
   });
   const { data: players, isLoading: playersLoading } = useGetWorldPlayers({
-    query: { refetchInterval: effectiveInterval, queryKey: [] },
+    query: { refetchInterval: effectiveInterval, queryKey: getGetWorldPlayersQueryKey() },
   });
   const { data: zones, isLoading: zonesLoading } = useGetWorldZones({
-    query: { refetchInterval: effectiveInterval, queryKey: [] },
+    query: { refetchInterval: effectiveInterval, queryKey: getGetWorldZonesQueryKey() },
   });
+
+  // Clear portrait cache when players list refreshes (IDs may have changed after ghost reset)
+  const prevPlayerIdsRef = React.useRef<Set<number>>(new Set());
+  React.useEffect(() => {
+    if (!players) return;
+    const newIds = new Set((players as any[]).map((p: any) => p.id));
+    const hasChangedIds = prevPlayerIdsRef.current.size !== newIds.size ||
+      [...prevPlayerIdsRef.current].some(id => !newIds.has(id));
+    if (hasChangedIds) {
+      portraitCache.clear();
+    }
+    prevPlayerIdsRef.current = newIds;
+  }, [players]);
 
   // Load rivals from server on mount
   React.useEffect(() => {
