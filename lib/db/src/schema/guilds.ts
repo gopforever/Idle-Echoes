@@ -33,7 +33,7 @@ export const guildMembersTable = pgTable("guild_members", {
 }, (t) => [
   uniqueIndex("guild_members_character_unique")
     .on(t.characterId)
-    .where(sql`${t.characterId} IS NOT NULL`),
+    .where(sql`character_id IS NOT NULL`),
 ]);
 
 export type Guild = typeof guildsTable.$inferSelect;

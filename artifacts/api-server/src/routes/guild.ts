@@ -476,6 +476,8 @@ router.post("/guild/transfer", requireAuth, async (req, res, next) => {
       return res.status(403).json({ error: "Only the guild leader can transfer leadership" });
     }
 
+    if (targetId === characterId) return res.status(400).json({ error: "Cannot transfer leadership to yourself" });
+
     const [targetMembership] = await db
       .select()
       .from(guildMembersTable)
@@ -486,7 +488,6 @@ router.post("/guild/transfer", requireAuth, async (req, res, next) => {
       .limit(1);
 
     if (!targetMembership) return res.status(404).json({ error: "Member not found in your guild" });
-    if (targetId === characterId) return res.status(400).json({ error: "Cannot transfer leadership to yourself" });
 
     // Transfer: new leader becomes leader, old leader becomes officer
     await db.update(guildMembersTable)
