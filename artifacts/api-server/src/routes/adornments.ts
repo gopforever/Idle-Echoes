@@ -112,10 +112,8 @@ router.post("/adornments/apply", async (req, res) => {
     }
 
     // Validate slotType vs gearSlot
-    if (adorn.slotType === "weapon" && !WEAPON_SLOTS.has(gearSlot) && !ARMOR_SLOTS.has(gearSlot) === false) {
-      if (!WEAPON_SLOTS.has(gearSlot)) {
-        return res.json({ success: false, message: "Weapon adornments can only be applied to weapon slots." });
-      }
+    if (adorn.slotType === "weapon" && !WEAPON_SLOTS.has(gearSlot)) {
+      return res.json({ success: false, message: "Weapon adornments can only be applied to weapon slots." });
     }
     if (adorn.slotType === "armor" && WEAPON_SLOTS.has(gearSlot)) {
       return res.json({ success: false, message: "Armor adornments cannot be applied to weapon slots." });
