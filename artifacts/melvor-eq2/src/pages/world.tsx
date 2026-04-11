@@ -196,19 +196,23 @@ function GhostPortraitAvatar({ playerId, size = 32, personality, className }: {
 }) {
   const [src, setSrc] = React.useState<string | null>(portraitCache.get(playerId) ?? null);
   const [loading, setLoading] = React.useState(false);
+  const [failed, setFailed] = React.useState(false);
 
   React.useEffect(() => {
-    if (src || loading) return;
+    if (src || loading || failed) return;
     setLoading(true);
     let active = true;
     fetch(apiUrl(`/api/world/player/${playerId}/portrait`))
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) { if (active) setFailed(true); return null; }
+        return r.json();
+      })
       .then(data => {
-        if (!active || !data.portrait) return;
+        if (!active || !data?.portrait) return;
         portraitCache.set(playerId, data.portrait);
         setSrc(data.portrait);
       })
-      .catch(() => {})
+      .catch(() => { if (active) setFailed(true); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
   }, [playerId]);
@@ -1304,6 +1308,19 @@ export default function WorldPage() {
               {playersLoading ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                   {[...Array(8)].map((_, i) => <Skeleton key={i} className="h-40 rounded-xl" />)}
+                </div>
+              ) : !players || (Array.isArray(players) ? players : []).length === 0 ? (
+                <div className="text-center py-12 space-y-3">
+                  <div className="text-4xl">👻</div>
+                  <p className="text-slate-400 text-sm">No adventurers found in Norrath yet.</p>
+                  <button
+                    onClick={() => fetch(apiUrl("/api/admin/reset-ghosts"), { method: "POST", credentials: "include" })
+                      .then(() => window.location.reload())
+                      .catch(() => window.location.reload())}
+                    className="text-xs px-3 py-1.5 rounded border border-slate-700 text-slate-400 hover:border-amber-600 hover:text-amber-400 transition-colors"
+                  >
+                    Summon Adventurers
+                  </button>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
