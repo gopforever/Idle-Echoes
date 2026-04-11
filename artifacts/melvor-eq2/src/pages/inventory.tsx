@@ -175,6 +175,7 @@ function GearSlot({ slot, item, onClick }: { slot: string; item?: InventoryItem;
   const rs = item ? (RARITY_STYLES[item.rarity] ?? RARITY_STYLES.common) : null;
   const gs = item ? computeItemGS(item.level, item.rarity, item.slot ?? slot) : 0;
   const showGS = item != null && isGearType(item.type) && gs > 0;
+  const name = item?.name ?? "Unknown";
 
   const btn = (
     <button
@@ -191,7 +192,7 @@ function GearSlot({ slot, item, onClick }: { slot: string; item?: InventoryItem;
         <>
           <SpriteImage spriteId={item.spriteId} slot={slot} type={item.type} size={34} />
           <span className={cn("text-[8px] font-bold leading-none truncate w-full text-center px-0.5 -mt-0.5", rs!.text)}>
-            {item.name.length > 8 ? item.name.slice(0, 7) + "…" : item.name}
+            {name.length > 8 ? name.slice(0, 7) + "…" : name}
           </span>
           {showGS && (
             <span className="absolute bottom-0.5 left-0.5 text-[7px] font-black px-0.5 py-0 rounded leading-none bg-black/70 text-amber-300 border border-amber-900/60">
@@ -223,6 +224,7 @@ function ItemCell({
   onExamine?: () => void; onEquip?: () => void;
 }) {
   const rs = RARITY_STYLES[item.rarity] ?? RARITY_STYLES.common;
+  const name = item.name ?? "Unknown";
   const gs = computeItemGS(item.level, item.rarity, item.slot ?? undefined);
   const showGS = isGearType(item.type) && gs > 0;
   const isEquipable = item.type !== "material" && item.type !== "quest" && item.type !== "consumable" && item.type !== "crafting_material";
@@ -240,7 +242,7 @@ function ItemCell({
     >
       <SpriteImage spriteId={item.spriteId} slot={item.slot} type={item.type} size={32} />
       <span className={cn("text-[8px] font-semibold leading-none w-full text-center px-0.5 truncate -mt-0.5", rs.text)}>
-        {item.name.length > 9 ? item.name.slice(0, 8) + "…" : item.name}
+        {name.length > 9 ? name.slice(0, 8) + "…" : name}
       </span>
       {item.quantity && item.quantity > 1 && (
         <span className="absolute top-0.5 right-0.5 text-[9px] font-black text-white/90 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">×{item.quantity}</span>
@@ -731,12 +733,12 @@ export default function InventoryPage() {
 
   const filteredItems = allItems.filter(item => {
     const matchesTab = activeTab === "all" || item.type === activeTab || (activeTab === "armor" && ["armor", "shield"].includes(item.type));
-    const matchesFilter = !filter || item.name.toLowerCase().includes(filter.toLowerCase()) || item.type.toLowerCase().includes(filter.toLowerCase());
+    const matchesFilter = !filter || (item.name ?? "").toLowerCase().includes(filter.toLowerCase()) || item.type.toLowerCase().includes(filter.toLowerCase());
     return matchesTab && matchesFilter;
   });
 
   const filteredBagItems = gatheringBagTabItems.filter(item =>
-    !filter || item.name.toLowerCase().includes(filter.toLowerCase()) || item.type.toLowerCase().includes(filter.toLowerCase())
+    !filter || (item.name ?? "").toLowerCase().includes(filter.toLowerCase()) || item.type.toLowerCase().includes(filter.toLowerCase())
   );
 
   const padded = [...filteredItems];
