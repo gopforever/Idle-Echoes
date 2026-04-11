@@ -63,6 +63,12 @@ interface GatheringBagItem {
   itemData?: Record<string, unknown>;
 }
 
+interface BankItem {
+  id: string;
+  quantity: number;
+  [key: string]: unknown;
+}
+
 type ExperimentFocus = "attack" | "defense" | "utility";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -145,6 +151,13 @@ async function fetchGatheringBag(): Promise<GatheringBagItem[]> {
   const res = await fetch(apiUrl("/api/gathering/bag"));
   if (!res.ok) return [];
   const data = await res.json() as { items: GatheringBagItem[] };
+  return data.items ?? [];
+}
+
+async function fetchBankItems(): Promise<BankItem[]> {
+  const res = await fetch(apiUrl("/api/bank"));
+  if (!res.ok) return [];
+  const data = await res.json() as { items: BankItem[] };
   return data.items ?? [];
 }
 
@@ -232,6 +245,8 @@ function RecipeScrollCard({
 function CraftingModal({
   recipe,
   inventory,
+  bagItems,
+  bankItems,
   skillLevel,
   onClose,
   onCraft,
@@ -239,6 +254,8 @@ function CraftingModal({
 }: {
   recipe: CraftingRecipe;
   inventory: InventoryItem[];
+  bagItems: GatheringBagItem[];
+  bankItems: BankItem[];
   skillLevel: number;
   onClose: () => void;
   onCraft: (focus: ExperimentFocus, points: number) => void;
@@ -249,6 +266,14 @@ function CraftingModal({
   const [points, setPoints] = React.useState(maxPoints);
 
   const inventoryMap = new Map(inventory.map(i => [i.id, i]));
+  const modalBagMap = new Map(bagItems.map(b => [b.itemId, b]));
+  const modalBankMap = new Map(bankItems.map(b => [b.id as string, b]));
+
+  function modalTotalOwned(itemId: string): number {
+    return (inventoryMap.get(itemId)?.quantity as number ?? 0)
+      + (modalBagMap.get(itemId)?.quantity ?? 0)
+      + (modalBankMap.get(itemId)?.quantity as number ?? 0);
+  }
 
   const qualityScores: number[] = [];
   for (const ing of recipe.ingredients) {
@@ -299,15 +324,21 @@ function CraftingModal({
                 const rawData = itemData?.itemData as Record<string, unknown> | undefined;
                 const quality = (typeof rawData?.quality === "number" ? rawData.quality
                   : typeof item?.quality === "number" ? item.quality : 50);
-                const have = item?.quantity ?? 0;
-                const hasEnough = (have as number) >= ing.quantity;
+                const have = modalTotalOwned(ing.itemId);
+                const hasEnough = have >= ing.quantity;
+                const bagQty = modalBagMap.get(ing.itemId)?.quantity ?? 0;
+                const bankQty = modalBankMap.get(ing.itemId)?.quantity as number ?? 0;
                 return (
                   <div key={i} className="space-y-1">
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-slate-300">{item?.name || ing.itemId}</span>
-                      <span className={`text-xs font-mono ${hasEnough ? "text-green-400" : "text-red-400"}`}> 
-                        {String(have)}/{ing.quantity}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        {bagQty > 0 && <span className="text-blue-400 text-[10px]">+{bagQty} bag</span>}
+                        {bankQty > 0 && <span className="text-yellow-400 text-[10px]">+{bankQty} bank</span>}
+                        <span className={`text-xs font-mono ${hasEnough ? "text-green-400" : "text-red-400"}`}>
+                          {have}/{ing.quantity}
+                        </span>
+                      </div>
                     </div>
                     {item && (
                       <div className="flex items-center gap-2">
@@ -503,6 +534,9 @@ export default function CraftingPage() {
   // Gathering bag state
   const [bagItems, setBagItems] = React.useState<GatheringBagItem[]>([]);
 
+  // Bank state
+  const [bankItems, setBankItems] = React.useState<BankItem[]>([]);
+
   const loadRecipes = React.useCallback(async () => {
     setRecipesLoading(true);
     try {
@@ -536,9 +570,19 @@ export default function CraftingPage() {
     }
   }, []);
 
+  const loadBank = React.useCallback(async () => {
+    try {
+      const items = await fetchBankItems();
+      setBankItems(items);
+    } catch {
+      setBankItems([]);
+    }
+  }, []);
+
   React.useEffect(() => { loadRecipes(); }, [loadRecipes]);
   React.useEffect(() => { loadPins(); }, [loadPins]);
   React.useEffect(() => { loadBag(); }, [loadBag]);
+  React.useEffect(() => { loadBank(); }, [loadBank]);
 
   if (invLoading || skillsLoading) return <Skeleton className="h-[600px] w-full" />;
   if (!inventory || !skills) return null;
@@ -554,10 +598,13 @@ export default function CraftingPage() {
   const scrollItems = invItems.filter(i => i.type === "recipe_scroll");
   const invMap = new Map(invItems.map(i => [i.id, i]));
   const bagMap = new Map(bagItems.map(b => [b.itemId, b]));
+  const bankMap = new Map(bankItems.map(b => [b.id as string, b]));
 
-  // Combined total = inventory + gathering bag
+  // Combined total = inventory + gathering bag + bank
   function totalOwned(itemId: string): number {
-    return (invMap.get(itemId)?.quantity as number ?? 0) + (bagMap.get(itemId)?.quantity ?? 0);
+    return (invMap.get(itemId)?.quantity as number ?? 0)
+      + (bagMap.get(itemId)?.quantity ?? 0)
+      + (bankMap.get(itemId)?.quantity as number ?? 0);
   }
 
   const canCraft = (recipe: CraftingRecipe): boolean => {
@@ -633,6 +680,7 @@ export default function CraftingPage() {
         queryClient.invalidateQueries({ queryKey: getGetCharacterQueryKey() });
         await loadRecipes();
         await loadBag();
+        await loadBank();
       } else {
         toast.error(res.message);
         setSelectedRecipe(null);
@@ -709,11 +757,13 @@ export default function CraftingPage() {
                         const invItem = invMap.get(ing.itemId);
                         const name = invItem?.name as string | undefined ?? ing.itemId.replace(/_/g, " ");
                         const bagQty = bagMap.get(ing.itemId)?.quantity ?? 0;
+                        const bankQty = bankMap.get(ing.itemId)?.quantity as number ?? 0;
                         return (
                           <div key={i} className="flex justify-between items-center text-xs">
                             <span className="text-slate-400">{name}</span>
                             <div className="flex items-center gap-2">
                               {bagQty > 0 && <span className="text-blue-400 text-[10px]">+{bagQty} bag</span>}
+                              {bankQty > 0 && <span className="text-yellow-400 text-[10px]">+{bankQty} bank</span>}
                               <span className={hasEnough ? "text-green-400" : "text-red-400"}>
                                 {have}/{ing.quantity}
                               </span>
@@ -856,6 +906,7 @@ export default function CraftingPage() {
                       const hasEnough = have >= ing.quantity;
                       const invItem = invMap.get(ing.itemId);
                       const bagQty = bagMap.get(ing.itemId)?.quantity ?? 0;
+                      const bankQty = bankMap.get(ing.itemId)?.quantity as number ?? 0;
                       const itemData = invItem as Record<string, unknown> | undefined;
                       const rawData = itemData?.itemData as Record<string, unknown> | undefined;
                       const quality = typeof rawData?.quality === "number" ? rawData.quality
@@ -870,7 +921,8 @@ export default function CraftingPage() {
                           </div>
                           <div className="flex items-center gap-2">
                             {bagQty > 0 && <span className="text-blue-400 text-[10px] flex items-center gap-0.5">+{bagQty}<Package className="w-2.5 h-2.5 inline" /></span>}
-                            <span className={hasEnough ? "text-green-400" : "text-red-400"}>  
+                            {bankQty > 0 && <span className="text-yellow-400 text-[10px]">+{bankQty} bank</span>}
+                            <span className={hasEnough ? "text-green-400" : "text-red-400"}>
                               {have}/{ing.quantity}
                             </span>
                           </div>
@@ -890,6 +942,8 @@ export default function CraftingPage() {
         <CraftingModal
           recipe={selectedRecipe}
           inventory={invItems}
+          bagItems={bagItems}
+          bankItems={bankItems}
           skillLevel={(skills.find(s => s.id === selectedRecipe.requiredSkillId)?.level ?? 1)}
           onClose={() => setSelectedRecipe(null)}
           onCraft={handleCraft}
