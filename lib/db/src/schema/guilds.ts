@@ -1,4 +1,5 @@
-import { pgTable, text, serial, real, integer, boolean, timestamp, uniqueIndex, sql } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, real, integer, boolean, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
 export const guildsTable = pgTable("guilds", {
   id: serial("id").primaryKey(),
