@@ -139,19 +139,23 @@ const portraitCacheDash = new Map<number, string>();
 function GhostPortraitDash({ playerId, personality }: { playerId: number; personality?: string }) {
   const [src, setSrc] = React.useState<string | null>(portraitCacheDash.get(playerId) ?? null);
   const [loading, setLoading] = React.useState(false);
+  const [failed, setFailed] = React.useState(false);
 
   React.useEffect(() => {
-    if (src || loading) return;
+    if (src || loading || failed) return;
     setLoading(true);
     let active = true;
     fetch(apiUrl(`/api/world/player/${playerId}/portrait`))
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) { if (active) setFailed(true); return null; }
+        return r.json();
+      })
       .then(data => {
-        if (!active || !data.portrait) return;
+        if (!active || !data?.portrait) return;
         portraitCacheDash.set(playerId, data.portrait);
         setSrc(data.portrait);
       })
-      .catch(() => {})
+      .catch(() => { if (active) setFailed(true); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
   }, [playerId]);

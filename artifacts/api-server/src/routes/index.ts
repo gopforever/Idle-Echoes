@@ -19,7 +19,7 @@ import heroicRouter from "./heroic.js";
 import adornmentsRouter from "./adornments.js";
 import collectionsRouter from "./collections.js";
 import mountsRouter from "./mounts.js";
-import worldRouter from "./world.js";
+import worldRouter, { worldPublicRouter } from "./world.js";
 import gmRouter from "./gm.js";
 import dungeonsRouter from "./dungeons.js";
 import raidsRouter from "./raids.js";
@@ -41,6 +41,7 @@ const router: IRouter = Router();
 router.use(healthRouter);
 router.use(authRouter);
 router.use(leaderboardRouter);
+router.use(worldPublicRouter);
 
 // Character creation options are public (so users can browse before picking a char)
 // Character creation POST requires login (handled inside creationRouter)
