@@ -1,6 +1,5 @@
-import OpenAI from "openai";
 import { Buffer } from "node:buffer";
-export declare const openai: OpenAI;
+export declare const openai: any;
 export type AudioFormat = "wav" | "mp3" | "webm" | "mp4" | "ogg" | "unknown";
 /**
  * Detect audio format from buffer magic bytes.
