@@ -1,7 +1,7 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { charactersTable, inventoryTable, skillsTable, gatheringSessionsTable, gatheringBagItemsTable } from "@workspace/db/schema";
-import { eq, and, sql } from "drizzle-orm";
+import { charactersTable, inventoryTable, skillsTable, gatheringSessionsTable, gatheringBagItemsTable, aaPointsTable } from "@workspace/db/schema";
+import { eq, and, sql, gt } from "drizzle-orm";
 import { getOrCreateCharacter } from "./character.js";
 import { getOrCreateSkills } from "./skills.js";
 import {
@@ -12,8 +12,13 @@ import {
   type GatheringNode,
 } from "../lib/gameData.js";
 import { checkAndUnlockAchievements } from "./achievements.js";
+import { applyAABonuses } from "../lib/eq2Formulas.js";
+import { ALL_AA_TABS } from "../lib/eq2Data.js";
 
 const router: IRouter = Router();
+
+const ALL_AA_NODES_GATHERING = ALL_AA_TABS.flatMap(tab => tab.nodes);
+const AA_NODE_DEF_MAP_GATHERING = new Map(ALL_AA_NODES_GATHERING.map(n => [n.id, n]));
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -236,6 +241,16 @@ router.get("/gathering/status", async (req, res) => {
     const skills = await db.select().from(skillsTable).where(eq(skillsTable.characterId, characterId));
     const skillLevelMap = new Map(skills.map(s => [s.skillId, s.level]));
 
+    // ── Load AA bonuses for gathering speed ──────────────────────────────────
+    const aaRows = await db.select().from(aaPointsTable)
+      .where(and(eq(aaPointsTable.characterId, characterId), gt(aaPointsTable.rank, 0)));
+    const aaInvested = aaRows.map(r => {
+      const def = AA_NODE_DEF_MAP_GATHERING.get(r.nodeId);
+      if (!def) return null;
+      return { effect: def.effect, currentRank: r.rank, effectValue: def.effectValue, effectPerRank: def.effectPerRank };
+    }).filter((n): n is NonNullable<typeof n> => n !== null);
+    const aaBonuses = applyAABonuses(aaInvested);
+
     const sessions = await db.select().from(gatheringSessionsTable)
       .where(and(
         eq(gatheringSessionsTable.characterId, character.id),
@@ -260,7 +275,9 @@ router.get("/gathering/status", async (req, res) => {
 
       const skillLevel = skillLevelMap.get(session.skillId) ?? 1;
       const elapsedMs = now.getTime() - new Date(session.lastTickAt).getTime();
-      const ticksElapsed = Math.floor(elapsedMs / (node.gatherTimeSeconds * 1000));
+      // Apply AA gatheringSpeed bonus: speed% bonus reduces effective gather interval
+      const effectiveGatherMs = (node.gatherTimeSeconds * 1000) / Math.max(0.1, 1 + aaBonuses.gatheringSpeed / 100);
+      const ticksElapsed = Math.floor(elapsedMs / effectiveGatherMs);
 
       if (ticksElapsed <= 0) {
         allYields.push({ skillId: session.skillId, nodeId: session.nodeId, items: [], rareItemIds: [] });
@@ -268,7 +285,7 @@ router.get("/gathering/status", async (req, res) => {
       }
 
       const capTicks = Math.min(ticksElapsed, 50);
-      const newLastTickAt = new Date(new Date(session.lastTickAt).getTime() + capTicks * node.gatherTimeSeconds * 1000);
+      const newLastTickAt = new Date(new Date(session.lastTickAt).getTime() + capTicks * effectiveGatherMs);
 
       // Optimistic locking: only process if lastTickAt hasn't been updated by a concurrent request
       const lastTickAtSnapshot = session.lastTickAt;
@@ -352,15 +369,16 @@ router.get("/gathering/status", async (req, res) => {
       const updated = sessionUpdates.get(s.id);
       const effectiveLastTickAt = updated ? updated.lastTickAt : new Date(s.lastTickAt);
       const effectiveTotalGathered = updated ? updated.totalGathered : s.totalGathered;
+      const effectiveGatherTimeSec = node ? (node.gatherTimeSeconds / Math.max(0.1, 1 + aaBonuses.gatheringSpeed / 100)) : 10;
       return {
         skillId: s.skillId,
         nodeId: s.nodeId,
         nodeName: node?.name ?? s.nodeId,
         nodeIcon: node?.icon ?? "⛏️",
-        gatherTimeSeconds: node?.gatherTimeSeconds ?? 10,
+        gatherTimeSeconds: effectiveGatherTimeSec,
         skillLevel: skill?.level ?? 1,
         nextTickIn: node
-          ? Math.max(0, node.gatherTimeSeconds - Math.floor((now.getTime() - effectiveLastTickAt.getTime()) / 1000) % node.gatherTimeSeconds)
+          ? Math.max(0, effectiveGatherTimeSec - Math.floor((now.getTime() - effectiveLastTickAt.getTime()) / 1000) % effectiveGatherTimeSec)
           : 0,
         totalGathered: effectiveTotalGathered,
       };
