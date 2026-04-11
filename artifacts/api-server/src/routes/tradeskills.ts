@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { inventoryTable, knownRecipesTable, recipesTable, craftQueueTable, charactersTable } from "@workspace/db/schema";
+import { inventoryTable, knownRecipesTable, recipesTable, craftQueueTable, charactersTable, gatheringBagItemsTable, bankItemsTable } from "@workspace/db/schema";
 import { eq, and, sql, lte, inArray, isNull } from "drizzle-orm";
 import { getOrCreateCharacter } from "./character.js";
 import { TRADESKILL_MATERIALS, APPRENTICE_RECIPES, MASTER_RECIPES, JOURNEYMAN_TS_RECIPES, ALL_MASTER_RECIPE_NAMES, TRADESKILL_CLASSES, type TradeskillClass } from "../lib/tradeskillData.js";
@@ -147,56 +147,100 @@ function qualityLabel(avgMult: number): "poor" | "normal" | "fine" | "excellent"
 
 // ─── Inventory helpers ────────────────────────────────────────────────────────
 
-/** Returns a map of itemId → total quantity in inventory */
-async function getInventoryMap(characterId: number): Promise<Map<string, number>> {
-  const rows = await db
-    .select({ itemId: inventoryTable.itemId, quantity: inventoryTable.quantity })
-    .from(inventoryTable)
-    .where(eq(inventoryTable.characterId, characterId));
+/**
+ * Returns a map of itemId → total quantity across inventory, gathering bag, and bank.
+ */
+async function getTotalItemMap(characterId: number): Promise<Map<string, number>> {
+  const [invRows, bagRows, bankRows] = await Promise.all([
+    db
+      .select({ itemId: inventoryTable.itemId, quantity: inventoryTable.quantity })
+      .from(inventoryTable)
+      .where(eq(inventoryTable.characterId, characterId)),
+    db
+      .select({ itemId: gatheringBagItemsTable.itemId, quantity: gatheringBagItemsTable.quantity })
+      .from(gatheringBagItemsTable)
+      .where(eq(gatheringBagItemsTable.characterId, characterId)),
+    db
+      .select({ itemId: bankItemsTable.itemId, quantity: bankItemsTable.quantity })
+      .from(bankItemsTable)
+      .where(eq(bankItemsTable.characterId, characterId)),
+  ]);
   const map = new Map<string, number>();
-  for (const row of rows) {
+  for (const row of [...invRows, ...bagRows, ...bankRows]) {
     map.set(row.itemId, (map.get(row.itemId) ?? 0) + row.quantity);
   }
   return map;
 }
 
 /**
- * Deduct ingredients from character inventory.
- * Returns false if insufficient materials (no partial deduction).
+ * Deduct ingredients from inventory first, then gathering bag, then bank.
+ * Returns false if insufficient materials across all sources (no partial deduction).
  */
 async function deductIngredients(
   characterId: number,
   ingredients: Array<{ itemId: string; quantity: number }>,
 ): Promise<boolean> {
-  // First verify totals are available
-  const invMap = await getInventoryMap(characterId);
+  // Verify totals are available across all three sources before touching anything
+  const totalMap = await getTotalItemMap(characterId);
   for (const ing of ingredients) {
-    if ((invMap.get(ing.itemId) ?? 0) < ing.quantity) return false;
+    if ((totalMap.get(ing.itemId) ?? 0) < ing.quantity) return false;
   }
 
-  // Deduct each ingredient
+  // Deduct each ingredient: inventory → gathering bag → bank
   for (const ing of ingredients) {
     let remaining = ing.quantity;
-    const rows = await db
-      .select()
-      .from(inventoryTable)
-      .where(
-        and(
-          eq(inventoryTable.characterId, characterId),
-          eq(inventoryTable.itemId, ing.itemId),
-        ),
-      );
-    for (const row of rows) {
-      if (remaining <= 0) break;
-      if (row.quantity <= remaining) {
-        remaining -= row.quantity;
-        await db.delete(inventoryTable).where(eq(inventoryTable.id, row.id));
-      } else {
-        await db
-          .update(inventoryTable)
-          .set({ quantity: row.quantity - remaining })
-          .where(eq(inventoryTable.id, row.id));
-        remaining = 0;
+
+    // 1. Drain from inventory
+    if (remaining > 0) {
+      const rows = await db
+        .select()
+        .from(inventoryTable)
+        .where(and(eq(inventoryTable.characterId, characterId), eq(inventoryTable.itemId, ing.itemId)));
+      for (const row of rows) {
+        if (remaining <= 0) break;
+        if (row.quantity <= remaining) {
+          remaining -= row.quantity;
+          await db.delete(inventoryTable).where(eq(inventoryTable.id, row.id));
+        } else {
+          await db.update(inventoryTable).set({ quantity: row.quantity - remaining }).where(eq(inventoryTable.id, row.id));
+          remaining = 0;
+        }
+      }
+    }
+
+    // 2. Drain from gathering bag
+    if (remaining > 0) {
+      const [bagRow] = await db
+        .select()
+        .from(gatheringBagItemsTable)
+        .where(and(eq(gatheringBagItemsTable.characterId, characterId), eq(gatheringBagItemsTable.itemId, ing.itemId)))
+        .limit(1);
+      if (bagRow) {
+        const take = Math.min(bagRow.quantity, remaining);
+        remaining -= take;
+        if (bagRow.quantity <= take) {
+          await db.delete(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.id, bagRow.id));
+        } else {
+          await db.update(gatheringBagItemsTable).set({ quantity: bagRow.quantity - take }).where(eq(gatheringBagItemsTable.id, bagRow.id));
+        }
+      }
+    }
+
+    // 3. Drain from bank
+    if (remaining > 0) {
+      const [bankRow] = await db
+        .select()
+        .from(bankItemsTable)
+        .where(and(eq(bankItemsTable.characterId, characterId), eq(bankItemsTable.itemId, ing.itemId)))
+        .limit(1);
+      if (bankRow) {
+        const take = Math.min(bankRow.quantity, remaining);
+        remaining -= take;
+        if (bankRow.quantity <= take) {
+          await db.delete(bankItemsTable).where(eq(bankItemsTable.id, bankRow.id));
+        } else {
+          await db.update(bankItemsTable).set({ quantity: bankRow.quantity - take }).where(eq(bankItemsTable.id, bankRow.id));
+        }
       }
     }
   }
@@ -601,15 +645,15 @@ router.get("/tradeskills/recipes", async (req, res) => {
       .from(recipesTable)
       .where(inArray(recipesTable.id, recipeIds));
 
-    // Get inventory map for have/need counts
-    const invMap = await getInventoryMap(characterId);
+    // Get total item counts across inventory, gathering bag, and bank
+    const totalItemMap = await getTotalItemMap(characterId);
 
     const result = recipes.map(recipe => {
       const ingredients = recipe.ingredients as Array<{ itemId: string; quantity: number }>;
       const ingredientsWithCounts = ingredients.map(ing => ({
         ...ing,
-        have: invMap.get(ing.itemId) ?? 0,
-        canCraft: (invMap.get(ing.itemId) ?? 0) >= ing.quantity,
+        have: totalItemMap.get(ing.itemId) ?? 0,
+        canCraft: (totalItemMap.get(ing.itemId) ?? 0) >= ing.quantity,
       }));
       const canCraft = ingredientsWithCounts.every(i => i.canCraft);
 
