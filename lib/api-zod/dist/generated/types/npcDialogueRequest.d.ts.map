@@ -1,1 +1,0 @@
-{"version":3,"file":"npcDialogueRequest.d.ts","sourceRoot":"","sources":["../../../src/generated/types/npcDialogueRequest.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AAEH,MAAM,WAAW,kBAAkB;IACjC,OAAO,EAAE,MAAM,CAAC;IAChB,OAAO,CAAC,EAAE,MAAM,CAAC;IACjB,aAAa,EAAE,MAAM,CAAC;IACtB,OAAO,CAAC,EAAE,MAAM,CAAC;CAClB"}
