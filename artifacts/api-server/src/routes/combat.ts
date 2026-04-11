@@ -781,6 +781,16 @@ router.post("/combat/tick", async (req, res) => {
       await db.insert(combatLogTable).values({ characterId, tick: newTick, message: stunMsg, type: "info" });
     }
 
+    // ── Lifesteal AA proc ─────────────────────────────────────────────────────
+    if (aaBonuses.lifestealPct > 0 && playerDamageDealt > 0 && playerHp > 0 && playerHp < maxHp) {
+      const lifestealAmt = Math.floor(playerDamageDealt * aaBonuses.lifestealPct / 100);
+      if (lifestealAmt > 0) {
+        playerHp = Math.min(maxHp, playerHp + lifestealAmt);
+        floatEvents.push({ value: lifestealAmt, type: "heal" });
+        await db.insert(combatLogTable).values({ characterId, tick: newTick, message: `🩸 Life Drain: +${lifestealAmt} HP`, type: "heal", value: lifestealAmt });
+      }
+    }
+
     // ── Ghost party bonus damage (Scout/Mage ghosts deal bonus damage) ────────
     if (partyContrib.bonusDamage > 0 && enemyHp > 0) {
       enemyHp = Math.max(0, enemyHp - partyContrib.bonusDamage);
@@ -903,7 +913,8 @@ router.post("/combat/tick", async (req, res) => {
       // Gold with AA gold bonus
       const baseGold = Math.floor(enemy.goldMin + Math.random() * (enemy.goldMax - enemy.goldMin));
       goldGained = Math.floor(baseGold * (1 + aaBonuses.goldBonus / 100));
-      xpGained = calculateXpGain(enemy.xpReward, character.level, enemy.level, aaBonuses.xpBonus);
+      xpGained = calculateXpGain(enemy.xpReward, character.level, enemy.level,
+        aaBonuses.xpBonus + (enemy.isBoss ? aaBonuses.bossXpBonus : 0));
 
       if (aaBonuses.goldBonus > 0) {
         await db.insert(combatLogTable).values({ characterId, tick: newTick, message: `💰 Gold Bonus (+${aaBonuses.goldBonus}%): ${goldGained}g!`, type: "info" });
@@ -1023,8 +1034,9 @@ router.post("/combat/tick", async (req, res) => {
       const aaXpRatio = Math.max(0, Math.min(100, character.aaXpRatio ?? 0));
       const aaXpDiverted = Math.floor(xpGained * aaXpRatio / 100);
       const levelXpGained = xpGained - aaXpDiverted;
-      // 1 AA point per 100 diverted XP (floored; remainder carries into future kills via level-up bonus)
-      const aaPtsFromRatio = Math.floor(aaXpDiverted / 100);
+      // 1 AA point per cost-adjusted XP (aaXpCostReduction reduces the cost per point)
+      const aaXpCostPerPt = Math.max(1, Math.round(100 * (1 - aaBonuses.aaXpCostReduction / 100)));
+      const aaPtsFromRatio = Math.floor(aaXpDiverted / aaXpCostPerPt);
 
       const xpMsg = aaXpRatio > 0
         ? `✨ Gained ${levelXpGained} XP, ${goldGained}g (+${aaPtsFromRatio > 0 ? aaPtsFromRatio + " AA" : aaXpDiverted + " AA XP"} from ${aaXpRatio}% ratio).`
@@ -1547,6 +1559,16 @@ router.post("/combat/tick", async (req, res) => {
       const healMsg = `💊 Auto-heal: +${healAmt} HP (20 power)`;
       combatMessages.push(healMsg);
       await db.insert(combatLogTable).values({ characterId, tick: newTick, message: healMsg, type: "heal", value: healAmt });
+    }
+
+    // ── HP Regen AA proc ──────────────────────────────────────────────────────
+    if (aaBonuses.hpRegen > 0 && playerHp > 0 && playerHp < maxHp) {
+      const regenAmt = Math.min(aaBonuses.hpRegen, maxHp - playerHp);
+      if (regenAmt > 0) {
+        playerHp = Math.min(maxHp, playerHp + regenAmt);
+        floatEvents.push({ value: regenAmt, type: "heal" });
+        await db.insert(combatLogTable).values({ characterId, tick: newTick, message: `💚 HP Regen: +${regenAmt} HP`, type: "heal", value: regenAmt });
+      }
     }
 
     // ── Auto-potions ──────────────────────────────────────────────────────────

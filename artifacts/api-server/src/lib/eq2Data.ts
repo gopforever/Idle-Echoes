@@ -1641,6 +1641,12 @@ export const AA_TABS: AATabDefinition[] = [
       { id: "swift_footing", name: "Swift Footing", description: "Increases haste by 1% per rank", maxRank: 5, pointsPerRank: 1, effect: "haste", effectValue: 1, effectPerRank: 1, requires: ["focus"], row: 2, col: 2, icon: "🏃" },
       { id: "gilded_touch", name: "Gilded Touch", description: "Increases gold earned from kills by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "gold_bonus", effectValue: 5, effectPerRank: 5, requires: ["swift_footing"], row: 3, col: 2, icon: "💰" },
       { id: "xp_mastery", name: "Mastery of Learning", description: "Increases XP earned by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "xp_bonus", effectValue: 3, effectPerRank: 3, requires: ["resilience"], row: 3, col: 1, icon: "📚" },
+      // ── Tier 2: unlocked by reaching row 3 nodes ──
+      { id: "veteran_knowledge", name: "Veteran's Knowledge", description: "Reduces AA XP cost per point by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "aa_xp_cost_reduction", effectValue: 5, effectPerRank: 5, requires: ["xp_mastery", "gilded_touch"], row: 4, col: 1, icon: "🎓" },
+      { id: "battle_hardened_body", name: "Battle-Hardened Body", description: "Increases max HP by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "max_hp", effectValue: 2, effectPerRank: 2, requires: ["xp_mastery", "gilded_touch"], row: 4, col: 2, icon: "🦾" },
+      { id: "iron_mind", name: "Iron Mind", description: "Increases max power by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "max_power", effectValue: 2, effectPerRank: 2, requires: ["xp_mastery", "gilded_touch"], row: 4, col: 3, icon: "🧠" },
+      { id: "combat_mastery", name: "Combat Mastery", description: "Increases XP gained from boss kills by 10% per rank", maxRank: 5, pointsPerRank: 1, effect: "boss_xp_bonus", effectValue: 10, effectPerRank: 10, requires: ["veteran_knowledge"], row: 5, col: 1, icon: "⚔️" },
+      { id: "legendary_will", name: "Legendary Will", description: "Increases XP earned by an additional 3% per rank", maxRank: 3, pointsPerRank: 1, effect: "xp_bonus", effectValue: 3, effectPerRank: 3, requires: ["battle_hardened_body", "iron_mind"], row: 5, col: 2, icon: "🌟" },
     ]
   },
 ];
@@ -1655,6 +1661,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "g_iron_bastion", name: "Iron Bastion", description: "Increases avoidance by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "avoidance", effectValue: 2, effectPerRank: 2, requires: ["g_shield_mastery"], row: 2, col: 1, icon: "🔰" },
     { id: "g_stalwart", name: "Stalwart Defense", description: "Reduces all damage taken by 2% per rank", maxRank: 3, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 2, effectPerRank: 2, requires: ["g_stand_firm"], row: 2, col: 2, icon: "⚓" },
     { id: "g_indomitable", name: "Indomitable", description: "Ward absorbs 8% more damage per rank", maxRank: 3, pointsPerRank: 2, effect: "ward_absorb", effectValue: 8, effectPerRank: 8, requires: ["g_iron_bastion", "g_stalwart"], row: 3, col: 1, icon: "🏰" },
+    { id: "g_sentinel_vigil", name: "Sentinel's Vigil", description: "Regenerate 3 HP per combat tick per rank through steadfast endurance", maxRank: 3, pointsPerRank: 2, effect: "hp_regen", effectValue: 3, effectPerRank: 3, requires: ["g_indomitable"], row: 4, col: 1, icon: "🕯️" },
   ]},
   // ── BERSERKER ──
   { id: "berserker_class", name: "Path of Rage", archetype: "Fighter", classId: "berserker", tabType: "class", nodes: [
@@ -1663,6 +1670,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "bz_carnage", name: "Carnage", description: "Increases extra attack chance by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 5, effectPerRank: 5, requires: ["bz_blood_frenzy"], row: 2, col: 1, icon: "💀" },
     { id: "bz_swift_rage", name: "Swift Rage", description: "Increases haste by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "haste", effectValue: 2, effectPerRank: 2, requires: ["bz_raging_strikes"], row: 2, col: 2, icon: "🏃" },
     { id: "bz_executioner", name: "Executioner", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: ["bz_carnage", "bz_swift_rage"], row: 3, col: 1, icon: "🪓" },
+    { id: "bz_bloodlust_surge", name: "Bloodlust Surge", description: "2% of melee damage dealt is returned as HP per rank", maxRank: 3, pointsPerRank: 2, effect: "lifesteal_pct", effectValue: 2, effectPerRank: 2, requires: ["bz_executioner"], row: 4, col: 1, icon: "🔴" },
   ]},
   // ── PALADIN ──
   { id: "paladin_class", name: "Sacred Oath", archetype: "Fighter", classId: "paladin", tabType: "class", nodes: [
@@ -1671,6 +1679,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "pa_sacred_ward", name: "Sacred Ward", description: "Increases ward absorption by 6% per rank", maxRank: 3, pointsPerRank: 1, effect: "ward_absorb", effectValue: 6, effectPerRank: 6, requires: ["pa_holy_armor"], row: 2, col: 1, icon: "🔰" },
     { id: "pa_righteous_fury", name: "Righteous Fury", description: "Increases critical hit chance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: ["pa_divine_strike"], row: 2, col: 2, icon: "😤" },
     { id: "pa_avatar_light", name: "Avatar of Light", description: "Increases divine damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "divine_damage", effectValue: 10, effectPerRank: 10, requires: ["pa_sacred_ward", "pa_righteous_fury"], row: 3, col: 1, icon: "🌟" },
+    { id: "pa_sacred_bulwark", name: "Sacred Bulwark", description: "Divine blessing restores 2 HP per combat tick per rank", maxRank: 3, pointsPerRank: 2, effect: "hp_regen", effectValue: 2, effectPerRank: 2, requires: ["pa_avatar_light"], row: 4, col: 1, icon: "🕊️" },
   ]},
   // ── SHADOWKNIGHT ──
   { id: "shadowknight_class", name: "Dark Covenant", archetype: "Fighter", classId: "shadowknight", tabType: "class", nodes: [
@@ -1679,6 +1688,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "sk_soul_siphon", name: "Soul Siphon", description: "Increases heal amount from life drain by 4% per rank", maxRank: 3, pointsPerRank: 1, effect: "heal_amount", effectValue: 4, effectPerRank: 4, requires: ["sk_shadow_veil"], row: 2, col: 1, icon: "🩸" },
     { id: "sk_dark_pact", name: "Dark Pact", description: "Increases critical hit bonus by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 5, effectPerRank: 5, requires: ["sk_dark_infusion"], row: 2, col: 2, icon: "📜" },
     { id: "sk_harbinger", name: "Harbinger of Death", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: ["sk_soul_siphon", "sk_dark_pact"], row: 3, col: 1, icon: "💀" },
+    { id: "sk_siphon_life", name: "Siphon Life", description: "3% of melee damage dealt is returned as HP per rank via dark life-tap", maxRank: 3, pointsPerRank: 2, effect: "lifesteal_pct", effectValue: 3, effectPerRank: 3, requires: ["sk_harbinger"], row: 4, col: 1, icon: "🕷️" },
   ]},
   // ── MONK ──
   { id: "monk_class", name: "Way of the Iron Fist", archetype: "Fighter", classId: "monk", tabType: "class", nodes: [
@@ -1687,6 +1697,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "mo_eternal_fist", name: "Eternal Fist", description: "Increases extra attack chance by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 5, effectPerRank: 5, requires: ["mo_flowing_water"], row: 2, col: 1, icon: "👊" },
     { id: "mo_chi_focus", name: "Chi Focus", description: "Reduces power costs by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "power_cost_reduction", effectValue: 5, effectPerRank: 5, requires: ["mo_iron_body"], row: 2, col: 2, icon: "🔵" },
     { id: "mo_perfect_form", name: "Perfect Form", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: ["mo_eternal_fist", "mo_chi_focus"], row: 3, col: 1, icon: "🥋" },
+    { id: "mo_iron_constitution", name: "Iron Constitution", description: "Inner discipline restores 2 HP per combat tick per rank", maxRank: 3, pointsPerRank: 2, effect: "hp_regen", effectValue: 2, effectPerRank: 2, requires: ["mo_perfect_form"], row: 4, col: 1, icon: "☯️" },
   ]},
   // ── BRUISER ──
   { id: "bruiser_class", name: "Brawler's Might", archetype: "Fighter", classId: "bruiser", tabType: "class", nodes: [
@@ -1695,6 +1706,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "br_pile_driver", name: "Pile Driver", description: "Increases crit bonus damage by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 5, effectPerRank: 5, requires: ["br_bone_crusher"], row: 2, col: 1, icon: "💥" },
     { id: "br_relentless", name: "Relentless Assault", description: "Increases double attack chance by 3% per rank", maxRank: 3, pointsPerRank: 1, effect: "double_attack", effectValue: 3, effectPerRank: 3, requires: ["br_thick_skin"], row: 2, col: 2, icon: "⚡" },
     { id: "br_unstoppable", name: "Unstoppable Force", description: "Increases melee damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 10, effectPerRank: 10, requires: ["br_pile_driver", "br_relentless"], row: 3, col: 1, icon: "🌪️" },
+    { id: "br_brawlers_grit", name: "Brawler's Grit", description: "Sheer toughness restores 1 HP per combat tick per rank", maxRank: 5, pointsPerRank: 1, effect: "hp_regen", effectValue: 1, effectPerRank: 1, requires: ["br_unstoppable"], row: 4, col: 1, icon: "🥊" },
   ]},
   // ── RANGER ──
   { id: "ranger_class", name: "Eagle's Eye", archetype: "Scout", classId: "ranger", tabType: "class", nodes: [
@@ -1703,6 +1715,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "ra_careful_aim", name: "Careful Aim", description: "Increases crit bonus damage by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 5, effectPerRank: 5, requires: ["ra_eagle_eye"], row: 2, col: 1, icon: "🏹" },
     { id: "ra_swift_shots", name: "Swift Shots", description: "Increases haste by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "haste", effectValue: 2, effectPerRank: 2, requires: ["ra_rangers_focus"], row: 2, col: 2, icon: "💨" },
     { id: "ra_deadeye", name: "Deadeye", description: "Increases critical hit chance by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "crit_chance", effectValue: 8, effectPerRank: 8, requires: ["ra_careful_aim", "ra_swift_shots"], row: 3, col: 1, icon: "👁️" },
+    { id: "ra_hunters_eye", name: "Hunter's Eye", description: "Bonus XP from defeating powerful enemies — 10% per rank for boss kills", maxRank: 3, pointsPerRank: 2, effect: "boss_xp_bonus", effectValue: 10, effectPerRank: 10, requires: ["ra_deadeye"], row: 4, col: 1, icon: "🦌" },
   ]},
   // ── ASSASSIN ──
   { id: "assassin_class", name: "Shadow's Edge", archetype: "Scout", classId: "assassin", tabType: "class", nodes: [
@@ -1711,6 +1724,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "as_lethal_strikes", name: "Lethal Strikes", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["as_death_touch"], row: 2, col: 1, icon: "☠️" },
     { id: "as_hidden_stalker", name: "Hidden Stalker", description: "Increases critical hit chance by 3% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: ["as_shadow_mastery"], row: 2, col: 2, icon: "👁️" },
     { id: "as_master_assassin", name: "Master Assassin", description: "Increases backstab damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "backstab_damage", effectValue: 12, effectPerRank: 12, requires: ["as_lethal_strikes", "as_hidden_stalker"], row: 3, col: 1, icon: "💀" },
+    { id: "as_killing_spree", name: "Killing Spree", description: "Each kill sharpens focus — earn 3% bonus XP per rank", maxRank: 3, pointsPerRank: 2, effect: "xp_bonus", effectValue: 3, effectPerRank: 3, requires: ["as_master_assassin"], row: 4, col: 1, icon: "🎭" },
   ]},
   // ── SWASHBUCKLER ──
   { id: "swashbuckler_class", name: "Rogue's Fortune", archetype: "Scout", classId: "swashbuckler", tabType: "class", nodes: [
@@ -1719,6 +1733,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "sw_riposte", name: "Riposte", description: "Increases double attack chance by 4% per rank", maxRank: 3, pointsPerRank: 1, effect: "double_attack", effectValue: 4, effectPerRank: 4, requires: ["sw_fancy_footwork"], row: 2, col: 1, icon: "🔄" },
     { id: "sw_exploit_weakness", name: "Exploit Weakness", description: "Increases crit bonus damage by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 5, effectPerRank: 5, requires: ["sw_cunning_strikes"], row: 2, col: 2, icon: "🎭" },
     { id: "sw_swashbuckling", name: "Swashbuckling Mastery", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: ["sw_riposte", "sw_exploit_weakness"], row: 3, col: 1, icon: "🏴‍☠️" },
+    { id: "sw_fortunes_favor", name: "Fortune's Favor", description: "Luck follows you — earn 8% bonus gold per rank", maxRank: 3, pointsPerRank: 2, effect: "gold_bonus", effectValue: 8, effectPerRank: 8, requires: ["sw_swashbuckling"], row: 4, col: 1, icon: "🪙" },
   ]},
   // ── BRIGAND ──
   { id: "brigand_class", name: "Criminal's Art", archetype: "Scout", classId: "brigand", tabType: "class", nodes: [
@@ -1727,6 +1742,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "bg_cheap_shot", name: "Cheap Shot", description: "Increases extra attack chance by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 5, effectPerRank: 5, requires: ["bg_pickpocket"], row: 2, col: 1, icon: "🥊" },
     { id: "bg_cutthroat", name: "Cutthroat", description: "Increases backstab damage by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "backstab_damage", effectValue: 5, effectPerRank: 5, requires: ["bg_coerce"], row: 2, col: 2, icon: "🗡️" },
     { id: "bg_criminal_mind", name: "Criminal Mastermind", description: "Increases backstab damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "backstab_damage", effectValue: 10, effectPerRank: 10, requires: ["bg_cheap_shot", "bg_cutthroat"], row: 3, col: 1, icon: "🎩" },
+    { id: "bg_underworld_connections", name: "Underworld Connections", description: "Criminal network brings 10% extra gold per rank", maxRank: 3, pointsPerRank: 2, effect: "gold_bonus", effectValue: 10, effectPerRank: 10, requires: ["bg_criminal_mind"], row: 4, col: 1, icon: "🕵️" },
   ]},
   // ── TROUBADOR ──
   { id: "troubador_class", name: "Battle Hymn", archetype: "Scout", classId: "troubador", tabType: "class", nodes: [
@@ -1735,6 +1751,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "tr_crescendo", name: "Arcane Crescendo", description: "Increases spell damage by 4% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 4, effectPerRank: 4, requires: ["tr_harmonic"], row: 2, col: 1, icon: "🌊" },
     { id: "tr_battle_march", name: "Battle March", description: "Increases melee damage by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "melee_damage", effectValue: 3, effectPerRank: 3, requires: ["tr_inspiring"], row: 2, col: 2, icon: "⚔️" },
     { id: "tr_master_bard", name: "Master Bard", description: "Increases XP earned by 5% per rank", maxRank: 3, pointsPerRank: 2, effect: "xp_bonus", effectValue: 5, effectPerRank: 5, requires: ["tr_crescendo", "tr_battle_march"], row: 3, col: 1, icon: "🎼" },
+    { id: "tr_inspiration", name: "Inspiration", description: "Songs inspire mastery — XP bonus also applies to tradeskill XP earned per rank (10%)", maxRank: 3, pointsPerRank: 2, effect: "tradeskill_xp_bonus", effectValue: 10, effectPerRank: 10, requires: ["tr_master_bard"], row: 4, col: 1, icon: "🎺" },
   ]},
   // ── DIRGE ──
   { id: "dirge_class", name: "Lament", archetype: "Scout", classId: "dirge", tabType: "class", nodes: [
@@ -1743,6 +1760,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "di_lament", name: "Lament of the Fallen", description: "Increases critical hit chance by 3% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: ["di_deaths_chorus"], row: 2, col: 1, icon: "🕯️" },
     { id: "di_anthem", name: "Anthem of War", description: "Increases melee damage by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "melee_damage", effectValue: 3, effectPerRank: 3, requires: ["di_wail"], row: 2, col: 2, icon: "⚔️" },
     { id: "di_dirge_doom", name: "Dirge of Doom", description: "Increases spell damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 8, effectPerRank: 8, requires: ["di_lament", "di_anthem"], row: 3, col: 1, icon: "🌑" },
+    { id: "di_requiem", name: "Requiem", description: "Death's song grants 5% bonus XP per rank as fallen foes empower the dirge", maxRank: 3, pointsPerRank: 2, effect: "xp_bonus", effectValue: 5, effectPerRank: 5, requires: ["di_dirge_doom"], row: 4, col: 1, icon: "🎻" },
   ]},
   // ── WIZARD ──
   { id: "wizard_class", name: "Archmage's Wrath", archetype: "Mage", classId: "wizard", tabType: "class", nodes: [
@@ -1751,6 +1769,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "wz_spell_mastery", name: "Spell Mastery", description: "Increases spell piercing by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_piercing", effectValue: 5, effectPerRank: 5, requires: ["wz_arcane_fury"], row: 2, col: 1, icon: "🌀" },
     { id: "wz_crit_focus", name: "Critical Focus", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["wz_mana_surge"], row: 2, col: 2, icon: "💥" },
     { id: "wz_archmage", name: "Archmage's Wrath", description: "Increases spell damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 12, effectPerRank: 12, requires: ["wz_spell_mastery", "wz_crit_focus"], row: 3, col: 1, icon: "🔮" },
+    { id: "wz_arcane_mastery", name: "Arcane Mastery", description: "Concentrated arcane study boosts spell crit chance by 2% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_crit_chance", effectValue: 2, effectPerRank: 2, requires: ["wz_archmage"], row: 4, col: 1, icon: "✨" },
   ]},
   // ── WARLOCK ──
   { id: "warlock_class", name: "Dark Covenant", archetype: "Mage", classId: "warlock", tabType: "class", nodes: [
@@ -1759,6 +1778,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "wl_curse_mastery", name: "Curse Mastery", description: "Reduces power costs by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "power_cost_reduction", effectValue: 5, effectPerRank: 5, requires: ["wl_dark_arts"], row: 2, col: 1, icon: "📜" },
     { id: "wl_fel_potency", name: "Fel Potency", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["wl_noxious"], row: 2, col: 2, icon: "💜" },
     { id: "wl_harbinger", name: "Harbinger", description: "Increases spell damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 12, effectPerRank: 12, requires: ["wl_curse_mastery", "wl_fel_potency"], row: 3, col: 1, icon: "🌑" },
+    { id: "wl_dark_pact_life", name: "Dark Pact of Life", description: "Dark energies drain 2% of spell damage dealt back as HP per rank", maxRank: 3, pointsPerRank: 2, effect: "lifesteal_pct", effectValue: 2, effectPerRank: 2, requires: ["wl_harbinger"], row: 4, col: 1, icon: "🕸️" },
   ]},
   // ── CONJUROR ──
   { id: "conjuror_class", name: "Summoner's Pact", archetype: "Mage", classId: "conjuror", tabType: "class", nodes: [
@@ -1767,6 +1787,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "co_elemental_bond", name: "Elemental Bond", description: "Increases extra attack chance by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 5, effectPerRank: 5, requires: ["co_summoning"], row: 2, col: 1, icon: "⚗️" },
     { id: "co_power_conduit", name: "Power Conduit", description: "Reduces power costs by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "power_cost_reduction", effectValue: 5, effectPerRank: 5, requires: ["co_arcane_feeding"], row: 2, col: 2, icon: "🔋" },
     { id: "co_master_summoner", name: "Master Summoner", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: ["co_elemental_bond", "co_power_conduit"], row: 3, col: 1, icon: "🌀" },
+    { id: "co_elemental_synergy", name: "Elemental Synergy", description: "Elemental attunement grants 5% extra attack chance per rank", maxRank: 3, pointsPerRank: 2, effect: "extra_attack_chance", effectValue: 5, effectPerRank: 5, requires: ["co_master_summoner"], row: 4, col: 1, icon: "🌋" },
   ]},
   // ── NECROMANCER ──
   { id: "necromancer_class", name: "Lich's Embrace", archetype: "Mage", classId: "necromancer", tabType: "class", nodes: [
@@ -1775,6 +1796,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "nc_deaths_touch", name: "Death's Touch", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["nc_grave_mastery"], row: 2, col: 1, icon: "🖤" },
     { id: "nc_soul_rend", name: "Soul Rend", description: "Increases spell critical chance by 3% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_crit_chance", effectValue: 3, effectPerRank: 3, requires: ["nc_life_tap"], row: 2, col: 2, icon: "😱" },
     { id: "nc_lich_lord", name: "Lich Lord", description: "Increases spell damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 12, effectPerRank: 12, requires: ["nc_deaths_touch", "nc_soul_rend"], row: 3, col: 1, icon: "👑" },
+    { id: "nc_death_harvest", name: "Death Harvest", description: "Harvesting the power of slain foes grants 10% bonus XP from boss kills per rank", maxRank: 3, pointsPerRank: 2, effect: "boss_xp_bonus", effectValue: 10, effectPerRank: 10, requires: ["nc_lich_lord"], row: 4, col: 1, icon: "☠️" },
   ]},
   // ── COERCER ──
   { id: "coercer_class", name: "Mind's Dominion", archetype: "Mage", classId: "coercer", tabType: "class", nodes: [
@@ -1783,6 +1805,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "ce_psychic_drain", name: "Psychic Drain", description: "Reduces power costs by 6% per rank", maxRank: 3, pointsPerRank: 1, effect: "power_cost_reduction", effectValue: 6, effectPerRank: 6, requires: ["ce_mental_acuity"], row: 2, col: 1, icon: "💧" },
     { id: "ce_bewildering", name: "Bewildering Gaze", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["ce_domination"], row: 2, col: 2, icon: "🌀" },
     { id: "ce_grand_coercer", name: "Grand Coercer", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: ["ce_psychic_drain", "ce_bewildering"], row: 3, col: 1, icon: "🎭" },
+    { id: "ce_mind_shatter", name: "Mind Shatter", description: "Psychic domination refines spellcraft — spell crit chance +3% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_crit_chance", effectValue: 3, effectPerRank: 3, requires: ["ce_grand_coercer"], row: 4, col: 1, icon: "💫" },
   ]},
   // ── ILLUSIONIST ──
   { id: "illusionist_class", name: "Mirror Realm", archetype: "Mage", classId: "illusionist", tabType: "class", nodes: [
@@ -1791,6 +1814,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "il_phantom_double", name: "Phantom Double", description: "Increases double attack chance by 4% per rank", maxRank: 3, pointsPerRank: 1, effect: "double_attack", effectValue: 4, effectPerRank: 4, requires: ["il_mirror_mastery"], row: 2, col: 1, icon: "👥" },
     { id: "il_arcane_veil", name: "Arcane Veil", description: "Increases ward absorption by 6% per rank", maxRank: 3, pointsPerRank: 1, effect: "ward_absorb", effectValue: 6, effectPerRank: 6, requires: ["il_prismatic_ward"], row: 2, col: 2, icon: "✨" },
     { id: "il_grand_illusion", name: "Grand Illusion", description: "Increases spell damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 8, effectPerRank: 8, requires: ["il_phantom_double", "il_arcane_veil"], row: 3, col: 1, icon: "🌀" },
+    { id: "il_reflective_shroud", name: "Reflective Shroud", description: "Illusory defenses reduce all damage taken by 2% per rank", maxRank: 3, pointsPerRank: 2, effect: "dmg_reduction", effectValue: 2, effectPerRank: 2, requires: ["il_grand_illusion"], row: 4, col: 1, icon: "🔮" },
   ]},
   // ── TEMPLAR ──
   { id: "templar_class", name: "Holy Conviction", archetype: "Priest", classId: "templar", tabType: "class", nodes: [
@@ -1799,6 +1823,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "te_healing_grace", name: "Healing Grace", description: "Reduces power costs by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "power_cost_reduction", effectValue: 5, effectPerRank: 5, requires: ["te_divine_light"], row: 2, col: 1, icon: "💚" },
     { id: "te_righteous_smite", name: "Righteous Smite", description: "Increases critical hit chance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: ["te_sacred_conviction"], row: 2, col: 2, icon: "⚡" },
     { id: "te_avatar_healing", name: "Avatar of Healing", description: "Increases heal amount by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "heal_amount", effectValue: 10, effectPerRank: 10, requires: ["te_healing_grace", "te_righteous_smite"], row: 3, col: 1, icon: "🌟" },
+    { id: "te_holy_renewal", name: "Holy Renewal", description: "Continuous divine blessing restores 3 HP per combat tick per rank", maxRank: 3, pointsPerRank: 2, effect: "hp_regen", effectValue: 3, effectPerRank: 3, requires: ["te_avatar_healing"], row: 4, col: 1, icon: "✨" },
   ]},
   // ── INQUISITOR ──
   { id: "inquisitor_class", name: "Fanatic's Zeal", archetype: "Priest", classId: "inquisitor", tabType: "class", nodes: [
@@ -1807,7 +1832,9 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "iq_will", name: "Inquisitor's Will", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["iq_fanatic"], row: 2, col: 1, icon: "💪" },
     { id: "iq_zealous_fury", name: "Zealous Fury", description: "Increases extra attack chance by 4% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 4, effectPerRank: 4, requires: ["iq_inquisition"], row: 2, col: 2, icon: "😤" },
     { id: "iq_holy_inquisitor", name: "Holy Inquisitor", description: "Increases divine damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "divine_damage", effectValue: 10, effectPerRank: 10, requires: ["iq_will", "iq_zealous_fury"], row: 3, col: 1, icon: "👑" },
+    { id: "iq_righteous_judgment", name: "Righteous Judgment", description: "Inquisitor's conviction adds 5% divine damage per rank", maxRank: 3, pointsPerRank: 2, effect: "divine_damage", effectValue: 5, effectPerRank: 5, requires: ["iq_holy_inquisitor"], row: 4, col: 1, icon: "⚖️" },
   ]},
+  // ── MYSTIC ──
   // ── MYSTIC ──
   { id: "mystic_class", name: "Spirit's Voice", archetype: "Priest", classId: "mystic", tabType: "class", nodes: [
     { id: "my_spirit_ward", name: "Spirit Ward", description: "Increases ward absorption by 7% per rank", maxRank: 3, pointsPerRank: 1, effect: "ward_absorb", effectValue: 7, effectPerRank: 7, requires: [], row: 1, col: 1, icon: "🌀" },
@@ -1815,6 +1842,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "my_bolster", name: "Bolster", description: "Increases max HP by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "max_hp", effectValue: 2, effectPerRank: 2, requires: ["my_spirit_ward"], row: 2, col: 1, icon: "💪" },
     { id: "my_spirit_wolf", name: "Spirit of the Wolf", description: "Increases haste by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "haste", effectValue: 2, effectPerRank: 2, requires: ["my_ancestral_aid"], row: 2, col: 2, icon: "🐺" },
     { id: "my_spirit_mastery", name: "Spirit Mastery", description: "Reduces damage taken by 3% per rank", maxRank: 3, pointsPerRank: 2, effect: "dmg_reduction", effectValue: 3, effectPerRank: 3, requires: ["my_bolster", "my_spirit_wolf"], row: 3, col: 1, icon: "🌟" },
+    { id: "my_ancestors_blessing", name: "Ancestor's Blessing", description: "Ancestral spirits restore 2 HP per combat tick per rank", maxRank: 3, pointsPerRank: 2, effect: "hp_regen", effectValue: 2, effectPerRank: 2, requires: ["my_spirit_mastery"], row: 4, col: 1, icon: "🌙" },
   ]},
   // ── DEFILER ──
   { id: "defiler_class", name: "Shadow Covenant", archetype: "Priest", classId: "defiler", tabType: "class", nodes: [
@@ -1823,6 +1851,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "df_shadow_ward", name: "Shadow Ward", description: "Reduces damage taken by 3% per rank", maxRank: 3, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 3, effectPerRank: 3, requires: ["df_dark_ward"], row: 2, col: 1, icon: "🛡️" },
     { id: "df_virulent_strike", name: "Virulent Strike", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["df_pandemic"], row: 2, col: 2, icon: "☠️" },
     { id: "df_master_defiler", name: "Master Defiler", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: ["df_shadow_ward", "df_virulent_strike"], row: 3, col: 1, icon: "💀" },
+    { id: "df_soul_drain", name: "Soul Drain", description: "Dark rituals drain 2% of damage dealt back as HP per rank", maxRank: 3, pointsPerRank: 2, effect: "lifesteal_pct", effectValue: 2, effectPerRank: 2, requires: ["df_master_defiler"], row: 4, col: 1, icon: "🩸" },
   ]},
   // ── WARDEN ──
   { id: "warden_class", name: "Nature's Embrace", archetype: "Priest", classId: "warden", tabType: "class", nodes: [
@@ -1831,6 +1860,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "wa_regrowth", name: "Regrowth", description: "Reduces power costs by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "power_cost_reduction", effectValue: 5, effectPerRank: 5, requires: ["wa_natures_embrace"], row: 2, col: 1, icon: "🌱" },
     { id: "wa_verdant_armor", name: "Verdant Armor", description: "Increases max HP by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "max_hp", effectValue: 3, effectPerRank: 3, requires: ["wa_thorncoat"], row: 2, col: 2, icon: "🍃" },
     { id: "wa_spirit_nature", name: "Spirit of Nature", description: "Increases heal amount by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "heal_amount", effectValue: 10, effectPerRank: 10, requires: ["wa_regrowth", "wa_verdant_armor"], row: 3, col: 1, icon: "🌳" },
+    { id: "wa_regrowth_pulse", name: "Regrowth Pulse", description: "Nature's pulse restores 4 HP per combat tick per rank", maxRank: 3, pointsPerRank: 2, effect: "hp_regen", effectValue: 4, effectPerRank: 4, requires: ["wa_spirit_nature"], row: 4, col: 1, icon: "💚" },
   ]},
   // ── FURY ──
   { id: "fury_class", name: "Tempest's Call", archetype: "Priest", classId: "fury", tabType: "class", nodes: [
@@ -1839,6 +1869,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
     { id: "fu_stormbringer", name: "Stormbringer", description: "Increases spell piercing by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_piercing", effectValue: 5, effectPerRank: 5, requires: ["fu_natures_wrath"], row: 2, col: 1, icon: "⚡" },
     { id: "fu_tempest", name: "Tempest", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["fu_cyclone"], row: 2, col: 2, icon: "🌊" },
     { id: "fu_avatar_storm", name: "Avatar of Storm", description: "Increases spell damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 12, effectPerRank: 12, requires: ["fu_stormbringer", "fu_tempest"], row: 3, col: 1, icon: "🌟" },
+    { id: "fu_storm_surge", name: "Storm Surge", description: "Tempest's crescendo raises spell crit chance by 3% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_crit_chance", effectValue: 3, effectPerRank: 3, requires: ["fu_avatar_storm"], row: 4, col: 1, icon: "🌩️" },
   ]},
 ];
 
@@ -1846,7 +1877,7 @@ export const CLASS_AA_TABS: AATabDefinition[] = [
 // One per class. Unlocks after 50 total AA spent. Choosing one path locks the other.
 // Nodes with prestigePath "left"/"right" are separated visually in the UI.
 export const PRESTIGE_TABS: AATabDefinition[] = [
-  { id: "guardian_prestige", name: "Prestige", archetype: "Fighter", classId: "guardian", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Warden's Bastion", prestigeRightName: "War General",
+  { id: "guardian_prestige", name: "Prestige", archetype: "Fighter", classId: "guardian", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Warden's Bastion", prestigeRightName: "War General",
     nodes: [
       { id: "gp_l1", name: "Fortress Stance", description: "Reduces all damage taken by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 1, icon: "🏰", prestigePath: "left" },
       { id: "gp_r1", name: "Battle General", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "⚔️", prestigePath: "right" },
@@ -1855,7 +1886,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "gp_l3", name: "Immortal Guardian", description: "Reduces all damage taken by an additional 10%", maxRank: 1, pointsPerRank: 3, effect: "dmg_reduction", effectValue: 10, effectPerRank: 0, requires: ["gp_l2"], row: 3, col: 1, icon: "🌟", prestigePath: "left" },
       { id: "gp_r3", name: "Guardian's Wrath", description: "Increases melee damage by 20%", maxRank: 1, pointsPerRank: 3, effect: "melee_damage", effectValue: 20, effectPerRank: 0, requires: ["gp_r2"], row: 3, col: 2, icon: "💫", prestigePath: "right" },
   ]},
-  { id: "berserker_prestige", name: "Prestige", archetype: "Fighter", classId: "berserker", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Endless Rage", prestigeRightName: "Tactical Fury",
+  { id: "berserker_prestige", name: "Prestige", archetype: "Fighter", classId: "berserker", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Endless Rage", prestigeRightName: "Tactical Fury",
     nodes: [
       { id: "bzp_l1", name: "Endless Rage", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 1, icon: "😡", prestigePath: "left" },
       { id: "bzp_r1", name: "War Cry", description: "Increases haste by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "haste", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 2, icon: "📣", prestigePath: "right" },
@@ -1864,7 +1895,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "bzp_l3", name: "Berserk", description: "Increases melee damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "melee_damage", effectValue: 25, effectPerRank: 0, requires: ["bzp_l2"], row: 3, col: 1, icon: "💀", prestigePath: "left" },
       { id: "bzp_r3", name: "Flurry", description: "Increases double attack chance by 20%", maxRank: 1, pointsPerRank: 3, effect: "double_attack", effectValue: 20, effectPerRank: 0, requires: ["bzp_r2"], row: 3, col: 2, icon: "⚡", prestigePath: "right" },
   ]},
-  { id: "paladin_prestige", name: "Prestige", archetype: "Fighter", classId: "paladin", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Knight of Light", prestigeRightName: "Holy Avenger",
+  { id: "paladin_prestige", name: "Prestige", archetype: "Fighter", classId: "paladin", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Knight of Light", prestigeRightName: "Holy Avenger",
     nodes: [
       { id: "pap_l1", name: "Knight's Aegis", description: "Increases mitigation by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "mitigation", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 1, icon: "🛡️", prestigePath: "left" },
       { id: "pap_r1", name: "Righteous Wrath", description: "Increases divine damage by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "divine_damage", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "⚡", prestigePath: "right" },
@@ -1873,7 +1904,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "pap_l3", name: "Bastion of Light", description: "Reduces all damage taken by 15%", maxRank: 1, pointsPerRank: 3, effect: "dmg_reduction", effectValue: 15, effectPerRank: 0, requires: ["pap_l2"], row: 3, col: 1, icon: "🌟", prestigePath: "left" },
       { id: "pap_r3", name: "Holy Fury", description: "Increases divine damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "divine_damage", effectValue: 25, effectPerRank: 0, requires: ["pap_r2"], row: 3, col: 2, icon: "💫", prestigePath: "right" },
   ]},
-  { id: "shadowknight_prestige", name: "Prestige", archetype: "Fighter", classId: "shadowknight", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Death Knight", prestigeRightName: "Shadow Lord",
+  { id: "shadowknight_prestige", name: "Prestige", archetype: "Fighter", classId: "shadowknight", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Death Knight", prestigeRightName: "Shadow Lord",
     nodes: [
       { id: "skp_l1", name: "Dark Bulwark", description: "Reduces all damage taken by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 1, icon: "🛡️", prestigePath: "left" },
       { id: "skp_r1", name: "Shadow Lord", description: "Increases spell damage by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "🌑", prestigePath: "right" },
@@ -1882,7 +1913,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "skp_l3", name: "Lich Form", description: "Reduces all damage taken by 15%", maxRank: 1, pointsPerRank: 3, effect: "dmg_reduction", effectValue: 15, effectPerRank: 0, requires: ["skp_l2"], row: 3, col: 1, icon: "💀", prestigePath: "left" },
       { id: "skp_r3", name: "Doom", description: "Increases spell damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 25, effectPerRank: 0, requires: ["skp_r2"], row: 3, col: 2, icon: "🌟", prestigePath: "right" },
   ]},
-  { id: "monk_prestige", name: "Prestige", archetype: "Fighter", classId: "monk", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Iron Monk", prestigeRightName: "Shadow Dancer",
+  { id: "monk_prestige", name: "Prestige", archetype: "Fighter", classId: "monk", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Iron Monk", prestigeRightName: "Shadow Dancer",
     nodes: [
       { id: "mop_l1", name: "Iron Skin", description: "Reduces all damage taken by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 1, icon: "⚙️", prestigePath: "left" },
       { id: "mop_r1", name: "Ghost Step", description: "Increases avoidance by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "avoidance", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "👻", prestigePath: "right" },
@@ -1891,7 +1922,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "mop_l3", name: "Iron Fortress", description: "Reduces all damage taken by 15%", maxRank: 1, pointsPerRank: 3, effect: "dmg_reduction", effectValue: 15, effectPerRank: 0, requires: ["mop_l2"], row: 3, col: 1, icon: "🏰", prestigePath: "left" },
       { id: "mop_r3", name: "Death Blossom", description: "Increases extra attack chance by 20%", maxRank: 1, pointsPerRank: 3, effect: "extra_attack_chance", effectValue: 20, effectPerRank: 0, requires: ["mop_r2"], row: 3, col: 2, icon: "🌸", prestigePath: "right" },
   ]},
-  { id: "bruiser_prestige", name: "Prestige", archetype: "Fighter", classId: "bruiser", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Juggernaut", prestigeRightName: "Street Fighter",
+  { id: "bruiser_prestige", name: "Prestige", archetype: "Fighter", classId: "bruiser", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Juggernaut", prestigeRightName: "Street Fighter",
     nodes: [
       { id: "brp_l1", name: "Juggernaut", description: "Increases max HP by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "max_hp", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "🏋️", prestigePath: "left" },
       { id: "brp_r1", name: "Street Fighter", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "🥊", prestigePath: "right" },
@@ -1900,7 +1931,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "brp_l3", name: "Living Fortress", description: "Increases max HP by 25%", maxRank: 1, pointsPerRank: 3, effect: "max_hp", effectValue: 25, effectPerRank: 0, requires: ["brp_l2"], row: 3, col: 1, icon: "🏰", prestigePath: "left" },
       { id: "brp_r3", name: "Knockout", description: "Increases melee damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "melee_damage", effectValue: 25, effectPerRank: 0, requires: ["brp_r2"], row: 3, col: 2, icon: "⭐", prestigePath: "right" },
   ]},
-  { id: "ranger_prestige", name: "Prestige", archetype: "Scout", classId: "ranger", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Hawkeye", prestigeRightName: "Trailblazer",
+  { id: "ranger_prestige", name: "Prestige", archetype: "Scout", classId: "ranger", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Hawkeye", prestigeRightName: "Trailblazer",
     nodes: [
       { id: "rap_l1", name: "Hawkeye", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "🦅", prestigePath: "left" },
       { id: "rap_r1", name: "Rapid Fire", description: "Increases haste by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "haste", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 2, icon: "🏹", prestigePath: "right" },
@@ -1909,7 +1940,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "rap_l3", name: "True Shot", description: "Increases crit bonus damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "crit_bonus", effectValue: 25, effectPerRank: 0, requires: ["rap_l2"], row: 3, col: 1, icon: "🌟", prestigePath: "left" },
       { id: "rap_r3", name: "Arrow Storm", description: "Increases double attack chance by 20%", maxRank: 1, pointsPerRank: 3, effect: "double_attack", effectValue: 20, effectPerRank: 0, requires: ["rap_r2"], row: 3, col: 2, icon: "🌪️", prestigePath: "right" },
   ]},
-  { id: "assassin_prestige", name: "Prestige", archetype: "Scout", classId: "assassin", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Death's Hand", prestigeRightName: "Ghost Blade",
+  { id: "assassin_prestige", name: "Prestige", archetype: "Scout", classId: "assassin", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Death's Hand", prestigeRightName: "Ghost Blade",
     nodes: [
       { id: "asp_l1", name: "Death's Hand", description: "Increases backstab damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "backstab_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "☠️", prestigePath: "left" },
       { id: "asp_r1", name: "Ghost Blade", description: "Increases avoidance by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "avoidance", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "👻", prestigePath: "right" },
@@ -1918,7 +1949,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "asp_l3", name: "One Shot", description: "Increases backstab damage by 30%", maxRank: 1, pointsPerRank: 3, effect: "backstab_damage", effectValue: 30, effectPerRank: 0, requires: ["asp_l2"], row: 3, col: 1, icon: "💀", prestigePath: "left" },
       { id: "asp_r3", name: "Untouchable", description: "Increases avoidance by 20%", maxRank: 1, pointsPerRank: 3, effect: "avoidance", effectValue: 20, effectPerRank: 0, requires: ["asp_r2"], row: 3, col: 2, icon: "🌟", prestigePath: "right" },
   ]},
-  { id: "swashbuckler_prestige", name: "Prestige", archetype: "Scout", classId: "swashbuckler", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Duelist", prestigeRightName: "Buccaneer",
+  { id: "swashbuckler_prestige", name: "Prestige", archetype: "Scout", classId: "swashbuckler", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Duelist", prestigeRightName: "Buccaneer",
     nodes: [
       { id: "swp_l1", name: "Duelist's Edge", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "⚔️", prestigePath: "left" },
       { id: "swp_r1", name: "Buccaneer's Fortune", description: "Increases gold earned by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "gold_bonus", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "💰", prestigePath: "right" },
@@ -1927,7 +1958,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "swp_l3", name: "Coup de Grace", description: "Increases crit bonus damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "crit_bonus", effectValue: 25, effectPerRank: 0, requires: ["swp_l2"], row: 3, col: 1, icon: "🌟", prestigePath: "left" },
       { id: "swp_r3", name: "Plunder", description: "Increases gold earned by 25%", maxRank: 1, pointsPerRank: 3, effect: "gold_bonus", effectValue: 25, effectPerRank: 0, requires: ["swp_r2"], row: 3, col: 2, icon: "💎", prestigePath: "right" },
   ]},
-  { id: "brigand_prestige", name: "Prestige", archetype: "Scout", classId: "brigand", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Kingpin", prestigeRightName: "Cutthroat",
+  { id: "brigand_prestige", name: "Prestige", archetype: "Scout", classId: "brigand", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Kingpin", prestigeRightName: "Cutthroat",
     nodes: [
       { id: "bgp_l1", name: "Kingpin", description: "Increases gold earned by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "gold_bonus", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "👑", prestigePath: "left" },
       { id: "bgp_r1", name: "Cutthroat", description: "Increases backstab damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "backstab_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 2, icon: "🗡️", prestigePath: "right" },
@@ -1936,7 +1967,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "bgp_l3", name: "Crime Lord", description: "Increases gold earned by 30%", maxRank: 1, pointsPerRank: 3, effect: "gold_bonus", effectValue: 30, effectPerRank: 0, requires: ["bgp_l2"], row: 3, col: 1, icon: "💰", prestigePath: "left" },
       { id: "bgp_r3", name: "Assassinate", description: "Increases backstab damage by 30%", maxRank: 1, pointsPerRank: 3, effect: "backstab_damage", effectValue: 30, effectPerRank: 0, requires: ["bgp_r2"], row: 3, col: 2, icon: "☠️", prestigePath: "right" },
   ]},
-  { id: "troubador_prestige", name: "Prestige", archetype: "Scout", classId: "troubador", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Legend", prestigeRightName: "War Bard",
+  { id: "troubador_prestige", name: "Prestige", archetype: "Scout", classId: "troubador", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Legend", prestigeRightName: "War Bard",
     nodes: [
       { id: "trp_l1", name: "Legend", description: "Increases XP earned by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "xp_bonus", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 1, icon: "🎼", prestigePath: "left" },
       { id: "trp_r1", name: "Battle Hymn", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "⚔️", prestigePath: "right" },
@@ -1945,7 +1976,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "trp_l3", name: "Immortal Song", description: "Increases XP earned by 25%", maxRank: 1, pointsPerRank: 3, effect: "xp_bonus", effectValue: 25, effectPerRank: 0, requires: ["trp_l2"], row: 3, col: 1, icon: "🌟", prestigePath: "left" },
       { id: "trp_r3", name: "March of War", description: "Increases melee damage by 20%", maxRank: 1, pointsPerRank: 3, effect: "melee_damage", effectValue: 20, effectPerRank: 0, requires: ["trp_r2"], row: 3, col: 2, icon: "🏆", prestigePath: "right" },
   ]},
-  { id: "dirge_prestige", name: "Prestige", archetype: "Scout", classId: "dirge", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Death Singer", prestigeRightName: "Dark Minstrel",
+  { id: "dirge_prestige", name: "Prestige", archetype: "Scout", classId: "dirge", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Death Singer", prestigeRightName: "Dark Minstrel",
     nodes: [
       { id: "dip_l1", name: "Death Singer", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "💀", prestigePath: "left" },
       { id: "dip_r1", name: "Dark Melody", description: "Increases crit bonus damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_bonus", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 2, icon: "🎵", prestigePath: "right" },
@@ -1954,7 +1985,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "dip_l3", name: "Death's Aria", description: "Increases spell damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 25, effectPerRank: 0, requires: ["dip_l2"], row: 3, col: 1, icon: "🌑", prestigePath: "left" },
       { id: "dip_r3", name: "Killing Song", description: "Increases crit bonus damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "crit_bonus", effectValue: 25, effectPerRank: 0, requires: ["dip_r2"], row: 3, col: 2, icon: "💥", prestigePath: "right" },
   ]},
-  { id: "wizard_prestige", name: "Prestige", archetype: "Mage", classId: "wizard", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Archmage", prestigeRightName: "Spellblade",
+  { id: "wizard_prestige", name: "Prestige", archetype: "Mage", classId: "wizard", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Archmage", prestigeRightName: "Spellblade",
     nodes: [
       { id: "wzp_l1", name: "Archmage", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "🔮", prestigePath: "left" },
       { id: "wzp_r1", name: "Spellblade", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "⚔️", prestigePath: "right" },
@@ -1963,7 +1994,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "wzp_l3", name: "Grand Arcanist", description: "Increases spell damage by 30%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 30, effectPerRank: 0, requires: ["wzp_l2"], row: 3, col: 1, icon: "🌟", prestigePath: "left" },
       { id: "wzp_r3", name: "Runebound", description: "Increases crit bonus damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "crit_bonus", effectValue: 25, effectPerRank: 0, requires: ["wzp_r2"], row: 3, col: 2, icon: "💫", prestigePath: "right" },
   ]},
-  { id: "warlock_prestige", name: "Prestige", archetype: "Mage", classId: "warlock", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Dark Lord", prestigeRightName: "Plague Bearer",
+  { id: "warlock_prestige", name: "Prestige", archetype: "Mage", classId: "warlock", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Dark Lord", prestigeRightName: "Plague Bearer",
     nodes: [
       { id: "wlp_l1", name: "Dark Lord", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "🖤", prestigePath: "left" },
       { id: "wlp_r1", name: "Plague Bearer", description: "Increases crit chance by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_chance", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 2, icon: "☣️", prestigePath: "right" },
@@ -1972,7 +2003,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "wlp_l3", name: "Apocalypse", description: "Increases spell damage by 30%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 30, effectPerRank: 0, requires: ["wlp_l2"], row: 3, col: 1, icon: "💀", prestigePath: "left" },
       { id: "wlp_r3", name: "Pandemic", description: "Increases crit bonus damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "crit_bonus", effectValue: 25, effectPerRank: 0, requires: ["wlp_r2"], row: 3, col: 2, icon: "🌑", prestigePath: "right" },
   ]},
-  { id: "conjuror_prestige", name: "Prestige", archetype: "Mage", classId: "conjuror", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Golem Master", prestigeRightName: "Elemental Lord",
+  { id: "conjuror_prestige", name: "Prestige", archetype: "Mage", classId: "conjuror", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Golem Master", prestigeRightName: "Elemental Lord",
     nodes: [
       { id: "cop_l1", name: "Golem Mastery", description: "Increases melee damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "melee_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "🗿", prestigePath: "left" },
       { id: "cop_r1", name: "Elemental Fury", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 2, icon: "🔥", prestigePath: "right" },
@@ -1981,7 +2012,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "cop_l3", name: "Avatar", description: "Increases melee damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "melee_damage", effectValue: 25, effectPerRank: 0, requires: ["cop_l2"], row: 3, col: 1, icon: "⚡", prestigePath: "left" },
       { id: "cop_r3", name: "Elemental Mastery", description: "Increases spell damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 25, effectPerRank: 0, requires: ["cop_r2"], row: 3, col: 2, icon: "🌟", prestigePath: "right" },
   ]},
-  { id: "necromancer_prestige", name: "Prestige", archetype: "Mage", classId: "necromancer", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Death Lord", prestigeRightName: "Undying",
+  { id: "necromancer_prestige", name: "Prestige", archetype: "Mage", classId: "necromancer", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Death Lord", prestigeRightName: "Undying",
     nodes: [
       { id: "ncp_l1", name: "Death Lord", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "💀", prestigePath: "left" },
       { id: "ncp_r1", name: "Undying", description: "Increases heal amount from life drain by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "heal_amount", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 2, icon: "🩸", prestigePath: "right" },
@@ -1990,7 +2021,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "ncp_l3", name: "Lich King", description: "Increases spell damage by 30%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 30, effectPerRank: 0, requires: ["ncp_l2"], row: 3, col: 1, icon: "👑", prestigePath: "left" },
       { id: "ncp_r3", name: "Immortal", description: "Reduces all damage taken by 20%", maxRank: 1, pointsPerRank: 3, effect: "dmg_reduction", effectValue: 20, effectPerRank: 0, requires: ["ncp_r2"], row: 3, col: 2, icon: "🌟", prestigePath: "right" },
   ]},
-  { id: "coercer_prestige", name: "Prestige", archetype: "Mage", classId: "coercer", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Mindbreaker", prestigeRightName: "Puppetmaster",
+  { id: "coercer_prestige", name: "Prestige", archetype: "Mage", classId: "coercer", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Mindbreaker", prestigeRightName: "Puppetmaster",
     nodes: [
       { id: "cep_l1", name: "Mindbreaker", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "🧠", prestigePath: "left" },
       { id: "cep_r1", name: "Puppetmaster", description: "Increases extra attack chance by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "🎭", prestigePath: "right" },
@@ -1999,7 +2030,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "cep_l3", name: "Mind Sunder", description: "Increases spell damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 25, effectPerRank: 0, requires: ["cep_l2"], row: 3, col: 1, icon: "🌟", prestigePath: "left" },
       { id: "cep_r3", name: "Total Control", description: "Increases extra attack chance by 20%", maxRank: 1, pointsPerRank: 3, effect: "extra_attack_chance", effectValue: 20, effectPerRank: 0, requires: ["cep_r2"], row: 3, col: 2, icon: "💫", prestigePath: "right" },
   ]},
-  { id: "illusionist_prestige", name: "Prestige", archetype: "Mage", classId: "illusionist", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Grand Illusionist", prestigeRightName: "Reality Bender",
+  { id: "illusionist_prestige", name: "Prestige", archetype: "Mage", classId: "illusionist", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Grand Illusionist", prestigeRightName: "Reality Bender",
     nodes: [
       { id: "ilp_l1", name: "Grand Illusion", description: "Increases avoidance by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "avoidance", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "🪞", prestigePath: "left" },
       { id: "ilp_r1", name: "Reality Bender", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 2, icon: "🌀", prestigePath: "right" },
@@ -2008,7 +2039,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "ilp_l3", name: "Infinite Mirrors", description: "Increases avoidance by 20%", maxRank: 1, pointsPerRank: 3, effect: "avoidance", effectValue: 20, effectPerRank: 0, requires: ["ilp_l2"], row: 3, col: 1, icon: "🌟", prestigePath: "left" },
       { id: "ilp_r3", name: "Unreality", description: "Increases spell damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 25, effectPerRank: 0, requires: ["ilp_r2"], row: 3, col: 2, icon: "💫", prestigePath: "right" },
   ]},
-  { id: "templar_prestige", name: "Prestige", archetype: "Priest", classId: "templar", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "High Templar", prestigeRightName: "Battle Templar",
+  { id: "templar_prestige", name: "Prestige", archetype: "Priest", classId: "templar", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "High Templar", prestigeRightName: "Battle Templar",
     nodes: [
       { id: "tep_l1", name: "High Templar", description: "Increases heal amount by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "heal_amount", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "💛", prestigePath: "left" },
       { id: "tep_r1", name: "Battle Templar", description: "Increases divine damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "divine_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 2, icon: "⚔️", prestigePath: "right" },
@@ -2017,7 +2048,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "tep_l3", name: "Miracle", description: "Increases heal amount by 25%", maxRank: 1, pointsPerRank: 3, effect: "heal_amount", effectValue: 25, effectPerRank: 0, requires: ["tep_l2"], row: 3, col: 1, icon: "🌟", prestigePath: "left" },
       { id: "tep_r3", name: "Holy Wrath", description: "Increases divine damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "divine_damage", effectValue: 25, effectPerRank: 0, requires: ["tep_r2"], row: 3, col: 2, icon: "💫", prestigePath: "right" },
   ]},
-  { id: "inquisitor_prestige", name: "Prestige", archetype: "Priest", classId: "inquisitor", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Grand Inquisitor", prestigeRightName: "Zealot",
+  { id: "inquisitor_prestige", name: "Prestige", archetype: "Priest", classId: "inquisitor", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Grand Inquisitor", prestigeRightName: "Zealot",
     nodes: [
       { id: "iqp_l1", name: "Grand Inquisitor", description: "Increases divine damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "divine_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "👁️", prestigePath: "left" },
       { id: "iqp_r1", name: "Zealot", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "🔥", prestigePath: "right" },
@@ -2026,7 +2057,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "iqp_l3", name: "Judgment", description: "Increases divine damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "divine_damage", effectValue: 25, effectPerRank: 0, requires: ["iqp_l2"], row: 3, col: 1, icon: "⚡", prestigePath: "left" },
       { id: "iqp_r3", name: "Crusade", description: "Increases melee damage by 20%", maxRank: 1, pointsPerRank: 3, effect: "melee_damage", effectValue: 20, effectPerRank: 0, requires: ["iqp_r2"], row: 3, col: 2, icon: "⚔️", prestigePath: "right" },
   ]},
-  { id: "mystic_prestige", name: "Prestige", archetype: "Priest", classId: "mystic", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Ancestral Guardian", prestigeRightName: "Spirit Walker",
+  { id: "mystic_prestige", name: "Prestige", archetype: "Priest", classId: "mystic", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Ancestral Guardian", prestigeRightName: "Spirit Walker",
     nodes: [
       { id: "myp_l1", name: "Ancestral Guardian", description: "Increases ward absorption by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "ward_absorb", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "👻", prestigePath: "left" },
       { id: "myp_r1", name: "Spirit Walker", description: "Increases avoidance by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "avoidance", effectValue: 8, effectPerRank: 8, requires: [], row: 1, col: 2, icon: "🌀", prestigePath: "right" },
@@ -2035,7 +2066,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "myp_l3", name: "Ancestral Fortress", description: "Reduces all damage taken by 20%", maxRank: 1, pointsPerRank: 3, effect: "dmg_reduction", effectValue: 20, effectPerRank: 0, requires: ["myp_l2"], row: 3, col: 1, icon: "🌟", prestigePath: "left" },
       { id: "myp_r3", name: "Spirit Ascension", description: "Increases avoidance by 20%", maxRank: 1, pointsPerRank: 3, effect: "avoidance", effectValue: 20, effectPerRank: 0, requires: ["myp_r2"], row: 3, col: 2, icon: "💫", prestigePath: "right" },
   ]},
-  { id: "defiler_prestige", name: "Prestige", archetype: "Priest", classId: "defiler", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Plague Lord", prestigeRightName: "Shadow Weaver",
+  { id: "defiler_prestige", name: "Prestige", archetype: "Priest", classId: "defiler", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Plague Lord", prestigeRightName: "Shadow Weaver",
     nodes: [
       { id: "dfp_l1", name: "Plague Lord", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "☣️", prestigePath: "left" },
       { id: "dfp_r1", name: "Shadow Weaver", description: "Increases ward absorption by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "ward_absorb", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 2, icon: "🖤", prestigePath: "right" },
@@ -2044,7 +2075,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "dfp_l3", name: "Death's Apostle", description: "Increases spell damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 25, effectPerRank: 0, requires: ["dfp_l2"], row: 3, col: 1, icon: "💀", prestigePath: "left" },
       { id: "dfp_r3", name: "Shadow Fortress", description: "Reduces all damage taken by 20%", maxRank: 1, pointsPerRank: 3, effect: "dmg_reduction", effectValue: 20, effectPerRank: 0, requires: ["dfp_r2"], row: 3, col: 2, icon: "🌟", prestigePath: "right" },
   ]},
-  { id: "warden_prestige", name: "Prestige", archetype: "Priest", classId: "warden", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Grove Warden", prestigeRightName: "Storm Caller",
+  { id: "warden_prestige", name: "Prestige", archetype: "Priest", classId: "warden", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Grove Warden", prestigeRightName: "Storm Caller",
     nodes: [
       { id: "wap_l1", name: "Grove Warden", description: "Increases heal amount by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "heal_amount", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 1, icon: "🌳", prestigePath: "left" },
       { id: "wap_r1", name: "Storm Caller", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: [], row: 1, col: 2, icon: "⛈️", prestigePath: "right" },
@@ -2053,7 +2084,7 @@ export const PRESTIGE_TABS: AATabDefinition[] = [
       { id: "wap_l3", name: "Ancient Grove", description: "Increases heal amount by 25%", maxRank: 1, pointsPerRank: 3, effect: "heal_amount", effectValue: 25, effectPerRank: 0, requires: ["wap_l2"], row: 3, col: 1, icon: "🌟", prestigePath: "left" },
       { id: "wap_r3", name: "Hurricane", description: "Increases spell damage by 25%", maxRank: 1, pointsPerRank: 3, effect: "spell_damage", effectValue: 25, effectPerRank: 0, requires: ["wap_r2"], row: 3, col: 2, icon: "💫", prestigePath: "right" },
   ]},
-  { id: "fury_prestige", name: "Prestige", archetype: "Priest", classId: "fury", tabType: "prestige", prestigeMinSpent: 50, prestigeLeftName: "Avatar of Storm", prestigeRightName: "Primal Fury",
+  { id: "fury_prestige", name: "Prestige", archetype: "Priest", classId: "fury", tabType: "prestige", prestigeMinSpent: 40, prestigeLeftName: "Avatar of Storm", prestigeRightName: "Primal Fury",
     nodes: [
       { id: "fup_l1", name: "Avatar of Storm", description: "Increases spell damage by 12% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 12, effectPerRank: 12, requires: [], row: 1, col: 1, icon: "⛈️", prestigePath: "left" },
       { id: "fup_r1", name: "Primal Fury", description: "Increases crit chance by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_chance", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 2, icon: "🐯", prestigePath: "right" },
@@ -2075,7 +2106,13 @@ export const TRADESKILL_TAB: AATabDefinition = {
     { id: "ts_resource_mastery", name: "Resource Mastery", description: "Increases gathering speed by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "gathering_speed", effectValue: 8, effectPerRank: 8, requires: ["ts_gathering_speed"], row: 2, col: 1, icon: "🌿" },
     { id: "ts_master_crafter", name: "Master Crafter", description: "Increases crafting yield by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "craft_yield", effectValue: 8, effectPerRank: 8, requires: ["ts_craft_yield"], row: 2, col: 2, icon: "⚒️" },
     { id: "ts_golden_hands", name: "Golden Hands", description: "Increases gold earned by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "gold_bonus", effectValue: 5, effectPerRank: 5, requires: ["ts_rare_chance"], row: 2, col: 3, icon: "✋" },
-    { id: "ts_grandmaster", name: "Grandmaster", description: "Increases both gathering speed and craft yield by 10%", maxRank: 1, pointsPerRank: 3, effect: "gathering_speed", effectValue: 10, effectPerRank: 0, requires: ["ts_resource_mastery", "ts_master_crafter"], row: 3, col: 1, icon: "👑" },
+    // Fixed: was only gathering_speed — now uses compound effect so both bonuses actually apply
+    { id: "ts_grandmaster", name: "Grandmaster", description: "Increases both gathering speed and craft yield by 10%", maxRank: 1, pointsPerRank: 3, effect: "gathering_and_craft", effectValue: 10, effectPerRank: 0, requires: ["ts_resource_mastery", "ts_master_crafter"], row: 3, col: 1, icon: "👑" },
+    // New nodes — branch 2: crafting quality/XP
+    { id: "ts_quick_craft", name: "Quick Craft", description: "Reduces crafting material cost by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "craft_cost_reduction", effectValue: 3, effectPerRank: 3, requires: ["ts_master_crafter"], row: 3, col: 2, icon: "⚡" },
+    { id: "ts_skill_mastery", name: "Skill Mastery", description: "Increases tradeskill XP earned by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "tradeskill_xp_bonus", effectValue: 10, effectPerRank: 10, requires: ["ts_golden_hands"], row: 3, col: 3, icon: "📖" },
+    { id: "ts_bounty", name: "Bounty Harvest", description: "Increases crafting yield by an additional 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "craft_yield", effectValue: 5, effectPerRank: 5, requires: ["ts_grandmaster", "ts_quick_craft"], row: 4, col: 1, icon: "🌾" },
+    { id: "ts_artisan_legend", name: "Artisan's Legend", description: "Legendary mastery: increases gathering speed, craft yield, and reduces material cost by 10%", maxRank: 1, pointsPerRank: 5, effect: "gathering_and_craft", effectValue: 10, effectPerRank: 0, requires: ["ts_bounty", "ts_skill_mastery"], row: 4, col: 2, icon: "🏆" },
   ],
 };
 

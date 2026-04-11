@@ -84,6 +84,18 @@ export interface AABonuses {
   wardAbsorb: number;
   gatheringSpeed: number;
   craftYield: number;
+  /** Reduces material ingredient cost by this % when crafting */
+  craftCostReduction: number;
+  /** % of melee damage dealt converted to HP (lifesteal) */
+  lifestealPct: number;
+  /** Flat HP restored per combat tick */
+  hpRegen: number;
+  /** % bonus to tradeskill (crafting) XP earned */
+  tradeskillXpBonus: number;
+  /** % bonus XP from boss kills (stacks on top of xpBonus) */
+  bossXpBonus: number;
+  /** Reduces AA XP cost per point by this % (max 15%) */
+  aaXpCostReduction: number;
 }
 
 export function makeZeroAABonuses(): AABonuses {
@@ -96,6 +108,8 @@ export function makeZeroAABonuses(): AABonuses {
     dmgReduction: 0, divineDamageBonus: 0, healAmountBonus: 0,
     spellPiercing: 0, goldBonus: 0, xpBonus: 0,
     wardAbsorb: 0, gatheringSpeed: 0, craftYield: 0,
+    craftCostReduction: 0, lifestealPct: 0, hpRegen: 0,
+    tradeskillXpBonus: 0, bossXpBonus: 0, aaXpCostReduction: 0,
   };
 }
 
@@ -134,8 +148,16 @@ export function applyAABonuses(nodes: Array<{
       case "gold_bonus":          b.goldBonus            += total; break;
       case "xp_bonus":            b.xpBonus              += total; break;
       case "ward_absorb":         b.wardAbsorb           += total; break;
-      case "gathering_speed":     b.gatheringSpeed       += total; break;
-      case "craft_yield":         b.craftYield           += total; break;
+      case "gathering_speed":      b.gatheringSpeed       += total; break;
+      case "craft_yield":          b.craftYield           += total; break;
+      // Compound: boosts both gathering speed and craft yield with one node
+      case "gathering_and_craft":  b.gatheringSpeed       += total; b.craftYield += total; break;
+      case "craft_cost_reduction": b.craftCostReduction   += total; break;
+      case "lifesteal_pct":        b.lifestealPct         += total; break;
+      case "hp_regen":             b.hpRegen              += total; break;
+      case "tradeskill_xp_bonus":  b.tradeskillXpBonus    += total; break;
+      case "boss_xp_bonus":        b.bossXpBonus          += total; break;
+      case "aa_xp_cost_reduction": b.aaXpCostReduction    += total; break;
     }
   }
   return b;

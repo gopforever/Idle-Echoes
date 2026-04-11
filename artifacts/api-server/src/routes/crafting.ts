@@ -7,8 +7,9 @@ import {
   knownRecipesTable,
   oneOfAKindCraftedTable,
   gatheringBagItemsTable,
+  aaPointsTable,
 } from "@workspace/db/schema";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, gt, inArray } from "drizzle-orm";
 import {
   CRAFTING_RECIPES,
   getItemById,
@@ -19,8 +20,13 @@ import {
 } from "../lib/gameData.js";
 import { getOrCreateCharacter } from "./character.js";
 import { checkAndUnlockAchievements } from "./achievements.js";
+import { applyAABonuses } from "../lib/eq2Formulas.js";
+import { ALL_AA_TABS } from "../lib/eq2Data.js";
 
 const router: IRouter = Router();
+
+const ALL_AA_NODES_CRAFTING = ALL_AA_TABS.flatMap(tab => tab.nodes);
+const AA_NODE_DEF_MAP_CRAFTING = new Map(ALL_AA_NODES_CRAFTING.map(n => [n.id, n]));
 
 const JOURNEYMAN_RECIPE_IDS = CRAFTING_RECIPES
   .filter(r => r.tier === "journeyman")
@@ -191,6 +197,16 @@ router.post("/crafting/craft", async (req, res) => {
 
     const character = await getOrCreateCharacter(req.characterId);
 
+    // ── Load AA bonuses for craft yield and tradeskill XP ────────────────────
+    const aaRows = await db.select().from(aaPointsTable)
+      .where(and(eq(aaPointsTable.characterId, character.id), gt(aaPointsTable.rank, 0)));
+    const aaInvested = aaRows.map(r => {
+      const def = AA_NODE_DEF_MAP_CRAFTING.get(r.nodeId);
+      if (!def) return null;
+      return { effect: def.effect, currentRank: r.rank, effectValue: def.effectValue, effectPerRank: def.effectPerRank };
+    }).filter((n): n is NonNullable<typeof n> => n !== null);
+    const aaBonuses = applyAABonuses(aaInvested);
+
     const knownIds = new Set(JOURNEYMAN_RECIPE_IDS);
     const learnedRows = await db
       .select({ recipeId: knownRecipesTable.recipeId })
@@ -321,6 +337,13 @@ router.post("/crafting/craft", async (req, res) => {
 
     const craftedItemId = `crafted_${recipe.resultItemId}_${Date.now()}`;
 
+    // Apply craftYield AA bonus: each 100% of craftYield = +1 guaranteed item; remainder = probabilistic
+    const craftYieldBonus = aaBonuses.craftYield / 100;
+    const extraWholeItems = Math.floor(craftYieldBonus);
+    const extraFractional = craftYieldBonus - extraWholeItems;
+    const bonusItems = extraWholeItems + (Math.random() < extraFractional ? 1 : 0);
+    const finalQuantity = recipe.resultQuantity + bonusItems;
+
     // ── Atomic transaction — for one-of-a-kind recipes we INSERT the lock row
     // first (which throws on unique conflict) then consume mats and mint the item.
     // Any concurrent craft attempt will fail at the INSERT and the error handler
@@ -374,10 +397,12 @@ router.post("/crafting/craft", async (req, res) => {
         characterId: character.id,
         itemId: craftedItemId,
         itemData: resultItemData as Record<string, unknown>,
-        quantity: recipe.resultQuantity,
+        quantity: finalQuantity,
       });
 
-      let newXp = skill.xp + recipe.xpReward;
+      // Apply tradeskill XP bonus from AA nodes
+      const xpWithBonus = Math.floor(recipe.xpReward * (1 + aaBonuses.tradeskillXpBonus / 100));
+      let newXp = skill.xp + xpWithBonus;
       let newLevel = skill.level;
       let newXpToNext = skill.xpToNextLevel;
       while (newXp >= newXpToNext && newLevel < skill.maxLevel) {
@@ -399,19 +424,21 @@ router.post("/crafting/craft", async (req, res) => {
     ).catch(() => {});
 
     const critMsg = isCritical ? " Critical Success! Rarity upgraded!" : "";
+    const yieldMsg = bonusItems > 0 ? ` Bonus yield: +${bonusItems}!` : "";
+    const xpWithBonus = Math.floor(recipe.xpReward * (1 + aaBonuses.tradeskillXpBonus / 100));
     return res.json({
       success: true,
       resultItem: {
         ...resultItemData,
         id: craftedItemId,
-        quantity: recipe.resultQuantity,
+        quantity: finalQuantity,
       },
       craftedMeta,
-      xpGained: recipe.xpReward,
+      xpGained: xpWithBonus,
       isCritical,
       critChance: Math.round(critChance * 100),
       resourceQuality,
-      message: `Crafted ${resultItemData.name}!${critMsg}`,
+      message: `Crafted ${resultItemData.name}!${critMsg}${yieldMsg}`,
     });
   } catch (err: unknown) {
     const pgErr = err as { code?: string; message?: string };
