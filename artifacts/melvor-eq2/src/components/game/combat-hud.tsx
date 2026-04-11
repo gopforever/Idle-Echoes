@@ -101,6 +101,9 @@ export interface TickResponse {
   playerStatsSnapshot?: PlayerStatsSnapshot;
   playerStatusEffects: StatusEffect[]; enemyStatusEffects: StatusEffect[];
   combatState?: { activeAABonuses?: string[]; totalPlayerDamage?: number; combatStartMs?: number | null; fightDps?: number };
+  /** Per-tick damage breakdown keyed by source ID */
+  damageBySource?: Record<string, number>;
+  autoLoopStarted?: boolean;
 }
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -559,6 +562,108 @@ function enemyStars(level: number, isBoss: boolean): number {
   return 0;
 }
 
+// ── DPS Meter ─────────────────────────────────────────────────────────────────
+
+/** Human-readable labels for built-in (non-ability) damage sources */
+const SOURCE_LABELS: Record<string, { label: string; icon: string; color: string }> = {
+  auto_attack:   { label: "Auto Attack",   icon: "⚔️", color: "bg-green-700/80" },
+  double_attack: { label: "Double Attack", icon: "⚡", color: "bg-yellow-700/80" },
+  extra_attack:  { label: "Extra Attack",  icon: "⚡", color: "bg-yellow-600/80" },
+  divine_wrath:  { label: "Divine Wrath",  icon: "✨", color: "bg-purple-700/80" },
+  party_bonus:   { label: "Party Bonus",   icon: "👥", color: "bg-sky-700/80" },
+};
+
+interface DpsMeterProps {
+  damageBySource: Record<string, number>;
+  abilities: ClassAbility[];
+  combatStartMs?: number | null;
+}
+
+function DpsMeter({ damageBySource, abilities, combatStartMs }: DpsMeterProps) {
+  const [expanded, setExpanded] = React.useState(true);
+
+  const entries = Object.entries(damageBySource);
+  if (entries.length === 0) return null;
+
+  const totalDamage = entries.reduce((sum, [, v]) => sum + v, 0);
+  if (totalDamage === 0) return null;
+
+  const elapsedSec = combatStartMs ? Math.max(1, (Date.now() - combatStartMs) / 1000) : null;
+
+  const sorted = entries
+    .map(([sourceId, damage]) => {
+      const builtIn = SOURCE_LABELS[sourceId];
+      const ability = abilities.find(a => a.id === sourceId);
+      return {
+        id: sourceId,
+        label: builtIn?.label ?? ability?.name ?? sourceId,
+        icon: builtIn?.icon ?? ability?.icon ?? "✨",
+        color: builtIn?.color ?? "bg-orange-700/80",
+        damage,
+        pct: Math.round((damage / totalDamage) * 100),
+        dps: elapsedSec !== null ? Math.round((damage / elapsedSec) * 10) / 10 : null,
+      };
+    })
+    .sort((a, b) => b.damage - a.damage);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -4 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="relative z-10 px-4 py-2 border-t border-slate-800/60 bg-slate-950/80 shrink-0"
+    >
+      <button
+        onClick={() => setExpanded(e => !e)}
+        className="flex items-center gap-2 w-full"
+      >
+        <Activity className="w-3 h-3 text-orange-400" />
+        <span className="text-[9px] text-slate-500 uppercase tracking-widest font-semibold flex-1 text-left">DPS Meter</span>
+        <span className="text-[9px] text-orange-400 tabular-nums font-bold mr-1">
+          {totalDamage.toLocaleString()} dmg
+        </span>
+        {expanded ? <ChevronUp className="w-3 h-3 text-slate-600" /> : <ChevronDown className="w-3 h-3 text-slate-600" />}
+      </button>
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="mt-1.5 space-y-1">
+              {sorted.map(entry => (
+                <div key={entry.id} className="flex items-center gap-1.5">
+                  <span className="text-[11px] w-4 text-center shrink-0 leading-none">{entry.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between text-[10px] mb-0.5">
+                      <span className="text-slate-300 truncate">{entry.label}</span>
+                      <span className="tabular-nums text-slate-400 shrink-0 ml-2">
+                        {entry.damage.toLocaleString()}
+                        {entry.dps !== null && (
+                          <span className="text-slate-600 ml-1">{entry.dps}/s</span>
+                        )}
+                      </span>
+                    </div>
+                    <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
+                      <div
+                        className={cn("h-full rounded-full transition-all duration-300", entry.color)}
+                        style={{ width: `${entry.pct}%` }}
+                      />
+                    </div>
+                  </div>
+                  <span className="text-[9px] text-slate-600 tabular-nums w-7 text-right shrink-0">{entry.pct}%</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
 // ── Main CombatHud ─────────────────────────────────────────────────────────────
 
 export interface CombatHudProps {
@@ -595,6 +700,9 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
   const [lastTickData, setLastTickData] = React.useState<TickResponse | null>(null);
   const [bossClosingLine, setBossClosingLine] = React.useState<{ text: string; outcome: "playerWon" | "bossWon" } | null>(null);
   const closingLineTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [fightDamageBySource, setFightDamageBySource] = React.useState<Record<string, number>>({});
+  /** Ref to detect when a new fight begins (combatStartMs changes to a new non-null value) */
+  const prevCombatStartMsRef = React.useRef<number | null | undefined>(undefined);
 
   const [localAutoPotions, setLocalAutoPotions] = React.useState<boolean | null>(null);
   const [localMeditating, setLocalMeditating] = React.useState<boolean | null>(null);
@@ -658,6 +766,19 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
       if (data.enemyDamageDealt > 0) addFloat(data.enemyDamageDealt, data.isEnemyCrit ? "enemyCrit" : "enemy", "player");
     }
     if (data.playerDied) addFloat("💀", "miss", "player");
+
+    // Accumulate per-source damage into fight-level totals; reset on auto-loop
+    if (data.autoLoopStarted) {
+      setFightDamageBySource({});
+    } else if (data.damageBySource) {
+      setFightDamageBySource(prev => {
+        const next = { ...prev };
+        for (const [k, v] of Object.entries(data.damageBySource!)) {
+          next[k] = (next[k] ?? 0) + v;
+        }
+        return next;
+      });
+    }
 
     // Boss closing line: read directly from tick response (synchronous delivery, no polling race)
     if ((data.enemyDied || data.playerDied) && (data as { bossClosingLine?: string }).bossClosingLine) {
@@ -734,11 +855,22 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
     return () => clearTimeout(timer);
   }, [disableAutoEngage, autoCombat, combatState?.active, combatState?.enemy, startCombat]);
 
+  // Reset DPS meter when a new fight begins (combatStartMs changes to a new non-null value)
+  React.useEffect(() => {
+    const ms = (combatState as any)?.combatStartMs as number | null | undefined;
+    if (ms && ms !== prevCombatStartMsRef.current) {
+      prevCombatStartMsRef.current = ms;
+      setFightDamageBySource({});
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [(combatState as any)?.combatStartMs]);
+
   const handleStop = () => {
     stopCombat.mutate(undefined, {
       onSuccess: () => {
         setLastTickData(null);
         setLastAaProcs([]);
+        setFightDamageBySource({});
         queryClient.invalidateQueries({ queryKey: getGetCombatStateQueryKey() });
       },
     });
@@ -927,6 +1059,15 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
             enemy={activeEnemy}
             aaBonuses={activeAABonuses}
             powerRegen={lastTickData?.powerRegen}
+          />
+        )}
+
+        {/* DPS Meter — shows per-source damage breakdown for the current/last fight */}
+        {Object.keys(fightDamageBySource).length > 0 && (
+          <DpsMeter
+            damageBySource={fightDamageBySource}
+            abilities={(abilities as ClassAbility[]) ?? []}
+            combatStartMs={(combatState as any).combatStartMs as number | null | undefined}
           />
         )}
 

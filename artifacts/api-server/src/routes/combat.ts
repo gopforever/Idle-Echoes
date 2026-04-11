@@ -454,6 +454,8 @@ router.post("/combat/tick", async (req, res) => {
     const aaProcs: string[] = [];
     const floatEvents: FloatEvent[] = [];
     let lastEnemyAbilityUsedId: string | null = null; // tracks the last special ability the boss used (for encounter recording)
+    /** Per-tick damage breakdown keyed by source ID (ability id, "auto_attack", "double_attack", "extra_attack", "divine_wrath", "party_bonus") */
+    const damageBySource: Record<string, number> = {};
 
     // ── Load active party (dungeon or raid run) ───────────────────────────────
     let activeParty: PartyMember[] = [];
@@ -580,6 +582,7 @@ router.post("/combat/tick", async (req, res) => {
           await db.insert(combatLogTable).values({ characterId, tick: newTick, message: abilityMsg, type: spellCrit ? "playerCrit" : "ability", value: abilityBonusDamage });
           enemyHp = Math.max(0, enemyHp - abilityBonusDamage);
           playerSoloDamage += abilityBonusDamage;
+          damageBySource[ability.id] = (damageBySource[ability.id] ?? 0) + abilityBonusDamage;
           floatEvents.push({ value: abilityBonusDamage, type: spellCrit ? "crit" : "hit" });
           if (resistedAmt > 0) floatEvents.push({ value: resistedAmt, type: "resist" });
           if (spellCrit) aaProcs.push("spell_crit");
@@ -599,6 +602,7 @@ router.post("/combat/tick", async (req, res) => {
             const divineDmg = Math.floor(healAmt * 0.2 * (1 + aaBonuses.divineDamageBonus / 100));
             enemyHp = Math.max(0, enemyHp - divineDmg);
             playerSoloDamage += divineDmg;
+            damageBySource["divine_wrath"] = (damageBySource["divine_wrath"] ?? 0) + divineDmg;
             const dwMsg = `⚡ Divine Wrath: ${divineDmg} divine damage!`;
             combatMessages.push(dwMsg);
             await db.insert(combatLogTable).values({ characterId, tick: newTick, message: dwMsg, type: "ability", value: divineDmg });
@@ -672,6 +676,7 @@ router.post("/combat/tick", async (req, res) => {
 
         playerDamageDealt = dmg;
         playerSoloDamage += dmg;
+        damageBySource["auto_attack"] = (damageBySource["auto_attack"] ?? 0) + dmg;
         enemyHp = Math.max(0, enemyHp - playerDamageDealt);
         floatEvents.push({ value: playerDamageDealt, type: isCrit ? "crit" : "hit" });
         if (playerAttack.resisted && playerAttack.resistAmount > 0) {
@@ -702,6 +707,7 @@ router.post("/combat/tick", async (req, res) => {
             enemyHp = Math.max(0, enemyHp - dmg2);
             playerDamageDealt += dmg2;
             playerSoloDamage += dmg2;
+            damageBySource["double_attack"] = (damageBySource["double_attack"] ?? 0) + dmg2;
             floatEvents.push({ value: dmg2, type: isCrit2 ? "crit" : "hit" });
             const da2Msg = `⚡ DOUBLE ATTACK: ${dmg2} damage!${isCrit2 ? " CRIT!" : ""}`;
             combatMessages.push(da2Msg);
@@ -726,6 +732,7 @@ router.post("/combat/tick", async (req, res) => {
             enemyHp = Math.max(0, enemyHp - dmg3);
             playerDamageDealt += dmg3;
             playerSoloDamage += dmg3;
+            damageBySource["extra_attack"] = (damageBySource["extra_attack"] ?? 0) + dmg3;
             floatEvents.push({ value: dmg3, type: isCrit3 ? "crit" : "hit" });
             const ea3Msg = `⚡ EXTRA ATTACK: ${dmg3} damage!`;
             combatMessages.push(ea3Msg);
@@ -747,6 +754,7 @@ router.post("/combat/tick", async (req, res) => {
     if (partyContrib.bonusDamage > 0 && enemyHp > 0) {
       enemyHp = Math.max(0, enemyHp - partyContrib.bonusDamage);
       playerDamageDealt += partyContrib.bonusDamage;
+      damageBySource["party_bonus"] = (damageBySource["party_bonus"] ?? 0) + partyContrib.bonusDamage;
       floatEvents.push({ value: partyContrib.bonusDamage, type: "hit" });
       const partyDmgMsg = `⚔️ Party deals ${partyContrib.bonusDamage} bonus damage!`;
       combatMessages.push(partyDmgMsg);
@@ -1097,7 +1105,7 @@ router.post("/combat/tick", async (req, res) => {
           playerHpAfter: playerHp, enemyHpAfter: 0,
           isCrit, isEnemyCrit: false, heroicTriggered: false, autoLoopStarted: true,
           aaProcs, powerRegen, powerAfter: Math.floor(playerPower),
-          playerStatusEffects, enemyStatusEffects, abilityUsedId, floatEvents,
+          playerStatusEffects, enemyStatusEffects, abilityUsedId, floatEvents, damageBySource,
           playerStatsSnapshot: { attackRating: playerStats.attackRating, defenseRating: playerStats.defenseRating, mitigation: playerStats.mitigation, avoidance: playerStats.avoidance, critChance: playerStats.critChance, powerRegen },
         });
       }
@@ -1123,7 +1131,7 @@ router.post("/combat/tick", async (req, res) => {
         playerHpAfter: playerHp, enemyHpAfter: 0,
         isCrit, isEnemyCrit: false, heroicTriggered: false, autoLoopStarted: false,
         aaProcs, powerRegen, powerAfter: Math.floor(playerPower),
-        playerStatusEffects, enemyStatusEffects, abilityUsedId, floatEvents,
+        playerStatusEffects, enemyStatusEffects, abilityUsedId, floatEvents, damageBySource,
         playerStatsSnapshot: { attackRating: playerStats.attackRating, defenseRating: playerStats.defenseRating, mitigation: playerStats.mitigation, avoidance: playerStats.avoidance, critChance: playerStats.critChance, powerRegen },
       });
     }
@@ -1621,7 +1629,7 @@ router.post("/combat/tick", async (req, res) => {
         playerHpAfter: respawnHp, enemyHpAfter: enemyHp,
         isCrit, isEnemyCrit, heroicTriggered: false, autoLoopStarted: false,
         aaProcs, powerRegen, powerAfter: Math.floor(playerPower),
-        playerStatusEffects: [], enemyStatusEffects: [], abilityUsedId, floatEvents,
+        playerStatusEffects: [], enemyStatusEffects: [], abilityUsedId, floatEvents, damageBySource,
         playerStatsSnapshot: { attackRating: playerStats.attackRating, defenseRating: playerStats.defenseRating, mitigation: playerStats.mitigation, avoidance: playerStats.avoidance, critChance: playerStats.critChance, powerRegen },
       });
     }
@@ -1675,7 +1683,7 @@ router.post("/combat/tick", async (req, res) => {
       playerHpAfter: playerHp, enemyHpAfter: enemyHp,
       isCrit, isEnemyCrit, heroicTriggered: false, autoLoopStarted: false,
       aaProcs, powerRegen, powerAfter: Math.floor(playerPower),
-      playerStatusEffects, enemyStatusEffects, abilityUsedId, floatEvents,
+      playerStatusEffects, enemyStatusEffects, abilityUsedId, floatEvents, damageBySource,
       playerStatsSnapshot: { attackRating: playerStats.attackRating, defenseRating: playerStats.defenseRating, mitigation: playerStats.mitigation, avoidance: playerStats.avoidance, critChance: playerStats.critChance, powerRegen },
     });
     return;
