@@ -10,7 +10,7 @@
 
 import { db } from "@workspace/db";
 import { guildsTable, guildMembersTable, worldPlayersTable } from "@workspace/db/schema";
-import { eq, and, isNull, inArray } from "drizzle-orm";
+import { eq, and, isNotNull, inArray } from "drizzle-orm";
 
 interface GhostGuildSeed {
   name: string;
@@ -91,7 +91,7 @@ function computeGhostContribution(ghost: {
   killCount: number;
   bossKills: number;
 }): number {
-  return ghost.level * 100 + ghost.killCount * 0.5 + ghost.bossKills * 10;
+  return ghost.level * 100 + Math.floor(ghost.killCount * 0.5) + ghost.bossKills * 10;
 }
 
 export async function seedGhostGuilds(): Promise<void> {
@@ -125,14 +125,12 @@ export async function seedGhostGuilds(): Promise<void> {
 
   if (ghostGuilds.length === 0) return;
 
-  // Find ghost players not already assigned to a guild
-  const assignedGhostIds = await db
+  // Find all ghost players already assigned to any guild (any rank)
+  const assignedGhostRows = await db
     .select({ ghostId: guildMembersTable.ghostId })
     .from(guildMembersTable)
-    .where(and(
-      eq(guildMembersTable.rank, "member"),
-    ));
-  const assignedIds = new Set(assignedGhostIds.map(r => r.ghostId).filter(Boolean));
+    .where(isNotNull(guildMembersTable.ghostId));
+  const assignedIds = new Set(assignedGhostRows.map(r => r.ghostId).filter(Boolean));
 
   // Fetch unassigned ghost players
   const allGhosts = await db
@@ -184,14 +182,11 @@ export async function seedGhostGuilds(): Promise<void> {
     }
   }
 
-  // Refresh contribution points for ghost guild members whose stats may have changed
-  // (only if guilds already had members — i.e., subsequent boots)
+  // Refresh contribution points for all ghost guild members (any rank)
   const existingMembers = await db
     .select({ id: guildMembersTable.id, ghostId: guildMembersTable.ghostId })
     .from(guildMembersTable)
-    .where(and(
-      eq(guildMembersTable.rank, "member"),
-    ));
+    .where(isNotNull(guildMembersTable.ghostId));
 
   const ghostIds = existingMembers
     .map(m => m.ghostId)
