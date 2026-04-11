@@ -1,1 +1,0 @@
-{"version":3,"file":"worldStats.d.ts","sourceRoot":"","sources":["../../../src/generated/types/worldStats.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AAEH,MAAM,WAAW,UAAU;IACzB,YAAY,EAAE,MAAM,CAAC;IACrB,UAAU,EAAE,MAAM,CAAC;IACnB,cAAc,EAAE,MAAM,CAAC;IACvB,eAAe,EAAE,MAAM,CAAC;IACxB,QAAQ,EAAE,MAAM,CAAC;IACjB,QAAQ,EAAE,MAAM,CAAC;IACjB,WAAW,EAAE,MAAM,CAAC;CACrB"}
