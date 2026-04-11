@@ -75,7 +75,7 @@ function ghostChronicleKey(name: string): string {
     .toLowerCase().replace(/[\s]+/g, "_").replace(/[^a-z0-9_]/g, "");
 }
 
-const router = Router();
+const worldPublicRouter = Router();
 
 const worldRateLimit = rateLimit({
   windowMs: 60 * 1000,
@@ -85,7 +85,7 @@ const worldRateLimit = rateLimit({
   message: { error: "Too many requests, please try again later." },
 });
 
-router.use("/world", worldRateLimit);
+worldPublicRouter.use("/world", worldRateLimit);
 
 // ─── Zone registry (must match ghostSimulator) ────────────────────────────────
 
@@ -104,7 +104,7 @@ const ZONE_LIST = [
 
 // ─── GET /world/players — ghosts + real player, sorted by level ───────────────
 
-router.get("/world/players", async (_req, res, next) => {
+worldPublicRouter.get("/world/players", async (_req, res, next) => {
   try {
     const ghosts = await db
       .select()
@@ -150,7 +150,7 @@ router.get("/world/players", async (_req, res, next) => {
 
 // ─── GET /world/player/:id — single ghost player profile ─────────────────────
 
-router.get("/world/player/:id", async (req, res, next) => {
+worldPublicRouter.get("/world/player/:id", async (req, res, next) => {
   try {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id)) {
@@ -183,7 +183,7 @@ router.get("/world/player/:id", async (req, res, next) => {
 
 // ─── GET /world/events ────────────────────────────────────────────────────────
 
-router.get("/world/events", async (req, res, next) => {
+worldPublicRouter.get("/world/events", async (req, res, next) => {
   try {
     const limit = Math.min(100, Number(req.query.limit ?? 50));
     const zone = req.query.zone as string | undefined;
@@ -213,7 +213,7 @@ router.get("/world/events", async (req, res, next) => {
 
 // ─── GET /world/leaderboard — top 10 by level then kill_count (ghosts + real player) ──
 
-router.get("/world/leaderboard", async (_req, res, next) => {
+worldPublicRouter.get("/world/leaderboard", async (_req, res, next) => {
   try {
     const ghosts = await db
       .select({
@@ -269,7 +269,7 @@ router.get("/world/leaderboard", async (_req, res, next) => {
 
 // ─── GET /world/zones — player count per zone (ghosts + real player) ─────────
 
-router.get("/world/zones", async (_req, res, next) => {
+worldPublicRouter.get("/world/zones", async (_req, res, next) => {
   try {
     const rows = await db
       .select({
@@ -317,7 +317,7 @@ router.get("/world/zones", async (_req, res, next) => {
 
 // ─── GET /world/stats ─────────────────────────────────────────────────────────
 
-router.get("/world/stats", async (_req, res, next) => {
+worldPublicRouter.get("/world/stats", async (_req, res, next) => {
   try {
     const [totals] = await db
       .select({
@@ -351,7 +351,7 @@ router.get("/world/stats", async (_req, res, next) => {
 // ─── GET /world/player/:id/portrait ─────────────────────────────────────────
 // Returns a cached AI-generated portrait for a ghost player (or generates one).
 
-router.get("/world/player/:id/portrait", async (req, res, next) => {
+worldPublicRouter.get("/world/player/:id/portrait", async (req, res, next) => {
   try {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id) || id < 1) { res.status(400).json({ error: "Invalid player ID" }); return; }
@@ -399,6 +399,10 @@ router.get("/world/player/:id/portrait", async (req, res, next) => {
   }
 });
 
+// ─── Admin router — protected endpoints (require auth) ───────────────────────
+
+const router = Router();
+
 // ─── POST /world/player/:id/portrait/refresh ─────────────────────────────────
 // Busts portrait cache and forces regeneration on next GET.
 
@@ -425,7 +429,7 @@ router.post("/world/player/:id/portrait/refresh", async (req, res, next) => {
 // Returns { chronicle: string } — a 2-3 sentence narrative summary.
 // Also includes { detail } with the rich structured fields for the UI panel.
 
-router.get("/world/player/:id/chronicle", async (req, res, next) => {
+worldPublicRouter.get("/world/player/:id/chronicle", async (req, res, next) => {
   try {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id) || id < 1) { res.status(400).json({ error: "Invalid player ID" }); return; }
@@ -518,7 +522,7 @@ function buildChronicleString(name: string, detail: Record<string, string>): str
 
 // ─── GET /world/docs — Public World API documentation ──────────────────────────
 
-router.get("/world/docs", (_req, res) => {
+worldPublicRouter.get("/world/docs", (_req, res) => {
   res.json({
     openapi: "3.0.3",
     info: {
@@ -638,4 +642,5 @@ router.post("/admin/reset-ghosts", resetGhostsLimiter, async (_req, res) => {
   }
 });
 
+export { worldPublicRouter };
 export default router;
