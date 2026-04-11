@@ -28,6 +28,11 @@ export const worldPlayersTable = pgTable("world_players", {
   inheritedTraits: jsonb("inherited_traits").$type<string[]>().default([]),
   lastTickAt: timestamp("last_tick_at").defaultNow().notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  /** UTC hour when this ghost comes online (0–23). 0 = always active. */
+  activeHoursStart: integer("active_hours_start").notNull().default(0),
+  /** UTC hour when this ghost goes offline (0–23). 23 = always active.
+   *  When end < start the window wraps midnight (e.g. 21–5 = 9 pm to 5 am). */
+  activeHoursEnd: integer("active_hours_end").notNull().default(23),
 });
 
 export const worldEventsTable = pgTable("world_events", {

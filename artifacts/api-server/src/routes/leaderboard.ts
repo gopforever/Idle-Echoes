@@ -3,6 +3,7 @@ import { db } from "@workspace/db";
 import { charactersTable, dungeonRunsTable, raidRunsTable, worldPlayersTable, ghostDungeonClearsTable, ghostRaidClearsTable } from "@workspace/db/schema";
 import { asc, and, eq, sql, desc } from "drizzle-orm";
 import { computeStats, makeZeroAABonuses, computeGearScore } from "../lib/eq2Formulas.js";
+import { getArchetype } from "../lib/ghostPersonalities.js";
 import { getItemById } from "../lib/gameData.js";
 import { getDungeonById } from "../lib/dungeonData.js";
 
@@ -601,7 +602,8 @@ router.get("/leaderboard/ghosts/top-by-role", async (_req, res) => {
     type GhostRoleEntry = {
       id: number; name: string; class: string; race: string; level: number;
       zone: string; killCount: number; bossKills: number; gearScore: number;
-      dungeonClears: number; personality: string; role: string; generation: number;
+      dungeonClears: number; personality: string; personalityArchetype: string;
+      role: string; generation: number;
       _score: number;
     };
 
@@ -626,6 +628,7 @@ router.get("/leaderboard/ghosts/top-by-role", async (_req, res) => {
         id: g.id, name: g.name, class: g.class, race: g.race, level: g.level,
         zone: g.zone, killCount: g.killCount, bossKills: g.bossKills,
         gearScore, dungeonClears, personality: g.personality,
+        personalityArchetype: getArchetype(g.personality ?? "Aggressive"),
         role, generation: g.generation ?? 1, _score: score,
       };
       if (role === "Tank") tanks.push(entry);

@@ -19,7 +19,10 @@ export interface WorldPlayer {
   class?: string;
   archetype?: string;
   alignment?: string;
+  /** One of the 300 named personality labels (e.g. "the Berserker") or legacy archetype name */
   personality?: string;
+  /** Resolved behavioral archetype: Aggressive | Cautious | Explorer | Greedy | Scholarly | Devout */
+  personalityArchetype?: string;
   level: number;
   xp?: number;
   xpToNextLevel?: number;
@@ -45,6 +48,8 @@ export interface WorldPlayer {
   lastTickAt?: string;
   createdAt?: string;
   isRealPlayer?: boolean;
+  activeHoursStart?: number;
+  activeHoursEnd?: number;
 }
 
 export interface WorldEvent {

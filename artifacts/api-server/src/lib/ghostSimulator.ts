@@ -29,6 +29,7 @@ import {
 } from "@workspace/db/schema";
 import { and, desc, eq, gt, lt, sql, inArray, isNull } from "drizzle-orm";
 import { GHOST_SEEDS, type GhostPersonality } from "./ghostSeeds.js";
+import { PERSONALITY_CATALOG, getArchetype } from "./ghostPersonalities.js";
 import { xpForLevel, computeStats, computeGearScore } from "./eq2Formulas.js";
 import { cleanExpiredListings } from "./auctionService.js";
 import {
@@ -55,7 +56,7 @@ import type { TradeskillClass } from "./tradeskillData.js";
 import { rollItem, type ProceduralRarity } from "./proceduralItems.js";
 
 // ─── Simulator version — bump to force a reset of ghost data ─────────────────
-const SIMULATOR_VERSION = 6;
+const SIMULATOR_VERSION = 7;
 
 // ─── Zone registry ────────────────────────────────────────────────────────────
 
@@ -825,6 +826,8 @@ async function seedGhostPlayersInner(): Promise<void> {
       gear: {},
       generation: 1,
       lastTickAt: new Date(),
+      activeHoursStart: seed.activeHoursStart ?? 0,
+      activeHoursEnd:   seed.activeHoursEnd   ?? 23,
     }).returning();
     if (inserted) {
       const gear = assignGhostGear({ level: inserted.level, archetype: inserted.archetype }, {});
@@ -1073,6 +1076,8 @@ async function spawnChildGhost(
     parentId: parent.id,
     inheritedTraits: [parent.personality, parent.alignment],
     lastTickAt: new Date(),
+    activeHoursStart: parent.activeHoursStart ?? 0,
+    activeHoursEnd:   parent.activeHoursEnd   ?? 23,
   }).returning().catch(() => []);
 
   if (inserted) {
@@ -1333,7 +1338,7 @@ async function ghostGatheringTick(
   const gatherEvents: (typeof worldEventsTable.$inferInsert)[] = [];
 
   for (const ghost of players) {
-    const personality = ghost.personality as GhostPersonality;
+    const personality = getArchetype(ghost.personality ?? "Aggressive");
     const roll = Math.random();
 
     const gatherChance =
@@ -1600,8 +1605,9 @@ async function ghostAuctionTick(players: typeof worldPlayersTable.$inferSelect[]
   };
 
   for (const ghost of participants) {
-    // Derive personality config from the stored string — never treat the string as an object
-    const personality: GhostPersonality = (ghost.personality as GhostPersonality) ?? "Aggressive";
+    // Derive archetype from stored personality label — supports both legacy archetype
+    // names ("Aggressive") and new 300-label names ("the Berserker")
+    const personality: GhostPersonality = getArchetype(ghost.personality ?? "Aggressive");
     const pCfg = PERSONALITY_CONFIG[personality];
     const personalityPriceMult = PERSONALITY_PRICE_MULT[personality];
 
@@ -1930,7 +1936,21 @@ export async function tickGhostSimulation(): Promise<void> {
   globalTick++;
   const tick = globalTick;
 
-  const players = await db.select().from(worldPlayersTable);
+  const allPlayers = await db.select().from(worldPlayersTable);
+
+  // ── Active-hours filter: only tick ghosts whose login window includes this UTC hour ──
+  const currentHour = new Date().getUTCHours();
+  const players = allPlayers.filter(p => {
+    const start = p.activeHoursStart ?? 0;
+    const end   = p.activeHoursEnd   ?? 23;
+    // Default 0–23 = always active
+    if (start === 0 && end === 23) return true;
+    // Non-wrapping window (e.g. 6–14)
+    if (end >= start) return currentHour >= start && currentHour <= end;
+    // Wrapping window (e.g. 21–5 = 9 pm to 5 am)
+    return currentHour >= start || currentHour <= end;
+  });
+
   const events: Array<typeof worldEventsTable.$inferInsert> = [];
   const factionDeltas: Record<string, number> = {};
   const marketDeltas: Record<string, number> = {};
@@ -1943,7 +1963,7 @@ export async function tickGhostSimulation(): Promise<void> {
   `);
 
   for (const player of players) {
-    const personality = (player.personality as GhostPersonality) ?? "Aggressive";
+    const personality = getArchetype(player.personality ?? "Aggressive");
     const pCfg = PERSONALITY_CONFIG[personality];
     const zoneInfo = ZONE_BY_NAME.get(player.zone) ?? zoneForLevel(player.level);
     const zoneId   = zoneInfo.id;
