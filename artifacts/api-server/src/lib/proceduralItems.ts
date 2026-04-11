@@ -258,6 +258,9 @@ const RESIST_STAT_KEYS = new Set<keyof ItemStats>([
   "resistPierce", "resistSlash", "resistCrush",
   "resistHeat", "resistCold", "resistDivine", "resistMagic",
 ]);
+// Percentage-point stats need much smaller values than regular stats to avoid
+// trivially hitting the 50% cap with a few pieces of gear.
+const RESIST_SCALE_FACTOR = 0.15;
 
 function scaleStats(slot: SlotType, level: number, rarity: ProceduralRarity, suffix: string): ItemStats {
   const mult = RARITY_STAT_MULT[rarity];
@@ -284,7 +287,8 @@ function scaleStats(slot: SlotType, level: number, rarity: ProceduralRarity, suf
       if (statKey === "weaponDamageMin" || statKey === "weaponDamageMax" || statKey === "weaponDelay") continue;
       // Resistance stats are percentages — use a smaller scale factor so they
       // stay well below the 50% cap even when multiple pieces are equipped.
-      const scaleFactor = RESIST_STAT_KEYS.has(statKey) ? 0.15 : (0.5 + Math.random() * 0.5);
+      // Non-resist stats use a random factor in [0.5, 1.0] for variance.
+      const scaleFactor = RESIST_STAT_KEYS.has(statKey) ? RESIST_SCALE_FACTOR : (0.5 + Math.random() * 0.5);
       const val = Math.floor(base * mult * scaleFactor);
       (stats as Record<string, number>)[statKey] = Math.max(1, val);
     }
