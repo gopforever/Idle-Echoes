@@ -16,6 +16,8 @@ export interface ItemStats {
   weaponDamageMin?: number;
   weaponDamageMax?: number;
   weaponDelay?: number;
+  spellDamageBonus?: number;
+  healBonus?: number;
 }
 
 export interface Item {
@@ -2830,6 +2832,7 @@ export const ENEMIES: Enemy[] = [
       { itemId: "ring_of_strength", dropChance: 0.08, minQuantity: 1, maxQuantity: 1 },
       { itemId: "antonica_gnoll_claw", dropChance: 0.6, minQuantity: 1, maxQuantity: 2 },
       { itemId: "scroll_expert_shadowsteel", dropChance: 0.06, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "stormhold_chieftain_talisman", dropChance: 0.4, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_gnoll_boss", type: "humanoid", isBoss: true, personality: "arrogant", grudgeThreshold: 3,
     abilities: [
@@ -2947,6 +2950,7 @@ export const ENEMIES: Enemy[] = [
       { itemId: "ring_of_power", dropChance: 0.15, minQuantity: 1, maxQuantity: 1 },
       { itemId: "titania_crown_shard", dropChance: 0.3, minQuantity: 1, maxQuantity: 1 },
       { itemId: "scroll_expert_arcane_ring", dropChance: 0.10, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "titania_fae_crown_fragment", dropChance: 0.4, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_fae_queen", type: "elemental", isBoss: true, personality: "arrogant", grudgeThreshold: 3,
     abilities: [
@@ -3045,6 +3049,7 @@ export const ENEMIES: Enemy[] = [
       { itemId: "zek_war_rune", dropChance: 0.8, minQuantity: 3, maxQuantity: 6 },
       { itemId: "helm_of_the_guardian", dropChance: 0.12, minQuantity: 1, maxQuantity: 1 },
       { itemId: "deathfist_seal", dropChance: 0.25, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "deathfist_deathseal", dropChance: 0.4, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_orc_boss", type: "humanoid", isBoss: true, personality: "cold", grudgeThreshold: 3,
     abilities: [
@@ -3182,6 +3187,7 @@ export const ENEMIES: Enemy[] = [
       { itemId: "faydark_wood", dropChance: 0.9, minQuantity: 3, maxQuantity: 6 },
       { itemId: "darkblade", dropChance: 0.1, minQuantity: 1, maxQuantity: 1 },
       { itemId: "grimthorn_bark", dropChance: 0.35, minQuantity: 1, maxQuantity: 2 },
+      { itemId: "grimthorn_heartwood", dropChance: 0.4, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_treant", type: "elemental", isBoss: true, personality: "ancient", grudgeThreshold: 3,
     abilities: [
@@ -3320,6 +3326,7 @@ export const ENEMIES: Enemy[] = [
       { itemId: "chestguard_of_the_fallen", dropChance: 0.14, minQuantity: 1, maxQuantity: 1 },
       { itemId: "ring_of_the_ancients", dropChance: 0.12, minQuantity: 1, maxQuantity: 1 },
       { itemId: "cazic_idol", dropChance: 0.2, minQuantity: 1, maxQuantity: 1 },
+      { itemId: "cazic_fear_crystal", dropChance: 0.4, minQuantity: 1, maxQuantity: 1 },
     ],
     spriteId: "enemy_demon", type: "elemental", isBoss: true, personality: "cold", grudgeThreshold: 3,
     abilities: [
@@ -4398,6 +4405,239 @@ ITEMS.push(
   { id: "icegrave_relic", name: "Frost Warden's Relic", description: "A relic dropped by Frost Warden Icegrave — a trophy from the depths of Permafrost Keep", type: "accessory", slot: "charm", rarity: "rare", level: 42, stats: { stamina: 12, defenseRating: 85, mitigation: 60 }, sellPrice: 700, spriteId: "accessory_frost" },
   { id: "ignus_pyro_focus", name: "Ignus Pyromantic Focus", description: "High Priest Ignus's focus crystal, containing the essence of Sol Ro's inner flame", type: "accessory", slot: "charm", rarity: "legendary", level: 48, stats: { intelligence: 25, wisdom: 18, attackRating: 180, critChance: 8 }, sellPrice: 3800, spriteId: "gem_fire" },
   { id: "nagafen_scale_armor", name: "Scale of Lord Nagafen", description: "A legendary scale from Lord Nagafen himself — heat-proof and immensely durable", type: "armor", slot: "chest", rarity: "mythical", level: 50, stats: { stamina: 40, strength: 25, defenseRating: 300, mitigation: 220, avoidance: 10 }, sellPrice: 15000, spriteId: "chestplate_fabled", noSell: true },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // RAID MYTHICAL GEAR — Harla Dar (Temple of Harla Dar, levels 55–58)
+  // Theme: Prismatic / Elemental / Dragon
+  // ══════════════════════════════════════════════════════════════════════════
+
+  // Weapons
+  { id: "raid_harla_dar_weapon_fighter", name: "Prismatic Warblade of Harla Dar", description: "Forged from Harla Dar's shed scales — cycles through elemental damage with every swing", type: "weapon", slot: "primary", rarity: "mythical", level: 57, armorType: undefined,
+    stats: { strength: 95, stamina: 40, attackRating: 620, critChance: 18, haste: 10, weaponDamageMin: 240, weaponDamageMax: 390, weaponDelay: 1.7 }, sellPrice: 55000, spriteId: "sword_fabled" },
+  { id: "raid_harla_dar_weapon_scout", name: "Chromatic Longbow of the Tangle", description: "A prismatic bow that fires arrows imbued with all elements simultaneously", type: "weapon", slot: "ranged", rarity: "mythical", level: 56,
+    stats: { agility: 100, critChance: 22, haste: 12, attackRating: 580, weaponDamageMin: 220, weaponDamageMax: 360, weaponDelay: 2.4 }, sellPrice: 52000, spriteId: "weapon_crossbow" },
+  { id: "raid_harla_dar_weapon_mage", name: "Prismatic Dragon Staff", description: "A staff tipped with Harla Dar's claw — channels all elemental schools at once", type: "weapon", slot: "primary", rarity: "mythical", level: 57,
+    stats: { intelligence: 110, wisdom: 50, critChance: 20, attackRating: 520, spellDamageBonus: 180, weaponDamageMin: 180, weaponDamageMax: 300, weaponDelay: 2.2 }, sellPrice: 54000, spriteId: "staff_fabled" },
+  { id: "raid_harla_dar_weapon_priest", name: "Radiant Scepter of the Prismatic Rite", description: "A scepter blessed by all elemental planes — heals and harms in equal measure", type: "weapon", slot: "primary", rarity: "mythical", level: 57,
+    stats: { wisdom: 115, intelligence: 45, power: 650, critChance: 16, attackRating: 480, healBonus: 160, weaponDamageMin: 165, weaponDamageMax: 275, weaponDelay: 1.9 }, sellPrice: 54000, spriteId: "weapon_scepter" },
+  { id: "raid_harla_dar_weapon_shield", name: "Prismatic Dragon Aegis", description: "A shield fashioned from Harla Dar's underbelly scales — refracts attacks like a prism", type: "armor", slot: "secondary", rarity: "mythical", level: 56,
+    stats: { stamina: 90, defenseRating: 480, mitigation: 340, health: 600, avoidance: 20 }, sellPrice: 48000, spriteId: "shield_legendary" },
+
+  // Armor — Plate (Fighter)
+  { id: "raid_harla_dar_head_fighter", name: "Dragonhelm of Chromatic Fury", description: "A helm carved from Harla Dar's skull-plate — prismatic energy crackles around the visor", type: "armor", slot: "head", rarity: "mythical", level: 57, armorType: "plate",
+    stats: { stamina: 85, strength: 50, defenseRating: 460, mitigation: 320, health: 550, critChance: 10 }, sellPrice: 42000, spriteId: "helm_legendary" },
+  { id: "raid_harla_dar_shoulder_fighter", name: "Prismatic Dragon Pauldrons", description: "Massive pauldrons of layered dragon-scale that shift colour with elemental alignment", type: "armor", slot: "shoulder", rarity: "mythical", level: 57, armorType: "plate",
+    stats: { stamina: 78, strength: 45, defenseRating: 430, mitigation: 300, health: 480 }, sellPrice: 40000, spriteId: "shoulders_plate" },
+  { id: "raid_harla_dar_chest_fighter", name: "Prismatic Scale Breastplate", description: "Full plate breastplate grown from Harla Dar's living scales — nearly unbreakable", type: "armor", slot: "chest", rarity: "mythical", level: 58, armorType: "plate",
+    stats: { stamina: 105, strength: 60, defenseRating: 580, mitigation: 420, health: 750, avoidance: 12 }, sellPrice: 58000, spriteId: "chest_fabled" },
+  { id: "raid_harla_dar_legs_fighter", name: "Chromatic Dragon Legguards", description: "Legguards of overlapping prismatic scales — each scale aligned to a different element", type: "armor", slot: "legs", rarity: "mythical", level: 57, armorType: "plate",
+    stats: { stamina: 88, strength: 48, defenseRating: 500, mitigation: 355, health: 600 }, sellPrice: 44000, spriteId: "legs_plate" },
+  { id: "raid_harla_dar_waist_fighter", name: "Prismatic Dragon Girdle", description: "A girdle of prismatic dragon-bone that flexes without cracking under any blow", type: "armor", slot: "waist", rarity: "mythical", level: 56, armorType: "plate",
+    stats: { stamina: 70, strength: 38, defenseRating: 380, mitigation: 270, health: 420 }, sellPrice: 36000, spriteId: "waist_plate" },
+  { id: "raid_harla_dar_wrists_fighter", name: "Chromatic Vambraces of Harla Dar", description: "Vambraces forged from Harla Dar's wing-bones — lightweight yet impenetrable", type: "armor", slot: "wrists", rarity: "mythical", level: 56, armorType: "plate",
+    stats: { stamina: 65, strength: 35, defenseRating: 360, mitigation: 255, attackRating: 80 }, sellPrice: 34000, spriteId: "wrists_plate" },
+  { id: "raid_harla_dar_hands_fighter", name: "Prismatic Dragon Gauntlets", description: "Gauntlets tipped with Harla Dar's claws — each strike delivers a prismatic elemental burst", type: "armor", slot: "hands", rarity: "mythical", level: 56, armorType: "plate",
+    stats: { stamina: 60, strength: 40, defenseRating: 340, mitigation: 240, haste: 10, critChance: 8 }, sellPrice: 36000, spriteId: "hands_plate" },
+  { id: "raid_harla_dar_feet_fighter", name: "Prismatic Dragon Sabatons", description: "Heavy sabatons of fused dragon-scale — the wearer leaves prismatic footprints", type: "armor", slot: "feet", rarity: "mythical", level: 56, armorType: "plate",
+    stats: { stamina: 62, strength: 36, defenseRating: 350, mitigation: 248, avoidance: 14 }, sellPrice: 34000, spriteId: "feet_plate" },
+  { id: "raid_harla_dar_back_fighter", name: "Cloak of the Prismatic Lair", description: "A cloak woven from Harla Dar's inner-scale membranes — shimmers with all elemental hues", type: "armor", slot: "back", rarity: "mythical", level: 56,
+    stats: { stamina: 55, strength: 30, defenseRating: 300, mitigation: 210, avoidance: 18 }, sellPrice: 32000, spriteId: "back_shadow" },
+
+  // Armor — Cloth (Mage/Priest)
+  { id: "raid_harla_dar_head_caster", name: "Cowl of the Prismatic Rite", description: "A cowl stitched from Harla Dar's wing membrane — amplifies all schools of magic", type: "armor", slot: "head", rarity: "mythical", level: 57, armorType: "cloth",
+    stats: { intelligence: 105, wisdom: 65, power: 580, critChance: 18, spellDamageBonus: 90 }, sellPrice: 42000, spriteId: "helm_cloth" },
+  { id: "raid_harla_dar_chest_caster", name: "Robes of Chromatic Dominion", description: "Robes woven from the finest prismatic silk, harvested from Harla Dar's own hide", type: "armor", slot: "chest", rarity: "mythical", level: 58, armorType: "cloth",
+    stats: { intelligence: 128, wisdom: 80, power: 720, critChance: 20, spellDamageBonus: 110, defenseRating: 200 }, sellPrice: 58000, spriteId: "robe_ice" },
+  { id: "raid_harla_dar_legs_caster", name: "Prismatic Spellweave Leggings", description: "Leggings of prismatic spellweave — each panel channels a different elemental school", type: "armor", slot: "legs", rarity: "mythical", level: 57, armorType: "cloth",
+    stats: { intelligence: 110, wisdom: 70, power: 630, critChance: 16, healBonus: 80 }, sellPrice: 44000, spriteId: "legs_cloth" },
+  { id: "raid_harla_dar_wrists_caster", name: "Bracers of the Prismatic Surge", description: "Silk bracers threaded with prismatic dragon sinew — boost spell velocity", type: "armor", slot: "wrists", rarity: "mythical", level: 56, armorType: "cloth",
+    stats: { intelligence: 90, wisdom: 55, power: 500, critChance: 14, spellDamageBonus: 70 }, sellPrice: 34000, spriteId: "wrists_cloth" },
+
+  // Armor — Leather (Scout)
+  { id: "raid_harla_dar_legs_scout", name: "Chromatic Stalker's Leggings", description: "Lightweight dragon-leather leggings cut from Harla Dar's underbelly", type: "armor", slot: "legs", rarity: "mythical", level: 57, armorType: "leather",
+    stats: { agility: 100, stamina: 50, defenseRating: 340, mitigation: 220, haste: 12, critChance: 14 }, sellPrice: 44000, spriteId: "legs_leather" },
+  { id: "raid_harla_dar_feet_scout", name: "Boots of the Chromatic Hunter", description: "Swift boots of prismatic dragon-leather — the wearer moves with elemental speed", type: "armor", slot: "feet", rarity: "mythical", level: 56, armorType: "leather",
+    stats: { agility: 88, stamina: 40, defenseRating: 300, mitigation: 190, haste: 14, avoidance: 20 }, sellPrice: 36000, spriteId: "feet_leather" },
+
+  // Accessories
+  { id: "raid_harla_dar_ring1", name: "Band of Prismatic Scales", description: "A ring set with a Harla Dar scale chip — glows with all elemental colours", type: "accessory", slot: "ringLeft", rarity: "mythical", level: 56,
+    stats: { strength: 45, agility: 30, stamina: 40, attackRating: 160, critChance: 12 }, sellPrice: 38000, spriteId: "ring_fabled" },
+  { id: "raid_harla_dar_ring2", name: "Ring of Chromatic Power", description: "A ring containing a fragment of Harla Dar's prismatic heart — pulsing with raw magic", type: "accessory", slot: "ringRight", rarity: "mythical", level: 56,
+    stats: { intelligence: 80, wisdom: 55, power: 400, critChance: 14, spellDamageBonus: 60 }, sellPrice: 38000, spriteId: "ring_magic" },
+  { id: "raid_harla_dar_neck", name: "Amulet of the Prismatic Dragon", description: "An amulet carved from Harla Dar's dorsal spine — radiates prismatic warmth", type: "accessory", slot: "neck", rarity: "mythical", level: 57,
+    stats: { stamina: 60, strength: 40, intelligence: 40, wisdom: 35, health: 300, power: 280 }, sellPrice: 45000, spriteId: "accessory_neck" },
+  { id: "raid_harla_dar_ear", name: "Earring of Chromatic Resonance", description: "A Harla Dar scale sliver set in adamantine — attunes the wearer to all elements", type: "accessory", slot: "earLeft", rarity: "mythical", level: 56,
+    stats: { agility: 50, intelligence: 50, critChance: 15, haste: 10 }, sellPrice: 36000, spriteId: "accessory_ear" },
+  { id: "raid_harla_dar_charm", name: "Harla Dar's Prismatic Eye", description: "One of Harla Dar's eyes — a charm that sees through all elemental deception", type: "accessory", slot: "charm", rarity: "mythical", level: 57,
+    stats: { stamina: 70, intelligence: 60, wisdom: 50, attackRating: 120, spellDamageBonus: 80, healBonus: 60 }, sellPrice: 48000, spriteId: "gem_fire" },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // RAID MYTHICAL GEAR — Trakanon (The Trakanon Depths, levels 58–62)
+  // Theme: Plague / Undead / Poison
+  // ══════════════════════════════════════════════════════════════════════════
+
+  // Weapons
+  { id: "raid_trakanon_weapon_fighter", name: "Pestilence Greataxe of Trakanon", description: "A greataxe formed from Trakanon's spine — drips with plague that never heals", type: "weapon", slot: "primary", rarity: "mythical", level: 61, armorType: undefined,
+    stats: { strength: 105, stamina: 45, attackRating: 660, critChance: 19, haste: 11, weaponDamageMin: 260, weaponDamageMax: 420, weaponDelay: 2.0 }, sellPrice: 58000, spriteId: "axe_orc" },
+  { id: "raid_trakanon_weapon_scout", name: "Venomous Fang Dagger of Trakanon", description: "A blade carved from a hollow plague-dragon tooth — injects venom on every hit", type: "weapon", slot: "primary", rarity: "mythical", level: 60,
+    stats: { agility: 112, critChance: 24, haste: 14, attackRating: 620, weaponDamageMin: 235, weaponDamageMax: 385, weaponDelay: 1.5 }, sellPrice: 56000, spriteId: "sword_dark" },
+  { id: "raid_trakanon_weapon_mage", name: "Necrotic Plague Wand of Trakanon", description: "A wand grown from a plague-dragon rib — channels necrotic and poison energy", type: "weapon", slot: "primary", rarity: "mythical", level: 61,
+    stats: { intelligence: 120, wisdom: 55, critChance: 21, attackRating: 550, spellDamageBonus: 195, weaponDamageMin: 190, weaponDamageMax: 315, weaponDelay: 2.0 }, sellPrice: 57000, spriteId: "weapon_wand" },
+  { id: "raid_trakanon_weapon_priest", name: "Bone Scepter of the Undying Rite", description: "Carved from Trakanon's own claw — heals the righteous and corrodes the wicked", type: "weapon", slot: "primary", rarity: "mythical", level: 61,
+    stats: { wisdom: 125, intelligence: 50, power: 700, critChance: 17, attackRating: 510, healBonus: 175, weaponDamageMin: 175, weaponDamageMax: 290, weaponDelay: 1.9 }, sellPrice: 57000, spriteId: "weapon_scepter" },
+  { id: "raid_trakanon_weapon_shield", name: "Plaguebone Shield of Trakanon", description: "A shield of plague-dragon bone — corrodes incoming blades on contact", type: "armor", slot: "secondary", rarity: "mythical", level: 60,
+    stats: { stamina: 100, defenseRating: 520, mitigation: 370, health: 650, avoidance: 22 }, sellPrice: 52000, spriteId: "shield_legendary" },
+
+  // Armor — Plate (Fighter)
+  { id: "raid_trakanon_head_fighter", name: "Skull Helm of the Undying Plague", description: "A helm shaped from Trakanon's skull-fragments — the wearer becomes immune to disease", type: "armor", slot: "head", rarity: "mythical", level: 61, armorType: "plate",
+    stats: { stamina: 95, strength: 55, defenseRating: 500, mitigation: 355, health: 600, critChance: 11 }, sellPrice: 46000, spriteId: "helm_legendary" },
+  { id: "raid_trakanon_shoulder_fighter", name: "Pestilent Dragon Pauldrons", description: "Pauldrons of plague-hardened scale that spray venom shards when struck", type: "armor", slot: "shoulder", rarity: "mythical", level: 61, armorType: "plate",
+    stats: { stamina: 85, strength: 50, defenseRating: 465, mitigation: 330, health: 520 }, sellPrice: 43000, spriteId: "shoulders_plate" },
+  { id: "raid_trakanon_chest_fighter", name: "Breastplate of the Undying Plague", description: "The heaviest plate in all of Sebilis — dripping with Trakanon's essence", type: "armor", slot: "chest", rarity: "mythical", level: 62, armorType: "plate",
+    stats: { stamina: 115, strength: 65, defenseRating: 620, mitigation: 450, health: 800, avoidance: 13 }, sellPrice: 62000, spriteId: "chest_fabled" },
+  { id: "raid_trakanon_legs_fighter", name: "Plague Dragon Legguards", description: "Heavy legguards forged from Trakanon's tail-scales — corrosive to the touch", type: "armor", slot: "legs", rarity: "mythical", level: 61, armorType: "plate",
+    stats: { stamina: 96, strength: 53, defenseRating: 540, mitigation: 385, health: 640 }, sellPrice: 47000, spriteId: "legs_plate" },
+  { id: "raid_trakanon_waist_fighter", name: "Plague-Spine Girdle", description: "A girdle threaded with Trakanon's spines — the wearer's endurance becomes legendary", type: "armor", slot: "waist", rarity: "mythical", level: 60, armorType: "plate",
+    stats: { stamina: 78, strength: 42, defenseRating: 415, mitigation: 295, health: 460 }, sellPrice: 38000, spriteId: "waist_plate" },
+  { id: "raid_trakanon_wrists_fighter", name: "Venom Vambraces of Trakanon", description: "Vambraces dripping with plague-venom — turn every block into a poisonous counter", type: "armor", slot: "wrists", rarity: "mythical", level: 60, armorType: "plate",
+    stats: { stamina: 72, strength: 40, defenseRating: 390, mitigation: 278, attackRating: 90 }, sellPrice: 36000, spriteId: "wrists_plate" },
+  { id: "raid_trakanon_hands_fighter", name: "Gauntlets of the Plague Lord", description: "Gauntlets grown from calcified plague-bone — each punch spreads pestilence", type: "armor", slot: "hands", rarity: "mythical", level: 60, armorType: "plate",
+    stats: { stamina: 66, strength: 44, defenseRating: 370, mitigation: 262, haste: 11, critChance: 9 }, sellPrice: 38000, spriteId: "hands_plate" },
+  { id: "raid_trakanon_feet_fighter", name: "Sabatons of the Undying March", description: "Heavy sabatons forged in plague-dragon fire — leave a trail of corroded ground", type: "armor", slot: "feet", rarity: "mythical", level: 60, armorType: "plate",
+    stats: { stamina: 68, strength: 40, defenseRating: 380, mitigation: 270, avoidance: 16 }, sellPrice: 36000, spriteId: "feet_plate" },
+  { id: "raid_trakanon_back_fighter", name: "Cloak of the Pestilent Depths", description: "A cloak soaked in Trakanon's venom — enemies hesitate before striking the wearer", type: "armor", slot: "back", rarity: "mythical", level: 60,
+    stats: { stamina: 60, strength: 33, defenseRating: 330, mitigation: 230, avoidance: 20 }, sellPrice: 34000, spriteId: "back_shadow" },
+
+  // Armor — Cloth (Mage/Priest)
+  { id: "raid_trakanon_head_caster", name: "Death-Shroud Cowl of Trakanon", description: "A cowl woven from plague-dragon membrane — amplifies necrotic and poison spells", type: "armor", slot: "head", rarity: "mythical", level: 61, armorType: "cloth",
+    stats: { intelligence: 115, wisdom: 72, power: 630, critChance: 19, spellDamageBonus: 100 }, sellPrice: 46000, spriteId: "helm_cloth" },
+  { id: "raid_trakanon_chest_caster", name: "Robes of the Undying Plague", description: "Robes woven from plague-silk — the wearer's spells carry a virulent after-effect", type: "armor", slot: "chest", rarity: "mythical", level: 62, armorType: "cloth",
+    stats: { intelligence: 140, wisdom: 88, power: 780, critChance: 22, spellDamageBonus: 120, defenseRating: 210 }, sellPrice: 62000, spriteId: "robe_ice" },
+  { id: "raid_trakanon_legs_caster", name: "Pestilence Spellweave Leggings", description: "Leggings woven with plague-silk — every cast leaves a lingering toxic mist", type: "armor", slot: "legs", rarity: "mythical", level: 61, armorType: "cloth",
+    stats: { intelligence: 120, wisdom: 76, power: 680, critChance: 17, healBonus: 88 }, sellPrice: 47000, spriteId: "legs_cloth" },
+  { id: "raid_trakanon_wrists_caster", name: "Bracers of Necrotic Channelling", description: "Plague-bone bracers etched with necrotic sigils — amplify death-magic significantly", type: "armor", slot: "wrists", rarity: "mythical", level: 60, armorType: "cloth",
+    stats: { intelligence: 98, wisdom: 60, power: 540, critChance: 15, spellDamageBonus: 78 }, sellPrice: 36000, spriteId: "wrists_cloth" },
+
+  // Armor — Leather (Scout)
+  { id: "raid_trakanon_legs_scout", name: "Plague-Stalker's Leggings", description: "Leather cut from Trakanon's flanks — the hunter moves silently through toxic mist", type: "armor", slot: "legs", rarity: "mythical", level: 61, armorType: "leather",
+    stats: { agility: 110, stamina: 55, defenseRating: 370, mitigation: 240, haste: 13, critChance: 15 }, sellPrice: 47000, spriteId: "legs_leather" },
+  { id: "raid_trakanon_feet_scout", name: "Venom-Treader Boots", description: "Boots of plague-dragon hide — the wearer moves swiftly even through poisoned terrain", type: "armor", slot: "feet", rarity: "mythical", level: 60, armorType: "leather",
+    stats: { agility: 96, stamina: 44, defenseRating: 328, mitigation: 208, haste: 15, avoidance: 22 }, sellPrice: 38000, spriteId: "feet_leather" },
+
+  // Accessories
+  { id: "raid_trakanon_ring1", name: "Band of the Undying Plague", description: "A ring of plague-dragon bone — the wearer resists all disease and venom", type: "accessory", slot: "ringLeft", rarity: "mythical", level: 60,
+    stats: { strength: 50, agility: 35, stamina: 45, attackRating: 175, critChance: 13 }, sellPrice: 42000, spriteId: "ring_dark" },
+  { id: "raid_trakanon_ring2", name: "Ring of Pestilent Power", description: "A ring containing a plague-crystal from Trakanon's heart — empowers all necrotic magic", type: "accessory", slot: "ringRight", rarity: "mythical", level: 60,
+    stats: { intelligence: 88, wisdom: 60, power: 440, critChance: 15, spellDamageBonus: 68 }, sellPrice: 42000, spriteId: "ring_magic" },
+  { id: "raid_trakanon_neck", name: "Necklace of the Plague Depths", description: "A necklace of plague-dragon vertebrae — empowers body and mind in equal measure", type: "accessory", slot: "neck", rarity: "mythical", level: 61,
+    stats: { stamina: 68, strength: 45, intelligence: 45, wisdom: 40, health: 340, power: 310 }, sellPrice: 50000, spriteId: "accessory_neck" },
+  { id: "raid_trakanon_ear", name: "Earring of Virulent Might", description: "A plague-dragon scale sliver set in bone — sings a deadly harmonic in combat", type: "accessory", slot: "earLeft", rarity: "mythical", level: 60,
+    stats: { agility: 55, intelligence: 55, critChance: 16, haste: 11 }, sellPrice: 40000, spriteId: "accessory_ear" },
+  { id: "raid_trakanon_charm", name: "Trakanon's Undying Heart", description: "A fossilised fragment of Trakanon's still-beating heart — a charm of terrifying power", type: "accessory", slot: "charm", rarity: "mythical", level: 61,
+    stats: { stamina: 80, intelligence: 65, wisdom: 55, attackRating: 135, spellDamageBonus: 90, healBonus: 68 }, sellPrice: 52000, spriteId: "gem_dark" },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // RAID MYTHICAL GEAR — Mayong Mistmoore (Mistmoore Catacombs, levels 63–67)
+  // Theme: Shadow / Vampire / Blood
+  // ══════════════════════════════════════════════════════════════════════════
+
+  // Weapons
+  { id: "raid_mayong_mistmoore_weapon_fighter", name: "Blood-Forged Greatsword of Mistmoore", description: "A greatsword tempered in Mayong's own blood — drains life from every foe it cleaves", type: "weapon", slot: "primary", rarity: "mythical", level: 66, armorType: undefined,
+    stats: { strength: 125, stamina: 55, attackRating: 730, critChance: 22, haste: 14, weaponDamageMin: 295, weaponDamageMax: 470, weaponDelay: 1.8 }, sellPrice: 70000, spriteId: "sword_fabled" },
+  { id: "raid_mayong_mistmoore_weapon_scout", name: "Shadow Crossbow of the Mistmoore Bloodline", description: "A crossbow carved from shadow-oak and strung with vampire sinew — bolts strike from the dark", type: "weapon", slot: "ranged", rarity: "mythical", level: 65,
+    stats: { agility: 130, critChance: 26, haste: 16, attackRating: 700, weaponDamageMin: 270, weaponDamageMax: 440, weaponDelay: 2.5 }, sellPrice: 68000, spriteId: "weapon_crossbow" },
+  { id: "raid_mayong_mistmoore_weapon_mage", name: "Void Wand of Mayong's Ascension", description: "A wand carved from a shard of Mayong's divine form — channels the void between worlds", type: "weapon", slot: "primary", rarity: "mythical", level: 66,
+    stats: { intelligence: 140, wisdom: 68, critChance: 24, attackRating: 660, spellDamageBonus: 220, weaponDamageMin: 215, weaponDamageMax: 355, weaponDelay: 2.1 }, sellPrice: 70000, spriteId: "weapon_wand" },
+  { id: "raid_mayong_mistmoore_weapon_priest", name: "Crimson Scepter of Dark Apotheosis", description: "A scepter of vampiric ruby and shadow-steel — heals allies by draining enemies", type: "weapon", slot: "primary", rarity: "mythical", level: 66,
+    stats: { wisdom: 148, intelligence: 62, power: 820, critChance: 20, attackRating: 600, healBonus: 200, weaponDamageMin: 200, weaponDamageMax: 330, weaponDelay: 2.0 }, sellPrice: 70000, spriteId: "weapon_scepter" },
+  { id: "raid_mayong_mistmoore_weapon_shield", name: "Blood-Iron Shield of Mistmoore", description: "A shield cast from blood-iron by Mayong's finest armourers — absorbs life force on block", type: "armor", slot: "secondary", rarity: "mythical", level: 65,
+    stats: { stamina: 120, defenseRating: 610, mitigation: 440, health: 800, avoidance: 26 }, sellPrice: 65000, spriteId: "shield_legendary" },
+
+  // Armor — Plate (Fighter)
+  { id: "raid_mayong_mistmoore_head_fighter", name: "Crown of the Vampire Lord", description: "Mayong's ceremonial war crown — grants near-divine endurance to the wearer", type: "armor", slot: "head", rarity: "mythical", level: 66, armorType: "plate",
+    stats: { stamina: 115, strength: 70, defenseRating: 580, mitigation: 415, health: 750, critChance: 13 }, sellPrice: 60000, spriteId: "helm_legendary" },
+  { id: "raid_mayong_mistmoore_shoulder_fighter", name: "Shadow Pauldrons of Mistmoore", description: "Pauldrons forged in shadow-iron — seem to absorb light and enemy morale alike", type: "armor", slot: "shoulder", rarity: "mythical", level: 66, armorType: "plate",
+    stats: { stamina: 105, strength: 62, defenseRating: 550, mitigation: 392, health: 660 }, sellPrice: 56000, spriteId: "shoulders_plate" },
+  { id: "raid_mayong_mistmoore_chest_fighter", name: "Breastplate of Dark Apotheosis", description: "The pinnacle of vampiric armorcraft — each plate inscribed with a divine dark sigil", type: "armor", slot: "chest", rarity: "mythical", level: 67, armorType: "plate",
+    stats: { stamina: 135, strength: 80, defenseRating: 720, mitigation: 520, health: 950, avoidance: 16 }, sellPrice: 78000, spriteId: "chest_fabled" },
+  { id: "raid_mayong_mistmoore_legs_fighter", name: "Blood Knight Legguards of Mistmoore", description: "Legguards of shadow-forged plate — the wearer moves with vampire-like quickness", type: "armor", slot: "legs", rarity: "mythical", level: 66, armorType: "plate",
+    stats: { stamina: 115, strength: 68, defenseRating: 640, mitigation: 460, health: 780 }, sellPrice: 62000, spriteId: "legs_plate" },
+  { id: "raid_mayong_mistmoore_waist_fighter", name: "Girdle of the Undying Court", description: "A shadow-iron girdle blessed by Mayong himself — binds the wearer to immortal resolve", type: "armor", slot: "waist", rarity: "mythical", level: 65, armorType: "plate",
+    stats: { stamina: 94, strength: 52, defenseRating: 500, mitigation: 358, health: 580 }, sellPrice: 50000, spriteId: "waist_plate" },
+  { id: "raid_mayong_mistmoore_wrists_fighter", name: "Vambraces of the Blood Court", description: "Shadow-iron vambraces worn by Mayong's personal guard — each block draws enemy blood", type: "armor", slot: "wrists", rarity: "mythical", level: 65, armorType: "plate",
+    stats: { stamina: 86, strength: 50, defenseRating: 470, mitigation: 338, attackRating: 110 }, sellPrice: 46000, spriteId: "wrists_plate" },
+  { id: "raid_mayong_mistmoore_hands_fighter", name: "Gauntlets of Vampiric Ruin", description: "Blood-iron gauntlets forged with Mayong's blessing — drain life with every punch", type: "armor", slot: "hands", rarity: "mythical", level: 65, armorType: "plate",
+    stats: { stamina: 80, strength: 56, defenseRating: 450, mitigation: 320, haste: 14, critChance: 11 }, sellPrice: 50000, spriteId: "hands_plate" },
+  { id: "raid_mayong_mistmoore_feet_fighter", name: "Sabatons of the Eternal Night", description: "Heavy sabatons of shadow-iron — the wearer walks without sound, even in full plate", type: "armor", slot: "feet", rarity: "mythical", level: 65, armorType: "plate",
+    stats: { stamina: 82, strength: 50, defenseRating: 460, mitigation: 328, avoidance: 20 }, sellPrice: 48000, spriteId: "feet_plate" },
+  { id: "raid_mayong_mistmoore_back_fighter", name: "Cloak of the Vampire Sovereign", description: "Mayong's own war cloak — enemies who strike the wearer feel a cold dread in their veins", type: "armor", slot: "back", rarity: "mythical", level: 65,
+    stats: { stamina: 72, strength: 42, defenseRating: 400, mitigation: 280, avoidance: 24 }, sellPrice: 44000, spriteId: "back_shadow" },
+
+  // Armor — Cloth (Mage/Priest)
+  { id: "raid_mayong_mistmoore_head_caster", name: "Cowl of Dark Apotheosis", description: "A cowl woven from shadow-silk — the wearer's spells take on a vampiric quality", type: "armor", slot: "head", rarity: "mythical", level: 66, armorType: "cloth",
+    stats: { intelligence: 135, wisdom: 85, power: 760, critChance: 23, spellDamageBonus: 115 }, sellPrice: 60000, spriteId: "helm_cloth" },
+  { id: "raid_mayong_mistmoore_chest_caster", name: "Robes of the Blood God", description: "Robes cut from the finest Mistmoore shadow-silk — the wearer commands the power of undeath", type: "armor", slot: "chest", rarity: "mythical", level: 67, armorType: "cloth",
+    stats: { intelligence: 162, wisdom: 102, power: 900, critChance: 25, spellDamageBonus: 140, defenseRating: 240 }, sellPrice: 78000, spriteId: "robe_ice" },
+  { id: "raid_mayong_mistmoore_legs_caster", name: "Shadow Spellweave Legwraps", description: "Legwraps woven with shadow thread from Mayong's own sanctum — amplify void and blood magic", type: "armor", slot: "legs", rarity: "mythical", level: 66, armorType: "cloth",
+    stats: { intelligence: 142, wisdom: 90, power: 810, critChance: 20, healBonus: 100 }, sellPrice: 62000, spriteId: "legs_cloth" },
+  { id: "raid_mayong_mistmoore_wrists_caster", name: "Bracers of Vampiric Dominion", description: "Shadow-silk bracers inscribed with Mayong's own blood sigils — draw power from the fallen", type: "armor", slot: "wrists", rarity: "mythical", level: 65, armorType: "cloth",
+    stats: { intelligence: 118, wisdom: 74, power: 650, critChance: 18, spellDamageBonus: 90 }, sellPrice: 48000, spriteId: "wrists_cloth" },
+
+  // Armor — Leather (Scout)
+  { id: "raid_mayong_mistmoore_legs_scout", name: "Shadowstalker's Legwraps of Mistmoore", description: "Leather leggings cured in Mayong's vault — make the wearer nearly invisible in shadow", type: "armor", slot: "legs", rarity: "mythical", level: 66, armorType: "leather",
+    stats: { agility: 130, stamina: 65, defenseRating: 440, mitigation: 285, haste: 16, critChance: 18 }, sellPrice: 62000, spriteId: "legs_leather" },
+  { id: "raid_mayong_mistmoore_feet_scout", name: "Boots of the Eternal Dark", description: "Shadow-leather boots forged in Mayong's personal armory — the fastest boots in all of Norrath", type: "armor", slot: "feet", rarity: "mythical", level: 65, armorType: "leather",
+    stats: { agility: 118, stamina: 52, defenseRating: 395, mitigation: 252, haste: 18, avoidance: 26 }, sellPrice: 52000, spriteId: "feet_leather" },
+
+  // Accessories
+  { id: "raid_mayong_mistmoore_ring1", name: "Signet of the Vampire Sovereign", description: "Mayong's personal signet ring — the most feared piece of jewelry in all of Norrath", type: "accessory", slot: "ringLeft", rarity: "mythical", level: 65,
+    stats: { strength: 62, agility: 44, stamina: 58, attackRating: 210, critChance: 16 }, sellPrice: 58000, spriteId: "ring_dark" },
+  { id: "raid_mayong_mistmoore_ring2", name: "Ring of the Blood God's Favour", description: "A ring set with a drop of crystallised Mayong's blood — grants immense magical authority", type: "accessory", slot: "ringRight", rarity: "mythical", level: 65,
+    stats: { intelligence: 105, wisdom: 72, power: 540, critChance: 18, spellDamageBonus: 82 }, sellPrice: 58000, spriteId: "ring_magic" },
+  { id: "raid_mayong_mistmoore_neck", name: "Necklace of Dark Apotheosis", description: "A necklace of shadow-crystal and blood-iron — marks the wearer as Mayong's chosen", type: "accessory", slot: "neck", rarity: "mythical", level: 66,
+    stats: { stamina: 82, strength: 56, intelligence: 56, wisdom: 50, health: 440, power: 400 }, sellPrice: 65000, spriteId: "accessory_neck" },
+  { id: "raid_mayong_mistmoore_ear", name: "Earring of Eternal Night", description: "A shadow-crystal earring drawn from Mayong's inner sanctum — attunes the wearer to vampiric energy", type: "accessory", slot: "earLeft", rarity: "mythical", level: 65,
+    stats: { agility: 68, intelligence: 68, critChance: 19, haste: 14 }, sellPrice: 55000, spriteId: "accessory_ear" },
+  { id: "raid_mayong_mistmoore_charm", name: "Mayong's Dark Heart", description: "A shard of Mayong Mistmoore's near-divine heart — the most powerful charm in all of Norrath", type: "accessory", slot: "charm", rarity: "mythical", level: 66,
+    stats: { stamina: 95, intelligence: 80, wisdom: 68, attackRating: 160, spellDamageBonus: 110, healBonus: 82 }, sellPrice: 72000, spriteId: "gem_dark" },
+
+  // ── DUNGEON BOSS CRAFTING MATERIALS ──────────────────────────────────────
+  // Unique materials dropped by new dungeon bosses — used as crafting reagents
+  {
+    id: "stormhold_chieftain_talisman",
+    name: "Chieftain's War Talisman",
+    description: "A talisman ripped from Grolnak's neck — still warm with gnoll war magic",
+    type: "material", slot: "none", rarity: "legendary", level: 15,
+    stats: {}, sellPrice: 280, stackable: true, spriteId: "material_bone",
+  },
+  {
+    id: "titania_fae_crown_fragment",
+    name: "Fae Crown Fragment",
+    description: "A shard of Queen Titania's arcane crown — crackling with raw fae energy",
+    type: "material", slot: "none", rarity: "legendary", level: 35,
+    stats: {}, sellPrice: 900, stackable: true, spriteId: "gem_green",
+  },
+  {
+    id: "deathfist_deathseal",
+    name: "Deathfist Clan Death-Seal",
+    description: "The death-seal of the Deathfist Clan's supreme war-priest — power condensed into bone",
+    type: "material", slot: "none", rarity: "legendary", level: 40,
+    stats: {}, sellPrice: 1100, stackable: true, spriteId: "material_seal",
+  },
+  {
+    id: "grimthorn_heartwood",
+    name: "Lord Grimthorn's Heartwood",
+    description: "The living heartwood of Lord Grimthorn — the primordial core of the Lesser Faydark",
+    type: "material", slot: "none", rarity: "legendary", level: 40,
+    stats: {}, sellPrice: 1100, stackable: true, spriteId: "material_bark",
+  },
+  {
+    id: "cazic_fear_crystal",
+    name: "Crystal of Cazic's Fear",
+    description: "A crystallised shard of pure divine fear from the Avatar of Cazic-Thule — trembles in your hand",
+    type: "material", slot: "none", rarity: "legendary", level: 50,
+    stats: {}, sellPrice: 2000, stackable: true, spriteId: "gem_dark",
+  },
 );
 
 export const CRAFTING_RECIPES: CraftingRecipe[] = [
@@ -4916,6 +5156,201 @@ export const CRAFTING_RECIPES: CraftingRecipe[] = [
     ],
     requiredSkillLevel: 37, requiredSkillId: "tailoring", craftingTime: 50, xpReward: 480,
     tier: "expert" as RecipeTier,
+  },
+
+  // ── MYTHIC RAID RECIPES — Harla Dar (Prismatic Dragon) ───────────────────
+  {
+    id: "recipe_mythic_prismatic_warblade",
+    name: "Forge Prismatic Warblade of Harla Dar",
+    description: "A mythic smithing method to forge Harla Dar's prismatic scales and adamantine into the ultimate fighter weapon.",
+    resultItemId: "raid_harla_dar_weapon_fighter", resultQuantity: 1,
+    ingredients: [
+      { itemId: "prismatic_dragon_scale", quantity: 1 },
+      { itemId: "adamantine_ore", quantity: 4 },
+    ],
+    requiredSkillLevel: 60, requiredSkillId: "smithing", craftingTime: 120, xpReward: 2000,
+    tier: "mythic" as RecipeTier, oneOfAKind: true,
+  },
+  {
+    id: "recipe_mythic_prismatic_staff",
+    name: "Craft Prismatic Dragon Staff",
+    description: "A mythic woodworking method to channel Harla Dar's prismatic energy through a mithril-tipped staff.",
+    resultItemId: "raid_harla_dar_weapon_mage", resultQuantity: 1,
+    ingredients: [
+      { itemId: "prismatic_dragon_scale", quantity: 1 },
+      { itemId: "mithril_ore", quantity: 2 },
+      { itemId: "fire_opal", quantity: 1 },
+    ],
+    requiredSkillLevel: 60, requiredSkillId: "jeweling", craftingTime: 120, xpReward: 2000,
+    tier: "mythic" as RecipeTier, oneOfAKind: true,
+  },
+  {
+    id: "recipe_mythic_radiant_scepter",
+    name: "Consecrate Radiant Scepter of the Prismatic Rite",
+    description: "A mythic jeweling ritual that consecrates Harla Dar's scale into a healer's radiant scepter.",
+    resultItemId: "raid_harla_dar_weapon_priest", resultQuantity: 1,
+    ingredients: [
+      { itemId: "prismatic_dragon_scale", quantity: 1 },
+      { itemId: "mithril_ore", quantity: 2 },
+      { itemId: "enchanted_dust", quantity: 2 },
+    ],
+    requiredSkillLevel: 60, requiredSkillId: "jeweling", craftingTime: 120, xpReward: 2000,
+    tier: "mythic" as RecipeTier, oneOfAKind: true,
+  },
+  {
+    id: "recipe_mythic_prismatic_breastplate",
+    name: "Forge Prismatic Scale Breastplate",
+    description: "A mythic smithing method to fuse living prismatic scales into an impenetrable fighter's breastplate.",
+    resultItemId: "raid_harla_dar_chest_fighter", resultQuantity: 1,
+    ingredients: [
+      { itemId: "prismatic_dragon_scale", quantity: 2 },
+      { itemId: "adamantine_ore", quantity: 3 },
+    ],
+    requiredSkillLevel: 60, requiredSkillId: "smithing", craftingTime: 150, xpReward: 2200,
+    tier: "mythic" as RecipeTier, oneOfAKind: true,
+  },
+  {
+    id: "recipe_mythic_chromatic_robes",
+    name: "Weave Robes of Chromatic Dominion",
+    description: "A mythic tailoring method weaving Harla Dar's wing membrane into robes of unrivalled magical power.",
+    resultItemId: "raid_harla_dar_chest_caster", resultQuantity: 1,
+    ingredients: [
+      { itemId: "prismatic_dragon_scale", quantity: 2 },
+      { itemId: "spider_silk", quantity: 5 },
+      { itemId: "enchanted_dust", quantity: 2 },
+    ],
+    requiredSkillLevel: 60, requiredSkillId: "tailoring", craftingTime: 150, xpReward: 2200,
+    tier: "mythic" as RecipeTier, oneOfAKind: true,
+  },
+
+  // ── MYTHIC RAID RECIPES — Trakanon (Plague Dragon) ────────────────────────
+  {
+    id: "recipe_mythic_pestilence_greataxe",
+    name: "Forge Pestilence Greataxe of Trakanon",
+    description: "A mythic smithing method that fuses Trakanon's spine into an adamantine greataxe dripping with plague.",
+    resultItemId: "raid_trakanon_weapon_fighter", resultQuantity: 1,
+    ingredients: [
+      { itemId: "plague_dragon_spine", quantity: 1 },
+      { itemId: "adamantine_ore", quantity: 4 },
+    ],
+    requiredSkillLevel: 60, requiredSkillId: "smithing", craftingTime: 120, xpReward: 2000,
+    tier: "mythic" as RecipeTier, oneOfAKind: true,
+  },
+  {
+    id: "recipe_mythic_plague_wand",
+    name: "Craft Necrotic Plague Wand of Trakanon",
+    description: "A mythic jeweling method grown from Trakanon's rib to channel necrotic power.",
+    resultItemId: "raid_trakanon_weapon_mage", resultQuantity: 1,
+    ingredients: [
+      { itemId: "plague_dragon_spine", quantity: 1 },
+      { itemId: "enchanted_dust", quantity: 2 },
+      { itemId: "mithril_ore", quantity: 1 },
+    ],
+    requiredSkillLevel: 60, requiredSkillId: "jeweling", craftingTime: 120, xpReward: 2000,
+    tier: "mythic" as RecipeTier, oneOfAKind: true,
+  },
+  {
+    id: "recipe_mythic_bone_scepter",
+    name: "Carve Bone Scepter of the Undying Rite",
+    description: "A mythic alchemy ritual that purifies Trakanon's claw into a divine healing instrument.",
+    resultItemId: "raid_trakanon_weapon_priest", resultQuantity: 1,
+    ingredients: [
+      { itemId: "plague_dragon_spine", quantity: 1 },
+      { itemId: "mithril_ore", quantity: 2 },
+      { itemId: "enchanted_dust", quantity: 2 },
+    ],
+    requiredSkillLevel: 60, requiredSkillId: "alchemy", craftingTime: 120, xpReward: 2000,
+    tier: "mythic" as RecipeTier, oneOfAKind: true,
+  },
+  {
+    id: "recipe_mythic_plague_breastplate",
+    name: "Forge Breastplate of the Undying Plague",
+    description: "A mythic smithing method that plates adamantine in Trakanon's living scales for the heaviest armour in Sebilis.",
+    resultItemId: "raid_trakanon_chest_fighter", resultQuantity: 1,
+    ingredients: [
+      { itemId: "plague_dragon_spine", quantity: 2 },
+      { itemId: "adamantine_ore", quantity: 3 },
+    ],
+    requiredSkillLevel: 60, requiredSkillId: "smithing", craftingTime: 150, xpReward: 2200,
+    tier: "mythic" as RecipeTier, oneOfAKind: true,
+  },
+  {
+    id: "recipe_mythic_undying_robes",
+    name: "Weave Robes of the Undying Plague",
+    description: "A mythic tailoring method weaving plague-silk from Trakanon's lair into robes of virulent arcane power.",
+    resultItemId: "raid_trakanon_chest_caster", resultQuantity: 1,
+    ingredients: [
+      { itemId: "plague_dragon_spine", quantity: 2 },
+      { itemId: "spider_silk", quantity: 5 },
+      { itemId: "enchanted_dust", quantity: 2 },
+    ],
+    requiredSkillLevel: 60, requiredSkillId: "tailoring", craftingTime: 150, xpReward: 2200,
+    tier: "mythic" as RecipeTier, oneOfAKind: true,
+  },
+
+  // ── MYTHIC RAID RECIPES — Mayong Mistmoore (Vampire Lord) ────────────────
+  {
+    id: "recipe_mythic_blood_greatsword",
+    name: "Forge Blood-Forged Greatsword of Mistmoore",
+    description: "A mythic smithing method that tempers adamantine in Mayong's own blood to create the mightiest melee weapon in Norrath.",
+    resultItemId: "raid_mayong_mistmoore_weapon_fighter", resultQuantity: 1,
+    ingredients: [
+      { itemId: "vampire_lord_fang", quantity: 1 },
+      { itemId: "adamantine_ore", quantity: 5 },
+    ],
+    requiredSkillLevel: 65, requiredSkillId: "smithing", craftingTime: 150, xpReward: 2500,
+    tier: "mythic" as RecipeTier, oneOfAKind: true,
+  },
+  {
+    id: "recipe_mythic_void_wand",
+    name: "Carve Void Wand of Mayong's Ascension",
+    description: "A mythic jeweling ritual carving Mayong's divine fang into a wand that channels the void between worlds.",
+    resultItemId: "raid_mayong_mistmoore_weapon_mage", resultQuantity: 1,
+    ingredients: [
+      { itemId: "vampire_lord_fang", quantity: 1 },
+      { itemId: "fire_opal", quantity: 2 },
+      { itemId: "enchanted_dust", quantity: 2 },
+    ],
+    requiredSkillLevel: 65, requiredSkillId: "jeweling", craftingTime: 150, xpReward: 2500,
+    tier: "mythic" as RecipeTier, oneOfAKind: true,
+  },
+  {
+    id: "recipe_mythic_crimson_scepter",
+    name: "Consecrate Crimson Scepter of Dark Apotheosis",
+    description: "A mythic alchemy ritual that transforms Mayong's fang into a divine vampiric healing scepter.",
+    resultItemId: "raid_mayong_mistmoore_weapon_priest", resultQuantity: 1,
+    ingredients: [
+      { itemId: "vampire_lord_fang", quantity: 1 },
+      { itemId: "mithril_ore", quantity: 2 },
+      { itemId: "enchanted_dust", quantity: 3 },
+    ],
+    requiredSkillLevel: 65, requiredSkillId: "alchemy", craftingTime: 150, xpReward: 2500,
+    tier: "mythic" as RecipeTier, oneOfAKind: true,
+  },
+  {
+    id: "recipe_mythic_dark_apotheosis_breastplate",
+    name: "Forge Breastplate of Dark Apotheosis",
+    description: "A mythic smithing method inscribing Mayong's divine sigils onto shadow-iron to create the pinnacle of vampiric armorcraft.",
+    resultItemId: "raid_mayong_mistmoore_chest_fighter", resultQuantity: 1,
+    ingredients: [
+      { itemId: "vampire_lord_fang", quantity: 2 },
+      { itemId: "adamantine_ore", quantity: 4 },
+    ],
+    requiredSkillLevel: 65, requiredSkillId: "smithing", craftingTime: 180, xpReward: 2800,
+    tier: "mythic" as RecipeTier, oneOfAKind: true,
+  },
+  {
+    id: "recipe_mythic_blood_god_robes",
+    name: "Weave Robes of the Blood God",
+    description: "A mythic tailoring method weaving Mayong's shadow-silk into the most powerful caster robes in all of Norrath.",
+    resultItemId: "raid_mayong_mistmoore_chest_caster", resultQuantity: 1,
+    ingredients: [
+      { itemId: "vampire_lord_fang", quantity: 2 },
+      { itemId: "spider_silk", quantity: 6 },
+      { itemId: "enchanted_dust", quantity: 3 },
+    ],
+    requiredSkillLevel: 65, requiredSkillId: "tailoring", craftingTime: 180, xpReward: 2800,
+    tier: "mythic" as RecipeTier, oneOfAKind: true,
   },
 ].map(r => ({ tier: "journeyman" as RecipeTier, ...r }));
 

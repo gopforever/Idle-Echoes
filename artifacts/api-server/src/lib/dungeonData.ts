@@ -311,6 +311,291 @@ export const DUNGEONS: DungeonDefinition[] = [
       },
     ],
   },
+
+  // ── STORMHOLD (Levels 5-15, Antonica) ───────────────────────────────────
+  {
+    id: "stormhold",
+    name: "Stormhold",
+    zone: "Antonica",
+    description: "The ancient gnoll fortress carved into Antonica's cliffs — five floors of warriors, shamans, and the fearsome Chieftain Grolnak.",
+    lore: "Stormhold predates the city of Qeynos itself. The gnoll clans have held this crumbling fortress for generations, using it as a staging ground for raids across Antonica. Its five floors descend from the outer ramparts down to the Chieftain's war chamber, where Grolnak commands with absolute brutality. Young adventurers who survive Stormhold emerge hardened and ready for greater challenges.",
+    minLevel: 5,
+    maxLevel: 15,
+    mainBossId: "antonica_gnoll_chieftain",
+    spriteId: "dungeon_ruins",
+    bossPersonality: "arrogant",
+    bossGrudgeThreshold: 3,
+    floors: [
+      {
+        floorNumber: 1,
+        name: "The Outer Ramparts",
+        description: "The crumbling outer walls — patrolled by scouts and their wolf companions.",
+        enemyIds: ["antonica_gnoll_scout", "antonica_wolf", "antonica_gnoll_scout", "antonica_wolf", "antonica_gnoll_scout"],
+        miniBossId: "antonica_skeleton",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 2,
+        name: "The Gatehouse Tunnels",
+        description: "Narrow passages beneath the gatehouse — the dead walk here too.",
+        enemyIds: ["antonica_gnoll_scout", "antonica_wolf", "antonica_skeleton", "antonica_gnoll_scout", "antonica_skeleton"],
+        miniBossId: "antonica_gnoll_warrior",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 3,
+        name: "The Warrior Barracks",
+        description: "Where Stormhold's seasoned warriors rest and sharpen their blades.",
+        enemyIds: ["antonica_skeleton", "antonica_gnoll_warrior", "antonica_skeleton", "antonica_gnoll_warrior", "antonica_gnoll_warrior"],
+        miniBossId: "antonica_orc_raider",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 4,
+        name: "The Raider Encampment",
+        description: "A filthy encampment of orc raiders allied with the gnoll clan.",
+        enemyIds: ["antonica_gnoll_warrior", "antonica_orc_raider", "antonica_orc_raider", "antonica_gnoll_warrior", "antonica_orc_raider"],
+        miniBossId: "antonica_gnoll_shaman",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 5,
+        name: "The Chieftain's War Chamber",
+        description: "The deep heart of Stormhold — where Grolnak rules from his throne of bones.",
+        enemyIds: ["antonica_orc_raider", "antonica_gnoll_shaman", "antonica_gnoll_shaman", "antonica_orc_raider", "antonica_gnoll_shaman"],
+        miniBossId: "antonica_skeleton",
+        normalsRequired: 5,
+      },
+    ],
+  },
+
+  // ── PALACE OF QUEEN TITANIA (Levels 25-35, Enchanted Lands) ─────────────
+  {
+    id: "palace_of_titania",
+    name: "Palace of Queen Titania",
+    zone: "Enchanted Lands",
+    description: "The corrupted fae palace hidden deep in the Enchanted Lands — five floors of twisted fairy magic leading to the mad queen herself.",
+    lore: "Queen Titania once ruled the Enchanted Lands with whimsy and grace. Something ancient and dark corrupted her court, twisting her sprites and satyrs into vicious predators. Her palace — once a wonder of fae architecture — has become a labyrinth of deadly illusions and arcane traps. Those who reach the Throne of Petals face Titania herself, a being of terrible beauty wielding magic that unravels the mind.",
+    minLevel: 25,
+    maxLevel: 35,
+    mainBossId: "enchanted_queen_titania",
+    spriteId: "dungeon_ruins",
+    bossPersonality: "arrogant",
+    bossGrudgeThreshold: 3,
+    floors: [
+      {
+        floorNumber: 1,
+        name: "The Enchanted Gates",
+        description: "The gilded outer gates of the palace — mischievous pixies harry all who enter.",
+        enemyIds: ["enchanted_pixie", "enchanted_brownie", "enchanted_pixie", "enchanted_brownie", "enchanted_pixie"],
+        miniBossId: "enchanted_satyr",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 2,
+        name: "The Brownie Warrens",
+        description: "Cramped tunnels dug beneath the palace by Titania's brownie servants.",
+        enemyIds: ["enchanted_brownie", "enchanted_satyr", "enchanted_brownie", "enchanted_satyr", "enchanted_brownie"],
+        miniBossId: "enchanted_dryad",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 3,
+        name: "The Hall of Illusions",
+        description: "A grand hall filled with mirror-magic — satyrs and pixies hunt through false reflections.",
+        enemyIds: ["enchanted_satyr", "enchanted_pixie", "enchanted_satyr", "enchanted_pixie", "enchanted_satyr"],
+        miniBossId: "enchanted_sylph",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 4,
+        name: "The Corrupted Gardens",
+        description: "Once beautiful gardens — now dryads and wind sylphs attack on sight.",
+        enemyIds: ["enchanted_dryad", "enchanted_sylph", "enchanted_dryad", "enchanted_sylph", "enchanted_dryad"],
+        miniBossId: "enchanted_satyr",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 5,
+        name: "The Throne of Petals",
+        description: "Titania's inner sanctum — a throne room of dead flowers and shattered mirrors.",
+        enemyIds: ["enchanted_dryad", "enchanted_sylph", "enchanted_sylph", "enchanted_dryad", "enchanted_sylph"],
+        miniBossId: "enchanted_brownie",
+        normalsRequired: 5,
+      },
+    ],
+  },
+
+  // ── DEATHFIST CITADEL (Levels 30-40, Zek, the Orcish Wastes) ────────────
+  {
+    id: "deathfist_citadel",
+    name: "Deathfist Citadel",
+    zone: "Zek, the Orcish Wastes",
+    description: "The iron fortress of the Deathfist orc clan — five floors of savage warriors and ruthless shamans, commanded by the death-priest Deathcaller.",
+    lore: "The Deathfist Clan built their Citadel on the bones of their enemies in the heart of the Orcish Wastes. Five floors of iron-reinforced stone house the most battle-hardened orcs in Norrath — grunts, berserkers, warlords, and the war-shamans who bind them together with dark earth magic. The Deathcaller at the top channels the power of death itself, making him perhaps the most dangerous non-dragon boss in all of Zek.",
+    minLevel: 30,
+    maxLevel: 40,
+    mainBossId: "zek_deathcaller",
+    spriteId: "dungeon_blackburrow",
+    bossPersonality: "cold",
+    bossGrudgeThreshold: 3,
+    floors: [
+      {
+        floorNumber: 1,
+        name: "The Outer Palisade",
+        description: "The fortified outer walls patrolled by Deathfist grunts and war shamans.",
+        enemyIds: ["zek_orc_grunt", "zek_war_shaman", "zek_orc_grunt", "zek_war_shaman", "zek_orc_grunt"],
+        miniBossId: "zek_orc_shaman",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 2,
+        name: "The Barracks",
+        description: "Row upon row of orc barracks — grunts and shamans training for endless war.",
+        enemyIds: ["zek_orc_grunt", "zek_orc_shaman", "zek_orc_grunt", "zek_orc_shaman", "zek_orc_grunt"],
+        miniBossId: "zek_war_shaman",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 3,
+        name: "The Shaman Sanctum",
+        description: "Where Deathfist war-shamans commune with dark earth spirits.",
+        enemyIds: ["zek_orc_shaman", "zek_war_shaman", "zek_orc_shaman", "zek_war_shaman", "zek_orc_shaman"],
+        miniBossId: "zek_orc_berserker",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 4,
+        name: "The Elite War Hall",
+        description: "The domain of Deathfist berserkers and warlords — the finest orc fighters alive.",
+        enemyIds: ["zek_orc_berserker", "zek_orc_warlord", "zek_orc_berserker", "zek_orc_warlord", "zek_orc_berserker"],
+        miniBossId: "zek_siege_engineer",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 5,
+        name: "The Deathcaller's Throne",
+        description: "The iron throne room of the Deathcaller — a chamber reeking of death magic.",
+        enemyIds: ["zek_orc_warlord", "zek_orc_berserker", "zek_orc_warlord", "zek_orc_berserker", "zek_orc_warlord"],
+        miniBossId: "zek_war_shaman",
+        normalsRequired: 5,
+      },
+    ],
+  },
+
+  // ── THORNWOOD KEEP (Levels 35-45, Lesser Faydark) ───────────────────────
+  {
+    id: "thornwood_keep",
+    name: "Thornwood Keep",
+    zone: "Lesser Faydark",
+    description: "The tangled fortress of Lord Grimthorn in the heart of the Lesser Faydark — five floors of nature-corrupted creatures guarding the dryad king.",
+    lore: "Long ago, Thornwood Keep was a sanctuary of natural harmony in the Lesser Faydark. Lord Grimthorn — once a benevolent spirit lord — was twisted by ancient dark magic seeping up from Norrath's roots. Now his Keep is a labyrinth of corrupted treants, shadow wolves, and feral sprites. The ancient power Grimthorn draws upon makes him one of the most regenerative bosses in the Faydark — killing him requires relentless focus.",
+    minLevel: 35,
+    maxLevel: 45,
+    mainBossId: "faydark_lord_grimthorn",
+    spriteId: "dungeon_ruins",
+    bossPersonality: "ancient",
+    bossGrudgeThreshold: 3,
+    floors: [
+      {
+        floorNumber: 1,
+        name: "The Overgrown Approach",
+        description: "Tangled undergrowth patrolled by pixie scouts and shadow wolves.",
+        enemyIds: ["faydark_pixie_scout", "faydark_shadow_wolf", "faydark_pixie_scout", "faydark_shadow_wolf", "faydark_pixie_scout"],
+        miniBossId: "faydark_imp",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 2,
+        name: "The Treant Grove",
+        description: "Ancient treants have taken root in the Keep's lower halls.",
+        enemyIds: ["faydark_treant", "faydark_pixie_scout", "faydark_treant", "faydark_pixie_scout", "faydark_treant"],
+        miniBossId: "faydark_wolf_alpha",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 3,
+        name: "The Imp Warrens",
+        description: "Passages infested with dark sprites and imps drawn to Grimthorn's power.",
+        enemyIds: ["faydark_imp", "faydark_sprite", "faydark_imp", "faydark_sprite", "faydark_imp"],
+        miniBossId: "faydark_shadow_wolf",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 4,
+        name: "The Wolf Dens",
+        description: "The inner dens of the Faydark alpha wolves — massive and battle-hardened.",
+        enemyIds: ["faydark_wolf_alpha", "faydark_shadow_wolf", "faydark_wolf_alpha", "faydark_shadow_wolf", "faydark_wolf_alpha"],
+        miniBossId: "faydark_treant",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 5,
+        name: "Grimthorn's Heartchamber",
+        description: "The deep root chamber where Lord Grimthorn draws his immortal strength.",
+        enemyIds: ["faydark_treant", "faydark_sprite", "faydark_treant", "faydark_sprite", "faydark_treant"],
+        miniBossId: "faydark_wolf_alpha",
+        normalsRequired: 5,
+      },
+    ],
+  },
+
+  // ── TEMPLE OF CAZIC-THULE (Levels 45-55, Feerrott) ──────────────────────
+  {
+    id: "temple_of_cazic_thule",
+    name: "Temple of Cazic-Thule",
+    zone: "Feerrott",
+    description: "The most feared dungeon in the Feerrott — a temple of divine terror leading to an Avatar of the God of Fear himself.",
+    lore: "Deep in the festering swamps of the Feerrott stands the Temple of Cazic-Thule, carved from fear-stone by lizardman cultists thousands of years ago. Every floor is more terrifying than the last — lizardman shamans, swamp basilisks, bog giants, and Cazic's dark disciples guard the inner sanctum. At the temple's heart, the Avatar of Cazic-Thule awaits: a near-divine being of absolute terror that has never been convincingly defeated. Those who survive emerge forever changed.",
+    minLevel: 45,
+    maxLevel: 55,
+    mainBossId: "feerrott_avatar_cazic",
+    spriteId: "dungeon_ruins",
+    bossPersonality: "cold",
+    bossGrudgeThreshold: 3,
+    floors: [
+      {
+        floorNumber: 1,
+        name: "The Fear-Stone Gates",
+        description: "The outer temple grounds — lizardman warriors guard every archway.",
+        enemyIds: ["feerrott_lizardman", "feerrott_swamp_basilisk", "feerrott_lizardman", "feerrott_swamp_basilisk", "feerrott_lizardman"],
+        miniBossId: "feerrott_swamp_spider",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 2,
+        name: "The Swamp Catacombs",
+        description: "Flooded lower passages where the swamp spider queen holds court.",
+        enemyIds: ["feerrott_lizardman", "feerrott_swamp_spider", "feerrott_lizardman", "feerrott_swamp_spider", "feerrott_lizardman"],
+        miniBossId: "feerrott_swamp_basilisk",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 3,
+        name: "The Giant's Hall",
+        description: "Soaring halls built for beings far larger than any adventurer.",
+        enemyIds: ["feerrott_bog_giant", "feerrott_swamp_basilisk", "feerrott_bog_giant", "feerrott_swamp_basilisk", "feerrott_bog_giant"],
+        miniBossId: "feerrott_lizard_shaman",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 4,
+        name: "The Shaman's Sanctum",
+        description: "The inner ritual chambers where lizard-shamans and dark disciples commune.",
+        enemyIds: ["feerrott_lizard_shaman", "feerrott_dark_disciple", "feerrott_lizard_shaman", "feerrott_dark_disciple", "feerrott_lizard_shaman"],
+        miniBossId: "feerrott_bog_giant",
+        normalsRequired: 5,
+      },
+      {
+        floorNumber: 5,
+        name: "The Sanctum of Fear",
+        description: "The innermost sanctum — the Avatar of Cazic-Thule's domain of absolute terror.",
+        enemyIds: ["feerrott_bog_giant", "feerrott_dark_disciple", "feerrott_lizard_shaman", "feerrott_dark_disciple", "feerrott_bog_giant"],
+        miniBossId: "feerrott_swamp_basilisk",
+        normalsRequired: 5,
+      },
+    ],
+  },
 ];
 
 export function getDungeonById(id: string): DungeonDefinition | undefined {
@@ -562,6 +847,134 @@ const GEAR_SET_META: Array<{ dungeonId: string; archetypes: Record<GearSetArchet
     },
   },
   {
+    dungeonId: "stormhold",
+    archetypes: {
+      fighter: {
+        difficulties: {
+          normal:    { name: "Gnollskin Warrior's",      theme: "rough-hewn armor stripped from Stormhold's gnoll warriors, crude but battle-tested" },
+          expert:    { name: "Rampart Warchief's",        theme: "armor worn by Stormhold's rampart warchiefs who never retreat and never surrender" },
+          legendary: { name: "Chieftain's Iron Will",     theme: "the indomitable iron will of Gnoll Chieftain Grolnak forged into formidable battle armor" },
+          mythical:  { name: "Grolnak's Dominion",        theme: "the supreme dominion of Chieftain Grolnak, the most feared gnoll warlord in Antonica" },
+        },
+        mythicalProc: { name: "Gnoll Warchief's Fury", description: "25% chance on hit to unleash a warchief's fury for +90% damage for 2 ticks", triggerChance: 25, effectType: "damage_burst", effectValue: 90, durationTicks: 2 },
+      },
+      healer: {
+        difficulties: {
+          normal:    { name: "Bone Shaman's",         theme: "healing charms carved from gnoll bone by Stormhold's tribal shamans" },
+          expert:    { name: "Hex-Shaman's Mantle",   theme: "mystical robes of Stormhold's hex-shamans who weave curses and healing in equal measure" },
+          legendary: { name: "War-Totem's Calling",   theme: "sacred vestments blessed by the war-totems of Stormhold's innermost shamanic sanctum" },
+          mythical:  { name: "Spirit of Grolnak",     theme: "shamanic regalia channeling the spiritual fury of Chieftain Grolnak into healing power" },
+        },
+        mythicalProc: { name: "Ancestral Ward", description: "20% chance on taking damage to raise an ancestral ward absorbing 45% max HP damage for 5 ticks", triggerChance: 20, effectType: "absorb_shield", effectValue: 45, durationTicks: 5 },
+      },
+      caster: {
+        difficulties: {
+          normal:    { name: "Hex-Rune Weaver's",      theme: "robes threaded with gnoll hex-runes from Stormhold's ritual chambers" },
+          expert:    { name: "Dark Hex-Shaman's",      theme: "cursed robes of Stormhold's dark shamans who channel shadow magic through bone fetishes" },
+          legendary: { name: "Warchief's Hexblade",    theme: "robes amplifying the terrible hexes of Stormhold's most powerful arcane practitioners" },
+          mythical:  { name: "Grolnak's Hex Mastery",  theme: "the supreme dark hex-craft of Chieftain Grolnak translated into raw arcane dominion" },
+        },
+        mythicalProc: { name: "Dark Hex Explosion", description: "25% chance on spell hit to trigger a dark hex explosion for 80% bonus shadow damage", triggerChance: 25, effectType: "damage_burst", effectValue: 80, durationTicks: 1 },
+      },
+    },
+  },
+  {
+    dungeonId: "palace_of_titania",
+    archetypes: {
+      fighter: {
+        difficulties: {
+          normal:    { name: "Fae Court Guard's",       theme: "armor worn by Queen Titania's corrupted fae court guardians in the palace outer halls" },
+          expert:    { name: "Pixie Knight's Raiment",  theme: "enchanted armor of the pixie knights who defend Titania's inner palace with fanatical devotion" },
+          legendary: { name: "Titania's Champion",      theme: "the enchanted armor of Titania's chosen fae champion, infused with wild arcane magic" },
+          mythical:  { name: "Queen's Arcane Dominion", theme: "the supreme fae war-power of Queen Titania herself, armor that pulses with raw chaos magic" },
+        },
+        mythicalProc: { name: "Fae Chaos Strike", description: "25% chance on hit to trigger a chaos burst for +95% bonus magic damage for 2 ticks", triggerChance: 25, effectType: "damage_burst", effectValue: 95, durationTicks: 2 },
+      },
+      healer: {
+        difficulties: {
+          normal:    { name: "Fairy Court Silk",        theme: "silks worn by the fairy court healers who once tended to Titania's corrupted subjects" },
+          expert:    { name: "Dryad Warden's Silk",     theme: "robes of the dryad wardens who channel Titania's corrupted nature magic into healing" },
+          legendary: { name: "Titania's Chosen Silk",   theme: "sacred vestments chosen by Queen Titania for her most devoted healer courtiers" },
+          mythical:  { name: "Queen's Eternal Embrace", theme: "robes channeling the immortal fae magic of Queen Titania into life-sustaining power" },
+        },
+        mythicalProc: { name: "Fae Deathward", description: "15% chance to negate a lethal blow — the fae magic refuses to let the wearer die", triggerChance: 15, effectType: "negate_death", effectValue: 1, durationTicks: 0 },
+      },
+      caster: {
+        difficulties: {
+          normal:    { name: "Pixie Arcane Robes",      theme: "robes threaded with pixie magic from the outer halls of Titania's enchanted palace" },
+          expert:    { name: "Satyr Enchanter's",       theme: "robes worn by the satyr enchanters who weave illusions throughout Titania's palace" },
+          legendary: { name: "Palace Arcanum",          theme: "the accumulated arcane knowledge of Titania's palace mage council distilled into robes" },
+          mythical:  { name: "Titania's Wild Arcanum",  theme: "the supreme wild magic of Queen Titania the fae queen whose power unravels reality" },
+        },
+        mythicalProc: { name: "Wild Fae Surge", description: "25% chance on spell hit to trigger a wild fae surge for 85% bonus magic damage", triggerChance: 25, effectType: "damage_burst", effectValue: 85, durationTicks: 1 },
+      },
+    },
+  },
+  {
+    dungeonId: "deathfist_citadel",
+    archetypes: {
+      fighter: {
+        difficulties: {
+          normal:    { name: "Deathfist Iron",           theme: "crude iron armor beaten into shape by Deathfist orc smiths in the citadel forges" },
+          expert:    { name: "Warlord's Battle Plate",   theme: "battle-worn plate of the Deathfist warlords who command the citadel's elite fighting force" },
+          legendary: { name: "Deathcaller's Iron Will",  theme: "armor forged from the Deathcaller's iron will — indestructible and terrifying in equal measure" },
+          mythical:  { name: "Deathfist Sovereign",      theme: "the supreme iron dominion of the Deathfist Clan forged from the bones of their fallen enemies" },
+        },
+        mythicalProc: { name: "Death Frenzy", description: "30% chance on critical hit to trigger a death frenzy for +100% bonus damage for 2 ticks", triggerChance: 30, effectType: "damage_burst", effectValue: 100, durationTicks: 2 },
+      },
+      healer: {
+        difficulties: {
+          normal:    { name: "Clan Shaman's",            theme: "vestments worn by Deathfist clan shamans who sustain the orc army through dark earth magic" },
+          expert:    { name: "War-Priest's Mantle",      theme: "robes of the Deathfist war-priests who consecrate their warriors with orc death rites" },
+          legendary: { name: "Deathcaller's Devoted",    theme: "sacred vestments of the Deathcaller's most devoted healer-priests in the citadel sanctum" },
+          mythical:  { name: "Death Rite Vestments",     theme: "vestments channeling the death-rite power of the supreme Deathfist war-priest" },
+        },
+        mythicalProc: { name: "Death Rite Ward", description: "20% chance on being struck to raise a death-rite ward absorbing 50% max HP damage for 4 ticks", triggerChance: 20, effectType: "absorb_shield", effectValue: 50, durationTicks: 4 },
+      },
+      caster: {
+        difficulties: {
+          normal:    { name: "Earthen Rune Robes",       theme: "robes threaded with earthen runes by the Deathfist shamans who study dark earth magic" },
+          expert:    { name: "Necrotic Shaman's",        theme: "robes of the Deathfist necrotic shamans who channel death energy in the citadel's sanctum" },
+          legendary: { name: "Death-Caller's Arcanum",   theme: "the dark arcane power of the Deathcaller's inner sanctum woven into robes of war" },
+          mythical:  { name: "Deathfist Necrotic Dominion", theme: "the supreme necrotic power of the Deathfist Clan's most feared death-caller" },
+        },
+        mythicalProc: { name: "Necrotic Death Burst", description: "25% chance on spell hit to trigger a necrotic death burst for 90% bonus divine damage", triggerChance: 25, effectType: "damage_burst", effectValue: 90, durationTicks: 1 },
+      },
+    },
+  },
+  {
+    dungeonId: "thornwood_keep",
+    archetypes: {
+      fighter: {
+        difficulties: {
+          normal:    { name: "Bark-Plate Warden's",     theme: "armor plated with enchanted bark from the outermost treants of Thornwood Keep" },
+          expert:    { name: "Forest Guardian's Plate", theme: "plate armor of the forest guardians who protect Lord Grimthorn's inner sanctum" },
+          legendary: { name: "Grimthorn's Forest Will", theme: "the indestructible forest will of Lord Grimthorn made manifest as ancient bark-plate armor" },
+          mythical:  { name: "Thornwood Sovereign",     theme: "the primordial sovereignty of the Thornwood's ancient spirit lord forged from heartwood and thorn" },
+        },
+        mythicalProc: { name: "Thornwood Rend", description: "25% chance on hit to trigger a thorn-rend for +85% bleed damage over 4 ticks", triggerChance: 25, effectType: "damage_burst", effectValue: 85, durationTicks: 4 },
+      },
+      healer: {
+        difficulties: {
+          normal:    { name: "Dryad Spirit Silk",       theme: "silks woven from dryad spirit-threads found in Thornwood Keep's lower forest floors" },
+          expert:    { name: "Grove Warden's Mantle",   theme: "vestments of the grove wardens who maintain Thornwood Keep's primal healing energies" },
+          legendary: { name: "Grimthorn's Grove",       theme: "sacred vestments imbued with Lord Grimthorn's ancient primordial healing power" },
+          mythical:  { name: "Primordial Grove Spirit", theme: "robes channeling the eternal primordial spirit of the Faydark's most ancient forest grove" },
+        },
+        mythicalProc: { name: "Primordial Ward", description: "20% chance on taking damage to raise a primordial ward absorbing 48% max HP for 5 ticks", triggerChance: 20, effectType: "absorb_shield", effectValue: 48, durationTicks: 5 },
+      },
+      caster: {
+        difficulties: {
+          normal:    { name: "Faydark Spirit Robes",    theme: "robes threaded with faydark spirit-energy from the enchanted groves of Thornwood Keep" },
+          expert:    { name: "Sprite Weaver's",         theme: "robes of the dark sprite weavers who channel corrupted fae magic in Lord Grimthorn's service" },
+          legendary: { name: "Forest Arcanum",          theme: "the ancient forest arcane knowledge of Thornwood's corrupted sprite-mage council" },
+          mythical:  { name: "Grimthorn's Wild Arcanum",theme: "the supreme wild forest magic of Lord Grimthorn the twisted spirit lord of the Lesser Faydark" },
+        },
+        mythicalProc: { name: "Nature's Wrath Burst", description: "25% chance on spell hit to trigger nature's wrath for 80% bonus magic damage", triggerChance: 25, effectType: "damage_burst", effectValue: 80, durationTicks: 1 },
+      },
+    },
+  },
+  {
     dungeonId: "soluseks_eye",
     archetypes: {
       fighter: {
@@ -590,6 +1003,38 @@ const GEAR_SET_META: Array<{ dungeonId: string; archetypes: Record<GearSetArchet
           mythical:  { name: "Nagafen's Conflagration",   theme: "robes channeling the supreme fire power of Lord Nagafen ancient dragon of flame" },
         },
         mythicalProc: { name: "Conflagration", description: "30% chance on spell critical hit to trigger a conflagration for 100% bonus fire damage", triggerChance: 30, effectType: "damage_burst", effectValue: 100, durationTicks: 1 },
+      },
+    },
+  },
+  {
+    dungeonId: "temple_of_cazic_thule",
+    archetypes: {
+      fighter: {
+        difficulties: {
+          normal:    { name: "Fear-Stone Warden's",     theme: "armor carved from the fear-stone of Cazic-Thule's outer temple by lizardman warrior priests" },
+          expert:    { name: "Lizard Knight's Plate",   theme: "battle plate of the lizardman knights who guard Cazic's inner temple with fanatical devotion" },
+          legendary: { name: "Avatar's Iron Resolve",   theme: "armor forged from the iron resolve of those who survived the Avatar of Cazic-Thule's terror" },
+          mythical:  { name: "Cazic's Fear-Forged",     theme: "the supreme fear-forged plate of Cazic-Thule himself — armor that inspires dread in all who face it" },
+        },
+        mythicalProc: { name: "Touch of Terror", description: "30% chance on hit to trigger a touch of terror — deals +100% divine damage and fears the target for 1 tick", triggerChance: 30, effectType: "damage_burst", effectValue: 100, durationTicks: 1 },
+      },
+      healer: {
+        difficulties: {
+          normal:    { name: "Swamp Cult Vestments",    theme: "vestments of the Feerrott swamp cultists who worship Cazic and sustain his lizardman armies" },
+          expert:    { name: "Dark Disciple's Mantle",  theme: "robes of Cazic's dark disciples who convert divine fear into restorative power" },
+          legendary: { name: "Cazic's Devoted",         theme: "sacred vestments of Cazic-Thule's most devoted healer-priests in the temple sanctum" },
+          mythical:  { name: "Avatar's Divine Terror",  theme: "vestments channeling Cazic's near-divine terror into life-sustaining power for his chosen" },
+        },
+        mythicalProc: { name: "Terror Ward", description: "15% chance to negate a lethal blow — Cazic's terror grants the wearer an impossible reprieve", triggerChance: 15, effectType: "negate_death", effectValue: 1, durationTicks: 0 },
+      },
+      caster: {
+        difficulties: {
+          normal:    { name: "Fear-Rune Robes",         theme: "robes threaded with fear-runes by lizardman shamans who study in Cazic's outer temple" },
+          expert:    { name: "Swamp Shaman's Arcanum",  theme: "robes of the Feerrott swamp shamans who channel the god's terror into destructive magic" },
+          legendary: { name: "Cazic's Arcane Terror",   theme: "the terrifying arcane knowledge of the Avatar's inner sanctum woven into robes of conquest" },
+          mythical:  { name: "Avatar's Divine Arcanum", theme: "the supreme divine terror of the Avatar of Cazic-Thule distilled into near-godlike arcane robes" },
+        },
+        mythicalProc: { name: "Divine Terror Burst", description: "30% chance on spell critical hit to trigger divine terror for 100% bonus divine damage", triggerChance: 30, effectType: "damage_burst", effectValue: 100, durationTicks: 1 },
       },
     },
   },

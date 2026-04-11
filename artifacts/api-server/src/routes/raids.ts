@@ -1,7 +1,7 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
 import { raidRunsTable, dungeonRunsTable, worldPlayersTable, worldEventsTable, recipesTable, knownRecipesTable, inventoryTable } from "@workspace/db/schema";
-import { upsertDungeonKillStats } from "../lib/dungeonProgress.js";
+import { upsertDungeonKillStats, awardItemsToInventory } from "../lib/dungeonProgress.js";
 import { checkAndUnlockAchievements } from "./achievements.js";
 import { eq, and, isNull } from "drizzle-orm";
 import { getOrCreateCharacter } from "./character.js";
@@ -97,9 +97,18 @@ function generateRaidLoot(raidId: string, playerLevel: number): string[] {
     return true;
   });
 
-  const legendaryPool = pool.filter(i => i.rarity === "legendary" || i.rarity === "fabled" || i.rarity === "mythical");
-  const rarePool      = pool.filter(i => i.rarity === "rare");
-  const fallbackPool  = pool.length > 0 ? pool : ITEMS.filter(i => i.type !== "material" && i.type !== "consumable" && i.type !== "quest");
+  const mythicalPool   = pool.filter(i => i.rarity === "mythical");
+  const legendaryPool  = pool.filter(i => i.rarity === "legendary" || i.rarity === "fabled" || i.rarity === "mythical");
+  const rarePool       = pool.filter(i => i.rarity === "rare");
+  const fallbackPool   = pool.length > 0 ? pool : ITEMS.filter(i => i.type !== "material" && i.type !== "consumable" && i.type !== "quest");
+
+  // Raid-specific mythical items are tagged with the raid ID prefix in their item ID
+  const raidSpecificMythicalPool = mythicalPool.filter(i => i.id.startsWith(`raid_${raidId}_`));
+
+  // Guaranteed drops always pull from Mythical quality — prefer raid-specific items when available
+  const guaranteedPool = raidSpecificMythicalPool.length >= 3
+    ? raidSpecificMythicalPool
+    : mythicalPool.length > 0 ? mythicalPool : legendaryPool;
 
   const pick = (from: typeof pool): string | null => {
     const src = from.length > 0 ? from : fallbackPool;
@@ -109,16 +118,18 @@ function generateRaidLoot(raidId: string, playerLevel: number): string[] {
 
   const loot: string[] = [];
 
-  // Guarantee at least 6 legendary/fabled drops — the whole point of raiding
-  const guaranteedLegCount = tier === "mythical" ? 8 : 6;
-  for (let i = 0; i < guaranteedLegCount; i++) {
-    const id = pick(legendaryPool);
+  // Guarantee at least 6 Mythical drops — raids should only award Mythical gear
+  const guaranteedCount = tier === "mythical" ? 8 : 6;
+  for (let i = 0; i < guaranteedCount; i++) {
+    const id = pick(guaranteedPool);
     if (id) loot.push(id);
   }
 
-  // Add 4-6 more rare/legendary items for depth
+  // Add 4-6 bonus drops: Mythical where possible, falling back to legendary/fabled
   const bonusCount = 4 + Math.floor(Math.random() * 3);
-  const bonusPool = [...legendaryPool, ...rarePool];
+  const bonusPool = raidSpecificMythicalPool.length > 0
+    ? [...raidSpecificMythicalPool, ...legendaryPool]
+    : [...mythicalPool, ...legendaryPool];
   for (let i = 0; i < bonusCount; i++) {
     const id = pick(bonusPool);
     if (id) loot.push(id);
@@ -508,6 +519,10 @@ router.post("/raids/run/phase-advance", async (req, res) => {
 
     if (isFinalPhase) {
       const loot = generateRaidLoot(run.raidId, character.level);
+
+      // ── Award static Mythical loot items to inventory ───────────────────────
+      await awardItemsToInventory(loot, character.id);
+      // ─────────────────────────────────────────────────────────────────────────
 
       // ── Bonus procedural drops — raid-tier gear ──────────────────────────────
       // Generate 3–5 legendary/fabled procedural items and add to inventory
