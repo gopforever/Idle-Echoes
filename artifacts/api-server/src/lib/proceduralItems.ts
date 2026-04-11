@@ -173,17 +173,17 @@ const SLOT_NOUN: Record<SlotType, string> = {
 // Stat profiles by slot (ordered by importance)
 const SLOT_STAT_PROFILE: Record<SlotType, Array<keyof ItemStats>> = {
   primary:   ["attackRating", "strength"],
-  secondary: ["defenseRating", "mitigation", "stamina"],
-  head:      ["stamina", "intelligence", "wisdom", "mitigation"],
-  chest:     ["stamina", "mitigation", "defenseRating", "health"],
-  shoulder:  ["strength", "agility", "mitigation"],
-  back:      ["agility", "avoidance", "defenseRating"],
-  wrist:     ["intelligence", "wisdom", "attackRating"],
+  secondary: ["defenseRating", "mitigation", "stamina", "resistPierce", "resistSlash", "resistCrush"],
+  head:      ["stamina", "intelligence", "wisdom", "mitigation", "resistMagic", "resistDivine"],
+  chest:     ["stamina", "mitigation", "defenseRating", "health", "resistHeat", "resistCold"],
+  shoulder:  ["strength", "agility", "mitigation", "resistCrush", "resistSlash"],
+  back:      ["agility", "avoidance", "defenseRating", "resistPierce", "resistMagic"],
+  wrist:     ["intelligence", "wisdom", "attackRating", "resistHeat", "resistCold"],
   hands:     ["agility", "attackRating", "haste"],
   waist:     ["stamina", "strength", "defenseRating"],
-  legs:      ["stamina", "agility", "mitigation"],
+  legs:      ["stamina", "agility", "mitigation", "resistPierce", "resistCrush"],
   feet:      ["agility", "avoidance", "haste"],
-  neck:      ["wisdom", "charisma", "intelligence"],
+  neck:      ["wisdom", "charisma", "intelligence", "resistMagic", "resistDivine"],
   ear:       ["intelligence", "critChance", "attackRating"],
   ring:      ["strength", "stamina", "attackRating"],
 };
@@ -192,19 +192,19 @@ const SLOT_STAT_PROFILE: Record<SlotType, Array<keyof ItemStats>> = {
 const SUFFIX_STAT_BONUS: Record<string, Partial<ItemStats>> = {
   "of the Wilds":    { agility: 2, avoidance: 1 },
   "of the Adventurer": { strength: 1, stamina: 1 },
-  "of Resilience":   { stamina: 3, mitigation: 2 },
+  "of Resilience":   { stamina: 3, mitigation: 2, resistPierce: 2, resistSlash: 2 },
   "of Power":        { attackRating: 4, strength: 2 },
-  "of the Storm":    { haste: 3, critChance: 2 },
-  "of the Ages":     { wisdom: 3, intelligence: 3 },
-  "of the Void":     { intelligence: 4, attackRating: 2 },
-  "of the Conqueror": { strength: 5, attackRating: 5 },
-  "of Norrath":      { stamina: 6, mitigation: 4 },
-  "of the Ancients": { wisdom: 5, intelligence: 5 },
+  "of the Storm":    { haste: 3, critChance: 2, resistHeat: 3, resistCold: 3 },
+  "of the Ages":     { wisdom: 3, intelligence: 3, resistMagic: 3, resistDivine: 2 },
+  "of the Void":     { intelligence: 4, attackRating: 2, resistMagic: 4, resistPierce: 2 },
+  "of the Conqueror": { strength: 5, attackRating: 5, resistCrush: 3 },
+  "of Norrath":      { stamina: 6, mitigation: 4, resistPierce: 3, resistSlash: 2 },
+  "of the Ancients": { wisdom: 5, intelligence: 5, resistDivine: 4, resistMagic: 3 },
   "of Might":        { strength: 7, weaponDamageMin: 3, weaponDamageMax: 5 },
-  "of the Forsaken": { attackRating: 8, critChance: 4, haste: 4 },
-  "of the Tribunal": { wisdom: 8, intelligence: 8, mitigation: 5 },
-  "of Destiny":      { stamina: 10, strength: 8, agility: 8 },
-  "of the Gods":     { strength: 10, stamina: 10, intelligence: 10 },
+  "of the Forsaken": { attackRating: 8, critChance: 4, haste: 4, resistMagic: 4 },
+  "of the Tribunal": { wisdom: 8, intelligence: 8, mitigation: 5, resistDivine: 5, resistMagic: 3 },
+  "of Destiny":      { stamina: 10, strength: 8, agility: 8, resistCrush: 4, resistPierce: 3 },
+  "of the Gods":     { strength: 10, stamina: 10, intelligence: 10, resistHeat: 4, resistCold: 4, resistMagic: 4 },
 };
 
 // ─── Seeded pseudo-random (for session-stable merchant stock) ─────────────────
@@ -251,6 +251,17 @@ function rollRaritySeeded(rng: () => number, forceRarity?: ProceduralRarity): Pr
 
 // ─── Core stat scaler ─────────────────────────────────────────────────────────
 
+// Resistance stats are percentage points capped at 50 in eq2Formulas — scale
+// them with a smaller factor so a single item contributes a meaningful but
+// non-cap-dominating amount (typically 1–20 per piece depending on rarity/level).
+const RESIST_STAT_KEYS = new Set<keyof ItemStats>([
+  "resistPierce", "resistSlash", "resistCrush",
+  "resistHeat", "resistCold", "resistDivine", "resistMagic",
+]);
+// Percentage-point stats need much smaller values than regular stats to avoid
+// trivially hitting the 50% cap with a few pieces of gear.
+const RESIST_SCALE_FACTOR = 0.15;
+
 function scaleStats(slot: SlotType, level: number, rarity: ProceduralRarity, suffix: string): ItemStats {
   const mult = RARITY_STAT_MULT[rarity];
   const base = Math.max(1, Math.floor(level * 0.8));
@@ -274,7 +285,11 @@ function scaleStats(slot: SlotType, level: number, rarity: ProceduralRarity, suf
 
     for (const statKey of chosen) {
       if (statKey === "weaponDamageMin" || statKey === "weaponDamageMax" || statKey === "weaponDelay") continue;
-      const val = Math.floor(base * mult * (0.5 + Math.random() * 0.5));
+      // Resistance stats are percentages — use a smaller scale factor so they
+      // stay well below the 50% cap even when multiple pieces are equipped.
+      // Non-resist stats use a random factor in [0.5, 1.0] for variance.
+      const scaleFactor = RESIST_STAT_KEYS.has(statKey) ? RESIST_SCALE_FACTOR : (0.5 + Math.random() * 0.5);
+      const val = Math.floor(base * mult * scaleFactor);
       (stats as Record<string, number>)[statKey] = Math.max(1, val);
     }
 

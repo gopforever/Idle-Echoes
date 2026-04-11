@@ -199,7 +199,7 @@ export const ITEMS: Item[] = [
     name: "Darkblade of Serilis",
     description: "A cursed blade that drains the life of its enemies",
     type: "weapon", slot: "primary", rarity: "legendary", level: 35,
-    stats: { strength: 32, agility: 15, intelligence: 10, attackRating: 230, critChance: 7, weaponDamageMin: 90, weaponDamageMax: 140, weaponDelay: 1.5 },
+    stats: { strength: 32, agility: 15, intelligence: 10, attackRating: 230, critChance: 7, weaponDamageMin: 90, weaponDamageMax: 140, weaponDelay: 1.5, resistMagic: 8 },
     sellPrice: 1800, spriteId: "sword_dark",
   },
   {
@@ -554,7 +554,7 @@ export const ITEMS: Item[] = [
     name: "Moonweave Arcane Cloak",
     description: "A cloak woven from moonweave that crackles with stored arcane energy",
     type: "armor", slot: "back", rarity: "legendary", level: 42, armorType: "cloth",
-    stats: { intelligence: 28, wisdom: 20, critChance: 6, stamina: 18, avoidance: 4 },
+    stats: { intelligence: 28, wisdom: 20, critChance: 6, stamina: 18, avoidance: 4, resistMagic: 10 },
     sellPrice: 1600, spriteId: "back_arcane",
   },
   // HEAD ARMOR
@@ -595,7 +595,7 @@ export const ITEMS: Item[] = [
     name: "Helm of the Guardian",
     description: "A legendary helm worn by the guardians of Qeynos",
     type: "armor", slot: "head", rarity: "legendary", level: 38,
-    stats: { stamina: 55, strength: 18, defenseRating: 160, mitigation: 120, health: 120, critChance: 2 },
+    stats: { stamina: 55, strength: 18, defenseRating: 160, mitigation: 120, health: 120, critChance: 2, resistPierce: 10, resistSlash: 8 },
     sellPrice: 2200, spriteId: "helm_legendary",
   },
   // CHEST ARMOR
@@ -644,7 +644,7 @@ export const ITEMS: Item[] = [
     name: "Breastplate of Valor",
     description: "A legendary breastplate that inspires those who wear it",
     type: "armor", slot: "chest", rarity: "legendary", level: 40,
-    stats: { stamina: 80, strength: 28, wisdom: 12, defenseRating: 285, mitigation: 215, health: 200 },
+    stats: { stamina: 80, strength: 28, wisdom: 12, defenseRating: 285, mitigation: 215, health: 200, resistSlash: 12, resistPierce: 8 },
     sellPrice: 3500, spriteId: "chest_legendary",
   },
   {
@@ -652,7 +652,7 @@ export const ITEMS: Item[] = [
     name: "Chestguard of the Fallen",
     description: "Fabled armor reclaimed from a legendary fallen warrior",
     type: "armor", slot: "chest", rarity: "fabled", level: 55,
-    stats: { stamina: 120, strength: 42, defenseRating: 480, mitigation: 360, health: 380, critChance: 3 },
+    stats: { stamina: 120, strength: 42, defenseRating: 480, mitigation: 360, health: 380, critChance: 3, resistPierce: 15, resistSlash: 12, resistCrush: 10 },
     sellPrice: 12000, spriteId: "chest_fabled", noSell: true,
   },
   // LEGS
@@ -718,7 +718,7 @@ export const ITEMS: Item[] = [
     name: "Gauntlets of Might",
     description: "Fabled gauntlets that amplify the wearer's strength",
     type: "armor", slot: "hands", rarity: "fabled", level: 48,
-    stats: { strength: 40, stamina: 25, attackRating: 60, critChance: 4, defenseRating: 95 },
+    stats: { strength: 40, stamina: 25, attackRating: 60, critChance: 4, defenseRating: 95, resistCrush: 12, resistPierce: 10 },
     sellPrice: 9000, spriteId: "hands_fabled", noSell: true,
   },
   // FEET
@@ -835,7 +835,7 @@ export const ITEMS: Item[] = [
     name: "Cloak of Shadows",
     description: "A cloak woven from shadows themselves",
     type: "armor", slot: "back", rarity: "legendary", level: 38,
-    stats: { agility: 28, defenseRating: 95, avoidance: 8, critChance: 4 },
+    stats: { agility: 28, defenseRating: 95, avoidance: 8, critChance: 4, resistMagic: 12 },
     sellPrice: 2800, spriteId: "back_shadow",
   },
   // SHOULDER
@@ -1064,7 +1064,7 @@ export const ITEMS: Item[] = [
     name: "Blackburrow Commander's Helm",
     description: "A battle-scarred helm worn by Blackburrow's elite commanders",
     type: "armor", slot: "head", rarity: "rare", level: 18,
-    stats: { stamina: 45, strength: 16, defenseRating: 105, mitigation: 78, health: 80 },
+    stats: { stamina: 45, strength: 16, defenseRating: 105, mitigation: 78, health: 80, resistCrush: 8 },
     sellPrice: 620, spriteId: "helm_steel",
   },
   {
@@ -1072,7 +1072,7 @@ export const ITEMS: Item[] = [
     name: "Narlock's Warlord Seal",
     description: "A legendary seal bearing the crest of Overlord Narlock himself",
     type: "accessory", slot: "charm", rarity: "legendary", level: 20,
-    stats: { strength: 22, stamina: 18, attackRating: 55, critChance: 4, defenseRating: 45, health: 100 },
+    stats: { strength: 22, stamina: 18, attackRating: 55, critChance: 4, defenseRating: 45, health: 100, resistPierce: 8, resistSlash: 5 },
     sellPrice: 2800, spriteId: "charm_oracle",
   },
   {
@@ -1394,7 +1394,7 @@ export const ITEMS: Item[] = [
     name: "Worldbreaker Blade",
     description: "A legendary weapon forged from Nagafen's own scales — unique in all of Norrath",
     type: "weapon", slot: "primary", rarity: "mythical", level: 55,
-    stats: { strength: 80, agility: 40, attackRating: 600, critChance: 18, weaponDamageMin: 220, weaponDamageMax: 380, weaponDelay: 1.6 },
+    stats: { strength: 80, agility: 40, attackRating: 600, critChance: 18, weaponDamageMin: 220, weaponDamageMax: 380, weaponDelay: 1.6, resistHeat: 15 },
     sellPrice: 50000, spriteId: "sword_fabled", noSell: true,
   },
   {
@@ -1402,7 +1402,7 @@ export const ITEMS: Item[] = [
     name: "Void-Touched Mantle",
     description: "A cloak woven from the very fabric of the void — unique in all of Norrath",
     type: "armor", slot: "back", rarity: "mythical", level: 52,
-    stats: { agility: 60, defenseRating: 320, avoidance: 25, critChance: 12, intelligence: 40 },
+    stats: { agility: 60, defenseRating: 320, avoidance: 25, critChance: 12, intelligence: 40, resistMagic: 20, resistDivine: 10 },
     sellPrice: 45000, spriteId: "back_shadow", noSell: true,
   },
   {
@@ -1410,7 +1410,7 @@ export const ITEMS: Item[] = [
     name: "Eternal Crown of Norrath",
     description: "A crown worn by ancient kings — of immeasurable worth, unique in all of Norrath",
     type: "armor", slot: "head", rarity: "mythical", level: 58,
-    stats: { stamina: 120, strength: 60, wisdom: 50, defenseRating: 450, mitigation: 320, health: 500, critChance: 8 },
+    stats: { stamina: 120, strength: 60, wisdom: 50, defenseRating: 450, mitigation: 320, health: 500, critChance: 8, resistDivine: 20, resistMagic: 15 },
     sellPrice: 60000, spriteId: "helm_legendary", noSell: true,
   },
 
@@ -1420,7 +1420,7 @@ export const ITEMS: Item[] = [
     name: "Shadowsteel Blade",
     description: "A blade forged from shadowsteel — burns with cold dark flame",
     type: "weapon", slot: "primary", rarity: "legendary", level: 40,
-    stats: { strength: 45, agility: 22, attackRating: 300, critChance: 10, weaponDamageMin: 110, weaponDamageMax: 175, weaponDelay: 1.7 },
+    stats: { strength: 45, agility: 22, attackRating: 300, critChance: 10, weaponDamageMin: 110, weaponDamageMax: 175, weaponDelay: 1.7, resistMagic: 12, resistPierce: 8 },
     sellPrice: 15000, spriteId: "sword_dark",
   },
   {
@@ -1428,7 +1428,7 @@ export const ITEMS: Item[] = [
     name: "Dragonscale Breastplate",
     description: "A breastplate of true dragonscale — nearly impenetrable",
     type: "armor", slot: "chest", rarity: "legendary", level: 45,
-    stats: { stamina: 100, strength: 35, defenseRating: 380, mitigation: 280, health: 300 },
+    stats: { stamina: 100, strength: 35, defenseRating: 380, mitigation: 280, health: 300, resistHeat: 18, resistPierce: 10 },
     sellPrice: 18000, spriteId: "chest_fabled",
   },
   {
@@ -4389,7 +4389,7 @@ ITEMS.push(
   // ── Zek materials & boss drops ───────────────────────────────────────────
   { id: "zek_war_rune", name: "Deathfist War Rune", description: "An orc war rune carved by Deathfist shamans — used in orcish tinkering", type: "material", slot: "none", rarity: "uncommon", level: 33, stats: {}, sellPrice: 28, spriteId: "material_rune" },
   { id: "deathfist_seal", name: "Deathfist Clan Seal", description: "The legendary seal of the Deathfist Clan's Deathcaller — legendary proof of victory in Zek", type: "quest", slot: "none", rarity: "legendary", level: 40, stats: { strength: 10, stamina: 8 }, sellPrice: 600, spriteId: "material_seal" },
-  { id: "orc_warlord_helm", name: "Warlord's War Helm", description: "The ornate war helm of a Deathfist Warlord, still dented from battle", type: "armor", slot: "head", rarity: "rare", level: 37, stats: { stamina: 14, strength: 8, defenseRating: 80, mitigation: 55 }, sellPrice: 480, spriteId: "helm_orc" },
+  { id: "orc_warlord_helm", name: "Warlord's War Helm", description: "The ornate war helm of a Deathfist Warlord, still dented from battle", type: "armor", slot: "head", rarity: "rare", level: 37, stats: { stamina: 14, strength: 8, defenseRating: 80, mitigation: 55, resistCrush: 10 }, sellPrice: 480, spriteId: "helm_orc" },
   { id: "zek_berserker_axe", name: "Berserker's Cleaving Axe", description: "A double-headed axe wielded by Zek's deadliest berserkers", type: "weapon", slot: "primary", rarity: "rare", level: 35, stats: { strength: 22, attackRating: 160, critChance: 5, weaponDamageMin: 80, weaponDamageMax: 125, weaponDelay: 2.2 }, sellPrice: 650, spriteId: "axe_orc" },
   // ── Lesser Faydark materials & boss drops ────────────────────────────────
   { id: "faydark_wood", name: "Faydark Ancient Wood", description: "Wood from ancient Faydark trees, infused with fae energy — prized by tinkerers", type: "material", slot: "none", rarity: "uncommon", level: 33, stats: {}, sellPrice: 24, spriteId: "material_wood" },
@@ -4398,21 +4398,21 @@ ITEMS.push(
   { id: "grimthorn_staff", name: "Staff of the Thornlord", description: "Lord Grimthorn's legendary staff, crackling with primordial forest magic", type: "weapon", slot: "primary", rarity: "fabled", level: 40, stats: { intelligence: 30, wisdom: 18, attackRating: 260, critChance: 8, weaponDamageMin: 100, weaponDamageMax: 155, weaponDelay: 2.2 }, sellPrice: 3200, spriteId: "staff_fabled", noSell: true },
   // ── Feerrott materials & boss drops ─────────────────────────────────────
   { id: "feerrott_scale", name: "Feerrott Lizardman Scale", description: "A tough lizardman scale from the Feerrott swamps, used in heavy armor crafting", type: "material", slot: "none", rarity: "uncommon", level: 43, stats: {}, sellPrice: 32, spriteId: "material_scale" },
-  { id: "cazic_idol", name: "Idol of Cazic-Thule", description: "A terrifying idol dropped by the Avatar of Cazic-Thule, the God of Fear — a legendary trophy", type: "quest", slot: "none", rarity: "legendary", level: 50, stats: { wisdom: 20, charisma: -10, defenseRating: 120 }, sellPrice: 2000, spriteId: "material_idol" },
+  { id: "cazic_idol", name: "Idol of Cazic-Thule", description: "A terrifying idol dropped by the Avatar of Cazic-Thule, the God of Fear — a legendary trophy", type: "quest", slot: "none", rarity: "legendary", level: 50, stats: { wisdom: 20, charisma: -10, defenseRating: 120, resistMagic: 15 }, sellPrice: 2000, spriteId: "material_idol" },
   { id: "swamp_venom_gland", name: "Swamp Spider Venom Gland", description: "A venom gland from the Swamp Spider Queen — used in master-level alchemy", type: "material", slot: "none", rarity: "uncommon", level: 43, stats: {}, sellPrice: 28, spriteId: "material_venom" },
   { id: "bog_giant_club", name: "Bog Giant's Club", description: "An enormous club torn from the hands of a Feerrott Bog Giant", type: "weapon", slot: "primary", rarity: "rare", level: 45, stats: { strength: 28, stamina: 12, attackRating: 280, weaponDamageMin: 120, weaponDamageMax: 185, weaponDelay: 3.0 }, sellPrice: 900, spriteId: "club_giant" },
-  { id: "cazic_fear_cloak", name: "Cloak of the Fearmonger", description: "A cloak soaked in the terror of Cazic-Thule — enemies feel dread in your presence", type: "armor", slot: "back", rarity: "legendary", level: 50, stats: { charisma: 20, avoidance: 15, defenseRating: 110, stamina: 20 }, sellPrice: 3500, spriteId: "cloak_dark" },
+  { id: "cazic_fear_cloak", name: "Cloak of the Fearmonger", description: "A cloak soaked in the terror of Cazic-Thule — enemies feel dread in your presence", type: "armor", slot: "back", rarity: "legendary", level: 50, stats: { charisma: 20, avoidance: 15, defenseRating: 110, stamina: 20, resistMagic: 12, resistDivine: 8 }, sellPrice: 3500, spriteId: "cloak_dark" },
   // ── Everfrost / Permafrost materials & boss drops ────────────────────────
   { id: "permafrost_shard", name: "Permafrost Crystal Shard", description: "A fragment of eternal ice from Permafrost Keep, prized by jewelers and mages", type: "material", slot: "none", rarity: "uncommon", level: 38, stats: {}, sellPrice: 30, spriteId: "gem_ice" },
-  { id: "vox_frost_fang", name: "Vox's Frost Fang", description: "A legendary fang broken from Lady Vox herself — radiates lethal cold", type: "weapon", slot: "primary", rarity: "legendary", level: 45, stats: { intelligence: 28, wisdom: 15, attackRating: 350, critChance: 10, weaponDamageMin: 130, weaponDamageMax: 200, weaponDelay: 2.0 }, sellPrice: 6500, spriteId: "sword_fabled" },
-  { id: "vox_ice_crown", name: "Ice Crown of Vox", description: "The legendary crown worn by Lady Vox, Queen of Permafrost — grants mastery over cold magic", type: "armor", slot: "head", rarity: "legendary", level: 45, stats: { intelligence: 35, wisdom: 20, stamina: 18, defenseRating: 140, mitigation: 100 }, sellPrice: 5500, spriteId: "helm_fabled" },
-  { id: "ice_witch_robe", name: "Ice Witch's Enchanted Robe", description: "The robe of an Everfrost ice witch, imbued with cryomantic power", type: "armor", slot: "chest", rarity: "rare", level: 35, stats: { intelligence: 22, wisdom: 12, defenseRating: 95, mitigation: 65 }, sellPrice: 520, spriteId: "robe_ice" },
+  { id: "vox_frost_fang", name: "Vox's Frost Fang", description: "A legendary fang broken from Lady Vox herself — radiates lethal cold", type: "weapon", slot: "primary", rarity: "legendary", level: 45, stats: { intelligence: 28, wisdom: 15, attackRating: 350, critChance: 10, weaponDamageMin: 130, weaponDamageMax: 200, weaponDelay: 2.0, resistCold: 20 }, sellPrice: 6500, spriteId: "sword_fabled" },
+  { id: "vox_ice_crown", name: "Ice Crown of Vox", description: "The legendary crown worn by Lady Vox, Queen of Permafrost — grants mastery over cold magic", type: "armor", slot: "head", rarity: "legendary", level: 45, stats: { intelligence: 35, wisdom: 20, stamina: 18, defenseRating: 140, mitigation: 100, resistCold: 18, resistMagic: 10 }, sellPrice: 5500, spriteId: "helm_fabled" },
+  { id: "ice_witch_robe", name: "Ice Witch's Enchanted Robe", description: "The robe of an Everfrost ice witch, imbued with cryomantic power", type: "armor", slot: "chest", rarity: "rare", level: 35, stats: { intelligence: 22, wisdom: 12, defenseRating: 95, mitigation: 65, resistCold: 12 }, sellPrice: 520, spriteId: "robe_ice" },
   // ── Dungeon trophy and unique items ─────────────────────────────────────
-  { id: "everling_signet", name: "Everling Family Signet", description: "The signet ring of Lord Everling — proof of conquering Nektropos Castle", type: "accessory", slot: "ringLeft", rarity: "legendary", level: 35, stats: { intelligence: 18, charisma: 12, defenseRating: 60, avoidance: 8 }, sellPrice: 1800, spriteId: "ring_dark" },
-  { id: "varsoon_lich_crystal", name: "Varsoon's Lich Crystal", description: "The power crystal torn from Varsoon's phylactery — radiates undying dark energy", type: "accessory", slot: "charm", rarity: "legendary", level: 30, stats: { intelligence: 15, wisdom: 10, attackRating: 80, critChance: 5 }, sellPrice: 1500, spriteId: "gem_dark" },
-  { id: "icegrave_relic", name: "Frost Warden's Relic", description: "A relic dropped by Frost Warden Icegrave — a trophy from the depths of Permafrost Keep", type: "accessory", slot: "charm", rarity: "rare", level: 42, stats: { stamina: 12, defenseRating: 85, mitigation: 60 }, sellPrice: 700, spriteId: "accessory_frost" },
-  { id: "ignus_pyro_focus", name: "Ignus Pyromantic Focus", description: "High Priest Ignus's focus crystal, containing the essence of Sol Ro's inner flame", type: "accessory", slot: "charm", rarity: "legendary", level: 48, stats: { intelligence: 25, wisdom: 18, attackRating: 180, critChance: 8 }, sellPrice: 3800, spriteId: "gem_fire" },
-  { id: "nagafen_scale_armor", name: "Scale of Lord Nagafen", description: "A legendary scale from Lord Nagafen himself — heat-proof and immensely durable", type: "armor", slot: "chest", rarity: "mythical", level: 50, stats: { stamina: 40, strength: 25, defenseRating: 300, mitigation: 220, avoidance: 10 }, sellPrice: 15000, spriteId: "chestplate_fabled", noSell: true },
+  { id: "everling_signet", name: "Everling Family Signet", description: "The signet ring of Lord Everling — proof of conquering Nektropos Castle", type: "accessory", slot: "ringLeft", rarity: "legendary", level: 35, stats: { intelligence: 18, charisma: 12, defenseRating: 60, avoidance: 8, resistMagic: 10 }, sellPrice: 1800, spriteId: "ring_dark" },
+  { id: "varsoon_lich_crystal", name: "Varsoon's Lich Crystal", description: "The power crystal torn from Varsoon's phylactery — radiates undying dark energy", type: "accessory", slot: "charm", rarity: "legendary", level: 30, stats: { intelligence: 15, wisdom: 10, attackRating: 80, critChance: 5, resistMagic: 15 }, sellPrice: 1500, spriteId: "gem_dark" },
+  { id: "icegrave_relic", name: "Frost Warden's Relic", description: "A relic dropped by Frost Warden Icegrave — a trophy from the depths of Permafrost Keep", type: "accessory", slot: "charm", rarity: "rare", level: 42, stats: { stamina: 12, defenseRating: 85, mitigation: 60, resistCold: 15 }, sellPrice: 700, spriteId: "accessory_frost" },
+  { id: "ignus_pyro_focus", name: "Ignus Pyromantic Focus", description: "High Priest Ignus's focus crystal, containing the essence of Sol Ro's inner flame", type: "accessory", slot: "charm", rarity: "legendary", level: 48, stats: { intelligence: 25, wisdom: 18, attackRating: 180, critChance: 8, resistHeat: 18 }, sellPrice: 3800, spriteId: "gem_fire" },
+  { id: "nagafen_scale_armor", name: "Scale of Lord Nagafen", description: "A legendary scale from Lord Nagafen himself — heat-proof and immensely durable", type: "armor", slot: "chest", rarity: "mythical", level: 50, stats: { stamina: 40, strength: 25, defenseRating: 300, mitigation: 220, avoidance: 10, resistHeat: 20 }, sellPrice: 15000, spriteId: "chestplate_fabled", noSell: true },
 
   // ══════════════════════════════════════════════════════════════════════════
   // RAID MYTHICAL GEAR — Harla Dar (Temple of Harla Dar, levels 55–58)
@@ -4429,15 +4429,15 @@ ITEMS.push(
   { id: "raid_harla_dar_weapon_priest", name: "Radiant Scepter of the Prismatic Rite", description: "A scepter blessed by all elemental planes — heals and harms in equal measure", type: "weapon", slot: "primary", rarity: "mythical", level: 57,
     stats: { wisdom: 115, intelligence: 45, power: 650, critChance: 16, attackRating: 480, healBonus: 160, weaponDamageMin: 165, weaponDamageMax: 275, weaponDelay: 1.9 }, sellPrice: 54000, spriteId: "weapon_scepter" },
   { id: "raid_harla_dar_weapon_shield", name: "Prismatic Dragon Aegis", description: "A shield fashioned from Harla Dar's underbelly scales — refracts attacks like a prism", type: "armor", slot: "secondary", rarity: "mythical", level: 56,
-    stats: { stamina: 90, defenseRating: 480, mitigation: 340, health: 600, avoidance: 20 }, sellPrice: 48000, spriteId: "shield_legendary" },
+    stats: { stamina: 90, defenseRating: 480, mitigation: 340, health: 600, avoidance: 20, resistPierce: 20, resistSlash: 18, resistCrush: 15 }, sellPrice: 48000, spriteId: "shield_legendary" },
 
   // Armor — Plate (Fighter)
   { id: "raid_harla_dar_head_fighter", name: "Dragonhelm of Chromatic Fury", description: "A helm carved from Harla Dar's skull-plate — prismatic energy crackles around the visor", type: "armor", slot: "head", rarity: "mythical", level: 57, armorType: "plate",
-    stats: { stamina: 85, strength: 50, defenseRating: 460, mitigation: 320, health: 550, critChance: 10 }, sellPrice: 42000, spriteId: "helm_legendary" },
+    stats: { stamina: 85, strength: 50, defenseRating: 460, mitigation: 320, health: 550, critChance: 10, resistPierce: 15, resistSlash: 12 }, sellPrice: 42000, spriteId: "helm_legendary" },
   { id: "raid_harla_dar_shoulder_fighter", name: "Prismatic Dragon Pauldrons", description: "Massive pauldrons of layered dragon-scale that shift colour with elemental alignment", type: "armor", slot: "shoulder", rarity: "mythical", level: 57, armorType: "plate",
     stats: { stamina: 78, strength: 45, defenseRating: 430, mitigation: 300, health: 480 }, sellPrice: 40000, spriteId: "shoulders_plate" },
   { id: "raid_harla_dar_chest_fighter", name: "Prismatic Scale Breastplate", description: "Full plate breastplate grown from Harla Dar's living scales — nearly unbreakable", type: "armor", slot: "chest", rarity: "mythical", level: 58, armorType: "plate",
-    stats: { stamina: 105, strength: 60, defenseRating: 580, mitigation: 420, health: 750, avoidance: 12 }, sellPrice: 58000, spriteId: "chest_fabled" },
+    stats: { stamina: 105, strength: 60, defenseRating: 580, mitigation: 420, health: 750, avoidance: 12, resistHeat: 15, resistCold: 15, resistMagic: 12 }, sellPrice: 58000, spriteId: "chest_fabled" },
   { id: "raid_harla_dar_legs_fighter", name: "Chromatic Dragon Legguards", description: "Legguards of overlapping prismatic scales — each scale aligned to a different element", type: "armor", slot: "legs", rarity: "mythical", level: 57, armorType: "plate",
     stats: { stamina: 88, strength: 48, defenseRating: 500, mitigation: 355, health: 600 }, sellPrice: 44000, spriteId: "legs_plate" },
   { id: "raid_harla_dar_waist_fighter", name: "Prismatic Dragon Girdle", description: "A girdle of prismatic dragon-bone that flexes without cracking under any blow", type: "armor", slot: "waist", rarity: "mythical", level: 56, armorType: "plate",
@@ -4453,9 +4453,9 @@ ITEMS.push(
 
   // Armor — Cloth (Mage/Priest)
   { id: "raid_harla_dar_head_caster", name: "Cowl of the Prismatic Rite", description: "A cowl stitched from Harla Dar's wing membrane — amplifies all schools of magic", type: "armor", slot: "head", rarity: "mythical", level: 57, armorType: "cloth",
-    stats: { intelligence: 105, wisdom: 65, power: 580, critChance: 18, spellDamageBonus: 90 }, sellPrice: 42000, spriteId: "helm_cloth" },
+    stats: { intelligence: 105, wisdom: 65, power: 580, critChance: 18, spellDamageBonus: 90, resistMagic: 18, resistDivine: 12 }, sellPrice: 42000, spriteId: "helm_cloth" },
   { id: "raid_harla_dar_chest_caster", name: "Robes of Chromatic Dominion", description: "Robes woven from the finest prismatic silk, harvested from Harla Dar's own hide", type: "armor", slot: "chest", rarity: "mythical", level: 58, armorType: "cloth",
-    stats: { intelligence: 128, wisdom: 80, power: 720, critChance: 20, spellDamageBonus: 110, defenseRating: 200 }, sellPrice: 58000, spriteId: "robe_ice" },
+    stats: { intelligence: 128, wisdom: 80, power: 720, critChance: 20, spellDamageBonus: 110, defenseRating: 200, resistMagic: 20, resistDivine: 15 }, sellPrice: 58000, spriteId: "robe_ice" },
   { id: "raid_harla_dar_legs_caster", name: "Prismatic Spellweave Leggings", description: "Leggings of prismatic spellweave — each panel channels a different elemental school", type: "armor", slot: "legs", rarity: "mythical", level: 57, armorType: "cloth",
     stats: { intelligence: 110, wisdom: 70, power: 630, critChance: 16, healBonus: 80 }, sellPrice: 44000, spriteId: "legs_cloth" },
   { id: "raid_harla_dar_wrists_caster", name: "Bracers of the Prismatic Surge", description: "Silk bracers threaded with prismatic dragon sinew — boost spell velocity", type: "armor", slot: "wrists", rarity: "mythical", level: 56, armorType: "cloth",
@@ -4473,9 +4473,9 @@ ITEMS.push(
   { id: "raid_harla_dar_ring2", name: "Ring of Chromatic Power", description: "A ring containing a fragment of Harla Dar's prismatic heart — pulsing with raw magic", type: "accessory", slot: "ringRight", rarity: "mythical", level: 56,
     stats: { intelligence: 80, wisdom: 55, power: 400, critChance: 14, spellDamageBonus: 60 }, sellPrice: 38000, spriteId: "ring_magic" },
   { id: "raid_harla_dar_neck", name: "Amulet of the Prismatic Dragon", description: "An amulet carved from Harla Dar's dorsal spine — radiates prismatic warmth", type: "accessory", slot: "neck", rarity: "mythical", level: 57,
-    stats: { stamina: 60, strength: 40, intelligence: 40, wisdom: 35, health: 300, power: 280 }, sellPrice: 45000, spriteId: "accessory_neck" },
+    stats: { stamina: 60, strength: 40, intelligence: 40, wisdom: 35, health: 300, power: 280, resistHeat: 10, resistCold: 10, resistMagic: 10, resistDivine: 8 }, sellPrice: 45000, spriteId: "accessory_neck" },
   { id: "raid_harla_dar_ear", name: "Earring of Chromatic Resonance", description: "A Harla Dar scale sliver set in adamantine — attunes the wearer to all elements", type: "accessory", slot: "earLeft", rarity: "mythical", level: 56,
-    stats: { agility: 50, intelligence: 50, critChance: 15, haste: 10 }, sellPrice: 36000, spriteId: "accessory_ear" },
+    stats: { agility: 50, intelligence: 50, critChance: 15, haste: 10, resistHeat: 12, resistCold: 12 }, sellPrice: 36000, spriteId: "accessory_ear" },
   { id: "raid_harla_dar_charm", name: "Harla Dar's Prismatic Eye", description: "One of Harla Dar's eyes — a charm that sees through all elemental deception", type: "accessory", slot: "charm", rarity: "mythical", level: 57,
     stats: { stamina: 70, intelligence: 60, wisdom: 50, attackRating: 120, spellDamageBonus: 80, healBonus: 60 }, sellPrice: 48000, spriteId: "gem_fire" },
 
