@@ -6,3 +6,4 @@ artifacts/api-server/dist/
 artifacts/melvor-eq2/dist/
 artifacts/leaderboard/dist/
 artifacts/mockup-sandbox/dist/
+lib/*/dist/
