@@ -4,6 +4,7 @@ import { eq, and } from "drizzle-orm";
 import { getItemById, ITEMS } from "./gameData.js";
 import { getDungeonById } from "./dungeonData.js";
 import { getOrCreateCharacter } from "../routes/character.js";
+import { ADORNMENTS } from "./eq2Data.js";
 
 /**
  * Upsert kill stats for a dungeon or raid.
@@ -74,11 +75,51 @@ function weightedRarityPick(difficulty: string): string {
 }
 
 /**
+ * Generate 0–1 adornment drops for a floor.
+ * Drop chance varies by floor type, eligible colors are gated by difficulty, and
+ * the adornment pool is filtered to the dungeon's level range.
+ */
+function generateAdornmentLoot(
+  difficulty: string,
+  dungeonMinLevel: number,
+  dungeonMaxLevel: number,
+  floorType: "normal" | "miniboss" | "finalboss",
+): string[] {
+  const dropChance = floorType === "finalboss" ? 0.35 : floorType === "miniboss" ? 0.20 : 0.10;
+  if (Math.random() > dropChance) return [];
+
+  // Determine eligible colors by difficulty
+  const eligibleColors = new Set<string>(["white"]);
+  if (difficulty === "expert" || difficulty === "legendary" || difficulty === "mythical") {
+    eligibleColors.add("yellow");
+  }
+  if (difficulty === "legendary" || difficulty === "mythical") {
+    eligibleColors.add("red");
+  }
+
+  // Filter by eligible colors and dungeon level range
+  let pool = ADORNMENTS.filter(
+    a => eligibleColors.has(a.color) && a.level >= dungeonMinLevel && a.level <= dungeonMaxLevel,
+  );
+  // Fallback: relax level requirement if the dungeon range yields nothing
+  if (pool.length === 0) {
+    pool = ADORNMENTS.filter(a => eligibleColors.has(a.color));
+  }
+  if (pool.length === 0) return [];
+
+  const picked = pool[Math.floor(Math.random() * pool.length)];
+  return [picked.id];
+}
+
+/**
  * Generate 1–3 loot items.
  * Item level = playerLevel + floor - 1, clamped to the dungeon's defined level range
  * so that low-level dungeons (e.g. Blackburrow, minLevel 10–20) never drop items
  * scaled to a high-level character.
  * If no items at the clamped level exist, expand outward ±1, ±2, ±3 until a pool is found.
+ *
+ * floorType controls the adornment drop probability:
+ *   "normal"   → ~10%   "miniboss" → ~20%   "finalboss" → ~35%
  */
 export function generateDungeonLoot(
   playerLevel: number,
@@ -86,6 +127,7 @@ export function generateDungeonLoot(
   difficulty: string,
   dungeonMinLevel: number,
   dungeonMaxLevel: number,
+  floorType: "normal" | "miniboss" | "finalboss" = "normal",
 ): string[] {
   const rawTarget = playerLevel + floorNumber - 1;
   // Cap at dungeon max so high-level players don't receive over-levelled gear
@@ -118,13 +160,29 @@ export function generateDungeonLoot(
     const picked = finalPool[Math.floor(Math.random() * finalPool.length)];
     loot.push(picked.id);
   }
-  return loot;
+
+  // Append adornment drops (chance varies by floor type)
+  const adornmentLoot = generateAdornmentLoot(difficulty, dungeonMinLevel, dungeonMaxLevel, floorType);
+  return [...loot, ...adornmentLoot];
 }
 
 export async function awardItemsToInventory(itemIds: string[], characterId: number): Promise<void> {
   for (const itemId of itemIds) {
     const item = getItemById(itemId);
-    if (!item) continue;
+
+    // Adornments are not in ITEMS — insert with minimal itemData so the adornments
+    // route (which looks up by itemId) can find them correctly.
+    if (!item) {
+      if (ADORNMENTS.some(a => a.id === itemId)) {
+        await db.insert(inventoryTable).values({
+          characterId,
+          itemId,
+          itemData: { type: "adornment", id: itemId } as unknown as Record<string, unknown>,
+          quantity: 1,
+        });
+      }
+      continue;
+    }
 
     if (item.stackable) {
       const [existing] = await db.select().from(inventoryTable)
