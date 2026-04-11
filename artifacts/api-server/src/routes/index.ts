@@ -32,6 +32,7 @@ import gatheringBagRouter from "./gathering-bag.js";
 import bestiaryRouter from "./bestiary.js";
 import settingsRouter from "./settings.js";
 import gearSetsRouter from "./gear-sets.js";
+import guildRouter from "./guild.js";
 import tradeskillsRouter from "./tradeskills.js";
 import { requireAuth } from "../middleware/auth.js";
 
@@ -80,6 +81,7 @@ gameRoutes.use(bestiaryRouter);
 gameRoutes.use(settingsRouter);
 gameRoutes.use(gearSetsRouter);
 gameRoutes.use(tradeskillsRouter);
+gameRoutes.use(guildRouter);
 
 router.use(gameRoutes);
 

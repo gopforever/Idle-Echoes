@@ -5,6 +5,7 @@ import session from "express-session";
 import router from "./routes/index.js";
 import { logger } from "./lib/logger.js";
 import { seedGhostPlayers } from "./lib/ghostSimulator.js";
+import { seedGhostGuilds } from "./lib/guildSeeder.js";
 import "./types/session.js";
 
 const app: Express = express();
@@ -107,10 +108,11 @@ app.use(
 
 app.use("/api", router);
 
-// Ensure ghost players are seeded on cold start (works in both serverless and server mode).
-// If seeding fails, the next cold start will attempt again.
-seedGhostPlayers().catch((err) =>
-  logger.warn({ err }, "Ghost seed on cold start failed — will retry on next cold start"),
-);
+// Ensure ghost players are seeded on cold start, then seed ghost guilds.
+seedGhostPlayers()
+  .then(() => seedGhostGuilds())
+  .catch((err) =>
+    logger.warn({ err }, "Ghost seed on cold start failed — will retry on next cold start"),
+  );
 
 export default app;
