@@ -98,7 +98,11 @@ router.get("/shop", async (req, res) => {
         const mountItem = MOUNT_ITEMS.find(m => m.id === si.itemId);
         const adornItem = ADORNMENTS.find(a => a.id === si.itemId);
         if (mountItem) item = mountItem;
-        else if (adornItem) item = { id: adornItem.id, name: adornItem.name, type: "adornment", slot: adornItem.slotType, rarity: "uncommon", level: adornItem.level, stats: { [adornItem.stat]: adornItem.value }, sellPrice: Math.floor(si.buyPrice * 0.4), buyPrice: si.buyPrice, spriteId: adornItem.spriteId, description: adornItem.description };
+        else if (adornItem) {
+          const adornStats: Record<string, number> = {};
+          for (const { stat, value } of adornItem.stats) adornStats[stat] = (adornStats[stat] ?? 0) + value;
+          item = { id: adornItem.id, name: adornItem.name, type: "adornment", slot: adornItem.slotType, rarity: "uncommon", level: adornItem.level, stats: adornStats, sellPrice: Math.floor(si.buyPrice * 0.4), buyPrice: si.buyPrice, spriteId: adornItem.spriteId, description: adornItem.description };
+        }
       }
       if (!item) return null;
 
@@ -239,10 +243,12 @@ router.post("/shop/buy", async (req, res) => {
     if (!itemData) {
       const adorn = ADORNMENTS.find(a => a.id === itemId);
       if (adorn) {
+        const adornStats: Record<string, number> = {};
+        for (const { stat, value } of adorn.stats) adornStats[stat] = (adornStats[stat] ?? 0) + value;
         itemData = {
           id: adorn.id, name: adorn.name, type: "adornment", slot: adorn.slotType,
           rarity: "uncommon", level: adorn.level,
-          stats: { [adorn.stat]: adorn.value },
+          stats: adornStats,
           sellPrice: Math.floor(shopItem.buyPrice * 0.4),
           spriteId: adorn.spriteId,
         };

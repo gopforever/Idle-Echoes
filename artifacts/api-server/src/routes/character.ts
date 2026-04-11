@@ -8,7 +8,7 @@ import {
 } from "@workspace/db/schema";
 import { computeStats, computeGearScore, applyAABonuses, makeZeroAABonuses, DUNGEON_GS_GATE } from "../lib/eq2Formulas.js";
 import { getItemById, xpForLevel } from "../lib/gameData.js";
-import { RACES, CLASSES, AA_TABS } from "../lib/eq2Data.js";
+import { RACES, CLASSES, AA_TABS, ADORNMENTS } from "../lib/eq2Data.js";
 import { eq, inArray, sql, and, isNull, gt } from "drizzle-orm";
 import { applySkillXp } from "../lib/skillXp.js";
 import { getOrCreateSkills } from "./skills.js";
@@ -183,6 +183,37 @@ router.get("/character/stats", async (req, res) => {
     if (!hasWeapon) {
       gearWeaponDamageMin = baseStats.strength * 0.5 + character.level;
       gearWeaponDamageMax = baseStats.strength * 1.0 + character.level * 2;
+    }
+
+    // ── Adornment bonuses ─────────────────────────────────────────────────────
+    const adornRows = await db.select().from(adornmentsTable).where(eq(adornmentsTable.characterId, req.characterId));
+    for (const row of adornRows) {
+      const def = ADORNMENTS.find(a => a.id === row.adornmentId);
+      if (!def) continue;
+      for (const { stat, value } of def.stats) {
+        switch (stat) {
+          case "attackRating":  gearAttackRating  += value; break;
+          case "defenseRating": gearDefenseRating += value; break;
+          case "mitigation":    gearMitigation    += value; break;
+          case "haste":         gearHaste         += value; break;
+          case "critChance":    gearCritChance    += value; break;
+          case "health":        gearHealth        += value; break;
+          case "power":         gearPower         += value; break;
+          case "strength":      gearStrength      += value; break;
+          case "agility":       gearAgility       += value; break;
+          case "stamina":       gearStamina       += value; break;
+          case "intelligence":  gearIntelligence  += value; break;
+          case "wisdom":        gearWisdom        += value; break;
+          case "charisma":      gearCharisma      += value; break;
+          case "resistPierce":  gearResistPierce  += value; break;
+          case "resistSlash":   gearResistSlash   += value; break;
+          case "resistCrush":   gearResistCrush   += value; break;
+          case "resistHeat":    gearResistHeat    += value; break;
+          case "resistCold":    gearResistCold    += value; break;
+          case "resistDivine":  gearResistDivine  += value; break;
+          case "resistMagic":   gearResistMagic   += value; break;
+        }
+      }
     }
 
     // Load AA bonuses so haste (and other AA-boosted stats) are reflected correctly
