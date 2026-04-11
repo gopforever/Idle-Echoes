@@ -160,7 +160,7 @@ const EXPLORER: GhostPersonalityDef[] = [
   { id: "the_moving_target",              label: "the Moving Target",              archetype: "Explorer" },
   { id: "the_never_settles",              label: "the Never-Settles",              archetype: "Explorer" },
   { id: "the_far_ranging",                label: "the Far-Ranging",                archetype: "Explorer" },
-  { id: "the_zone_conqueror",             label: "the Zone-Conqueror",             archetype: "Explorer" },
+  { id: "the_zone_conqueror",             label: "the Zone-Mapper",                archetype: "Explorer" },
   { id: "the_undiscovered_country_seeker",label: "the Undiscovered-Country Seeker",archetype: "Explorer" },
   { id: "the_world_weary_wanderer",       label: "the World-Weary Wanderer",       archetype: "Explorer" },
   { id: "the_destination_unknown",        label: "the Destination-Unknown",        archetype: "Explorer" },

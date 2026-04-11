@@ -245,9 +245,10 @@ function GhostPortraitAvatar({ playerId, size = 32, personality, personalityArch
     return () => { active = false; };
   }, [playerId]);
 
+  const pStyle = getPersonalityStyle(personality, personalityArchetype);
   const styleKey = personalityArchetype ?? personality;
   const borderCls = styleKey ? (PERSONALITY_BORDER[styleKey] ?? "border-slate-600/70") : "border-slate-600/70";
-  const fallbackEmoji = styleKey ? (PERSONALITY_STYLES[styleKey]?.icon ?? "?") : "?";
+  const fallbackEmoji = pStyle?.icon ?? "?";
   const style = { width: size, height: size };
 
   if (src) {
