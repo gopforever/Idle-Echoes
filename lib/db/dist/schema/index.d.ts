@@ -10,5 +10,4 @@ export * from "./quests";
 export * from "./dungeons";
 export * from "./gathering";
 export * from "./tradeskills";
-export * from "./guilds";
 //# sourceMappingURL=index.d.ts.map
