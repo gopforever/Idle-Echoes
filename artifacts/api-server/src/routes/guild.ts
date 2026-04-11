@@ -6,8 +6,13 @@ import {
   charactersTable,
   worldPlayersTable,
 } from "@workspace/db/schema";
-import { eq, and, isNull, isNotNull, desc, sql } from "drizzle-orm";
+import { eq, and, isNull, isNotNull, desc, sql, inArray } from "drizzle-orm";
 import { requireAuth } from "../middleware/auth.js";
+import {
+  computeGuildLevel,
+  guildLevelPerks,
+  GUILD_LEVEL_THRESHOLDS,
+} from "../lib/guildPerks.js";
 
 const router: IRouter = Router();
 
@@ -63,8 +68,19 @@ router.get("/guild", requireAuth, async (req, res, next) => {
       return res.json(null);
     }
 
+    // Refresh real member contribution points from live character stats
+    await refreshRealMemberContributions(guild.id);
+
     const members = await buildGuildMembers(guild.id);
-    return res.json({ guild, membership, members });
+
+    // Compute guild level and perks from the refreshed totals
+    const currentScore = members.reduce((s, m) => s + m.contributionPoints, 0);
+    const guildLevel = computeGuildLevel(currentScore);
+    const perks = guildLevelPerks(guildLevel);
+    const maxLevel = GUILD_LEVEL_THRESHOLDS.length;
+    const nextLevelScore = guildLevel < maxLevel ? GUILD_LEVEL_THRESHOLDS[guildLevel] : null;
+
+    return res.json({ guild, membership, members, guildLevel, perks, currentScore: Math.round(currentScore), nextLevelScore });
   } catch (err) {
     next(err);
   }
@@ -94,6 +110,7 @@ router.get("/guild/leaderboard", requireAuth, async (req, res, next) => {
     const ranked = allGuilds
       .map(guild => {
         const agg = scoreMap.get(guild.id);
+        const score = Math.round(agg?.totalScore ?? 0);
         return {
           id: guild.id,
           name: guild.name,
@@ -102,9 +119,10 @@ router.get("/guild/leaderboard", requireAuth, async (req, res, next) => {
           description: guild.description,
           motto: guild.motto,
           isGhost: guild.isGhost,
-          score: Math.round(agg?.totalScore ?? 0),
+          score,
           memberCount: agg?.memberCount ?? 0,
           bankGold: guild.bankGold,
+          guildLevel: computeGuildLevel(score),
         };
       })
       .sort((a, b) => b.score - a.score)
@@ -188,7 +206,7 @@ router.post("/guild/create", requireAuth, async (req, res, next) => {
       .limit(1);
     if (tagConflict) return res.status(409).json({ error: "A guild with that tag already exists" });
 
-    // Fetch character for contribution calculation
+    // Fetch character for contribution calculation and level gate
     const [char] = await db
       .select({ level: charactersTable.level, killCount: charactersTable.killCount, bossKills: charactersTable.bossKills, heroicCompleted: charactersTable.heroicCompleted })
       .from(charactersTable)
@@ -196,6 +214,10 @@ router.post("/guild/create", requireAuth, async (req, res, next) => {
       .limit(1);
 
     if (!char) return res.status(404).json({ error: "Character not found" });
+
+    if (char.level < 5) {
+      return res.status(403).json({ error: "You must be at least level 5 to found a guild" });
+    }
 
     const [guild] = await db.transaction(async (tx) => {
       const [newGuild] = await tx
@@ -298,6 +320,10 @@ router.post("/guild/invite", requireAuth, async (req, res, next) => {
 
     if (!target) return res.status(404).json({ error: "Character not found" });
     if (target.id === characterId) return res.status(400).json({ error: "You cannot invite yourself" });
+
+    if (target.level < 5) {
+      return res.status(403).json({ error: `${target.name} must be at least level 5 to join a guild` });
+    }
 
     // Check target not already in a guild
     const [targetMembership] = await db
@@ -573,6 +599,57 @@ router.post("/guild/disband", requireAuth, async (req, res, next) => {
   }
 });
 
+// ─── POST /guild/bank/deposit — deposit gold into guild bank ─────────────────
+
+router.post("/guild/bank/deposit", requireAuth, async (req, res, next) => {
+  try {
+    const characterId = req.characterId!;
+    const { amount } = req.body;
+
+    const depositAmount = Number(amount);
+    if (!isFinite(depositAmount) || depositAmount <= 0) {
+      return res.status(400).json({ error: "amount must be a positive number" });
+    }
+
+    const [membership] = await db
+      .select({ guildId: guildMembersTable.guildId })
+      .from(guildMembersTable)
+      .where(eq(guildMembersTable.characterId, characterId))
+      .limit(1);
+
+    if (!membership) return res.status(404).json({ error: "You are not in a guild" });
+
+    const [char] = await db
+      .select({ gold: charactersTable.gold })
+      .from(charactersTable)
+      .where(eq(charactersTable.id, characterId))
+      .limit(1);
+
+    if (!char) return res.status(404).json({ error: "Character not found" });
+
+    const actualDeposit = Math.min(Math.floor(depositAmount), Math.floor(char.gold));
+    if (actualDeposit <= 0) {
+      return res.status(400).json({ error: "Not enough gold" });
+    }
+
+    await db.transaction(async (tx) => {
+      await tx
+        .update(charactersTable)
+        .set({ gold: char.gold - actualDeposit, updatedAt: new Date() })
+        .where(eq(charactersTable.id, characterId));
+
+      await tx
+        .update(guildsTable)
+        .set({ bankGold: sql`${guildsTable.bankGold} + ${actualDeposit}`, updatedAt: new Date() })
+        .where(eq(guildsTable.id, membership.guildId));
+    });
+
+    return res.json({ ok: true, deposited: actualDeposit });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 async function disbandGuild(guildId: number): Promise<void> {
@@ -580,6 +657,40 @@ async function disbandGuild(guildId: number): Promise<void> {
     await tx.delete(guildMembersTable).where(eq(guildMembersTable.guildId, guildId));
     await tx.delete(guildsTable).where(and(eq(guildsTable.id, guildId), eq(guildsTable.isGhost, false)));
   });
+}
+
+/**
+ * Recomputes and persists contribution_points for all real (non-ghost) members
+ * of a guild from their live character stats. Called on every GET /guild so that
+ * real player scores stay current between server restarts (ghost member scores
+ * are refreshed separately by the guildSeeder on boot).
+ */
+async function refreshRealMemberContributions(guildId: number): Promise<void> {
+  const realRows = await db
+    .select({ id: guildMembersTable.id, characterId: guildMembersTable.characterId })
+    .from(guildMembersTable)
+    .where(and(eq(guildMembersTable.guildId, guildId), isNotNull(guildMembersTable.characterId)));
+
+  if (realRows.length === 0) return;
+
+  const charIds = realRows.map(r => r.characterId as number);
+  const chars = await db
+    .select({ id: charactersTable.id, level: charactersTable.level, killCount: charactersTable.killCount, bossKills: charactersTable.bossKills, heroicCompleted: charactersTable.heroicCompleted })
+    .from(charactersTable)
+    .where(inArray(charactersTable.id, charIds));
+
+  const charMap = new Map(chars.map(c => [c.id, c]));
+
+  for (const row of realRows) {
+    const c = charMap.get(row.characterId!);
+    if (!c) continue;
+    const points = computeContribution(c);
+    await db
+      .update(guildMembersTable)
+      .set({ contributionPoints: points })
+      .where(eq(guildMembersTable.id, row.id))
+      .catch(() => {});
+  }
 }
 
 async function buildGuildMembers(guildId: number) {

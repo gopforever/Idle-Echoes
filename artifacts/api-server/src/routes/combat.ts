@@ -16,6 +16,7 @@ import { progressDungeonKill } from "../lib/dungeonProgress.js";
 import { recordBestiaryKill } from "./bestiary.js";
 import { calculateContributions, applyPartyDamage, updateGhostStats, fetchGhostInfo } from "../lib/partyEngine.js";
 import type { PartyMember } from "../lib/partyEngine.js";
+import { getGuildPerksForCharacter } from "../lib/guildPerks.js";
 
 const GRUDGE_ENRAGE_DURATION_TICKS = 10;
 
@@ -411,6 +412,9 @@ router.post("/combat/tick", async (req, res) => {
       })
       .filter((n): n is NonNullable<typeof n> => n !== null);
     const aaBonuses = applyAABonuses(investedNodes);
+
+    // ── Guild perks ──────────────────────────────────────────────────────────
+    const guildPerks = await getGuildPerksForCharacter(characterId);
 
     // Active AA bonus labels for the front-end to display
     const activeAALabels: string[] = [];
@@ -910,14 +914,15 @@ router.post("/combat/tick", async (req, res) => {
         }
       }
 
-      // Gold with AA gold bonus
+      // Gold with AA gold bonus + guild gold bonus
       const baseGold = Math.floor(enemy.goldMin + Math.random() * (enemy.goldMax - enemy.goldMin));
-      goldGained = Math.floor(baseGold * (1 + aaBonuses.goldBonus / 100));
+      const totalGoldBonus = aaBonuses.goldBonus + guildPerks.goldBonus;
+      goldGained = Math.floor(baseGold * (1 + totalGoldBonus / 100));
       xpGained = calculateXpGain(enemy.xpReward, character.level, enemy.level,
-        aaBonuses.xpBonus + (enemy.isBoss ? aaBonuses.bossXpBonus : 0));
+        aaBonuses.xpBonus + (enemy.isBoss ? aaBonuses.bossXpBonus : 0) + guildPerks.xpBonus);
 
-      if (aaBonuses.goldBonus > 0) {
-        await db.insert(combatLogTable).values({ characterId, tick: newTick, message: `💰 Gold Bonus (+${aaBonuses.goldBonus}%): ${goldGained}g!`, type: "info" });
+      if (aaBonuses.goldBonus > 0 || guildPerks.goldBonus > 0) {
+        await db.insert(combatLogTable).values({ characterId, tick: newTick, message: `💰 Gold Bonus (+${totalGoldBonus}%): ${goldGained}g!`, type: "info" });
       }
 
       // Build a set of scroll itemIds whose one-of-a-kind recipe has already been crafted.

@@ -14,6 +14,7 @@ import {
 import { checkAndUnlockAchievements } from "./achievements.js";
 import { applyAABonuses } from "../lib/eq2Formulas.js";
 import { ALL_AA_TABS } from "../lib/eq2Data.js";
+import { getGuildPerksForCharacter } from "../lib/guildPerks.js";
 
 const router: IRouter = Router();
 
@@ -251,6 +252,10 @@ router.get("/gathering/status", async (req, res) => {
     }).filter((n): n is NonNullable<typeof n> => n !== null);
     const aaBonuses = applyAABonuses(aaInvested);
 
+    // ── Guild gathering speed bonus ───────────────────────────────────────────
+    const guildPerks = await getGuildPerksForCharacter(characterId);
+    const totalGatheringSpeedBonus = aaBonuses.gatheringSpeed + guildPerks.gatheringSpeedBonus;
+
     const sessions = await db.select().from(gatheringSessionsTable)
       .where(and(
         eq(gatheringSessionsTable.characterId, character.id),
@@ -275,8 +280,8 @@ router.get("/gathering/status", async (req, res) => {
 
       const skillLevel = skillLevelMap.get(session.skillId) ?? 1;
       const elapsedMs = now.getTime() - new Date(session.lastTickAt).getTime();
-      // Apply AA gatheringSpeed bonus: speed% bonus reduces effective gather interval
-      const effectiveGatherMs = (node.gatherTimeSeconds * 1000) / Math.max(0.1, 1 + aaBonuses.gatheringSpeed / 100);
+      // Apply AA + guild gatheringSpeed bonus: speed% bonus reduces effective gather interval
+      const effectiveGatherMs = (node.gatherTimeSeconds * 1000) / Math.max(0.1, 1 + totalGatheringSpeedBonus / 100);
       const ticksElapsed = Math.floor(elapsedMs / effectiveGatherMs);
 
       if (ticksElapsed <= 0) {
@@ -369,7 +374,7 @@ router.get("/gathering/status", async (req, res) => {
       const updated = sessionUpdates.get(s.id);
       const effectiveLastTickAt = updated ? updated.lastTickAt : new Date(s.lastTickAt);
       const effectiveTotalGathered = updated ? updated.totalGathered : s.totalGathered;
-      const effectiveGatherTimeSec = node ? (node.gatherTimeSeconds / Math.max(0.1, 1 + aaBonuses.gatheringSpeed / 100)) : 10;
+      const effectiveGatherTimeSec = node ? (node.gatherTimeSeconds / Math.max(0.1, 1 + totalGatheringSpeedBonus / 100)) : 10;
       return {
         skillId: s.skillId,
         nodeId: s.nodeId,
