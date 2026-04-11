@@ -1,1 +1,0 @@
-{"version":3,"file":"shop.d.ts","sourceRoot":"","sources":["../../../src/generated/types/shop.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AACH,OAAO,KAAK,EAAE,QAAQ,EAAE,MAAM,YAAY,CAAC;AAE3C,MAAM,WAAW,IAAI;IACnB,YAAY,EAAE,MAAM,CAAC;IACrB,IAAI,EAAE,MAAM,CAAC;IACb,UAAU,CAAC,EAAE,MAAM,EAAE,CAAC;IACtB,KAAK,EAAE,QAAQ,EAAE,CAAC;CACnB"}

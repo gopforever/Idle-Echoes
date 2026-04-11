@@ -1,1 +1,0 @@
-{"version":3,"file":"mountResult.d.ts","sourceRoot":"","sources":["../../../src/generated/types/mountResult.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AACH,OAAO,KAAK,EAAE,KAAK,EAAE,MAAM,SAAS,CAAC;AAErC,MAAM,WAAW,WAAW;IAC1B,OAAO,EAAE,OAAO,CAAC;IACjB,OAAO,EAAE,MAAM,CAAC;IAChB,KAAK,CAAC,EAAE,KAAK,CAAC;CACf"}
