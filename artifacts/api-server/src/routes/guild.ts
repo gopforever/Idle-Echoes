@@ -197,30 +197,37 @@ router.post("/guild/create", requireAuth, async (req, res, next) => {
 
     if (!char) return res.status(404).json({ error: "Character not found" });
 
-    const [guild] = await db
-      .insert(guildsTable)
-      .values({
-        name: trimmedName,
-        tag: trimmedTag,
-        description: String(description).slice(0, 200),
-        motto: String(motto).slice(0, 80),
-        alignment,
-        leaderId: characterId,
-        isGhost: false,
-        bankGold: 0,
-      })
-      .returning();
+    const [guild] = await db.transaction(async (tx) => {
+      const [newGuild] = await tx
+        .insert(guildsTable)
+        .values({
+          name: trimmedName,
+          tag: trimmedTag,
+          description: String(description).slice(0, 200),
+          motto: String(motto).slice(0, 80),
+          alignment,
+          leaderId: characterId,
+          isGhost: false,
+          bankGold: 0,
+        })
+        .returning();
 
-    await db.insert(guildMembersTable).values({
-      guildId: guild.id,
-      characterId,
-      rank: "leader",
-      contributionPoints: computeContribution(char),
+      await tx.insert(guildMembersTable).values({
+        guildId: newGuild.id,
+        characterId,
+        rank: "leader",
+        contributionPoints: computeContribution(char),
+      });
+
+      return [newGuild];
     });
 
     const members = await buildGuildMembers(guild.id);
     return res.status(201).json({ guild, members });
-  } catch (err) {
+  } catch (err: any) {
+    if (err?.code === "23505") {
+      return res.status(409).json({ error: "A guild with that name or tag already exists" });
+    }
     next(err);
   }
 });
@@ -469,6 +476,8 @@ router.post("/guild/transfer", requireAuth, async (req, res, next) => {
       return res.status(403).json({ error: "Only the guild leader can transfer leadership" });
     }
 
+    if (targetId === characterId) return res.status(400).json({ error: "Cannot transfer leadership to yourself" });
+
     const [targetMembership] = await db
       .select()
       .from(guildMembersTable)
@@ -567,8 +576,10 @@ router.post("/guild/disband", requireAuth, async (req, res, next) => {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 async function disbandGuild(guildId: number): Promise<void> {
-  await db.delete(guildMembersTable).where(eq(guildMembersTable.guildId, guildId));
-  await db.delete(guildsTable).where(and(eq(guildsTable.id, guildId), eq(guildsTable.isGhost, false)));
+  await db.transaction(async (tx) => {
+    await tx.delete(guildMembersTable).where(eq(guildMembersTable.guildId, guildId));
+    await tx.delete(guildsTable).where(and(eq(guildsTable.id, guildId), eq(guildsTable.isGhost, false)));
+  });
 }
 
 async function buildGuildMembers(guildId: number) {

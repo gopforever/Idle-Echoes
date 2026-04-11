@@ -1,4 +1,4 @@
-import { pgTable, text, serial, real, integer, boolean, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, real, integer, boolean, timestamp, uniqueIndex, sql } from "drizzle-orm/pg-core";
 
 export const guildsTable = pgTable("guilds", {
   id: serial("id").primaryKey(),
@@ -30,7 +30,11 @@ export const guildMembersTable = pgTable("guild_members", {
   rank: text("rank").notNull().default("member"),
   contributionPoints: real("contribution_points").notNull().default(0),
   joinedAt: timestamp("joined_at").defaultNow().notNull(),
-});
+}, (t) => [
+  uniqueIndex("guild_members_character_unique")
+    .on(t.characterId)
+    .where(sql`character_id IS NOT NULL`),
+]);
 
 export type Guild = typeof guildsTable.$inferSelect;
 export type InsertGuild = typeof guildsTable.$inferInsert;

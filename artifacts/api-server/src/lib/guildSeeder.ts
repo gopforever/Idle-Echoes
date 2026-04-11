@@ -11,6 +11,7 @@
 import { db } from "@workspace/db";
 import { guildsTable, guildMembersTable, worldPlayersTable } from "@workspace/db/schema";
 import { eq, and, isNotNull, inArray } from "drizzle-orm";
+import { logger } from "./logger.js";
 
 interface GhostGuildSeed {
   name: string;
@@ -176,7 +177,7 @@ export async function seedGhostGuilds(): Promise<void> {
         ghostId: ghost.id,
         rank,
         contributionPoints: contribution,
-      }).onConflictDoNothing().catch(() => {});
+      }).onConflictDoNothing().catch((err) => logger.warn({ err }, "[GuildSeeder] Failed to insert ghost member"));
 
       assignedIds.add(ghost.id);
     }
@@ -203,9 +204,9 @@ export async function seedGhostGuilds(): Promise<void> {
       await db.update(guildMembersTable)
         .set({ contributionPoints: contribution })
         .where(eq(guildMembersTable.ghostId, ghost.id))
-        .catch(() => {});
+        .catch((err) => logger.warn({ err }, "[GuildSeeder] Failed to update ghost contribution"));
     }
   }
 
-  console.log("[GuildSeeder] Ghost guilds seeded.");
+  logger.info("[GuildSeeder] Ghost guilds seeded.");
 }
