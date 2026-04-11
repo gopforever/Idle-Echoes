@@ -138,6 +138,8 @@ router.get("/character/stats", async (req, res) => {
     let hasWeapon = false;
     let gearStrength = 0, gearAgility = 0, gearStamina = 0;
     let gearIntelligence = 0, gearWisdom = 0, gearCharisma = 0;
+    let gearResistPierce = 0, gearResistSlash = 0, gearResistCrush = 0;
+    let gearResistHeat = 0, gearResistCold = 0, gearResistDivine = 0, gearResistMagic = 0;
     for (const slotValue of Object.values(gear)) {
       let s: Record<string, number> | null = null;
       if (typeof slotValue === "string") {
@@ -163,6 +165,13 @@ router.get("/character/stats", async (req, res) => {
       gearIntelligence  += s.intelligence || 0;
       gearWisdom        += s.wisdom       || 0;
       gearCharisma      += s.charisma     || 0;
+      gearResistPierce  += s.resistPierce || 0;
+      gearResistSlash   += s.resistSlash  || 0;
+      gearResistCrush   += s.resistCrush  || 0;
+      gearResistHeat    += s.resistHeat   || 0;
+      gearResistCold    += s.resistCold   || 0;
+      gearResistDivine  += s.resistDivine || 0;
+      gearResistMagic   += s.resistMagic  || 0;
       if (s.weaponDamageMin) {
         gearWeaponDamageMin = s.weaponDamageMin;
         gearWeaponDamageMax = s.weaponDamageMax || s.weaponDamageMin * 2;
@@ -195,6 +204,8 @@ router.get("/character/stats", async (req, res) => {
       gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay,
       gearHealth, gearPower,
       gearStrength, gearAgility, gearStamina, gearIntelligence, gearWisdom, gearCharisma,
+      gearResistPierce, gearResistSlash, gearResistCrush,
+      gearResistHeat, gearResistCold, gearResistDivine, gearResistMagic,
       archetype: (character.archetype ?? "Fighter"),
     }, aaBonuses);
 

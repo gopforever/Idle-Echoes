@@ -28,6 +28,14 @@ export interface CharacterStats {
   gearIntelligence?: number;
   gearWisdom?: number;
   gearCharisma?: number;
+  /** Gear-contributed player resistances (percentage points, capped at 50 in computeStats) */
+  gearResistPierce?: number;
+  gearResistSlash?: number;
+  gearResistCrush?: number;
+  gearResistHeat?: number;
+  gearResistCold?: number;
+  gearResistDivine?: number;
+  gearResistMagic?: number;
   archetype?: string;
 }
 
@@ -46,6 +54,8 @@ export interface ComputedStats {
   weaponDamageMin: number;
   weaponDamageMax: number;
   combatMitigation: number;
+  /** Player elemental/physical resistances (0–50 %) keyed by damage type */
+  resistances: Record<string, number>;
 }
 
 /** AA bonus modifiers computed from invested Alternate Advancement nodes */
@@ -219,6 +229,17 @@ export function computeStats(stats: CharacterStats, aa?: AABonuses, skills?: Ski
   // Combat mitigation
   const combatMitigation = Math.min(75, Math.floor(mitigation * 0.6 + avoidance * 0.3));
 
+  // Player resistances: raw gear values capped at 50 % per damage type
+  const resistances: Record<string, number> = {
+    pierce: Math.min(50, stats.gearResistPierce ?? 0),
+    slash:  Math.min(50, stats.gearResistSlash  ?? 0),
+    crush:  Math.min(50, stats.gearResistCrush  ?? 0),
+    heat:   Math.min(50, stats.gearResistHeat   ?? 0),
+    cold:   Math.min(50, stats.gearResistCold   ?? 0),
+    divine: Math.min(50, stats.gearResistDivine ?? 0),
+    magic:  Math.min(50, stats.gearResistMagic  ?? 0),
+  };
+
   return {
     attackRating,
     defenseRating,
@@ -234,6 +255,7 @@ export function computeStats(stats: CharacterStats, aa?: AABonuses, skills?: Ski
     weaponDamageMin: Math.max(1, Math.floor(weaponDamageMin)),
     weaponDamageMax: Math.max(2, Math.floor(weaponDamageMax)),
     combatMitigation,
+    resistances,
   };
 }
 
@@ -285,7 +307,9 @@ export function calculatePlayerDamage(
 }
 
 /**
- * EQ2 enemy damage formula
+ * EQ2 enemy damage formula.
+ * Applies player avoidance, mitigation, AA damage-reduction bonus, and now also
+ * the player's elemental/physical resistance for the given damageType.
  */
 export function calculateEnemyDamage(
   enemyDamageMin: number,
@@ -294,12 +318,14 @@ export function calculateEnemyDamage(
   playerDefenseRating: number,
   playerMitigation: number,
   playerAvoidance: number,
-  dmgReductionBonus: number = 0
-): { damage: number; avoided: boolean; isCrit: boolean } {
+  dmgReductionBonus: number = 0,
+  damageType: string = "slash",
+  playerResistances: Partial<Record<string, number>> = {}
+): { damage: number; avoided: boolean; isCrit: boolean; resisted: boolean; resistAmount: number } {
   // Player avoidance roll
   const avoidRoll = Math.random() * 100;
   if (avoidRoll < playerAvoidance) {
-    return { damage: 0, avoided: true, isCrit: false };
+    return { damage: 0, avoided: true, isCrit: false, resisted: false, resistAmount: 0 };
   }
 
   // Enemy crit (~10% base)
@@ -321,7 +347,13 @@ export function calculateEnemyDamage(
     damage *= 1.3;
   }
 
-  return { damage: Math.max(1, Math.round(damage)), avoided: false, isCrit };
+  // Elemental/physical resistance (capped at 50 %)
+  const resistPct = Math.min(50, playerResistances[damageType] ?? 0);
+  const resisted = resistPct > 0;
+  const resistAmount = Math.floor(damage * resistPct / 100);
+  damage = damage - resistAmount;
+
+  return { damage: Math.max(1, Math.round(damage)), avoided: false, isCrit, resisted, resistAmount };
 }
 
 /**

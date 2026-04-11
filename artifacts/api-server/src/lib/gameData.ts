@@ -18,6 +18,14 @@ export interface ItemStats {
   weaponDelay?: number;
   spellDamageBonus?: number;
   healBonus?: number;
+  /** Player-side resistances vs incoming elemental/physical damage (percentage, capped at 50 in formula) */
+  resistPierce?: number;
+  resistSlash?: number;
+  resistCrush?: number;
+  resistHeat?: number;
+  resistCold?: number;
+  resistDivine?: number;
+  resistMagic?: number;
 }
 
 export interface Item {

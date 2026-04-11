@@ -99,6 +99,8 @@ function computeGearStats(gear: Record<string, unknown>, baseStats: { strength: 
   let gearHealth = 0, gearPower = 0, hasWeapon = false;
   let gearStrength = 0, gearAgility = 0, gearStamina = 0;
   let gearIntelligence = 0, gearWisdom = 0, gearCharisma = 0;
+  let gearResistPierce = 0, gearResistSlash = 0, gearResistCrush = 0;
+  let gearResistHeat = 0, gearResistCold = 0, gearResistDivine = 0, gearResistMagic = 0;
 
   for (const slotValue of Object.values(gear)) {
     let s: Record<string, number> | null = null;
@@ -127,6 +129,13 @@ function computeGearStats(gear: Record<string, unknown>, baseStats: { strength: 
     gearIntelligence += s.intelligence || 0;
     gearWisdom       += s.wisdom       || 0;
     gearCharisma     += s.charisma     || 0;
+    gearResistPierce += s.resistPierce || 0;
+    gearResistSlash  += s.resistSlash  || 0;
+    gearResistCrush  += s.resistCrush  || 0;
+    gearResistHeat   += s.resistHeat   || 0;
+    gearResistCold   += s.resistCold   || 0;
+    gearResistDivine += s.resistDivine || 0;
+    gearResistMagic  += s.resistMagic  || 0;
     if (s.weaponDamageMin) {
       gearWeaponDamageMin = s.weaponDamageMin;
       gearWeaponDamageMax = s.weaponDamageMax || s.weaponDamageMin * 2;
@@ -138,7 +147,22 @@ function computeGearStats(gear: Record<string, unknown>, baseStats: { strength: 
     gearWeaponDamageMin = baseStats.strength * 0.5 + level;
     gearWeaponDamageMax = baseStats.strength * 1.0 + level * 2;
   }
-  return { gearAttackRating, gearDefenseRating, gearMitigation, gearHaste, gearCritChance, gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay, gearHealth, gearPower, gearStrength, gearAgility, gearStamina, gearIntelligence, gearWisdom, gearCharisma };
+  return { gearAttackRating, gearDefenseRating, gearMitigation, gearHaste, gearCritChance, gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay, gearHealth, gearPower, gearStrength, gearAgility, gearStamina, gearIntelligence, gearWisdom, gearCharisma, gearResistPierce, gearResistSlash, gearResistCrush, gearResistHeat, gearResistCold, gearResistDivine, gearResistMagic };
+}
+
+/**
+ * Map enemy creature type to a default physical damage type for auto-attacks.
+ * Humanoids and dragons use slash; beasts use pierce (claws/fangs);
+ * undead and constructs use crush (bones/metal); elementals deal magic damage.
+ */
+function getEnemyAutoAttackDamageType(enemy: Pick<Enemy, "type">): string {
+  switch (enemy.type) {
+    case "beast":     return "pierce";
+    case "undead":    return "crush";
+    case "construct": return "crush";
+    case "elemental": return "magic";
+    default:          return "slash"; // humanoid, dragon
+  }
 }
 
 /** Check if an enemy ability should trigger this tick (non-proc abilities only) */
@@ -1141,6 +1165,7 @@ router.post("/combat/tick", async (req, res) => {
       switch (ability.effectType) {
         case "damage_burst": {
           const baseDmg = Math.floor(ability.effectValue * (1 + frenzyDmgBonus));
+          const dmgType = ability.damageType ?? "slash";
           let dmg = baseDmg;
           // Apply player mitigation if not unavoidable
           if (!ability.unavoidable) {
@@ -1158,13 +1183,21 @@ router.post("/combat/tick", async (req, res) => {
             const mitigMod = 1 - Math.min(0.5, (playerStats.mitigation + aaBonuses.dmgReduction) / 200);
             dmg = Math.max(1, Math.floor(baseDmg * mitigMod));
           }
+          // Apply elemental/physical resistance (capped at 50%)
+          const abilityResistPct = Math.min(50, playerStats.resistances[dmgType] ?? 0);
+          const abilityResistAmt = Math.floor(dmg * abilityResistPct / 100);
+          if (abilityResistAmt > 0) {
+            dmg = Math.max(1, dmg - abilityResistAmt);
+            floatEvents.push({ value: abilityResistAmt, type: "resist" });
+          }
           const hpBefore = playerHp;
           playerHp = Math.max(0, playerHp - dmg);
           // Track this ability as the lethal source if it caused a killing blow
           if (enemy.isBoss && hpBefore > 0 && playerHp <= 0) lastEnemyAbilityUsedId = ability.id;
           enemyDamageDealt += dmg;
           floatEvents.push({ value: dmg, type: "enemy" });
-          abilityLogMsg = `💥 ${enemy.name} uses ${ability.name}${ability.unavoidable ? " (unavoidable)" : ""}! Deals ${dmg} ${ability.damageType ?? "physical"} damage!`;
+          const abilityResistText = abilityResistAmt > 0 ? ` (${abilityResistAmt} resisted)` : "";
+          abilityLogMsg = `💥 ${enemy.name} uses ${ability.name}${ability.unavoidable ? " (unavoidable)" : ""}! Deals ${dmg} ${dmgType} damage!${abilityResistText}`;
           combatMessages.push(abilityLogMsg);
           await db.insert(combatLogTable).values({ characterId, tick: newTick, message: abilityLogMsg, type: "enemyCrit", value: dmg });
           break;
@@ -1311,7 +1344,7 @@ router.post("/combat/tick", async (req, res) => {
       const enemyAttack = calculateEnemyDamage(
         effectiveEnemyDmgMin, effectiveEnemyDmgMax, enemy.attackRating,
         playerStats.defenseRating, playerStats.mitigation, effectivePlayerAvoidance,
-        effectiveDmgReduction
+        effectiveDmgReduction, getEnemyAutoAttackDamageType(enemy), playerStats.resistances
       );
       isEnemyCrit = enemyAttack.isCrit;
 
@@ -1327,10 +1360,14 @@ router.post("/combat/tick", async (req, res) => {
         enemyDamageDealt += enemyAttack.damage;
         playerHp = Math.max(0, playerHp - enemyAttack.damage);
         floatEvents.push({ value: enemyAttack.damage, type: isEnemyCrit ? "enemyCrit" : "enemy" });
+        if (enemyAttack.resisted && enemyAttack.resistAmount > 0) {
+          floatEvents.push({ value: enemyAttack.resistAmount, type: "resist" });
+        }
         const critText = isEnemyCrit ? " 💥 CRITICAL!" : "";
         const frenzyText = frenzyDmgBonus > 0 ? " [FRENZIED]" : "";
         const partyTankText = partyContrib.damageReduction > 0 ? ` [Party: -${Math.round(partyContrib.damageReduction * 100)}% dmg]` : "";
-        const msg = `${enemy.name} hits you for ${enemyAttack.damage} damage.${critText}${frenzyText}${partyTankText}`;
+        const resistText = enemyAttack.resisted ? ` (${enemyAttack.resistAmount} resisted)` : "";
+        const msg = `${enemy.name} hits you for ${enemyAttack.damage} damage.${critText}${frenzyText}${partyTankText}${resistText}`;
         combatMessages.push(msg);
         await db.insert(combatLogTable).values({ characterId, tick: newTick, message: msg, type: isEnemyCrit ? "enemyCrit" : "enemyHit", value: enemyAttack.damage });
 
@@ -1416,13 +1453,17 @@ router.post("/combat/tick", async (req, res) => {
         Math.floor(enemy.damageMax * (1 + frenzyDmgBonus)),
         enemy.attackRating, playerStats.defenseRating, playerStats.mitigation,
         Math.max(0, playerStats.avoidance - 10), // reduced avoidance for the speed attack
-        aaBonuses.dmgReduction,
+        aaBonuses.dmgReduction, getEnemyAutoAttackDamageType(enemy), playerStats.resistances,
       );
       if (!enrageExtraAttack.avoided) {
         enemyDamageDealt += enrageExtraAttack.damage;
         playerHp = Math.max(0, playerHp - enrageExtraAttack.damage);
         floatEvents.push({ value: enrageExtraAttack.damage, type: "enemy" });
-        const speedMsg = `🔥 ${enemy.name}'s enraged fury strikes again for ${enrageExtraAttack.damage} damage! [GRUDGE SPEED]`;
+        if (enrageExtraAttack.resisted && enrageExtraAttack.resistAmount > 0) {
+          floatEvents.push({ value: enrageExtraAttack.resistAmount, type: "resist" });
+        }
+        const enrageResistText = enrageExtraAttack.resisted ? ` (${enrageExtraAttack.resistAmount} resisted)` : "";
+        const speedMsg = `🔥 ${enemy.name}'s enraged fury strikes again for ${enrageExtraAttack.damage} damage! [GRUDGE SPEED]${enrageResistText}`;
         combatMessages.push(speedMsg);
         await db.insert(combatLogTable).values({ characterId, tick: newTick, message: speedMsg, type: "enemyHit", value: enrageExtraAttack.damage });
       }

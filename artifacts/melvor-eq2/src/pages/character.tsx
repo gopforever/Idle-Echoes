@@ -79,6 +79,8 @@ interface ComputedStats {
   totalPower: number; spellCritChance: number; spellCritBonus: number;
   weaponDamageMin: number; weaponDamageMax: number; mountSpeedBonus: number;
   maxHealth?: number; maxPower?: number;
+  /** Player resistances vs incoming elemental/physical damage (0–50%) */
+  resistances?: Record<string, number>;
 }
 
 interface AANode {
@@ -1053,6 +1055,30 @@ export default function CharacterSheet() {
                         <span className={cn("font-medium", color)}>{val}</span>
                       </div>
                     ))}
+                    {/* Resistances — only shown when at least one is > 0 */}
+                    {stats.resistances && Object.values(stats.resistances).some(v => v > 0) && (
+                      <>
+                        <div className="pt-1.5 pb-0.5 border-t border-slate-700/40">
+                          <span className="text-[10px] text-slate-500 uppercase tracking-wide font-semibold">Resistances</span>
+                        </div>
+                        {(
+                          [
+                            { key: "slash",  label: "Slash",  color: "text-orange-300" },
+                            { key: "pierce", label: "Pierce", color: "text-yellow-300" },
+                            { key: "crush",  label: "Crush",  color: "text-amber-300"  },
+                            { key: "heat",   label: "Heat",   color: "text-red-400"    },
+                            { key: "cold",   label: "Cold",   color: "text-sky-400"    },
+                            { key: "divine", label: "Divine", color: "text-purple-400" },
+                            { key: "magic",  label: "Magic",  color: "text-blue-400"   },
+                          ] as { key: string; label: string; color: string }[]
+                        ).filter(r => (stats.resistances![r.key] ?? 0) > 0).map(({ key, label, color }) => (
+                          <div key={key} className="flex justify-between text-xs">
+                            <span className="text-slate-500">{label} Resist</span>
+                            <span className={cn("font-medium", color)}>{stats.resistances![key]}%</span>
+                          </div>
+                        ))}
+                      </>
+                    )}
                   </CardContent>
                 </Card>
               )}
