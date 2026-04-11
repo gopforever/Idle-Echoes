@@ -351,7 +351,7 @@ export function calculateEnemyDamage(
   const resistPct = Math.min(50, playerResistances[damageType] ?? 0);
   const resisted = resistPct > 0;
   const resistAmount = Math.floor(damage * resistPct / 100);
-  damage = damage - resistAmount;
+  damage -= resistAmount;
 
   return { damage: Math.max(1, Math.round(damage)), avoided: false, isCrit, resisted, resistAmount };
 }
