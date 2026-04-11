@@ -7,6 +7,7 @@ import {
   knownRecipesTable,
   oneOfAKindCraftedTable,
   gatheringBagItemsTable,
+  bankItemsTable,
   aaPointsTable,
 } from "@workspace/db/schema";
 import { and, eq, gt, inArray } from "drizzle-orm";
@@ -255,13 +256,16 @@ router.post("/crafting/craft", async (req, res) => {
 
     const currentInventory = await db.select().from(inventoryTable).where(eq(inventoryTable.characterId, character.id));
     const bagItems = await db.select().from(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.characterId, character.id));
+    const bankItems = await db.select().from(bankItemsTable).where(eq(bankItemsTable.characterId, character.id));
     const inventoryMap = new Map(currentInventory.map(i => [i.itemId, i]));
     const bagMap = new Map(bagItems.map(i => [i.itemId, i]));
+    const bankMap = new Map(bankItems.map(i => [i.itemId, i]));
 
     for (const ingredient of recipe.ingredients) {
       const invQty = inventoryMap.get(ingredient.itemId)?.quantity ?? 0;
       const bagQty = bagMap.get(ingredient.itemId)?.quantity ?? 0;
-      const totalQty = invQty + bagQty;
+      const bankQty = bankMap.get(ingredient.itemId)?.quantity ?? 0;
+      const totalQty = invQty + bagQty + bankQty;
       if (totalQty < ingredient.quantity) {
         const ingredientItem = getItemById(ingredient.itemId);
         return res.json({
@@ -290,6 +294,16 @@ router.post("/crafting/craft", async (req, res) => {
           const bagData = bagRow.itemData as Record<string, unknown> | null;
           const bagQuality = (typeof bagData?.quality === "number" ? bagData.quality : 50);
           for (let q = 0; q < bagUsed; q++) qualityScores.push(bagQuality);
+          remaining -= bagUsed;
+        }
+      }
+      if (remaining > 0) {
+        const bankRow = bankMap.get(ingredient.itemId);
+        if (bankRow) {
+          const bankUsed = Math.min(bankRow.quantity, remaining);
+          const bankData = bankRow.itemData as Record<string, unknown> | null;
+          const bankQuality = (typeof bankData?.quality === "number" ? bankData.quality : 50);
+          for (let q = 0; q < bankUsed; q++) qualityScores.push(bankQuality);
         }
       }
     }
@@ -388,6 +402,24 @@ router.post("/crafting/craft", async (req, res) => {
                 .update(gatheringBagItemsTable)
                 .set({ quantity: bagRemaining })
                 .where(and(eq(gatheringBagItemsTable.characterId, character.id), eq(gatheringBagItemsTable.itemId, ingredient.itemId)));
+            }
+            remaining -= bagUsed;
+          }
+        }
+
+        // Finally consume from bank if still needed
+        if (remaining > 0) {
+          const bankRow = bankMap.get(ingredient.itemId);
+          if (bankRow) {
+            const bankUsed = Math.min(bankRow.quantity, remaining);
+            const bankRemaining = bankRow.quantity - bankUsed;
+            if (bankRemaining <= 0) {
+              await tx.delete(bankItemsTable).where(and(eq(bankItemsTable.characterId, character.id), eq(bankItemsTable.itemId, ingredient.itemId)));
+            } else {
+              await tx
+                .update(bankItemsTable)
+                .set({ quantity: bankRemaining })
+                .where(and(eq(bankItemsTable.characterId, character.id), eq(bankItemsTable.itemId, ingredient.itemId)));
             }
           }
         }
