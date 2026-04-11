@@ -1,10 +1,26 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { adornmentsTable, inventoryTable } from "@workspace/db/schema";
+import { adornmentsTable, inventoryTable, charactersTable } from "@workspace/db/schema";
 import { ADORNMENTS } from "../lib/eq2Data.js";
 import { eq, and } from "drizzle-orm";
 
 const router: IRouter = Router();
+
+// Map adornment color to its socket index (one white/yellow/red slot per gear piece)
+const COLOR_SLOT_INDEX: Record<string, number> = { white: 0, yellow: 1, red: 2 };
+
+// Canonical backend gear slot names grouped by type
+const WEAPON_SLOTS = new Set(["primary", "secondary"]);
+const ARMOR_SLOTS  = new Set(["head", "shoulder", "chest", "hands", "legs", "feet", "waist", "back", "wrist", "neck", "ringLeft", "ringRight", "earLeft", "earRight", "charm"]);
+
+/** Build a single merged stats object from an AdornmentDefinition's stats array. */
+function adornStatsToObject(stats: { stat: string; value: number }[]): Record<string, number> {
+  const obj: Record<string, number> = {};
+  for (const { stat, value } of stats) {
+    obj[stat] = (obj[stat] ?? 0) + value;
+  }
+  return obj;
+}
 
 router.get("/adornments", async (req, res) => {
   try {
@@ -20,7 +36,7 @@ router.get("/adornments", async (req, res) => {
       if (!adorn) return null;
       return {
         id: adorn.id, name: adorn.name, description: adorn.description,
-        color: adorn.color, stat: adorn.stat, value: adorn.value,
+        color: adorn.color, stats: adorn.stats,
         slotType: adorn.slotType, level: adorn.level, spriteId: adorn.spriteId,
         quantity: i.quantity,
       };
@@ -53,7 +69,7 @@ router.get("/adornments/catalog", async (req, res) => {
 
     const catalog = ADORNMENTS.map(adorn => ({
       id: adorn.id, name: adorn.name, description: adorn.description,
-      color: adorn.color, stat: adorn.stat, value: adorn.value,
+      color: adorn.color, stats: adorn.stats,
       slotType: adorn.slotType, level: adorn.level, spriteId: adorn.spriteId,
       owned: ownedMap.get(adorn.id) ?? 0,
       appliedTo: appliedMap.get(adorn.id) ?? null,
@@ -84,19 +100,36 @@ router.get("/adornments/applied", async (req, res) => {
 router.post("/adornments/apply", async (req, res) => {
   try {
     const characterId = req.characterId;
-    const { adornmentId, gearSlot, adornmentSlotIndex = 0 } = req.body;
+    const { adornmentId, gearSlot } = req.body;
+
     const adorn = ADORNMENTS.find(a => a.id === adornmentId);
     if (!adorn) return res.status(404).json({ success: false, message: "Adornment not found" });
+
+    // Enforce character level requirement
+    const [character] = await db.select({ level: charactersTable.level }).from(charactersTable).where(eq(charactersTable.id, characterId)).limit(1);
+    if (!character || character.level < adorn.level) {
+      return res.json({ success: false, message: `Requires level ${adorn.level}` });
+    }
+
+    // Validate slotType vs gearSlot
+    if (adorn.slotType === "weapon" && !WEAPON_SLOTS.has(gearSlot)) {
+      return res.json({ success: false, message: "Weapon adornments can only be applied to weapon slots." });
+    }
+    if (adorn.slotType === "armor" && WEAPON_SLOTS.has(gearSlot)) {
+      return res.json({ success: false, message: "Armor adornments cannot be applied to weapon slots." });
+    }
 
     const [invItem] = await db.select().from(inventoryTable).where(
       and(eq(inventoryTable.characterId, characterId), eq(inventoryTable.itemId, adornmentId))
     );
     if (!invItem || invItem.quantity < 1) return res.json({ success: false, message: "You don't have that adornment" });
 
+    // Each color occupies its own socket index; replace only the same-color socket
+    const slotIndex = COLOR_SLOT_INDEX[adorn.color] ?? 0;
     await db.delete(adornmentsTable).where(
-      and(eq(adornmentsTable.characterId, characterId), eq(adornmentsTable.gearSlot, gearSlot))
+      and(eq(adornmentsTable.characterId, characterId), eq(adornmentsTable.gearSlot, gearSlot), eq(adornmentsTable.slotIndex, slotIndex))
     );
-    await db.insert(adornmentsTable).values({ characterId, gearSlot, slotIndex: adornmentSlotIndex, adornmentId });
+    await db.insert(adornmentsTable).values({ characterId, gearSlot, slotIndex, adornmentId });
 
     if (invItem.quantity <= 1) {
       await db.delete(inventoryTable).where(eq(inventoryTable.id, invItem.id));
@@ -114,11 +147,20 @@ router.post("/adornments/apply", async (req, res) => {
 router.delete("/adornments/remove", async (req, res) => {
   try {
     const characterId = req.characterId;
-    const { gearSlot } = req.body;
+    const { gearSlot, slotIndex } = req.body;
     if (!gearSlot) return res.status(400).json({ success: false, message: "gearSlot required" });
-    await db.delete(adornmentsTable).where(
-      and(eq(adornmentsTable.characterId, characterId), eq(adornmentsTable.gearSlot, gearSlot))
-    );
+
+    if (slotIndex !== undefined && slotIndex !== null) {
+      // Remove only the specific color socket
+      await db.delete(adornmentsTable).where(
+        and(eq(adornmentsTable.characterId, characterId), eq(adornmentsTable.gearSlot, gearSlot), eq(adornmentsTable.slotIndex, slotIndex))
+      );
+    } else {
+      // Remove all adornments on the slot (legacy behaviour)
+      await db.delete(adornmentsTable).where(
+        and(eq(adornmentsTable.characterId, characterId), eq(adornmentsTable.gearSlot, gearSlot))
+      );
+    }
     return res.json({ success: true, message: `Adornment removed from ${gearSlot}` });
   } catch (err) {
     req.log.error({ err }, "Error removing adornment");
@@ -126,4 +168,5 @@ router.delete("/adornments/remove", async (req, res) => {
   }
 });
 
+export { adornStatsToObject };
 export default router;

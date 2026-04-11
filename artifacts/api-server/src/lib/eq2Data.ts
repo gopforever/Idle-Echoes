@@ -2110,31 +2110,122 @@ export const SHOP_ITEMS: ShopItemDefinition[] = [
   { itemId: "horse_black", buyPrice: 2500, category: "mounts", zones: ["Thundering Steppes", "Nektulos Forest"] },
   { itemId: "wolf_grey", buyPrice: 3000, category: "mounts", zones: ["Thundering Steppes"] },
   { itemId: "magic_carpet", buyPrice: 12000, category: "mounts", zones: ["Lavastorm Mountains"] },
-  { itemId: "adorn_white_str", buyPrice: 300, category: "adornments", zones: ["Thundering Steppes", "Nektulos Forest", "Everfrost Peaks", "Lavastorm Mountains"] },
-  { itemId: "adorn_white_agi", buyPrice: 300, category: "adornments", zones: ["Thundering Steppes", "Nektulos Forest", "Everfrost Peaks", "Lavastorm Mountains"] },
-  { itemId: "adorn_yellow_atk", buyPrice: 1500, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
-  { itemId: "adorn_yellow_def", buyPrice: 1500, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  // Adornments — White Tier 1 (Commonlands / Antonica)
+  { itemId: "adorn_white_str_t1", buyPrice: 100, category: "adornments", zones: ["Commonlands", "Antonica"] },
+  { itemId: "adorn_white_agi_t1", buyPrice: 100, category: "adornments", zones: ["Commonlands", "Antonica"] },
+  { itemId: "adorn_white_sta_t1", buyPrice: 100, category: "adornments", zones: ["Commonlands", "Antonica"] },
+  { itemId: "adorn_white_int_t1", buyPrice: 100, category: "adornments", zones: ["Commonlands", "Antonica"] },
+  { itemId: "adorn_white_wis_t1", buyPrice: 100, category: "adornments", zones: ["Commonlands", "Antonica"] },
+  // Adornments — White Tier 2 (Thundering Steppes / Nektulos Forest)
+  { itemId: "adorn_white_str",  buyPrice: 300, category: "adornments", zones: ["Thundering Steppes", "Nektulos Forest", "Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_white_agi",  buyPrice: 300, category: "adornments", zones: ["Thundering Steppes", "Nektulos Forest", "Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_white_sta",  buyPrice: 300, category: "adornments", zones: ["Thundering Steppes", "Nektulos Forest"] },
+  { itemId: "adorn_white_int",  buyPrice: 300, category: "adornments", zones: ["Thundering Steppes", "Nektulos Forest"] },
+  { itemId: "adorn_white_wis",  buyPrice: 300, category: "adornments", zones: ["Thundering Steppes", "Nektulos Forest"] },
+  { itemId: "adorn_white_hp",   buyPrice: 250, category: "adornments", zones: ["Antonica", "Thundering Steppes", "Nektulos Forest"] },
+  { itemId: "adorn_white_pow",  buyPrice: 250, category: "adornments", zones: ["Antonica", "Thundering Steppes", "Nektulos Forest"] },
+  // Adornments — Yellow Tier 1 (Thundering Steppes / Nektulos Forest)
+  { itemId: "adorn_yellow_atk_t1", buyPrice: 800,  category: "adornments", zones: ["Thundering Steppes", "Nektulos Forest"] },
+  { itemId: "adorn_yellow_def_t1", buyPrice: 800,  category: "adornments", zones: ["Thundering Steppes", "Nektulos Forest"] },
+  // Adornments — Yellow Tier 2 (Everfrost / Lavastorm)
+  { itemId: "adorn_yellow_atk",   buyPrice: 1500, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_yellow_def",   buyPrice: 1500, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_yellow_crit",  buyPrice: 2000, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_yellow_mit",   buyPrice: 2000, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_yellow_haste", buyPrice: 2000, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  // Adornments — White Tier 3 (Everfrost / Lavastorm — higher tier vendor)
+  { itemId: "adorn_white_str_t3", buyPrice: 1200, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_white_agi_t3", buyPrice: 1200, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_white_sta_t3", buyPrice: 1200, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_white_int_t3", buyPrice: 1200, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_white_wis_t3", buyPrice: 1200, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_white_res_phys", buyPrice: 1000, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_white_res_elem", buyPrice: 1000, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  // Higher tiers (T3 yellow, T4 white, red adornments) are drop/dungeon-only
 ];
 
 // ─── ADORNMENTS ──────────────────────────────────────────────────────────────
+export interface AdornmentBonus { stat: string; value: number; }
+
 export interface AdornmentDefinition {
   id: string; name: string; description: string;
   color: "white" | "yellow" | "red";
-  stat: string; value: number; slotType: string; level: number; spriteId: string;
+  /** One or more stat bonuses granted by this adornment. */
+  stats: AdornmentBonus[];
+  slotType: "armor" | "weapon" | "any"; level: number; spriteId: string;
 }
 
 export const ADORNMENTS: AdornmentDefinition[] = [
-  { id: "adorn_white_str", name: "White Adornment of Strength", description: "Adds +5 Strength to any armor piece.", color: "white", stat: "strength", value: 5, slotType: "armor", level: 10, spriteId: "adorn_white" },
-  { id: "adorn_white_agi", name: "White Adornment of Agility", description: "Adds +5 Agility to any armor piece.", color: "white", stat: "agility", value: 5, slotType: "armor", level: 10, spriteId: "adorn_white" },
-  { id: "adorn_white_sta", name: "White Adornment of Stamina", description: "Adds +5 Stamina to any armor piece.", color: "white", stat: "stamina", value: 5, slotType: "armor", level: 10, spriteId: "adorn_white" },
-  { id: "adorn_white_int", name: "White Adornment of Intelligence", description: "Adds +5 Intelligence to any armor piece.", color: "white", stat: "intelligence", value: 5, slotType: "armor", level: 10, spriteId: "adorn_white" },
-  { id: "adorn_white_wis", name: "White Adornment of Wisdom", description: "Adds +5 Wisdom to any armor piece.", color: "white", stat: "wisdom", value: 5, slotType: "armor", level: 10, spriteId: "adorn_white" },
-  { id: "adorn_yellow_atk", name: "Yellow Adornment of Attack", description: "Adds +12 Attack Rating to any weapon.", color: "yellow", stat: "attackRating", value: 12, slotType: "weapon", level: 25, spriteId: "adorn_yellow" },
-  { id: "adorn_yellow_def", name: "Yellow Adornment of Defense", description: "Adds +12 Defense Rating to any armor.", color: "yellow", stat: "defenseRating", value: 12, slotType: "armor", level: 25, spriteId: "adorn_yellow" },
-  { id: "adorn_yellow_crit", name: "Yellow Adornment of Criticals", description: "Adds +2% Crit Chance to any weapon.", color: "yellow", stat: "critChance", value: 2, slotType: "weapon", level: 25, spriteId: "adorn_yellow" },
-  { id: "adorn_yellow_mit", name: "Yellow Adornment of Protection", description: "Adds +8 Mitigation to any armor.", color: "yellow", stat: "mitigation", value: 8, slotType: "armor", level: 25, spriteId: "adorn_yellow" },
-  { id: "adorn_red_might", name: "Red Adornment of Might", description: "Powerful red adornment adding +20 Strength and +15 Attack Rating.", color: "red", stat: "strength", value: 20, slotType: "any", level: 50, spriteId: "adorn_red" },
-  { id: "adorn_red_fury", name: "Red Adornment of Fury", description: "Powerful red adornment adding +25 Attack Rating and +3% Crit Chance.", color: "red", stat: "attackRating", value: 25, slotType: "weapon", level: 50, spriteId: "adorn_red" },
+  // ── WHITE Tier 1 — Level 5, armor, minor primary stats ───────────────────
+  { id: "adorn_white_str_t1", name: "Plain White Adornment of Strength",     description: "A simple adornment adding minor Strength to armor.",     color: "white", stats: [{ stat: "strength",     value: 2 }], slotType: "armor", level: 5,  spriteId: "adorn_white" },
+  { id: "adorn_white_agi_t1", name: "Plain White Adornment of Agility",      description: "A simple adornment adding minor Agility to armor.",      color: "white", stats: [{ stat: "agility",      value: 2 }], slotType: "armor", level: 5,  spriteId: "adorn_white" },
+  { id: "adorn_white_sta_t1", name: "Plain White Adornment of Stamina",      description: "A simple adornment adding minor Stamina to armor.",      color: "white", stats: [{ stat: "stamina",      value: 2 }], slotType: "armor", level: 5,  spriteId: "adorn_white" },
+  { id: "adorn_white_int_t1", name: "Plain White Adornment of Intelligence", description: "A simple adornment adding minor Intelligence to armor.", color: "white", stats: [{ stat: "intelligence", value: 2 }], slotType: "armor", level: 5,  spriteId: "adorn_white" },
+  { id: "adorn_white_wis_t1", name: "Plain White Adornment of Wisdom",       description: "A simple adornment adding minor Wisdom to armor.",       color: "white", stats: [{ stat: "wisdom",       value: 2 }], slotType: "armor", level: 5,  spriteId: "adorn_white" },
+
+  // ── WHITE Tier 2 — Level 10, armor, +5 primary stats ────────────────────
+  { id: "adorn_white_str", name: "White Adornment of Strength",     description: "Adds +5 Strength to any armor piece.",     color: "white", stats: [{ stat: "strength",     value: 5 }], slotType: "armor", level: 10, spriteId: "adorn_white" },
+  { id: "adorn_white_agi", name: "White Adornment of Agility",      description: "Adds +5 Agility to any armor piece.",      color: "white", stats: [{ stat: "agility",      value: 5 }], slotType: "armor", level: 10, spriteId: "adorn_white" },
+  { id: "adorn_white_sta", name: "White Adornment of Stamina",      description: "Adds +5 Stamina to any armor piece.",      color: "white", stats: [{ stat: "stamina",      value: 5 }], slotType: "armor", level: 10, spriteId: "adorn_white" },
+  { id: "adorn_white_int", name: "White Adornment of Intelligence", description: "Adds +5 Intelligence to any armor piece.", color: "white", stats: [{ stat: "intelligence", value: 5 }], slotType: "armor", level: 10, spriteId: "adorn_white" },
+  { id: "adorn_white_wis", name: "White Adornment of Wisdom",       description: "Adds +5 Wisdom to any armor piece.",       color: "white", stats: [{ stat: "wisdom",       value: 5 }], slotType: "armor", level: 10, spriteId: "adorn_white" },
+  { id: "adorn_white_hp",  name: "White Adornment of Vitality",     description: "Adds +25 Health to any armor piece.",      color: "white", stats: [{ stat: "health",       value: 25 }], slotType: "armor", level: 10, spriteId: "adorn_white" },
+  { id: "adorn_white_pow", name: "White Adornment of Energy",       description: "Adds +25 Power to any armor piece.",       color: "white", stats: [{ stat: "power",        value: 25 }], slotType: "armor", level: 10, spriteId: "adorn_white" },
+
+  // ── WHITE Tier 3 — Level 25, armor, +10 primary stats + resist bundles ───
+  { id: "adorn_white_str_t3", name: "Runed White Adornment of Strength",     description: "Adds +10 Strength to any armor piece.",     color: "white", stats: [{ stat: "strength",     value: 10 }], slotType: "armor", level: 25, spriteId: "adorn_white" },
+  { id: "adorn_white_agi_t3", name: "Runed White Adornment of Agility",      description: "Adds +10 Agility to any armor piece.",      color: "white", stats: [{ stat: "agility",      value: 10 }], slotType: "armor", level: 25, spriteId: "adorn_white" },
+  { id: "adorn_white_sta_t3", name: "Runed White Adornment of Stamina",      description: "Adds +10 Stamina to any armor piece.",      color: "white", stats: [{ stat: "stamina",      value: 10 }], slotType: "armor", level: 25, spriteId: "adorn_white" },
+  { id: "adorn_white_int_t3", name: "Runed White Adornment of Intelligence", description: "Adds +10 Intelligence to any armor piece.", color: "white", stats: [{ stat: "intelligence", value: 10 }], slotType: "armor", level: 25, spriteId: "adorn_white" },
+  { id: "adorn_white_wis_t3", name: "Runed White Adornment of Wisdom",       description: "Adds +10 Wisdom to any armor piece.",       color: "white", stats: [{ stat: "wisdom",       value: 10 }], slotType: "armor", level: 25, spriteId: "adorn_white" },
+  { id: "adorn_white_res_phys", name: "White Adornment of Physical Ward",   description: "Wards against physical damage: +5 Pierce, Slash, and Crush resist.",   color: "white", stats: [{ stat: "resistPierce", value: 5 }, { stat: "resistSlash", value: 5 }, { stat: "resistCrush", value: 5 }], slotType: "armor", level: 25, spriteId: "adorn_white" },
+  { id: "adorn_white_res_elem", name: "White Adornment of Elemental Ward",  description: "Wards against elemental damage: +5 Heat, Cold, and Magic resist.",     color: "white", stats: [{ stat: "resistHeat",  value: 5 }, { stat: "resistCold",  value: 5 }, { stat: "resistMagic", value: 5 }], slotType: "armor", level: 25, spriteId: "adorn_white" },
+
+  // ── WHITE Tier 4 — Level 50, armor, +18 primary stats + large HP/Power ───
+  { id: "adorn_white_str_t4", name: "Inscribed White Adornment of Strength",     description: "Adds +18 Strength to any armor piece.",     color: "white", stats: [{ stat: "strength",     value: 18 }], slotType: "armor", level: 50, spriteId: "adorn_white" },
+  { id: "adorn_white_agi_t4", name: "Inscribed White Adornment of Agility",      description: "Adds +18 Agility to any armor piece.",      color: "white", stats: [{ stat: "agility",      value: 18 }], slotType: "armor", level: 50, spriteId: "adorn_white" },
+  { id: "adorn_white_sta_t4", name: "Inscribed White Adornment of Stamina",      description: "Adds +18 Stamina to any armor piece.",      color: "white", stats: [{ stat: "stamina",      value: 18 }], slotType: "armor", level: 50, spriteId: "adorn_white" },
+  { id: "adorn_white_int_t4", name: "Inscribed White Adornment of Intelligence", description: "Adds +18 Intelligence to any armor piece.", color: "white", stats: [{ stat: "intelligence", value: 18 }], slotType: "armor", level: 50, spriteId: "adorn_white" },
+  { id: "adorn_white_wis_t4", name: "Inscribed White Adornment of Wisdom",       description: "Adds +18 Wisdom to any armor piece.",       color: "white", stats: [{ stat: "wisdom",       value: 18 }], slotType: "armor", level: 50, spriteId: "adorn_white" },
+  { id: "adorn_white_hp_t4",  name: "Inscribed White Adornment of Fortitude",    description: "Adds +100 Health to any armor piece.",      color: "white", stats: [{ stat: "health",       value: 100 }], slotType: "armor", level: 50, spriteId: "adorn_white" },
+  { id: "adorn_white_pow_t4", name: "Inscribed White Adornment of Clarity",      description: "Adds +100 Power to any armor piece.",       color: "white", stats: [{ stat: "power",        value: 100 }], slotType: "armor", level: 50, spriteId: "adorn_white" },
+
+  // ── YELLOW Tier 1 — Level 15, weapon/armor, minor combat ratings ─────────
+  { id: "adorn_yellow_atk_t1", name: "Yellow Adornment of Striking", description: "Adds +8 Attack Rating to any weapon.", color: "yellow", stats: [{ stat: "attackRating",  value: 8 }], slotType: "weapon", level: 15, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_def_t1", name: "Yellow Adornment of Guard",    description: "Adds +8 Defense Rating to any armor.", color: "yellow", stats: [{ stat: "defenseRating", value: 8 }], slotType: "armor",  level: 15, spriteId: "adorn_yellow" },
+
+  // ── YELLOW Tier 2 — Level 25, weapon/armor ───────────────────────────────
+  { id: "adorn_yellow_atk",   name: "Yellow Adornment of Attack",      description: "Adds +12 Attack Rating to any weapon.",     color: "yellow", stats: [{ stat: "attackRating",  value: 12 }], slotType: "weapon", level: 25, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_def",   name: "Yellow Adornment of Defense",     description: "Adds +12 Defense Rating to any armor.",     color: "yellow", stats: [{ stat: "defenseRating", value: 12 }], slotType: "armor",  level: 25, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_crit",  name: "Yellow Adornment of Criticals",   description: "Adds +2% Crit Chance to any weapon.",       color: "yellow", stats: [{ stat: "critChance",    value: 2  }], slotType: "weapon", level: 25, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_mit",   name: "Yellow Adornment of Protection",  description: "Adds +8 Mitigation to any armor.",          color: "yellow", stats: [{ stat: "mitigation",    value: 8  }], slotType: "armor",  level: 25, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_haste", name: "Yellow Adornment of Swiftness",   description: "Adds +3 Haste to any weapon.",              color: "yellow", stats: [{ stat: "haste",         value: 3  }], slotType: "weapon", level: 25, spriteId: "adorn_yellow" },
+
+  // ── YELLOW Tier 3 — Level 40, stronger combat ratings ────────────────────
+  { id: "adorn_yellow_atk_t3",   name: "Gilded Yellow Adornment of Assault",    description: "Adds +22 Attack Rating to any weapon.",      color: "yellow", stats: [{ stat: "attackRating",  value: 22 }], slotType: "weapon", level: 40, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_def_t3",   name: "Gilded Yellow Adornment of Bulwark",    description: "Adds +22 Defense Rating to any armor.",      color: "yellow", stats: [{ stat: "defenseRating", value: 22 }], slotType: "armor",  level: 40, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_crit_t3",  name: "Gilded Yellow Adornment of Precision",  description: "Adds +3% Crit Chance to any weapon.",        color: "yellow", stats: [{ stat: "critChance",    value: 3  }], slotType: "weapon", level: 40, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_mit_t3",   name: "Gilded Yellow Adornment of Warding",    description: "Adds +15 Mitigation to any armor.",          color: "yellow", stats: [{ stat: "mitigation",    value: 15 }], slotType: "armor",  level: 40, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_haste_t3", name: "Gilded Yellow Adornment of Celerity",   description: "Adds +5 Haste to any weapon.",               color: "yellow", stats: [{ stat: "haste",         value: 5  }], slotType: "weapon", level: 40, spriteId: "adorn_yellow" },
+
+  // ── YELLOW Tier 4 — Level 60, high-end combat ratings ────────────────────
+  { id: "adorn_yellow_atk_t4",   name: "Ancient Yellow Adornment of Power",        description: "Adds +40 Attack Rating to any weapon.",  color: "yellow", stats: [{ stat: "attackRating",  value: 40 }], slotType: "weapon", level: 60, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_def_t4",   name: "Ancient Yellow Adornment of the Bastion",  description: "Adds +40 Defense Rating to any armor.",  color: "yellow", stats: [{ stat: "defenseRating", value: 40 }], slotType: "armor",  level: 60, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_crit_t4",  name: "Ancient Yellow Adornment of Accuracy",     description: "Adds +5% Crit Chance to any weapon.",    color: "yellow", stats: [{ stat: "critChance",    value: 5  }], slotType: "weapon", level: 60, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_mit_t4",   name: "Ancient Yellow Adornment of Fortification",description: "Adds +25 Mitigation to any armor.",      color: "yellow", stats: [{ stat: "mitigation",    value: 25 }], slotType: "armor",  level: 60, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_haste_t4", name: "Ancient Yellow Adornment of Alacrity",     description: "Adds +8 Haste to any weapon.",            color: "yellow", stats: [{ stat: "haste",         value: 8  }], slotType: "weapon", level: 60, spriteId: "adorn_yellow" },
+
+  // ── RED Tier 1 — Level 50, compound stats ────────────────────────────────
+  { id: "adorn_red_might",    name: "Red Adornment of Might",           description: "+20 Strength and +15 Attack Rating.", color: "red", stats: [{ stat: "strength",     value: 20 }, { stat: "attackRating",  value: 15 }], slotType: "any",    level: 50, spriteId: "adorn_red" },
+  { id: "adorn_red_fury",     name: "Red Adornment of Fury",            description: "+25 Attack Rating and +3% Crit Chance.", color: "red", stats: [{ stat: "attackRating",  value: 25 }, { stat: "critChance",    value: 3  }], slotType: "weapon", level: 50, spriteId: "adorn_red" },
+  { id: "adorn_red_bastion",  name: "Red Adornment of the Bastion",     description: "+20 Mitigation and +30 Defense Rating.", color: "red", stats: [{ stat: "mitigation",    value: 20 }, { stat: "defenseRating", value: 30 }], slotType: "armor",  level: 50, spriteId: "adorn_red" },
+  { id: "adorn_red_scholar",  name: "Red Adornment of the Scholar",     description: "+18 Intelligence, +18 Wisdom, and +60 Power.", color: "red", stats: [{ stat: "intelligence", value: 18 }, { stat: "wisdom",        value: 18 }, { stat: "power", value: 60 }], slotType: "any", level: 50, spriteId: "adorn_red" },
+
+  // ── RED Tier 2 — Level 70, powerful compound stats ────────────────────────
+  { id: "adorn_red_conqueror", name: "Red Adornment of the Conqueror",      description: "+35 Strength, +30 Attack Rating, +4% Crit Chance.",      color: "red", stats: [{ stat: "strength",     value: 35 }, { stat: "attackRating",  value: 30 }, { stat: "critChance", value: 4 }], slotType: "any",    level: 70, spriteId: "adorn_red" },
+  { id: "adorn_red_sentinel",  name: "Red Adornment of the Sentinel",       description: "+35 Stamina, +40 Mitigation, +50 Defense Rating.",        color: "red", stats: [{ stat: "stamina",      value: 35 }, { stat: "mitigation",    value: 40 }, { stat: "defenseRating", value: 50 }], slotType: "armor",  level: 70, spriteId: "adorn_red" },
+  { id: "adorn_red_arcane",    name: "Red Adornment of Arcane Supremacy",   description: "+35 Intelligence, +35 Wisdom, +100 Power.",               color: "red", stats: [{ stat: "intelligence", value: 35 }, { stat: "wisdom",        value: 35 }, { stat: "power", value: 100 }], slotType: "any", level: 70, spriteId: "adorn_red" },
+  { id: "adorn_red_storm",     name: "Red Adornment of the Stormcaller",    description: "+20 Haste, +6% Crit Chance, +35 Attack Rating.",          color: "red", stats: [{ stat: "haste",        value: 20 }, { stat: "critChance",    value: 6  }, { stat: "attackRating", value: 35 }], slotType: "weapon", level: 70, spriteId: "adorn_red" },
 ];
 
 // ─── HEROIC OPPORTUNITIES ────────────────────────────────────────────────────

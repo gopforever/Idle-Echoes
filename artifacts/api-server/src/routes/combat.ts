@@ -1,10 +1,10 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { charactersTable, combatStateTable, combatLogTable, heroicStateTable, factionsTable, aaPointsTable, dungeonRunsTable, raidRunsTable, inventoryTable, bossEncountersTable, skillsTable, oneOfAKindCraftedTable } from "@workspace/db/schema";
+import { charactersTable, combatStateTable, combatLogTable, heroicStateTable, factionsTable, aaPointsTable, dungeonRunsTable, raidRunsTable, inventoryTable, bossEncountersTable, skillsTable, oneOfAKindCraftedTable, adornmentsTable } from "@workspace/db/schema";
 import { eq, desc, gt, and } from "drizzle-orm";
 import { computeStats, calculatePlayerDamage, calculateEnemyDamage, calculateXpGain, xpForLevel, applyAABonuses, type SkillLevels } from "../lib/eq2Formulas.js";
 import { getEnemyById, getItemById, ENEMIES, CRAFTING_RECIPES, getOneOfAKindScrollMap, type Enemy, type EnemyAbility } from "../lib/gameData.js";
-import { CLASSES, HEROIC_CHAINS, ALL_AA_TABS } from "../lib/eq2Data.js";
+import { CLASSES, HEROIC_CHAINS, ALL_AA_TABS, ADORNMENTS } from "../lib/eq2Data.js";
 import { getOrCreateCharacter } from "./character.js";
 import { applySkillXp } from "../lib/skillXp.js";
 import type { StatusEffect } from "@workspace/db/schema";
@@ -424,6 +424,37 @@ router.post("/combat/tick", async (req, res) => {
 
     // ── Gear + stats ─────────────────────────────────────────────────────────
     const gearData = computeGearStats(gear, baseStats, character.level);
+
+    // ── Adornment bonuses ─────────────────────────────────────────────────────
+    const adornRows = await db.select().from(adornmentsTable).where(eq(adornmentsTable.characterId, characterId));
+    for (const row of adornRows) {
+      const def = ADORNMENTS.find(a => a.id === row.adornmentId);
+      if (!def) continue;
+      for (const { stat, value } of def.stats) {
+        switch (stat) {
+          case "attackRating":  gearData.gearAttackRating  += value; break;
+          case "defenseRating": gearData.gearDefenseRating += value; break;
+          case "mitigation":    gearData.gearMitigation    += value; break;
+          case "haste":         gearData.gearHaste         += value; break;
+          case "critChance":    gearData.gearCritChance    += value; break;
+          case "health":        gearData.gearHealth        += value; break;
+          case "power":         gearData.gearPower         += value; break;
+          case "strength":      gearData.gearStrength      += value; break;
+          case "agility":       gearData.gearAgility       += value; break;
+          case "stamina":       gearData.gearStamina       += value; break;
+          case "intelligence":  gearData.gearIntelligence  += value; break;
+          case "wisdom":        gearData.gearWisdom        += value; break;
+          case "charisma":      gearData.gearCharisma      += value; break;
+          case "resistPierce":  gearData.gearResistPierce  += value; break;
+          case "resistSlash":   gearData.gearResistSlash   += value; break;
+          case "resistCrush":   gearData.gearResistCrush   += value; break;
+          case "resistHeat":    gearData.gearResistHeat    += value; break;
+          case "resistCold":    gearData.gearResistCold    += value; break;
+          case "resistDivine":  gearData.gearResistDivine  += value; break;
+          case "resistMagic":   gearData.gearResistMagic   += value; break;
+        }
+      }
+    }
 
     // Fetch combat-relevant skill levels to wire into stat computation
     const allSkillRows = await db.select({ skillId: skillsTable.skillId, level: skillsTable.level }).from(skillsTable).where(eq(skillsTable.characterId, characterId));

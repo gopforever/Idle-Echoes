@@ -13,10 +13,13 @@ import { Gem, Shield, Sword, Sparkles, Info, X, CheckCircle2, Package } from "lu
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
+type AdornmentBonus = { stat: string; value: number };
+
 type Adornment = {
   id: string; name: string; description: string;
   color: "white" | "yellow" | "red";
-  stat: string; value: number; slotType: string; level: number;
+  stats: AdornmentBonus[];
+  slotType: string; level: number;
   owned: number; appliedTo: string | null;
 };
 
@@ -49,22 +52,22 @@ const ADORN_COLOR: Record<string, {
 
 const GEAR_SLOTS = [
   { id: "head",      label: "Head",      icon: "🪖" },
-  { id: "shoulders", label: "Shoulders", icon: "🦺" },
+  { id: "shoulder",  label: "Shoulders", icon: "🦺" },
   { id: "chest",     label: "Chest",     icon: "👘" },
   { id: "hands",     label: "Hands",     icon: "🧤" },
   { id: "legs",      label: "Legs",      icon: "👖" },
   { id: "feet",      label: "Feet",      icon: "👢" },
-  { id: "mainhand",  label: "Main Hand", icon: "⚔️" },
-  { id: "offhand",   label: "Off Hand",  icon: "🛡️" },
+  { id: "primary",   label: "Main Hand", icon: "⚔️" },
+  { id: "secondary", label: "Off Hand",  icon: "🛡️" },
   { id: "neck",      label: "Neck",      icon: "📿" },
-  { id: "ring",      label: "Ring",      icon: "💍" },
+  { id: "ringLeft",  label: "Ring",      icon: "💍" },
   { id: "waist",     label: "Waist",     icon: "🪢" },
   { id: "back",      label: "Back",      icon: "🎒" },
 ];
 
 const SLOT_TYPE_MAP: Record<string, string[]> = {
-  armor:  ["head", "shoulders", "chest", "hands", "legs", "feet", "waist", "back"],
-  weapon: ["mainhand", "offhand"],
+  armor:  ["head", "shoulder", "chest", "hands", "legs", "feet", "waist", "back", "neck", "ringLeft"],
+  weapon: ["primary", "secondary"],
   any:    GEAR_SLOTS.map(s => s.id),
 };
 
@@ -85,18 +88,22 @@ function applyAdornment(body: { adornmentId: string; gearSlot: string }) {
     body: JSON.stringify(body),
   }).then(r => r.json());
 }
-function removeAdornment(gearSlot: string) {
+function removeAdornment({ gearSlot, slotIndex }: { gearSlot: string; slotIndex: number }) {
   return fetch(apiUrl("/api/adornments/remove"), {
     method: "DELETE", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ gearSlot }),
+    body: JSON.stringify({ gearSlot, slotIndex }),
   }).then(r => r.json());
 }
 
-// ── Stat display helper ───────────────────────────────────────────────────────
+// ── Stat display helpers ──────────────────────────────────────────────────────
 
-function formatStat(stat: string, value: number) {
-  const pct = stat.toLowerCase().includes("chance") || stat.toLowerCase().includes("percent");
+function formatOneStat(stat: string, value: number): string {
+  const pct = ["critChance", "haste"].includes(stat);
   return `+${value}${pct ? "%" : ""} ${stat.replace(/([A-Z])/g, " $1").trim()}`;
+}
+
+function formatStats(stats: AdornmentBonus[]): string {
+  return stats.map(({ stat, value }) => formatOneStat(stat, value)).join(" · ");
 }
 
 // ── Gem icon ─────────────────────────────────────────────────────────────────
@@ -149,10 +156,10 @@ function AdornmentCard({
 
       {/* Stat bonus */}
       <div className={cn(
-        "mt-2 text-xs font-bold px-2 py-1 rounded inline-block",
+        "mt-2 text-xs font-bold px-2 py-1 rounded inline-block leading-relaxed",
         owned ? c.badge : "bg-slate-800 border border-slate-700 text-slate-600"
       )}>
-        {formatStat(adorn.stat, adorn.value)}
+        {formatStats(adorn.stats)}
       </div>
 
       {/* Slot type */}
@@ -193,46 +200,54 @@ function AdornmentCard({
 
 // ── Applied Slot Row ──────────────────────────────────────────────────────────
 
-function SlotRow({ slot, applied, onRemove, removing }: {
+const SOCKET_DEFS = [
+  { slotIndex: 0, color: "white",  icon: "🔷" },
+  { slotIndex: 1, color: "yellow", icon: "🔶" },
+  { slotIndex: 2, color: "red",    icon: "💎" },
+] as const;
+
+function SlotRow({ slot, appliedList, onRemove, removing }: {
   slot: typeof GEAR_SLOTS[number];
-  applied: AppliedAdornment | undefined;
-  onRemove: (gearSlot: string) => void;
+  appliedList: AppliedAdornment[];
+  onRemove: (gearSlot: string, slotIndex: number) => void;
   removing: boolean;
 }) {
-  const adorn = applied?.adornment;
-  const c = adorn ? ADORN_COLOR[adorn.color] ?? ADORN_COLOR.white : null;
-
   return (
-    <div className={cn(
-      "flex items-center gap-3 p-2.5 rounded-lg border transition-all",
-      c ? cn("border-l-4", c.border, c.bg) : "border-slate-800/60 bg-slate-900/20"
-    )}>
-      <span className="text-lg shrink-0">{slot.icon}</span>
-      <div className="flex-1 min-w-0">
-        <div className="text-[10px] text-slate-600 uppercase tracking-widest font-semibold">{slot.label}</div>
-        {adorn ? (
-          <div className="flex items-center gap-1 mt-0.5">
-            <GemIcon color={adorn.color} size="sm" />
-            <span className={cn("text-xs font-medium truncate", c?.gem)}>{adorn.name}</span>
-          </div>
-        ) : (
-          <div className="text-xs text-slate-700 italic mt-0.5">Empty</div>
-        )}
+    <div className="p-2.5 rounded-lg border border-slate-800/60 bg-slate-900/20">
+      <div className="flex items-center gap-2 mb-1.5">
+        <span className="text-base shrink-0">{slot.icon}</span>
+        <div className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">{slot.label}</div>
       </div>
-      {adorn && (
-        <div className="shrink-0 flex items-center gap-2">
-          <span className={cn("text-[10px] font-bold", c?.gem)}>
-            {formatStat(adorn.stat, adorn.value)}
-          </span>
-          <button
-            onClick={() => onRemove(slot.id)}
-            disabled={removing}
-            className="w-5 h-5 rounded flex items-center justify-center text-slate-700 hover:text-red-400 hover:bg-red-950/40 transition-colors"
-          >
-            <X className="w-3 h-3" />
-          </button>
-        </div>
-      )}
+      <div className="space-y-1">
+        {SOCKET_DEFS.map(socket => {
+          const applied = appliedList.find(a => a.slotIndex === socket.slotIndex);
+          const adorn = applied?.adornment;
+          const c = adorn ? ADORN_COLOR[adorn.color] ?? ADORN_COLOR.white : null;
+          return (
+            <div key={socket.slotIndex} className={cn(
+              "flex items-center gap-1.5 rounded px-1.5 py-1 text-[10px]",
+              adorn ? cn("border", c?.border, c?.bg) : "border border-slate-800/30 bg-transparent"
+            )}>
+              <span className={cn("shrink-0", adorn ? "" : "opacity-30")}>{socket.icon}</span>
+              {adorn ? (
+                <>
+                  <span className={cn("flex-1 truncate font-medium", c?.gem)}>{formatStats(adorn.stats)}</span>
+                  <button
+                    onClick={() => onRemove(slot.id, socket.slotIndex)}
+                    disabled={removing}
+                    className="w-4 h-4 rounded flex items-center justify-center text-slate-700 hover:text-red-400 hover:bg-red-950/40 transition-colors shrink-0"
+                    title={`Remove ${adorn.name}`}
+                  >
+                    <X className="w-2.5 h-2.5" />
+                  </button>
+                </>
+              ) : (
+                <span className="text-slate-700 italic">Empty</span>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -261,7 +276,7 @@ function ApplyDialog({
             <span>Apply {adorn.name}</span>
           </DialogTitle>
           <DialogDescription className="text-slate-500">
-            Choose a gear slot to apply this adornment. Any existing adornment in that slot will be replaced.
+            Choose a gear slot to apply this {adorn.color} adornment. Only the {adorn.color} socket in that slot will be replaced.
           </DialogDescription>
         </DialogHeader>
 
@@ -270,7 +285,7 @@ function ApplyDialog({
           <GemIcon color={adorn.color} size="lg" />
           <div>
             <div className="font-bold text-sm text-slate-100">{adorn.name}</div>
-            <div className={cn("text-sm font-bold mt-0.5", c.gem)}>{formatStat(adorn.stat, adorn.value)}</div>
+            <div className={cn("text-sm font-bold mt-0.5", c.gem)}>{formatStats(adorn.stats)}</div>
             <div className="text-[10px] text-slate-600 mt-0.5">{adorn.description}</div>
           </div>
         </div>
@@ -336,7 +351,13 @@ export default function AdornmentsPage() {
     onError: () => showToast("Failed to remove adornment", false),
   });
 
-  const appliedMap = new Map(applied.map(a => [a.gearSlot, a]));
+  // Build a map from gearSlot → list of applied adornments (one per color socket)
+  const appliedMap = new Map<string, AppliedAdornment[]>();
+  for (const a of applied) {
+    const list = appliedMap.get(a.gearSlot) ?? [];
+    list.push(a);
+    appliedMap.set(a.gearSlot, list);
+  }
 
   const filtered = catalog.filter(a => {
     if (filter === "owned") return a.owned > 0;
@@ -395,8 +416,8 @@ export default function AdornmentsPage() {
                 <SlotRow
                   key={slot.id}
                   slot={slot}
-                  applied={appliedMap.get(slot.id)}
-                  onRemove={(s) => removeMutation.mutate(s)}
+                  appliedList={appliedMap.get(slot.id) ?? []}
+                  onRemove={(s, idx) => removeMutation.mutate({ gearSlot: s, slotIndex: idx })}
                   removing={removeMutation.isPending}
                 />
               ))}
@@ -483,7 +504,7 @@ export default function AdornmentsPage() {
                   <div className="font-bold text-slate-100">{selected.name}</div>
                   <div className="text-xs text-slate-400 mt-0.5 italic">{selected.description}</div>
                   <div className={cn("mt-2 text-sm font-bold", ADORN_COLOR[selected.color]?.gem)}>
-                    {formatStat(selected.stat, selected.value)}
+                    {formatStats(selected.stats)}
                   </div>
                 </div>
                 <div className="text-right shrink-0">
