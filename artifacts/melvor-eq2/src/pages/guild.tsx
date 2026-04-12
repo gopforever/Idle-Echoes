@@ -305,10 +305,71 @@ function StatBox({ label, value, sub }: { label: string; value: React.ReactNode;
   );
 }
 
+// ─── How Guilds Work panel ────────────────────────────────────────────────────
+
+function HowGuildsWork() {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <div className="rounded-lg border border-sky-900/40 bg-sky-950/20">
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center justify-between px-4 py-3 text-left"
+      >
+        <div className="flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-sky-400 shrink-0" />
+          <span className="text-sm font-medium text-sky-300">How do guilds work?</span>
+        </div>
+        {open ? <ChevronUp className="w-4 h-4 text-slate-500" /> : <ChevronDown className="w-4 h-4 text-slate-500" />}
+      </button>
+      {open && (
+        <div className="px-4 pb-4 space-y-3 text-xs text-slate-400 border-t border-sky-900/30 pt-3">
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <div className="flex items-start gap-2">
+                <span className="text-base shrink-0">⚔️</span>
+                <div>
+                  <div className="text-slate-300 font-medium">Earn Contribution Automatically</div>
+                  <div className="text-slate-500">Just play the game — every kill, boss kill, dungeon clear, and item crafted earns <span className="text-amber-400">guild contribution points</span>. No extra steps needed.</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-base shrink-0">📈</span>
+                <div>
+                  <div className="text-slate-300 font-medium">Guild Level Unlocks Perks</div>
+                  <div className="text-slate-500">As all members earn contribution, the guild's total score rises. Higher score = higher guild level = better passive bonuses for <em>every</em> member (combat XP, gold drops, gathering speed, and more).</div>
+                </div>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-start gap-2">
+                <span className="text-base shrink-0">🎯</span>
+                <div>
+                  <div className="text-slate-300 font-medium">Complete Weekly Challenges</div>
+                  <div className="text-slate-500">Three guild-wide challenges reset every Sunday. Completing them grants <span className="text-purple-400">bonus guild points</span>, helping level up the guild faster.</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-base shrink-0">💰</span>
+                <div>
+                  <div className="text-slate-300 font-medium">Guild Bank</div>
+                  <div className="text-slate-500">Any member can deposit gold. Officers can withdraw (up to the daily limit). Pool resources to fund the guild and track every transaction in the Bank tab.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="pt-1 border-t border-sky-900/20 text-slate-600">
+            <span className="text-sky-500 font-medium">Contribution formula:</span> (level × 100) + (kills × 0.5) + (boss kills × 10) + (heroic completes × 100) + (dungeon clears × 50) + (items crafted × 5)
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Dashboard Tab ────────────────────────────────────────────────────────────
 
 function DashboardTab({ guildData }: { guildData: MyGuildData }) {
-  const { guild, guildLevel, currentScore, nextLevelScore, perkDescriptions } = guildData;
+  const { guild, guildLevel, currentScore, nextLevelScore, perkDescriptions, membership } = guildData;
 
   const { data: stats } = useQuery<GuildStats>({
     queryKey: ["guild", "stats"],
@@ -328,8 +389,21 @@ function DashboardTab({ guildData }: { guildData: MyGuildData }) {
 
   const alignColors = ALIGNMENT_COLORS[guild.alignment] ?? ALIGNMENT_COLORS.Neutral;
 
+  // Find my own entry in the weekly top-contributors list
+  const myWeeklyEntry = stats?.weeklyTopContributors.find(c => c.characterId === membership.characterId);
+  const myRankInWeekly = myWeeklyEntry
+    ? (stats?.weeklyTopContributors.indexOf(myWeeklyEntry) ?? -1) + 1
+    : null;
+
+  const unlockedPerks = perkDescriptions.filter(p => guildLevel >= p.level);
+  const lockedPerks   = perkDescriptions.filter(p => guildLevel < p.level);
+
   return (
     <div className="space-y-5">
+
+      {/* How it works */}
+      <HowGuildsWork />
+
       {/* Guild Banner */}
       <Card className={cn("border bg-card/40", alignColors.border)}>
         <CardHeader className={cn("border-b pb-3", alignColors.border, alignColors.bg)}>
@@ -353,7 +427,10 @@ function DashboardTab({ guildData }: { guildData: MyGuildData }) {
           {/* Guild XP Progress */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs text-slate-500">Guild Progress</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs text-slate-500">Guild Score</span>
+                <span className="text-[10px] text-slate-600">(total member contributions)</span>
+              </div>
               <span className="text-xs font-mono text-slate-400">
                 {currentScore.toLocaleString()} / {nextLevelScore ? nextLevelScore.toLocaleString() : "MAX"} pts
               </span>
@@ -361,7 +438,10 @@ function DashboardTab({ guildData }: { guildData: MyGuildData }) {
             <Progress value={progressPct} className="h-2.5 bg-slate-800" />
             <div className="flex justify-between mt-1">
               <span className="text-[10px] text-slate-600">Level {guildLevel}</span>
-              {nextLevelScore && <span className="text-[10px] text-slate-600">Level {guildLevel + 1}</span>}
+              {nextLevelScore
+                ? <span className="text-[10px] text-slate-600">Level {guildLevel + 1} at {nextLevelScore.toLocaleString()} pts</span>
+                : <span className="text-[10px] text-amber-600 font-bold">MAX LEVEL</span>
+              }
             </div>
           </div>
 
@@ -375,42 +455,119 @@ function DashboardTab({ guildData }: { guildData: MyGuildData }) {
 
           {/* Active Perks */}
           <div>
-            <div className="text-xs text-slate-500 mb-2">Active Perks</div>
-            <div className="flex flex-wrap gap-1.5">
-              {perkDescriptions.map(p => {
-                const unlocked = guildLevel >= p.level;
-                return (
-                  <span
-                    key={p.level}
-                    className={cn(
-                      "inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] border",
-                      unlocked
-                        ? "bg-amber-900/30 border-amber-700/50 text-amber-300"
-                        : "bg-slate-900/30 border-slate-800/50 text-slate-600",
-                    )}
-                  >
-                    <span>{p.icon}</span>
-                    <span>{unlocked ? p.label : `Lv ${p.level}`}</span>
-                    {unlocked && <CheckCircle2 className="w-2.5 h-2.5 text-amber-500" />}
-                  </span>
-                );
-              })}
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs text-slate-500">Guild Perks</span>
+              {unlockedPerks.length > 0 && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-950/40 border border-green-800/40 text-green-400">
+                  {unlockedPerks.length} active
+                </span>
+              )}
+              {lockedPerks.length > 0 && (
+                <span className="text-[10px] text-slate-600">{lockedPerks.length} locked</span>
+              )}
             </div>
+
+            {unlockedPerks.length > 0 && (
+              <div className="mb-2">
+                <div className="text-[10px] text-green-600 font-medium mb-1 uppercase tracking-wide">Active — applied to your character now</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {unlockedPerks.map(p => (
+                    <span
+                      key={p.level}
+                      className="inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] border bg-green-950/30 border-green-800/40 text-green-300"
+                    >
+                      <span>{p.icon}</span>
+                      <span>{p.label}</span>
+                      <CheckCircle2 className="w-2.5 h-2.5 text-green-500" />
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {lockedPerks.length > 0 && (
+              <div>
+                <div className="text-[10px] text-slate-600 font-medium mb-1 uppercase tracking-wide">Locked — level up to unlock</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {lockedPerks.slice(0, 4).map(p => (
+                    <span
+                      key={p.level}
+                      className="inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] border bg-slate-900/30 border-slate-800/50 text-slate-600"
+                      title={`Unlocks at guild level ${p.level}`}
+                    >
+                      <span>{p.icon}</span>
+                      <span>{p.label}</span>
+                      <span className="text-slate-700 font-bold">Lv{p.level}</span>
+                    </span>
+                  ))}
+                  {lockedPerks.length > 4 && (
+                    <span className="text-[10px] text-slate-700 flex items-center px-2">+{lockedPerks.length - 4} more</span>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {unlockedPerks.length === 0 && lockedPerks.length === 0 && (
+              <p className="text-xs text-slate-600">Earn more contribution to unlock perks.</p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* My Contribution Card */}
+      <Card className="border-amber-900/30 bg-amber-950/10">
+        <CardHeader className="border-b border-amber-900/20 pb-3">
+          <CardTitle className="text-sm text-amber-300 flex items-center gap-2">
+            <Star className="w-4 h-4 text-amber-400" />
+            Your Contribution
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-3">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <div className="text-2xl font-bold text-amber-400 tabular-nums">
+                {Math.round(membership.contributionPoints).toLocaleString()}
+              </div>
+              <div className="text-[11px] text-slate-500 mt-0.5">lifetime contribution pts</div>
+            </div>
+            <div className="text-right">
+              <div className={cn(
+                "text-sm font-bold capitalize",
+                RANK_COLOR[membership.rank] ?? "text-slate-400",
+              )}>
+                {RANK_ICON[membership.rank]}
+                <span className="ml-1.5">{membership.rank}</span>
+              </div>
+              {myWeeklyEntry && (
+                <div className="text-[11px] text-amber-600 mt-0.5">
+                  +{myWeeklyEntry.weeklyPoints.toLocaleString()} pts this week
+                  {myRankInWeekly && myRankInWeekly <= 5 && (
+                    <span className="ml-1.5">{myRankInWeekly === 1 ? "👑 #1" : `#${myRankInWeekly} this week`}</span>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="mt-3 p-2.5 rounded bg-slate-900/50 text-[11px] text-slate-500">
+            <span className="text-slate-400 font-medium">How contribution is earned: </span>
+            Keep playing! Kills, boss kills, dungeon clears, heroics, and crafted items all count automatically.
+            Check the <span className="text-amber-500">Contributions</span> tab for a week-by-week breakdown.
           </div>
         </CardContent>
       </Card>
 
       {/* Weekly Challenges */}
-      {challenges && challenges.length > 0 && (
-        <Card className="border-slate-800 bg-card/40">
-          <CardHeader className="border-b border-slate-800/50 pb-3">
-            <CardTitle className="text-sm text-slate-300 flex items-center gap-2">
-              <Target className="w-4 h-4 text-purple-400" />
-              Weekly Challenges
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-3 space-y-3">
-            {challenges.map(ch => {
+      <Card className="border-slate-800 bg-card/40">
+        <CardHeader className="border-b border-slate-800/50 pb-3">
+          <CardTitle className="text-sm text-slate-300 flex items-center gap-2">
+            <Target className="w-4 h-4 text-purple-400" />
+            Weekly Challenges
+            <span className="text-[10px] text-slate-600 font-normal">— resets every Sunday</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-3 space-y-3">
+          {challenges && challenges.length > 0 ? (
+            challenges.map(ch => {
               const pct = Math.min(100, Math.round((ch.currentValue / ch.targetValue) * 100));
               return (
                 <div key={ch.id} className={cn(
@@ -440,43 +597,64 @@ function DashboardTab({ guildData }: { guildData: MyGuildData }) {
                   </div>
                 </div>
               );
-            })}
-          </CardContent>
-        </Card>
-      )}
+            })
+          ) : (
+            <div className="text-center py-4 text-slate-600">
+              <Target className="w-8 h-8 mx-auto mb-2 opacity-20" />
+              <p className="text-xs">Challenges will appear here once guild activity begins.</p>
+              <p className="text-[11px] mt-1 text-slate-700">Kill enemies or clear dungeons with your guildmates to trigger this week's challenges.</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Weekly Top Contributors */}
-      {stats && stats.weeklyTopContributors.length > 0 && (
-        <Card className="border-slate-800 bg-card/40">
-          <CardHeader className="border-b border-slate-800/50 pb-3">
-            <CardTitle className="text-sm text-slate-300 flex items-center gap-2">
-              <Award className="w-4 h-4 text-amber-400" />
-              This Week's Top Contributors
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-3 space-y-1.5">
-            {stats.weeklyTopContributors.map((contributor, i) => (
-              <div key={contributor.memberId} className="flex items-center gap-3 px-2 py-1.5 rounded-lg">
-                <span className="text-base w-6 text-center shrink-0">
-                  {i === 0 ? "👑" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <span className={cn("text-sm font-semibold", i === 0 ? "text-amber-400" : "text-slate-200")}>
-                    {contributor.name}
-                  </span>
-                  <span className="text-[11px] text-slate-600 ml-1.5">Lv {contributor.level} {contributor.class}</span>
-                </div>
-                <div className="text-right shrink-0">
-                  <div className="text-sm font-bold text-amber-500 tabular-nums">
-                    +{contributor.weeklyPoints.toLocaleString()}
+      <Card className="border-slate-800 bg-card/40">
+        <CardHeader className="border-b border-slate-800/50 pb-3">
+          <CardTitle className="text-sm text-slate-300 flex items-center gap-2">
+            <Award className="w-4 h-4 text-amber-400" />
+            This Week's Top Contributors
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-3">
+          {stats && stats.weeklyTopContributors.length > 0 ? (
+            <div className="space-y-1.5">
+              {stats.weeklyTopContributors.map((contributor, i) => {
+                const isMe = contributor.characterId === membership.characterId;
+                return (
+                  <div key={contributor.memberId} className={cn(
+                    "flex items-center gap-3 px-2 py-1.5 rounded-lg",
+                    isMe ? "bg-amber-950/20" : "",
+                  )}>
+                    <span className="text-base w-6 text-center shrink-0">
+                      {i === 0 ? "👑" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <span className={cn("text-sm font-semibold", i === 0 ? "text-amber-400" : isMe ? "text-amber-300" : "text-slate-200")}>
+                        {contributor.name}
+                      </span>
+                      {isMe && <span className="text-[10px] text-amber-600 ml-1">(you)</span>}
+                      <span className="text-[11px] text-slate-600 ml-1.5">Lv {contributor.level} {contributor.class}</span>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <div className="text-sm font-bold text-amber-500 tabular-nums">
+                        +{contributor.weeklyPoints.toLocaleString()}
+                      </div>
+                      <div className="text-[10px] text-slate-600">pts this week</div>
+                    </div>
                   </div>
-                  <div className="text-[10px] text-slate-600">pts this week</div>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      )}
+                );
+              })}
+            </div>
+          ) : (
+            <div className="text-center py-4 text-slate-600">
+              <Users className="w-8 h-8 mx-auto mb-2 opacity-20" />
+              <p className="text-xs">No weekly activity recorded yet.</p>
+              <p className="text-[11px] mt-1 text-slate-700">Play the game this week — kills and crafts earn weekly contribution points shown here.</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
@@ -980,6 +1158,16 @@ function LeaderboardTab({ myGuildId }: { myGuildId?: number }) {
 
   return (
     <div className="space-y-4">
+      {/* Context note */}
+      <div className="rounded-lg border border-slate-800 bg-slate-900/30 px-4 py-3 text-xs text-slate-500 flex items-start gap-2">
+        <Trophy className="w-4 h-4 shrink-0 mt-0.5 text-amber-700/60" />
+        <div>
+          <span className="text-slate-400 font-medium">Guild Leaderboard</span> — ranked by total member contribution score.
+          Guilds marked <span className="text-slate-600">ghost</span> are AI-controlled and provide competition. Your guild is highlighted in amber.
+          Rank moves up as your guildmates earn contribution through normal gameplay.
+        </div>
+      </div>
+
       {/* Alignment filter */}
       <div className="flex gap-1.5">
         {["All", "Qeynos", "Freeport", "Neutral"].map(a => (
@@ -1403,7 +1591,7 @@ export default function GuildPage() {
           </TabsContent>
         </Tabs>
       ) : (
-        <Tabs defaultValue="leaderboard">
+        <Tabs defaultValue="create">
           <TabsList className="bg-slate-900/60 border border-slate-800">
             <TabsTrigger value="create" className="data-[state=active]:bg-slate-800 data-[state=active]:text-amber-400">
               <Shield className="w-3.5 h-3.5 mr-1.5" />
@@ -1416,12 +1604,50 @@ export default function GuildPage() {
           </TabsList>
 
           <TabsContent value="create" className="mt-5">
-            <div className="space-y-4">
-              <div className="text-center py-4 text-slate-500">
-                <Shield className="w-10 h-10 mx-auto mb-3 opacity-20" />
-                <p className="text-sm">You are not in a guild yet.</p>
-                <p className="text-xs mt-1 text-slate-600">Found one to unlock guild perks, the guild bank, and weekly challenges.</p>
-              </div>
+            <div className="space-y-5">
+              {/* Why join a guild */}
+              <Card className="border-amber-900/30 bg-amber-950/10">
+                <CardContent className="pt-5 pb-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Shield className="w-5 h-5 text-amber-400" />
+                    <h3 className="text-base font-serif font-semibold text-amber-400">Why found or join a guild?</h3>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-3 text-xs text-slate-400">
+                    <div className="flex items-start gap-2">
+                      <span className="text-xl shrink-0">⚔️</span>
+                      <div>
+                        <div className="text-slate-300 font-medium">Passive Combat Bonuses</div>
+                        <div>Unlock up to +15% combat XP, +25% gold from kills, and more as your guild levels up — automatically applied every time you fight.</div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-xl shrink-0">🏰</span>
+                      <div>
+                        <div className="text-slate-300 font-medium">Dungeon & Craft Perks</div>
+                        <div>Higher guild levels unlock +5% dungeon XP, +10% craft yield, +5% gathering speed, and more — benefiting every activity in the game.</div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-xl shrink-0">🎯</span>
+                      <div>
+                        <div className="text-slate-300 font-medium">Weekly Challenges</div>
+                        <div>Complete guild-wide kill, dungeon, and crafting challenges each week for bonus guild score that accelerates your next perk unlock.</div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-xl shrink-0">💰</span>
+                      <div>
+                        <div className="text-slate-300 font-medium">Shared Guild Bank</div>
+                        <div>Pool gold in the guild bank. Officers can withdraw funds for guild needs. Full transaction log keeps everything transparent.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-amber-900/20 text-[11px] text-slate-600">
+                    Contribution is earned automatically — just keep playing. Kills, boss kills, dungeon clears, heroics, and crafts all count.
+                  </div>
+                </CardContent>
+              </Card>
+
               <CreateGuildForm onCreated={refresh} />
             </div>
           </TabsContent>
