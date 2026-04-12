@@ -56,6 +56,8 @@ export async function checkAndUnlockAchievements(characterId: number): Promise<t
   const herbalismSkill = skills.find(s => s.skillId === "herbalism");
 
   // Solo vs group dungeon completions
+  // A "solo" run is a completed dungeon_run where party is empty (player ran alone).
+  // A "group" run is one where party has 1+ ghost party members.
   let soloCompletions = 0;
   let groupCompletions = 0;
   const perDungeonSoloCompletions: Record<string, number> = {};
