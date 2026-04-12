@@ -135,7 +135,7 @@ router.get("/epic-quest", async (req, res) => {
       started: true,
       completed: progress.completed,
       mythicalAwarded: progress.mythicalAwarded,
-      fabledWeaponId: progress.fablesWeaponId,
+      fabledWeaponId: progress.fabledWeaponId,
       mythicalWeaponId: progress.mythicalWeaponId,
       classId: progress.classId,
       currentStep: progress.currentStep,
@@ -274,8 +274,8 @@ router.post("/epic-quest/advance", async (req, res) => {
     if (newlyCompleted) {
       const epicDef = getEpicWeaponByClass(progress.classId);
       if (epicDef) {
-        await awardItemsToInventory([epicDef.fablesItemId], character.id);
-        awardedWeaponId = epicDef.fablesItemId;
+        await awardItemsToInventory([epicDef.fabledItemId], character.id);
+        awardedWeaponId = epicDef.fabledItemId;
       }
     }
 
@@ -292,7 +292,7 @@ router.post("/epic-quest/advance", async (req, res) => {
           stepData,
           currentStep,
           completed: allDone,
-          fablesWeaponId: awardedWeaponId ?? progress.fablesWeaponId,
+          fabledWeaponId: awardedWeaponId ?? progress.fabledWeaponId,
           updatedAt: new Date(),
         })
         .where(eq(epicQuestProgressTable.id, progress.id));
@@ -340,11 +340,11 @@ router.post("/epic-quest/upgrade", async (req, res) => {
     if (progress.mythicalAwarded) return res.status(409).json({ error: "Mythical upgrade already performed." });
 
     // Check fabled weapon is in inventory
-    const fablesId = progress.fablesWeaponId;
-    if (!fablesId) return res.status(400).json({ error: "No fabled weapon on record for this quest." });
+    const fabledId = progress.fabledWeaponId;
+    if (!fabledId) return res.status(400).json({ error: "No fabled weapon on record for this quest." });
 
-    const fablesQty = await getInventoryQty(character.id, fablesId);
-    if (fablesQty < 1) {
+    const fabledQty = await getInventoryQty(character.id, fabledId);
+    if (fabledQty < 1) {
       return res.status(400).json({ error: "Your fabled epic weapon must be in your inventory to upgrade (unequip it first)." });
     }
 
@@ -367,7 +367,7 @@ router.post("/epic-quest/upgrade", async (req, res) => {
     }
 
     // All checks passed — consume materials and fabled weapon
-    await consumeInventoryItem(character.id, fablesId, 1);
+    await consumeInventoryItem(character.id, fabledId, 1);
     for (const [itemId, qty] of Object.entries(EPIC_UPGRADE_REQUIREMENTS)) {
       await consumeInventoryItem(character.id, itemId, qty);
     }

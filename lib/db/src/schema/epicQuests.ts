@@ -26,7 +26,7 @@ export const epicQuestProgressTable = pgTable("epic_quest_progress", {
   /** All 5 steps completed; fabled weapon awarded */
   completed: boolean("completed").notNull().default(false),
   /** Fabled weapon item ID awarded to inventory */
-  fablesWeaponId: text("fabled_weapon_id"),
+  fabledWeaponId: text("fabled_weapon_id"),
   /** Whether the fabled weapon was upgraded to mythical */
   mythicalAwarded: boolean("mythical_awarded").notNull().default(false),
   /** Mythical weapon item ID awarded to inventory */

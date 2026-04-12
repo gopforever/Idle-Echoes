@@ -23,7 +23,7 @@ interface EpicWeaponDef {
   classId: string;
   className: string;
   archetype: string;
-  fablesItemId: string;
+  fabledItemId: string;
   mythicalItemId: string;
   weaponLore: string;
   questGiver: string;
@@ -166,7 +166,7 @@ function WeaponShowcase({
   epicDef: EpicWeaponDef;
   tier: "fabled" | "mythical";
 }) {
-  const itemId = tier === "mythical" ? epicDef.mythicalItemId : epicDef.fablesItemId;
+  const itemId = tier === "mythical" ? epicDef.mythicalItemId : epicDef.fabledItemId;
   const label = tier === "mythical" ? "Mythical" : "Fabled";
   const icon = tier === "mythical" ? "⚡" : "✨";
 
