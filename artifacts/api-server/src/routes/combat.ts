@@ -1062,6 +1062,11 @@ router.post("/combat/tick", async (req, res) => {
         newXpToNext = xpForLevel(newLevel);
         if (newLevel >= 10) aaPtsGained++;
         await db.insert(combatLogTable).values({ characterId, tick: newTick, message: `🎉 LEVEL UP! You are now level ${newLevel}!`, type: "info" });
+        const newlyUnlocked = classDef?.abilities.filter(a => a.levelRequired === newLevel) ?? [];
+        if (newlyUnlocked.length > 0) {
+          const names = newlyUnlocked.map(a => a.name).join(", ");
+          await db.insert(combatLogTable).values({ characterId, tick: newTick, message: `✨ New ability unlocked: ${names}!`, type: "ability", value: 0 });
+        }
       }
 
       const newGold = character.gold + goldGained;
