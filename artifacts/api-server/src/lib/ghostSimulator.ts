@@ -1996,10 +1996,13 @@ export async function tickGhostSimulation(): Promise<void> {
       const xpRequired = xpForLevel(newLevel);
 
       let leveledUp = false;
-      if (newXp >= xpRequired && newLevel < 70) {
+      if (newXp >= xpRequired && newLevel < 100) {
         newXp -= xpRequired;
         newLevel++;
         leveledUp = true;
+      }
+      if (newLevel >= 100) {
+        newXp = Math.min(newXp, xpForLevel(100));
       }
 
       // Zone travel logic
