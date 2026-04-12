@@ -1175,12 +1175,12 @@ export default function WorldPage() {
           <button
             disabled={ghostResetting}
             onClick={async () => {
-              if (!confirm("Reset all 60 ghost players back to level 1? This takes a few seconds.")) return;
+              if (!confirm("Reset all 150 ghost players back to level 1? This takes a few seconds.")) return;
               setGhostResetting(true);
               try {
                 const res = await fetch(apiUrl("/api/admin/reset-ghosts"), { method: "POST" });
                 if (res.ok) {
-                  toast({ title: "Ghost players reset", description: "All 60 adventurers have been reborn at level 1." });
+                  toast({ title: "Ghost players reset", description: "All 150 adventurers have been reborn at level 1." });
                 } else {
                   toast({ title: "Reset failed", description: "Could not reset ghosts. Check server logs.", variant: "destructive" });
                 }

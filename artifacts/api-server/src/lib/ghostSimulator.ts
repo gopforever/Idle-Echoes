@@ -783,7 +783,7 @@ const MARKET_CATEGORIES = ["weapons", "armor", "consumables", "materials", "ador
 const MARKET_NEUTRAL_SCORE = 50;
 
 export async function resetGhostPlayers(): Promise<void> {
-  console.log("[Ghost] Resetting ghost players to v2 (level 1 with personalities)...");
+  console.log(`[Ghost] Resetting ghost players to v${SIMULATOR_VERSION} (${GHOST_SEEDS.length} seeds)...`);
   await db.delete(worldPlayersTable);
   await db.delete(worldEventsTable);
   await db.delete(ghostMarketDemandTable);
@@ -798,6 +798,7 @@ export async function resetGhostPlayers(): Promise<void> {
     });
   }
   await seedGhostPlayersInner();
+  await storeSimVersion(SIMULATOR_VERSION);
   console.log("[Ghost] Reset complete.");
 }
 
@@ -872,7 +873,7 @@ export async function seedGhostPlayers(): Promise<void> {
     return;
   }
 
-  console.log("[Ghost] Seeding 60 ghost players at level 1...");
+  console.log(`[Ghost] Seeding ${GHOST_SEEDS.length} ghost players at level 1...`);
   await seedGhostPlayersInner();
   await storeSimVersion(SIMULATOR_VERSION);
   console.log("[Ghost] Seeding complete.");
