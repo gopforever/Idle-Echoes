@@ -1060,7 +1060,7 @@ router.post("/combat/tick", async (req, res) => {
       let newXpToNext = character.xpToNextLevel;
       let aaPtsGained = aaPtsFromRatio;
 
-      while (newXp >= newXpToNext) {
+      while (newXp >= newXpToNext && newLevel < 100) {
         newXp -= newXpToNext;
         newLevel++;
         newXpToNext = xpForLevel(newLevel);
@@ -1071,6 +1071,9 @@ router.post("/combat/tick", async (req, res) => {
           const names = newlyUnlocked.map(a => a.name).join(", ");
           await db.insert(combatLogTable).values({ characterId, tick: newTick, message: `✨ New ability unlocked: ${names}!`, type: "ability", value: 0 });
         }
+      }
+      if (newLevel >= 100) {
+        newXp = Math.min(newXp, newXpToNext);
       }
 
       const newGold = character.gold + goldGained;
