@@ -658,23 +658,30 @@ router.post("/dungeons/run/advance", async (req, res) => {
 
     // ── Gear set piece drops ──────────────────────────────────────────────────
     const charClass = (character.class ?? "Fighter") as string;
-    const setArchetype: GearSetArchetype = charClass === "Priest" ? "healer" : charClass === "Mage" ? "caster" : "fighter";
+    const charArchetype = (character.archetype ?? "Fighter") as string;
+    // Fury is a caster-type Priest (intelligence primary); all other Priests are healers.
+    const setArchetype: GearSetArchetype =
+      charClass === "Fury" ? "caster" :
+      charArchetype === "Priest" ? "healer" :
+      charArchetype === "Mage" ? "caster" :
+      "fighter";
 
     // Map character class → armor type (determines stat profile + UI colour)
     const CLASS_ARMOR_TYPE: Record<string, "plate" | "chain" | "leather" | "cloth"> = {
       // Plate — heavy fighter tanks
       Guardian: "plate", Berserker: "plate", Paladin: "plate", Shadowknight: "plate",
-      // Chain — hybrid fighters
-      Monk: "chain", Bruiser: "chain",
-      // Leather — scouts
+      // Leather — brawlers, scouts, and leather-wearing priests
+      Monk: "leather", Bruiser: "leather",
       Ranger: "leather", Assassin: "leather", Swashbuckler: "leather",
       Brigand: "leather", Troubador: "leather", Dirge: "leather",
-      // Cloth — mages & priests
+      Warden: "leather", Fury: "leather",
+      // Chain — chain-wearing priests
+      Templar: "chain", Inquisitor: "chain", Mystic: "chain", Defiler: "chain",
+      // Cloth — mages
       Wizard: "cloth", Warlock: "cloth", Conjuror: "cloth", Necromancer: "cloth",
       Coercer: "cloth", Illusionist: "cloth",
-      Templar: "cloth", Inquisitor: "cloth", Mystic: "cloth", Defiler: "cloth",
       // Generic fallbacks
-      Fighter: "plate", Scout: "leather", Mage: "cloth", Priest: "cloth",
+      Fighter: "plate", Scout: "leather", Mage: "cloth", Priest: "chain",
     };
     const setArmorType = CLASS_ARMOR_TYPE[charClass] ?? "plate";
 
