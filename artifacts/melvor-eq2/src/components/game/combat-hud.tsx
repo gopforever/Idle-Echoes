@@ -756,6 +756,8 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
   const [bossClosingLine, setBossClosingLine] = React.useState<{ text: string; outcome: "playerWon" | "bossWon" } | null>(null);
   const closingLineTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastEnemyIdRef = React.useRef<string | null>(null);
+  const startCombatMutateRef = React.useRef(startCombat.mutate);
+  React.useEffect(() => { startCombatMutateRef.current = startCombat.mutate; });
   const [fightDamageBySource, setFightDamageBySource] = React.useState<Record<string, number>>({});
   const [fightHealBySource, setFightHealBySource] = React.useState<Record<string, number>>({});
 
@@ -922,12 +924,12 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
       // Re-validate inside the callback in case state changed during the delay
       const id = (combatState.enemy as EnemyData | undefined)?.id ?? lastEnemyIdRef.current;
       if (!id) return;
-      startCombat.mutate({ data: { enemyId: id } }, {
+      startCombatMutateRef.current({ data: { enemyId: id } }, {
         onSuccess: () => queryClient.invalidateQueries({ queryKey: getGetCombatStateQueryKey() }),
       });
     }, 1500);
     return () => clearTimeout(timer);
-  }, [disableAutoEngage, autoCombat, combatState?.active, combatState?.enemy, startCombat]);
+  }, [disableAutoEngage, autoCombat, combatState?.active, combatState?.enemy, startCombat.isPending, queryClient]);
 
   const handleStop = () => {
     stopCombat.mutate(undefined, {
