@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { achievementsTable, charactersTable, skillsTable, factionsTable, mountsTable, collectionsTable, dungeonKillStatsTable } from "@workspace/db/schema";
+import { achievementsTable, charactersTable, skillsTable, factionsTable, mountsTable, collectionsTable, dungeonKillStatsTable, dungeonRunsTable, bestiaryTable } from "@workspace/db/schema";
 import { ACHIEVEMENTS, COLLECTIONS } from "../lib/eq2Data.js";
 import { getOrCreateCharacter } from "./character.js";
 import { eq, sql, and } from "drizzle-orm";
@@ -16,11 +16,13 @@ export async function checkAndUnlockAchievements(characterId: number): Promise<t
   const skills = await db.select().from(skillsTable).where(eq(skillsTable.characterId, characterId));
   const maxedSkills = skills.filter(s => s.level >= 100).length;
 
-  const [factions, mounts, collectionRows, dungeonKillRows] = await Promise.all([
+  const [factions, mounts, collectionRows, dungeonKillRows, completedDungeonRuns, bestiaryRows] = await Promise.all([
     db.select().from(factionsTable).where(eq(factionsTable.characterId, characterId)),
     db.select().from(mountsTable).where(eq(mountsTable.characterId, characterId)),
     db.select().from(collectionsTable).where(eq(collectionsTable.characterId, characterId)),
     db.select().from(dungeonKillStatsTable).where(eq(dungeonKillStatsTable.characterId, character.id)),
+    db.select().from(dungeonRunsTable).where(and(eq(dungeonRunsTable.characterId, characterId), eq(dungeonRunsTable.completed, true))),
+    db.select().from(bestiaryTable).where(eq(bestiaryTable.characterId, characterId)),
   ]);
 
   const collectedPieces = new Set(collectionRows.map(c => `${c.collectionId}:${c.pieceId}`));
@@ -53,6 +55,30 @@ export async function checkAndUnlockAchievements(characterId: number): Promise<t
   const fishingSkill = skills.find(s => s.skillId === "fishing");
   const herbalismSkill = skills.find(s => s.skillId === "herbalism");
 
+  // Solo vs group dungeon completions
+  // A "solo" run is a completed dungeon_run where party is empty (player ran alone).
+  // A "group" run is one where party has 1+ ghost party members.
+  let soloCompletions = 0;
+  let groupCompletions = 0;
+  const perDungeonSoloCompletions: Record<string, number> = {};
+  const perDungeonGroupCompletions: Record<string, number> = {};
+  for (const run of completedDungeonRuns) {
+    const party = run.party ?? [];
+    const isSolo = party.length === 0;
+    if (isSolo) {
+      soloCompletions++;
+      const key = `solo_dungeonCompletions_${run.dungeonId}`;
+      perDungeonSoloCompletions[key] = (perDungeonSoloCompletions[key] ?? 0) + 1;
+    } else {
+      groupCompletions++;
+      const key = `group_dungeonCompletions_${run.dungeonId}`;
+      perDungeonGroupCompletions[key] = (perDungeonGroupCompletions[key] ?? 0) + 1;
+    }
+  }
+  const totalAllDungeonRuns = soloCompletions + groupCompletions;
+
+  const bestiaryLoreUnlocked = bestiaryRows.filter(b => b.loreUnlocked).length;
+
   const stats: Record<string, number> = {
     killCount: character.killCount ?? 0,
     bossKills: character.bossKills ?? 0,
@@ -67,6 +93,17 @@ export async function checkAndUnlockAchievements(characterId: number): Promise<t
     heroicCompleted: character.heroicCompleted ?? 0,
     undeadKills: character.undeadKills ?? 0,
     dragonKills: character.dragonKills ?? 0,
+    humanoidKills: character.humanoidKills ?? 0,
+    beastKills: character.beastKills ?? 0,
+    elementalKills: character.elementalKills ?? 0,
+    constructKills: character.constructKills ?? 0,
+    planarKills: character.planarKills ?? 0,
+    faeKills: character.faeKills ?? 0,
+    gnollKills: character.gnollKills ?? 0,
+    goblinKills: character.goblinKills ?? 0,
+    orcKills: character.orcKills ?? 0,
+    giantKills: character.giantKills ?? 0,
+    totalDeaths: character.deathCount ?? 0,
     legendaryEquipped: 0,
     fabledEquipped: 0,
     mountsOwned,
@@ -77,7 +114,13 @@ export async function checkAndUnlockAchievements(characterId: number): Promise<t
     totalDungeonMainBossKills,
     uniqueDungeonsCleared,
     uniqueRaidsCleared,
+    soloCompletions,
+    groupCompletions,
+    totalAllDungeonRuns,
+    bestiaryLoreUnlocked,
     ...perDungeonCompletions,
+    ...perDungeonSoloCompletions,
+    ...perDungeonGroupCompletions,
     oresGathered: character.oresGathered ?? 0,
     logsChopped: character.logsChopped ?? 0,
     fishCaught: character.fishCaught ?? 0,
