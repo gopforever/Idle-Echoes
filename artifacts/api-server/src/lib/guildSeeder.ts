@@ -9,9 +9,10 @@
  */
 
 import { db } from "@workspace/db";
-import { guildsTable, guildMembersTable, worldPlayersTable } from "@workspace/db/schema";
-import { eq, and, isNotNull, inArray } from "drizzle-orm";
+import { guildsTable, guildMembersTable, guildContributionBreakdownTable, guildChallengesTable, worldPlayersTable } from "@workspace/db/schema";
+import { eq, and, isNotNull, inArray, sql } from "drizzle-orm";
 import { logger } from "./logger.js";
+import { computeGuildLevel } from "./guildPerks.js";
 
 interface GhostGuildSeed {
   name: string;
@@ -208,5 +209,112 @@ export async function seedGhostGuilds(): Promise<void> {
     }
   }
 
+  // Tick ghost guild weekly challenges
+  await tickGhostGuildChallenges();
+
   logger.info("[GuildSeeder] Ghost guilds seeded.");
+}
+
+/** Returns the most recent Sunday 00:00:00 UTC */
+function getThisSundayMidnightUTC(): Date {
+  const now = new Date();
+  const d = new Date(now);
+  d.setUTCDate(d.getUTCDate() - d.getUTCDay());
+  d.setUTCHours(0, 0, 0, 0);
+  return d;
+}
+
+/**
+ * Ticks weekly challenge progress for all ghost guilds based on their
+ * members' accumulated contribution breakdown rows.
+ */
+export async function tickGhostGuildChallenges(): Promise<void> {
+  const weekStart = getThisSundayMidnightUTC();
+
+  const ghostGuilds = await db
+    .select({ id: guildsTable.id })
+    .from(guildsTable)
+    .where(eq(guildsTable.isGhost, true));
+
+  for (const guild of ghostGuilds) {
+    // Get guild level for challenge generation
+    const [scoreRow] = await db
+      .select({ totalScore: sql<number>`cast(sum(${guildMembersTable.contributionPoints}) as float)` })
+      .from(guildMembersTable)
+      .where(eq(guildMembersTable.guildId, guild.id));
+    const guildLevel = computeGuildLevel(scoreRow?.totalScore ?? 0);
+
+    // Ensure challenges exist for this week
+    const existing = await db
+      .select({ id: guildChallengesTable.id })
+      .from(guildChallengesTable)
+      .where(and(
+        eq(guildChallengesTable.guildId, guild.id),
+        eq(guildChallengesTable.weekStart, weekStart),
+      ))
+      .limit(1);
+
+    if (existing.length === 0) {
+      // Seed 3 challenges scaled to guild level
+      const challengeTypes = ["kills", "boss_kills", "dungeons"];
+      const baseTargets = [200, 10, 5];
+      const scaleFactor = 1.4;
+      for (let i = 0; i < challengeTypes.length; i++) {
+        const target = Math.round(baseTargets[i] * Math.pow(scaleFactor, Math.max(0, guildLevel - 1)));
+        await db.insert(guildChallengesTable).values({
+          guildId: guild.id,
+          weekStart,
+          challengeType: challengeTypes[i],
+          targetValue: target,
+          rewardXpBonus: 500 * guildLevel,
+        }).onConflictDoNothing().catch(() => {});
+      }
+    }
+
+    // Sum ghost member kill/boss/dungeon stats from breakdown table
+    const breakdowns = await db
+      .select({
+        combatKills: sql<number>`cast(sum(${guildContributionBreakdownTable.combatKills}) as int)`,
+        bossKills: sql<number>`cast(sum(${guildContributionBreakdownTable.bossKills}) as int)`,
+        dungeonClears: sql<number>`cast(sum(${guildContributionBreakdownTable.dungeonClears}) as int)`,
+      })
+      .from(guildContributionBreakdownTable)
+      .where(and(
+        eq(guildContributionBreakdownTable.guildId, guild.id),
+        eq(guildContributionBreakdownTable.weekStart, weekStart),
+        isNotNull(guildContributionBreakdownTable.ghostId),
+      ));
+
+    if (breakdowns.length === 0) continue;
+
+    const kills = breakdowns[0]?.combatKills ?? 0;
+    const bossKills = breakdowns[0]?.bossKills ?? 0;
+    const dungeonClears = breakdowns[0]?.dungeonClears ?? 0;
+
+    // Update challenge progress
+    const challenges = await db
+      .select()
+      .from(guildChallengesTable)
+      .where(and(
+        eq(guildChallengesTable.guildId, guild.id),
+        eq(guildChallengesTable.weekStart, weekStart),
+        eq(guildChallengesTable.completed, false),
+      ));
+
+    for (const challenge of challenges) {
+      let progress = 0;
+      if (challenge.challengeType === "kills") progress = kills;
+      else if (challenge.challengeType === "boss_kills") progress = bossKills;
+      else if (challenge.challengeType === "dungeons") progress = dungeonClears;
+
+      if (progress <= 0) continue;
+
+      const newValue = Math.min(progress, challenge.targetValue);
+      const completed = newValue >= challenge.targetValue;
+      await db.update(guildChallengesTable)
+        .set({ currentValue: newValue, completed, completedAt: completed ? new Date() : null })
+        .where(eq(guildChallengesTable.id, challenge.id))
+        .catch(() => {});
+    }
+  }
 }

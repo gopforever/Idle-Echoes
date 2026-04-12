@@ -28,11 +28,11 @@ var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
 };
-var __copyProps = (to, from, except2, desc3) => {
+var __copyProps = (to, from, except2, desc4) => {
   if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except2)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc3 = __getOwnPropDesc(from, key)) || desc3.enumerable });
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc4 = __getOwnPropDesc(from, key)) || desc4.enumerable });
   }
   return to;
 };
@@ -1355,10 +1355,10 @@ var require_http_errors = __commonJS({
       return ServerError;
     }
     function nameFunc(func, name) {
-      var desc3 = Object.getOwnPropertyDescriptor(func, "name");
-      if (desc3 && desc3.configurable) {
-        desc3.value = name;
-        Object.defineProperty(func, "name", desc3);
+      var desc4 = Object.getOwnPropertyDescriptor(func, "name");
+      if (desc4 && desc4.configurable) {
+        desc4.value = name;
+        Object.defineProperty(func, "name", desc4);
       }
     }
     function populateConstructorExports(exports2, codes, HttpError) {
@@ -16292,9 +16292,9 @@ var require_object_inspect = __commonJS({
   }
 });
 
-// ../../node_modules/.pnpm/side-channel-list@1.0.0/node_modules/side-channel-list/index.js
+// ../../node_modules/.pnpm/side-channel-list@1.0.1/node_modules/side-channel-list/index.js
 var require_side_channel_list = __commonJS({
-  "../../node_modules/.pnpm/side-channel-list@1.0.0/node_modules/side-channel-list/index.js"(exports, module) {
+  "../../node_modules/.pnpm/side-channel-list@1.0.1/node_modules/side-channel-list/index.js"(exports, module) {
     "use strict";
     var inspect = require_object_inspect();
     var $TypeError = require_type();
@@ -16354,9 +16354,8 @@ var require_side_channel_list = __commonJS({
           }
         },
         "delete": function(key) {
-          var root = $o && $o.next;
           var deletedNode = listDelete($o, key);
-          if (deletedNode && root && root === deletedNode) {
+          if (deletedNode && $o && !$o.next) {
             $o = void 0;
           }
           return !!deletedNode;
@@ -16803,14 +16802,14 @@ var require_get = __commonJS({
         throw e;
       }
     }
-    var desc3 = !!hasProtoAccessor && gOPD && gOPD(
+    var desc4 = !!hasProtoAccessor && gOPD && gOPD(
       Object.prototype,
       /** @type {keyof typeof Object.prototype} */
       "__proto__"
     );
     var $Object = Object;
     var $getPrototypeOf = $Object.getPrototypeOf;
-    module.exports = desc3 && typeof desc3.get === "function" ? callBind([desc3.get]) : typeof $getPrototypeOf === "function" ? (
+    module.exports = desc4 && typeof desc4.get === "function" ? callBind([desc4.get]) : typeof $getPrototypeOf === "function" ? (
       /** @type {import('./get')} */
       function getDunder(value) {
         return $getPrototypeOf(value == null ? value : $Object(value));
@@ -17160,10 +17159,10 @@ var require_get_intrinsic = __commonJS({
             return void undefined2;
           }
           if ($gOPD && i + 1 >= parts.length) {
-            var desc3 = $gOPD(value, part);
-            isOwn = !!desc3;
-            if (isOwn && "get" in desc3 && !("originalValue" in desc3.get)) {
-              value = desc3.get;
+            var desc4 = $gOPD(value, part);
+            isOwn = !!desc4;
+            if (isOwn && "get" in desc4 && !("originalValue" in desc4.get)) {
+              value = desc4.get;
             } else {
               value = value[part];
             }
@@ -17372,9 +17371,9 @@ var require_side_channel = __commonJS({
   }
 });
 
-// ../../node_modules/.pnpm/qs@6.15.0/node_modules/qs/lib/formats.js
+// ../../node_modules/.pnpm/qs@6.15.1/node_modules/qs/lib/formats.js
 var require_formats = __commonJS({
-  "../../node_modules/.pnpm/qs@6.15.0/node_modules/qs/lib/formats.js"(exports, module) {
+  "../../node_modules/.pnpm/qs@6.15.1/node_modules/qs/lib/formats.js"(exports, module) {
     "use strict";
     var replace = String.prototype.replace;
     var percentTwenties = /%20/g;
@@ -17398,9 +17397,9 @@ var require_formats = __commonJS({
   }
 });
 
-// ../../node_modules/.pnpm/qs@6.15.0/node_modules/qs/lib/utils.js
+// ../../node_modules/.pnpm/qs@6.15.1/node_modules/qs/lib/utils.js
 var require_utils2 = __commonJS({
-  "../../node_modules/.pnpm/qs@6.15.0/node_modules/qs/lib/utils.js"(exports, module) {
+  "../../node_modules/.pnpm/qs@6.15.1/node_modules/qs/lib/utils.js"(exports, module) {
     "use strict";
     var formats = require_formats();
     var getSideChannel = require_side_channel();
@@ -17662,9 +17661,9 @@ var require_utils2 = __commonJS({
   }
 });
 
-// ../../node_modules/.pnpm/qs@6.15.0/node_modules/qs/lib/stringify.js
+// ../../node_modules/.pnpm/qs@6.15.1/node_modules/qs/lib/stringify.js
 var require_stringify = __commonJS({
-  "../../node_modules/.pnpm/qs@6.15.0/node_modules/qs/lib/stringify.js"(exports, module) {
+  "../../node_modules/.pnpm/qs@6.15.1/node_modules/qs/lib/stringify.js"(exports, module) {
     "use strict";
     var getSideChannel = require_side_channel();
     var utils = require_utils2();
@@ -17945,9 +17944,9 @@ var require_stringify = __commonJS({
   }
 });
 
-// ../../node_modules/.pnpm/qs@6.15.0/node_modules/qs/lib/parse.js
+// ../../node_modules/.pnpm/qs@6.15.1/node_modules/qs/lib/parse.js
 var require_parse = __commonJS({
-  "../../node_modules/.pnpm/qs@6.15.0/node_modules/qs/lib/parse.js"(exports, module) {
+  "../../node_modules/.pnpm/qs@6.15.1/node_modules/qs/lib/parse.js"(exports, module) {
     "use strict";
     var utils = require_utils2();
     var has2 = Object.prototype.hasOwnProperty;
@@ -17999,9 +17998,9 @@ var require_parse = __commonJS({
       var limit2 = options.parameterLimit === Infinity ? void 0 : options.parameterLimit;
       var parts = cleanStr.split(
         options.delimiter,
-        options.throwOnLimitExceeded ? limit2 + 1 : limit2
+        options.throwOnLimitExceeded && typeof limit2 !== "undefined" ? limit2 + 1 : limit2
       );
-      if (options.throwOnLimitExceeded && parts.length > limit2) {
+      if (options.throwOnLimitExceeded && typeof limit2 !== "undefined" && parts.length > limit2) {
         throw new RangeError("Parameter limit exceeded. Only " + limit2 + " parameter" + (limit2 === 1 ? "" : "s") + " allowed.");
       }
       var skipIndex = -1;
@@ -18244,9 +18243,9 @@ var require_parse = __commonJS({
   }
 });
 
-// ../../node_modules/.pnpm/qs@6.15.0/node_modules/qs/lib/index.js
+// ../../node_modules/.pnpm/qs@6.15.1/node_modules/qs/lib/index.js
 var require_lib2 = __commonJS({
-  "../../node_modules/.pnpm/qs@6.15.0/node_modules/qs/lib/index.js"(exports, module) {
+  "../../node_modules/.pnpm/qs@6.15.1/node_modules/qs/lib/index.js"(exports, module) {
     "use strict";
     var stringify2 = require_stringify();
     var parse3 = require_parse();
@@ -20503,27 +20502,27 @@ var require_router = __commonJS({
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var methods = METHODS.map((method) => method.toLowerCase());
-    module.exports = Router36;
+    module.exports = Router37;
     module.exports.Route = Route;
-    function Router36(options) {
-      if (!(this instanceof Router36)) {
-        return new Router36(options);
+    function Router37(options) {
+      if (!(this instanceof Router37)) {
+        return new Router37(options);
       }
       const opts = options || {};
-      function router36(req, res, next) {
-        router36.handle(req, res, next);
+      function router37(req, res, next) {
+        router37.handle(req, res, next);
       }
-      Object.setPrototypeOf(router36, this);
-      router36.caseSensitive = opts.caseSensitive;
-      router36.mergeParams = opts.mergeParams;
-      router36.params = {};
-      router36.strict = opts.strict;
-      router36.stack = [];
-      return router36;
+      Object.setPrototypeOf(router37, this);
+      router37.caseSensitive = opts.caseSensitive;
+      router37.mergeParams = opts.mergeParams;
+      router37.params = {};
+      router37.strict = opts.strict;
+      router37.stack = [];
+      return router37;
     }
-    Router36.prototype = function() {
+    Router37.prototype = function() {
     };
-    Router36.prototype.param = function param(name, fn) {
+    Router37.prototype.param = function param(name, fn) {
       if (!name) {
         throw new TypeError("argument name is required");
       }
@@ -20543,7 +20542,7 @@ var require_router = __commonJS({
       params.push(fn);
       return this;
     };
-    Router36.prototype.handle = function handle(req, res, callback) {
+    Router37.prototype.handle = function handle(req, res, callback) {
       if (!callback) {
         throw new TypeError("argument callback is required");
       }
@@ -20670,7 +20669,7 @@ var require_router = __commonJS({
         }
       }
     };
-    Router36.prototype.use = function use(handler) {
+    Router37.prototype.use = function use(handler) {
       let offset = 0;
       let path2 = "/";
       if (typeof handler !== "function") {
@@ -20703,7 +20702,7 @@ var require_router = __commonJS({
       }
       return this;
     };
-    Router36.prototype.route = function route(path2) {
+    Router37.prototype.route = function route(path2) {
       const route2 = new Route(path2);
       const layer = new Layer(path2, {
         sensitive: this.caseSensitive,
@@ -20718,7 +20717,7 @@ var require_router = __commonJS({
       return route2;
     };
     methods.concat("all").forEach(function(method) {
-      Router36.prototype[method] = function(path2) {
+      Router37.prototype[method] = function(path2) {
         const route = this.route(path2);
         route[method].apply(route, slice.call(arguments, 1));
         return this;
@@ -20901,13 +20900,13 @@ var require_application = __commonJS({
     var compileTrust = require_utils3().compileTrust;
     var resolve = __require("node:path").resolve;
     var once = require_once();
-    var Router36 = require_router();
+    var Router37 = require_router();
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var app2 = exports = module.exports = {};
     var trustProxyDefaultSymbol = "@@symbol:trust_proxy_default";
     app2.init = function init() {
-      var router36 = null;
+      var router37 = null;
       this.cache = /* @__PURE__ */ Object.create(null);
       this.engines = /* @__PURE__ */ Object.create(null);
       this.settings = /* @__PURE__ */ Object.create(null);
@@ -20916,13 +20915,13 @@ var require_application = __commonJS({
         configurable: true,
         enumerable: true,
         get: function getrouter() {
-          if (router36 === null) {
-            router36 = new Router36({
+          if (router37 === null) {
+            router37 = new Router37({
               caseSensitive: this.enabled("case sensitive routing"),
               strict: this.enabled("strict routing")
             });
           }
-          return router36;
+          return router37;
         }
       });
     };
@@ -20993,15 +20992,15 @@ var require_application = __commonJS({
       if (fns.length === 0) {
         throw new TypeError("app.use() requires a middleware function");
       }
-      var router36 = this.router;
+      var router37 = this.router;
       fns.forEach(function(fn2) {
         if (!fn2 || !fn2.handle || !fn2.set) {
-          return router36.use(path2, fn2);
+          return router37.use(path2, fn2);
         }
         debug(".use app under %s", path2);
         fn2.mountpath = path2;
         fn2.parent = this;
-        router36.use(path2, function mounted_app(req, res, next) {
+        router37.use(path2, function mounted_app(req, res, next) {
           var orig = req.app;
           fn2.handle(req, res, function(err) {
             Object.setPrototypeOf(req, orig.request);
@@ -22043,16 +22042,14 @@ var require_request = __commonJS({
   }
 });
 
-// ../../node_modules/.pnpm/content-disposition@1.0.1/node_modules/content-disposition/index.js
+// ../../node_modules/.pnpm/content-disposition@1.1.0/node_modules/content-disposition/index.js
 var require_content_disposition = __commonJS({
-  "../../node_modules/.pnpm/content-disposition@1.0.1/node_modules/content-disposition/index.js"(exports, module) {
+  "../../node_modules/.pnpm/content-disposition@1.1.0/node_modules/content-disposition/index.js"(exports, module) {
     "use strict";
     module.exports = contentDisposition;
     module.exports.parse = parse3;
-    var basename = __require("path").basename;
+    var utf8Decoder = new TextDecoder("utf-8");
     var ENCODE_URL_ATTR_CHAR_REGEXP = /[\x00-\x20"'()*,/:;<=>?@[\\\]{}\x7f]/g;
-    var HEX_ESCAPE_REGEXP = /%[0-9A-Fa-f]{2}/;
-    var HEX_ESCAPE_REPLACE_REGEXP = /%([0-9A-Fa-f]{2})/g;
     var NON_LATIN1_REGEXP = /[^\x20-\x7e\xa0-\xff]/g;
     var QESC_REGEXP = /\\([\u0000-\u007f])/g;
     var QUOTE_REGEXP = /([\\"])/g;
@@ -22088,7 +22085,7 @@ var require_content_disposition = __commonJS({
       var isQuotedString = TEXT_REGEXP.test(name);
       var fallbackName = typeof fallback !== "string" ? fallback && getlatin1(name) : basename(fallback);
       var hasFallback = typeof fallbackName === "string" && fallbackName !== name;
-      if (hasFallback || !isQuotedString || HEX_ESCAPE_REGEXP.test(name)) {
+      if (hasFallback || !isQuotedString || hasHexEscape(name)) {
         params["filename*"] = name;
       }
       if (isQuotedString || hasFallback) {
@@ -22115,26 +22112,32 @@ var require_content_disposition = __commonJS({
       return string4;
     }
     function decodefield(str2) {
-      var match = EXT_VALUE_REGEXP.exec(str2);
+      const match = EXT_VALUE_REGEXP.exec(str2);
       if (!match) {
         throw new TypeError("invalid extended field value");
       }
-      var charset = match[1].toLowerCase();
-      var encoded = match[2];
-      var value;
-      var binary = encoded.replace(HEX_ESCAPE_REPLACE_REGEXP, pdecode);
+      const charset = match[1].toLowerCase();
+      const encoded = match[2];
       switch (charset) {
-        case "iso-8859-1":
-          value = getlatin1(binary);
-          break;
+        case "iso-8859-1": {
+          const binary = decodeHexEscapes(encoded);
+          return getlatin1(binary);
+        }
         case "utf-8":
-        case "utf8":
-          value = Buffer.from(binary, "binary").toString("utf8");
-          break;
-        default:
-          throw new TypeError("unsupported charset in extended field");
+        case "utf8": {
+          try {
+            return decodeURIComponent(encoded);
+          } catch {
+            const binary = decodeHexEscapes(encoded);
+            const bytes = new Uint8Array(binary.length);
+            for (let idx = 0; idx < binary.length; idx++) {
+              bytes[idx] = binary.charCodeAt(idx);
+            }
+            return utf8Decoder.decode(bytes);
+          }
+        }
       }
-      return value;
+      throw new TypeError("unsupported charset in extended field");
     }
     function getlatin1(val) {
       return String(val).replace(NON_LATIN1_REGEXP, "?");
@@ -22184,9 +22187,6 @@ var require_content_disposition = __commonJS({
       }
       return new ContentDisposition(type, params);
     }
-    function pdecode(str2, hex) {
-      return String.fromCharCode(parseInt(hex, 16));
-    }
     function pencode(char2) {
       return "%" + String(char2).charCodeAt(0).toString(16).toUpperCase();
     }
@@ -22202,6 +22202,51 @@ var require_content_disposition = __commonJS({
     function ContentDisposition(type, parameters) {
       this.type = type;
       this.parameters = parameters;
+    }
+    function basename(path2) {
+      const normalized = path2.replaceAll("\\", "/");
+      let end = normalized.length;
+      while (end > 0 && normalized[end - 1] === "/") {
+        end--;
+      }
+      if (end === 0) {
+        return "";
+      }
+      let start = end - 1;
+      while (start >= 0 && normalized[start] !== "/") {
+        start--;
+      }
+      return normalized.slice(start + 1, end);
+    }
+    function isHexDigit(char2) {
+      const code = char2.charCodeAt(0);
+      return code >= 48 && code <= 57 || // 0-9
+      code >= 65 && code <= 70 || // A-F
+      code >= 97 && code <= 102;
+    }
+    function hasHexEscape(str2) {
+      const maxIndex = str2.length - 3;
+      let lastIndex = -1;
+      while ((lastIndex = str2.indexOf("%", lastIndex + 1)) !== -1 && lastIndex <= maxIndex) {
+        if (isHexDigit(str2[lastIndex + 1]) && isHexDigit(str2[lastIndex + 2])) {
+          return true;
+        }
+      }
+      return false;
+    }
+    function decodeHexEscapes(str2) {
+      const firstEscape = str2.indexOf("%");
+      if (firstEscape === -1) return str2;
+      let result = str2.slice(0, firstEscape);
+      for (let idx = firstEscape; idx < str2.length; idx++) {
+        if (str2[idx] === "%" && idx + 2 < str2.length && isHexDigit(str2[idx + 1]) && isHexDigit(str2[idx + 2])) {
+          result += String.fromCharCode(Number.parseInt(str2[idx + 1] + str2[idx + 2], 16));
+          idx += 2;
+        } else {
+          result += str2[idx];
+        }
+      }
+      return result;
     }
   }
 });
@@ -23528,7 +23573,7 @@ var require_express = __commonJS({
     var EventEmitter = __require("node:events").EventEmitter;
     var mixin = require_merge_descriptors();
     var proto = require_application();
-    var Router36 = require_router();
+    var Router37 = require_router();
     var req = require_request();
     var res = require_response();
     exports = module.exports = createApplication;
@@ -23550,8 +23595,8 @@ var require_express = __commonJS({
     exports.application = proto;
     exports.request = req;
     exports.response = res;
-    exports.Route = Router36.Route;
-    exports.Router = Router36;
+    exports.Route = Router37.Route;
+    exports.Router = Router37;
     exports.json = bodyParser.json;
     exports.raw = bodyParser.raw;
     exports.static = require_serve_static();
@@ -31775,12 +31820,12 @@ var require_result = __commonJS({
         }
         const row = {};
         for (let i = 0; i < fieldDescriptions.length; i++) {
-          const desc3 = fieldDescriptions[i];
-          row[desc3.name] = null;
+          const desc4 = fieldDescriptions[i];
+          row[desc4.name] = null;
           if (this._types) {
-            this._parsers[i] = this._types.getTypeParser(desc3.dataTypeID, desc3.format || "text");
+            this._parsers[i] = this._types.getTypeParser(desc4.dataTypeID, desc4.format || "text");
           } else {
-            this._parsers[i] = types3.getTypeParser(desc3.dataTypeID, desc3.format || "text");
+            this._parsers[i] = types3.getTypeParser(desc4.dataTypeID, desc4.format || "text");
           }
         }
         this._prebuiltEmptyResultObject = { ...row };
@@ -55185,7 +55230,9 @@ var init_world = __esm({
       postedAt: timestamp("posted_at").defaultNow().notNull(),
       expiresAt: timestamp("expires_at").notNull(),
       sold: boolean("sold").notNull().default(false),
-      cancelled: boolean("cancelled").notNull().default(false)
+      cancelled: boolean("cancelled").notNull().default(false),
+      soldAt: timestamp("sold_at"),
+      sellerPersonality: text("seller_personality")
     });
     knownRecipesTable = pgTable("known_recipes", {
       id: serial("id").primaryKey(),
@@ -55407,7 +55454,7 @@ var init_gathering = __esm({
 });
 
 // ../../lib/db/src/schema/tradeskills.ts
-var recipesTable, craftQueueTable;
+var recipesTable, ghostLegacyTable, craftQueueTable;
 var init_tradeskills = __esm({
   "../../lib/db/src/schema/tradeskills.ts"() {
     "use strict";
@@ -55425,7 +55472,21 @@ var init_tradeskills = __esm({
       acquisitionType: text("acquisition_type").notNull().default("vendor"),
       vendorCost: integer("vendor_cost"),
       isOoak: boolean("is_ooak").notNull().default(false),
+      /** For OoaK recipes: the userId of the character who claimed it, or null if unclaimed. */
+      claimedBy: text("claimed_by"),
       spriteId: text("sprite_id"),
+      createdAt: timestamp("created_at").notNull().defaultNow()
+    });
+    ghostLegacyTable = pgTable("ghost_legacy", {
+      id: serial("id").primaryKey(),
+      ghostId: integer("ghost_id").notNull(),
+      ghostName: text("ghost_name").notNull(),
+      /** "item" | "recipe" | "ooak_recipe" */
+      dropType: text("drop_type").notNull(),
+      /** Item/recipe name or OoaK recipe name */
+      dropName: text("drop_name").notNull(),
+      /** For recipes: the DB recipe id. For items: the itemId. */
+      dropReference: text("drop_reference"),
       createdAt: timestamp("created_at").notNull().defaultNow()
     });
     craftQueueTable = pgTable("craft_queue", {
@@ -55438,6 +55499,48 @@ var init_tradeskills = __esm({
       nextCompletesAt: timestamp("next_completes_at").notNull(),
       status: text("status").notNull().default("crafting")
     });
+  }
+});
+
+// ../../lib/db/src/schema/guilds.ts
+var guildsTable, guildMembersTable;
+var init_guilds = __esm({
+  "../../lib/db/src/schema/guilds.ts"() {
+    "use strict";
+    init_pg_core();
+    init_drizzle_orm();
+    guildsTable = pgTable("guilds", {
+      id: serial("id").primaryKey(),
+      name: text("name").notNull(),
+      tag: text("tag").notNull(),
+      description: text("description").notNull().default(""),
+      motto: text("motto").notNull().default(""),
+      alignment: text("alignment").notNull().default("Neutral"),
+      /** characterId of the guild leader (null for ghost guilds) */
+      leaderId: integer("leader_id"),
+      /** true for AI-simulated ghost guilds */
+      isGhost: boolean("is_ghost").notNull().default(false),
+      bankGold: real("bank_gold").notNull().default(0),
+      createdAt: timestamp("created_at").defaultNow().notNull(),
+      updatedAt: timestamp("updated_at").defaultNow().notNull()
+    }, (t) => [
+      uniqueIndex("guilds_name_unique").on(t.name),
+      uniqueIndex("guilds_tag_unique").on(t.tag)
+    ]);
+    guildMembersTable = pgTable("guild_members", {
+      id: serial("id").primaryKey(),
+      guildId: integer("guild_id").notNull(),
+      /** Set for real player characters; null for ghost members */
+      characterId: integer("character_id"),
+      /** Set for ghost/AI players; null for real members */
+      ghostId: integer("ghost_id"),
+      /** leader | officer | member */
+      rank: text("rank").notNull().default("member"),
+      contributionPoints: real("contribution_points").notNull().default(0),
+      joinedAt: timestamp("joined_at").defaultNow().notNull()
+    }, (t) => [
+      uniqueIndex("guild_members_character_unique").on(t.characterId).where(sql`character_id IS NOT NULL`)
+    ]);
   }
 });
 
@@ -55466,8 +55569,11 @@ __export(schema_exports, {
   ghostDungeonClearsTable: () => ghostDungeonClearsTable,
   ghostInventoryTable: () => ghostInventoryTable,
   ghostKnownRecipesTable: () => ghostKnownRecipesTable,
+  ghostLegacyTable: () => ghostLegacyTable,
   ghostMarketDemandTable: () => ghostMarketDemandTable,
   ghostRaidClearsTable: () => ghostRaidClearsTable,
+  guildMembersTable: () => guildMembersTable,
+  guildsTable: () => guildsTable,
   heroicStateTable: () => heroicStateTable,
   insertCharacterSchema: () => insertCharacterSchema,
   insertCombatLogSchema: () => insertCombatLogSchema,
@@ -55504,6 +55610,7 @@ var init_schema2 = __esm({
     init_dungeons();
     init_gathering();
     init_tradeskills();
+    init_guilds();
   }
 });
 
@@ -55522,10 +55629,8 @@ __export(gameData_exports, {
   isNoSell: () => isNoSell,
   xpForLevel: () => xpForLevel
 });
-function isNoSell(item) {
-  if (item.noSell === true) return true;
-  const rarity = item.rarity;
-  return rarity === "fabled" || rarity === "mythical";
+function isNoSell(_item) {
+  return false;
 }
 function getOneOfAKindScrollMap() {
   const map2 = /* @__PURE__ */ new Map();
@@ -55615,7 +55720,7 @@ var init_gameData = __esm({
         slot: "primary",
         rarity: "legendary",
         level: 35,
-        stats: { strength: 32, agility: 15, intelligence: 10, attackRating: 230, critChance: 7, weaponDamageMin: 90, weaponDamageMax: 140, weaponDelay: 1.5 },
+        stats: { strength: 32, agility: 15, intelligence: 10, attackRating: 230, critChance: 7, weaponDamageMin: 90, weaponDamageMax: 140, weaponDelay: 1.5, resistMagic: 8 },
         sellPrice: 1800,
         spriteId: "sword_dark"
       },
@@ -55631,6 +55736,215 @@ var init_gameData = __esm({
         sellPrice: 8e3,
         spriteId: "sword_fabled",
         noSell: true
+      },
+      // CASTER WEAPONS - Wands (INT-focused)
+      {
+        id: "iron_wand",
+        name: "Iron Wand",
+        description: "A simple iron wand channeling raw arcane energy",
+        type: "weapon",
+        slot: "primary",
+        rarity: "common",
+        level: 5,
+        stats: { intelligence: 4, wisdom: 2, attackRating: 8, weaponDamageMin: 6, weaponDamageMax: 12, weaponDelay: 1.6 },
+        sellPrice: 18,
+        spriteId: "weapon_wand"
+      },
+      {
+        id: "steel_wand",
+        name: "Arcanist's Steel Wand",
+        description: "A finely-forged steel wand etched with focusing runes",
+        type: "weapon",
+        slot: "primary",
+        rarity: "uncommon",
+        level: 15,
+        stats: { intelligence: 10, wisdom: 5, critChance: 2, attackRating: 18, weaponDamageMin: 14, weaponDamageMax: 24, weaponDelay: 1.5 },
+        sellPrice: 90,
+        spriteId: "weapon_wand"
+      },
+      {
+        id: "mithril_wand",
+        name: "Mithril Runewand",
+        description: "A wand tipped with mithril that amplifies spell potency",
+        type: "weapon",
+        slot: "primary",
+        rarity: "rare",
+        level: 28,
+        stats: { intelligence: 22, wisdom: 14, critChance: 5, attackRating: 38, weaponDamageMin: 28, weaponDamageMax: 46, weaponDelay: 1.4 },
+        sellPrice: 480,
+        spriteId: "weapon_wand"
+      },
+      {
+        id: "adamantine_wand",
+        name: "Adamantine Sorcerer's Wand",
+        description: "A wand forged from adamantine ore that crackles with contained power",
+        type: "weapon",
+        slot: "primary",
+        rarity: "legendary",
+        level: 42,
+        stats: { intelligence: 38, wisdom: 24, critChance: 9, attackRating: 70, weaponDamageMin: 52, weaponDamageMax: 82, weaponDelay: 1.4 },
+        sellPrice: 1600,
+        spriteId: "weapon_wand"
+      },
+      // CASTER WEAPONS - Scepters (WIS-focused, healer primary)
+      {
+        id: "iron_scepter",
+        name: "Iron Confessor's Scepter",
+        description: "A blunt iron scepter used by novice priests to channel divine power",
+        type: "weapon",
+        slot: "primary",
+        rarity: "common",
+        level: 5,
+        stats: { wisdom: 5, power: 20, attackRating: 6, weaponDamageMin: 5, weaponDamageMax: 10, weaponDelay: 1.8 },
+        sellPrice: 18,
+        spriteId: "weapon_scepter"
+      },
+      {
+        id: "steel_scepter",
+        name: "Steel Cleric Scepter",
+        description: "A sturdy steel scepter blessed by a Temple priest",
+        type: "weapon",
+        slot: "primary",
+        rarity: "uncommon",
+        level: 16,
+        stats: { wisdom: 12, power: 45, critChance: 2, attackRating: 16, weaponDamageMin: 12, weaponDamageMax: 20, weaponDelay: 1.8 },
+        sellPrice: 95,
+        spriteId: "weapon_scepter"
+      },
+      {
+        id: "mithril_scepter",
+        name: "Mithril Channeler's Scepter",
+        description: "A mithril scepter that resonates with divine healing energy",
+        type: "weapon",
+        slot: "primary",
+        rarity: "rare",
+        level: 28,
+        stats: { wisdom: 26, power: 90, critChance: 4, attackRating: 30, weaponDamageMin: 22, weaponDamageMax: 38, weaponDelay: 1.8 },
+        sellPrice: 500,
+        spriteId: "weapon_scepter"
+      },
+      {
+        id: "adamantine_scepter",
+        name: "Adamantine High Priest's Scepter",
+        description: "A scepter of adamantine blessed by the highest orders of the church",
+        type: "weapon",
+        slot: "primary",
+        rarity: "legendary",
+        level: 42,
+        stats: { wisdom: 44, power: 160, critChance: 7, attackRating: 56, weaponDamageMin: 42, weaponDamageMax: 70, weaponDelay: 1.8 },
+        sellPrice: 1700,
+        spriteId: "weapon_scepter"
+      },
+      // MELEE WEAPONS - Maces (STR/STA, Paladin/Guardian)
+      {
+        id: "iron_mace",
+        name: "Iron Flanged Mace",
+        description: "A heavy flanged mace that crushes through even solid plate",
+        type: "weapon",
+        slot: "primary",
+        rarity: "uncommon",
+        level: 6,
+        stats: { strength: 6, stamina: 4, attackRating: 18, weaponDamageMin: 10, weaponDamageMax: 18, weaponDelay: 2.2 },
+        sellPrice: 35,
+        spriteId: "weapon_mace"
+      },
+      {
+        id: "steel_mace",
+        name: "Steel War Mace",
+        description: "A balanced war mace of tempered steel favoured by crusaders",
+        type: "weapon",
+        slot: "primary",
+        rarity: "uncommon",
+        level: 18,
+        stats: { strength: 12, stamina: 8, attackRating: 45, weaponDamageMin: 22, weaponDamageMax: 38, weaponDelay: 2.2 },
+        sellPrice: 140,
+        spriteId: "weapon_mace"
+      },
+      {
+        id: "mithril_mace",
+        name: "Mithril Siege Mace",
+        description: "A devastating mithril mace used to breach fortifications",
+        type: "weapon",
+        slot: "primary",
+        rarity: "rare",
+        level: 30,
+        stats: { strength: 20, stamina: 14, attackRating: 80, mitigation: 5, weaponDamageMin: 40, weaponDamageMax: 65, weaponDelay: 2.3 },
+        sellPrice: 520,
+        spriteId: "weapon_mace"
+      },
+      {
+        id: "adamantine_mace",
+        name: "Adamantine Judicator's Mace",
+        description: "A holy mace of adamantine inlaid with divine scripture",
+        type: "weapon",
+        slot: "primary",
+        rarity: "legendary",
+        level: 42,
+        stats: { strength: 32, stamina: 22, attackRating: 140, mitigation: 10, weaponDamageMin: 70, weaponDamageMax: 108, weaponDelay: 2.2 },
+        sellPrice: 1800,
+        spriteId: "weapon_mace"
+      },
+      // MELEE WEAPONS - Fist Weapons (Monk/Bruiser)
+      {
+        id: "iron_fist_wraps",
+        name: "Iron Knuckle Wraps",
+        description: "Iron-plated wraps that protect the fists and amplify striking force",
+        type: "weapon",
+        slot: "primary",
+        rarity: "uncommon",
+        level: 6,
+        stats: { strength: 5, agility: 6, attackRating: 14, weaponDamageMin: 8, weaponDamageMax: 15, weaponDelay: 1.6 },
+        sellPrice: 30,
+        spriteId: "weapon_fist"
+      },
+      {
+        id: "spidersilk_monk_wraps",
+        name: "Spidersilk Monk's Wraps",
+        description: "Woven from spidersilk and reinforced with mithril rings for monks",
+        type: "weapon",
+        slot: "primary",
+        rarity: "rare",
+        level: 28,
+        stats: { strength: 18, agility: 20, attackRating: 65, critChance: 5, haste: 4, weaponDamageMin: 30, weaponDamageMax: 50, weaponDelay: 1.5 },
+        sellPrice: 480,
+        spriteId: "weapon_fist"
+      },
+      {
+        id: "adamantine_fists",
+        name: "Adamantine Iron Fists",
+        description: "Gauntlets shaped into pointed fists from solid adamantine \u2014 brutal and precise",
+        type: "weapon",
+        slot: "primary",
+        rarity: "legendary",
+        level: 42,
+        stats: { strength: 30, agility: 26, attackRating: 120, critChance: 8, haste: 6, weaponDamageMin: 60, weaponDamageMax: 95, weaponDelay: 1.5 },
+        sellPrice: 1750,
+        spriteId: "weapon_fist"
+      },
+      // RANGED WEAPONS - Crossbows (Assassin/Brigand)
+      {
+        id: "steel_crossbow",
+        name: "Steel Crossbow",
+        description: "A reliable steel crossbow capable of punching through light armor",
+        type: "weapon",
+        slot: "ranged",
+        rarity: "uncommon",
+        level: 14,
+        stats: { agility: 8, attackRating: 28, weaponDamageMin: 18, weaponDamageMax: 32, weaponDelay: 2.8 },
+        sellPrice: 100,
+        spriteId: "weapon_crossbow"
+      },
+      {
+        id: "mithril_crossbow",
+        name: "Mithril Repeating Crossbow",
+        description: "A precision mithril crossbow with a rapid-fire repeating mechanism",
+        type: "weapon",
+        slot: "ranged",
+        rarity: "rare",
+        level: 30,
+        stats: { agility: 20, attackRating: 75, critChance: 6, weaponDamageMin: 42, weaponDamageMax: 68, weaponDelay: 2.6 },
+        sellPrice: 600,
+        spriteId: "weapon_crossbow"
       },
       // SHIELDS - Secondary
       {
@@ -55668,6 +55982,295 @@ var init_gameData = __esm({
         stats: { stamina: 22, defenseRating: 85, mitigation: 65, health: 80 },
         sellPrice: 600,
         spriteId: "shield_mithril"
+      },
+      {
+        id: "adamantine_tower_shield",
+        name: "Adamantine Tower Shield",
+        description: "An enormous shield of adamantine that can turn aside siege weapons",
+        type: "armor",
+        slot: "secondary",
+        rarity: "legendary",
+        level: 40,
+        stats: { stamina: 42, defenseRating: 160, mitigation: 120, health: 160, strength: 10 },
+        sellPrice: 2200,
+        spriteId: "shield_legendary"
+      },
+      {
+        id: "paladins_holy_bulwark",
+        name: "Paladin's Holy Bulwark",
+        description: "A shield blessed by the Qeynos Guard \u2014 radiates divine protection",
+        type: "armor",
+        slot: "secondary",
+        rarity: "legendary",
+        level: 45,
+        stats: { stamina: 38, defenseRating: 140, mitigation: 105, health: 140, wisdom: 18, power: 80 },
+        sellPrice: 2500,
+        spriteId: "shield_holy"
+      },
+      // HANDS ARMOR
+      {
+        id: "iron_gauntlets",
+        name: "Iron Gauntlets",
+        description: "Heavy iron gauntlets that protect the hands without sacrificing grip",
+        type: "armor",
+        slot: "hands",
+        rarity: "common",
+        level: 6,
+        armorType: "plate",
+        stats: { defenseRating: 10, stamina: 4, haste: 1 },
+        sellPrice: 18,
+        spriteId: "hands_plate"
+      },
+      {
+        id: "steel_gauntlets",
+        name: "Steel Gauntlets",
+        description: "Well-crafted steel gauntlets with articulated finger plates",
+        type: "armor",
+        slot: "hands",
+        rarity: "uncommon",
+        level: 18,
+        armorType: "plate",
+        stats: { defenseRating: 22, stamina: 10, haste: 3, critChance: 1 },
+        sellPrice: 85,
+        spriteId: "hands_plate"
+      },
+      {
+        id: "mithril_gauntlets",
+        name: "Mithril Gauntlets",
+        description: "Gleaming mithril gauntlets offering exceptional protection and dexterity",
+        type: "armor",
+        slot: "hands",
+        rarity: "rare",
+        level: 30,
+        armorType: "plate",
+        stats: { defenseRating: 42, stamina: 20, haste: 5, critChance: 2, attackRating: 18 },
+        sellPrice: 540,
+        spriteId: "hands_plate"
+      },
+      {
+        id: "leather_scout_gloves",
+        name: "Leather Scout Gloves",
+        description: "Fitted leather gloves for scouts and rogues that leave the fingertips free",
+        type: "armor",
+        slot: "hands",
+        rarity: "uncommon",
+        level: 14,
+        armorType: "leather",
+        stats: { agility: 8, attackRating: 10, haste: 3, critChance: 1 },
+        sellPrice: 70,
+        spriteId: "hands_leather"
+      },
+      {
+        id: "silk_spell_gloves",
+        name: "Silk Spell Gloves",
+        description: "Thin silk gloves that focus magical energies through the palms",
+        type: "armor",
+        slot: "hands",
+        rarity: "uncommon",
+        level: 16,
+        armorType: "cloth",
+        stats: { intelligence: 10, wisdom: 6, critChance: 2 },
+        sellPrice: 75,
+        spriteId: "hands_cloth"
+      },
+      // FEET ARMOR
+      {
+        id: "iron_sabatons",
+        name: "Iron Sabatons",
+        description: "Heavy iron foot armor that protects from ankle to toe",
+        type: "armor",
+        slot: "feet",
+        rarity: "common",
+        level: 6,
+        armorType: "plate",
+        stats: { defenseRating: 8, stamina: 3, agility: 2 },
+        sellPrice: 16,
+        spriteId: "feet_plate"
+      },
+      {
+        id: "steel_sabatons",
+        name: "Steel Sabatons",
+        description: "Articulated steel foot armor that balances protection with mobility",
+        type: "armor",
+        slot: "feet",
+        rarity: "uncommon",
+        level: 18,
+        armorType: "plate",
+        stats: { defenseRating: 20, stamina: 8, agility: 6, avoidance: 2 },
+        sellPrice: 80,
+        spriteId: "feet_plate"
+      },
+      {
+        id: "leather_ranger_boots",
+        name: "Leather Ranger Boots",
+        description: "Supple boots crafted for rangers who spend days in the field",
+        type: "armor",
+        slot: "feet",
+        rarity: "uncommon",
+        level: 14,
+        armorType: "leather",
+        stats: { agility: 10, avoidance: 3, haste: 2 },
+        sellPrice: 72,
+        spriteId: "feet_leather"
+      },
+      {
+        id: "silk_mage_slippers",
+        name: "Silk Mage's Slippers",
+        description: "Enchanted slippers that keep the caster light on their feet",
+        type: "armor",
+        slot: "feet",
+        rarity: "uncommon",
+        level: 16,
+        armorType: "cloth",
+        stats: { intelligence: 8, wisdom: 5, avoidance: 2, power: 25 },
+        sellPrice: 78,
+        spriteId: "feet_cloth"
+      },
+      // WRISTS ARMOR
+      {
+        id: "iron_vambraces",
+        name: "Iron Vambraces",
+        description: "Simple iron bracers that guard the forearms in combat",
+        type: "armor",
+        slot: "wrists",
+        rarity: "common",
+        level: 6,
+        armorType: "plate",
+        stats: { defenseRating: 8, strength: 3, stamina: 2 },
+        sellPrice: 14,
+        spriteId: "wrists_plate"
+      },
+      {
+        id: "steel_vambraces",
+        name: "Steel Vambraces",
+        description: "Reinforced steel vambraces worn by seasoned fighters",
+        type: "armor",
+        slot: "wrists",
+        rarity: "uncommon",
+        level: 18,
+        armorType: "plate",
+        stats: { defenseRating: 18, strength: 8, attackRating: 10 },
+        sellPrice: 76,
+        spriteId: "wrists_plate"
+      },
+      {
+        id: "silk_arcanist_bracers",
+        name: "Silk Arcanist Bracers",
+        description: "Silk bracers embroidered with runes that amplify spellcasting",
+        type: "armor",
+        slot: "wrists",
+        rarity: "uncommon",
+        level: 16,
+        armorType: "cloth",
+        stats: { intelligence: 10, wisdom: 7, critChance: 2 },
+        sellPrice: 72,
+        spriteId: "wrists_cloth"
+      },
+      // WAIST ARMOR
+      {
+        id: "iron_plate_belt",
+        name: "Iron Plate Belt",
+        description: "A wide iron belt that provides core protection",
+        type: "armor",
+        slot: "waist",
+        rarity: "common",
+        level: 8,
+        armorType: "plate",
+        stats: { defenseRating: 8, stamina: 5, strength: 2 },
+        sellPrice: 16,
+        spriteId: "waist_plate"
+      },
+      {
+        id: "steel_plate_belt",
+        name: "Steel Plate Belt",
+        description: "A reinforced steel belt that doubles as a brace against heavy blows",
+        type: "armor",
+        slot: "waist",
+        rarity: "uncommon",
+        level: 20,
+        armorType: "plate",
+        stats: { defenseRating: 18, stamina: 12, health: 20, strength: 5 },
+        sellPrice: 82,
+        spriteId: "waist_plate"
+      },
+      {
+        id: "leather_ranger_belt",
+        name: "Leather Ranger Belt",
+        description: "A practical ranger's belt with loops for tools and pouches",
+        type: "armor",
+        slot: "waist",
+        rarity: "uncommon",
+        level: 16,
+        armorType: "leather",
+        stats: { agility: 8, stamina: 5, attackRating: 8 },
+        sellPrice: 68,
+        spriteId: "waist_leather"
+      },
+      {
+        id: "silk_arcanist_sash",
+        name: "Silk Arcanist's Sash",
+        description: "A sash woven from enchanted silk that helps contain magical overflow",
+        type: "armor",
+        slot: "waist",
+        rarity: "uncommon",
+        level: 18,
+        armorType: "cloth",
+        stats: { intelligence: 10, wisdom: 7, power: 28 },
+        sellPrice: 74,
+        spriteId: "waist_cloth"
+      },
+      // BACK ARMOR
+      {
+        id: "rough_hide_cloak",
+        name: "Rough Hide Cloak",
+        description: "A thick cloak of rough animal hide, good for cold nights in the field",
+        type: "armor",
+        slot: "back",
+        rarity: "common",
+        level: 5,
+        armorType: "leather",
+        stats: { stamina: 5, defenseRating: 6, agility: 2 },
+        sellPrice: 14,
+        spriteId: "back_leather"
+      },
+      {
+        id: "supple_leather_cloak",
+        name: "Supple Leather Cloak",
+        description: "A well-tanned leather cloak that offers freedom of movement",
+        type: "armor",
+        slot: "back",
+        rarity: "uncommon",
+        level: 16,
+        armorType: "leather",
+        stats: { agility: 8, stamina: 8, avoidance: 3, defenseRating: 14 },
+        sellPrice: 78,
+        spriteId: "back_leather"
+      },
+      {
+        id: "spidersilk_cloak",
+        name: "Spidersilk Cloak",
+        description: "A shimmering cloak of spidersilk that is nearly weightless yet strong as mail",
+        type: "armor",
+        slot: "back",
+        rarity: "rare",
+        level: 30,
+        armorType: "cloth",
+        stats: { agility: 16, stamina: 14, avoidance: 5, critChance: 3, intelligence: 10 },
+        sellPrice: 520,
+        spriteId: "back_silk"
+      },
+      {
+        id: "moonweave_arcane_cloak",
+        name: "Moonweave Arcane Cloak",
+        description: "A cloak woven from moonweave that crackles with stored arcane energy",
+        type: "armor",
+        slot: "back",
+        rarity: "legendary",
+        level: 42,
+        armorType: "cloth",
+        stats: { intelligence: 28, wisdom: 20, critChance: 6, stamina: 18, avoidance: 4, resistMagic: 10 },
+        sellPrice: 1600,
+        spriteId: "back_arcane"
       },
       // HEAD ARMOR
       {
@@ -55726,7 +56329,7 @@ var init_gameData = __esm({
         slot: "head",
         rarity: "legendary",
         level: 38,
-        stats: { stamina: 55, strength: 18, defenseRating: 160, mitigation: 120, health: 120, critChance: 2 },
+        stats: { stamina: 55, strength: 18, defenseRating: 160, mitigation: 120, health: 120, critChance: 2, resistPierce: 10, resistSlash: 8 },
         sellPrice: 2200,
         spriteId: "helm_legendary"
       },
@@ -55799,7 +56402,7 @@ var init_gameData = __esm({
         slot: "chest",
         rarity: "legendary",
         level: 40,
-        stats: { stamina: 80, strength: 28, wisdom: 12, defenseRating: 285, mitigation: 215, health: 200 },
+        stats: { stamina: 80, strength: 28, wisdom: 12, defenseRating: 285, mitigation: 215, health: 200, resistSlash: 12, resistPierce: 8 },
         sellPrice: 3500,
         spriteId: "chest_legendary"
       },
@@ -55811,7 +56414,7 @@ var init_gameData = __esm({
         slot: "chest",
         rarity: "fabled",
         level: 55,
-        stats: { stamina: 120, strength: 42, defenseRating: 480, mitigation: 360, health: 380, critChance: 3 },
+        stats: { stamina: 120, strength: 42, defenseRating: 480, mitigation: 360, health: 380, critChance: 3, resistPierce: 15, resistSlash: 12, resistCrush: 10 },
         sellPrice: 12e3,
         spriteId: "chest_fabled",
         noSell: true
@@ -55910,7 +56513,7 @@ var init_gameData = __esm({
         slot: "hands",
         rarity: "fabled",
         level: 48,
-        stats: { strength: 40, stamina: 25, attackRating: 60, critChance: 4, defenseRating: 95 },
+        stats: { strength: 40, stamina: 25, attackRating: 60, critChance: 4, defenseRating: 95, resistCrush: 12, resistPierce: 10 },
         sellPrice: 9e3,
         spriteId: "hands_fabled",
         noSell: true
@@ -56085,7 +56688,7 @@ var init_gameData = __esm({
         slot: "back",
         rarity: "legendary",
         level: 38,
-        stats: { agility: 28, defenseRating: 95, avoidance: 8, critChance: 4 },
+        stats: { agility: 28, defenseRating: 95, avoidance: 8, critChance: 4, resistMagic: 12 },
         sellPrice: 2800,
         spriteId: "back_shadow"
       },
@@ -56455,7 +57058,7 @@ var init_gameData = __esm({
         slot: "head",
         rarity: "rare",
         level: 18,
-        stats: { stamina: 45, strength: 16, defenseRating: 105, mitigation: 78, health: 80 },
+        stats: { stamina: 45, strength: 16, defenseRating: 105, mitigation: 78, health: 80, resistCrush: 8 },
         sellPrice: 620,
         spriteId: "helm_steel"
       },
@@ -56467,7 +57070,7 @@ var init_gameData = __esm({
         slot: "charm",
         rarity: "legendary",
         level: 20,
-        stats: { strength: 22, stamina: 18, attackRating: 55, critChance: 4, defenseRating: 45, health: 100 },
+        stats: { strength: 22, stamina: 18, attackRating: 55, critChance: 4, defenseRating: 45, health: 100, resistPierce: 8, resistSlash: 5 },
         sellPrice: 2800,
         spriteId: "charm_oracle"
       },
@@ -56639,6 +57242,396 @@ var init_gameData = __esm({
         sellPrice: 7200,
         spriteId: "armor_fire_chest"
       },
+      // ── PHASE 2: MONSTER COMPONENT DROPS ─────────────────────────────────────
+      // Mob-specific crafting components — drop from regular (non-boss) monsters.
+      {
+        id: "wolf_fang",
+        name: "Wolf Fang",
+        description: "A razor-sharp fang from a rabid wolf \u2014 valued by leatherworkers and alchemists",
+        type: "material",
+        slot: "none",
+        rarity: "common",
+        level: 1,
+        stats: {},
+        sellPrice: 4,
+        stackable: true,
+        spriteId: "material_bone"
+      },
+      {
+        id: "goblin_ear",
+        name: "Goblin Ear",
+        description: "A leathery goblin ear \u2014 disgusting but useful for certain crude concoctions",
+        type: "material",
+        slot: "none",
+        rarity: "common",
+        level: 2,
+        stats: {},
+        sellPrice: 3,
+        stackable: true,
+        spriteId: "material_hide"
+      },
+      {
+        id: "bleached_bone",
+        name: "Bleached Bone",
+        description: "Sun-bleached bone from a fallen undead soldier \u2014 a useful crafting component",
+        type: "material",
+        slot: "none",
+        rarity: "common",
+        level: 4,
+        stats: {},
+        sellPrice: 5,
+        stackable: true,
+        spriteId: "material_bone"
+      },
+      {
+        id: "gnoll_fur_tuft",
+        name: "Gnoll Fur Tuft",
+        description: "A coarse tuft of gnoll fur \u2014 rough but workable into crude padding",
+        type: "material",
+        slot: "none",
+        rarity: "common",
+        level: 7,
+        stats: {},
+        sellPrice: 6,
+        stackable: true,
+        spriteId: "material_hide"
+      },
+      {
+        id: "centaur_hoof_chip",
+        name: "Centaur Hoof Chip",
+        description: "A fragment chipped from a centaur hoof \u2014 surprisingly strong and dense",
+        type: "material",
+        slot: "none",
+        rarity: "common",
+        level: 11,
+        stats: {},
+        sellPrice: 9,
+        stackable: true,
+        spriteId: "material_bone"
+      },
+      {
+        id: "harpy_feather",
+        name: "Harpy Feather",
+        description: "A long iridescent feather from a harpy \u2014 light and sharp-edged",
+        type: "material",
+        slot: "none",
+        rarity: "common",
+        level: 16,
+        stats: {},
+        sellPrice: 12,
+        stackable: true,
+        spriteId: "material_feather"
+      },
+      {
+        id: "dark_elf_shadow_dust",
+        name: "Shadow Dust",
+        description: "Powdery residue scraped from dark elf assassin blades \u2014 imbued with shadow essence",
+        type: "material",
+        slot: "none",
+        rarity: "uncommon",
+        level: 21,
+        stats: {},
+        sellPrice: 22,
+        stackable: true,
+        spriteId: "material_dust"
+      },
+      {
+        id: "treant_heartwood_chip",
+        name: "Treant Heartwood Chip",
+        description: "A dense chip of ancient treant heartwood \u2014 saturated with life energy",
+        type: "material",
+        slot: "none",
+        rarity: "uncommon",
+        level: 25,
+        stats: {},
+        sellPrice: 28,
+        stackable: true,
+        spriteId: "material_wood"
+      },
+      {
+        id: "frost_giant_knuckle",
+        name: "Frost Giant Knuckle",
+        description: "A massive knucklebone from a frost giant \u2014 cold to the touch and nearly unbreakable",
+        type: "material",
+        slot: "none",
+        rarity: "uncommon",
+        level: 32,
+        stats: {},
+        sellPrice: 35,
+        stackable: true,
+        spriteId: "material_bone"
+      },
+      {
+        id: "fire_goblin_ash",
+        name: "Fire Goblin Ash",
+        description: "Volcanic ash clinging to a goblin firestarter's remains \u2014 still smouldering",
+        type: "material",
+        slot: "none",
+        rarity: "uncommon",
+        level: 42,
+        stats: {},
+        sellPrice: 42,
+        stackable: true,
+        spriteId: "material_ore"
+      },
+      // ── PHASE 2: BOSS CRAFTING MATERIAL DROPS ────────────────────────────────
+      // Rare materials dropped only by dungeon and raid bosses.
+      {
+        id: "warchief_war_medallion",
+        name: "Warchief's War Medallion",
+        description: "A battered medallion worn by Drek'Eth the Gnoll Warchief \u2014 radiates brutal authority",
+        type: "material",
+        slot: "none",
+        rarity: "rare",
+        level: 10,
+        stats: {},
+        sellPrice: 150,
+        stackable: true,
+        spriteId: "material_seal"
+      },
+      {
+        id: "narlock_overlord_seal",
+        name: "Overlord's Fractured Seal",
+        description: "A fragment of Narlock's iron overlord seal \u2014 pulsing with gnollish warlord power",
+        type: "material",
+        slot: "none",
+        rarity: "rare",
+        level: 20,
+        stats: {},
+        sellPrice: 280,
+        stackable: true,
+        spriteId: "material_seal"
+      },
+      {
+        id: "varsoon_lich_essence",
+        name: "Varsoon's Lich Essence",
+        description: "A vial of condensed necrotic energy from Varsoon the Undying \u2014 the lich's distilled essence",
+        type: "material",
+        slot: "none",
+        rarity: "rare",
+        level: 25,
+        stats: {},
+        sellPrice: 320,
+        stackable: true,
+        spriteId: "material_reagent"
+      },
+      {
+        id: "everling_dark_shard",
+        name: "Everling's Dark Shard",
+        description: "A shard of cursed obsidian bearing Lord Everling's necrotic brand",
+        type: "material",
+        slot: "none",
+        rarity: "rare",
+        level: 35,
+        stats: {},
+        sellPrice: 450,
+        stackable: true,
+        spriteId: "material_gem"
+      },
+      {
+        id: "vox_ice_scale",
+        name: "Vox's Ice Scale",
+        description: "A translucent scale shed by Lady Vox herself \u2014 cold enough to freeze the air around it",
+        type: "material",
+        slot: "none",
+        rarity: "rare",
+        level: 45,
+        stats: {},
+        sellPrice: 600,
+        stackable: true,
+        spriteId: "material_scale"
+      },
+      {
+        id: "nagafen_fire_scale",
+        name: "Nagafen's Fire Scale",
+        description: "A charred scale from Lord Nagafen \u2014 it burns to the touch and never truly cools",
+        type: "material",
+        slot: "none",
+        rarity: "rare",
+        level: 50,
+        stats: {},
+        sellPrice: 750,
+        stackable: true,
+        spriteId: "material_scale"
+      },
+      {
+        id: "prismatic_dragon_scale",
+        name: "Prismatic Dragon Scale",
+        description: "A shimmering scale from Harla Dar the Prismatic Dragon \u2014 shifts colour with elemental energy",
+        type: "material",
+        slot: "none",
+        rarity: "legendary",
+        level: 60,
+        stats: {},
+        sellPrice: 2500,
+        stackable: true,
+        spriteId: "material_scale"
+      },
+      {
+        id: "vampire_lord_fang",
+        name: "Vampire Lord's Fang",
+        description: "A massive fang from Mayong Mistmoore himself \u2014 drips with ancient vampiric venom",
+        type: "material",
+        slot: "none",
+        rarity: "legendary",
+        level: 65,
+        stats: {},
+        sellPrice: 3e3,
+        stackable: true,
+        spriteId: "material_bone"
+      },
+      {
+        id: "plague_dragon_spine",
+        name: "Plague Dragon's Spine",
+        description: "A venomous spine ripped from Trakanon's back \u2014 corrodes anything it touches",
+        type: "material",
+        slot: "none",
+        rarity: "legendary",
+        level: 62,
+        stats: {},
+        sellPrice: 2800,
+        stackable: true,
+        spriteId: "material_bone"
+      },
+      // ── PHASE 2: JOURNEYMAN RECIPE SCROLLS ───────────────────────────────────
+      // Rare drops from regular (non-boss) monsters.
+      {
+        id: "scroll_journeyman_hide_bracers",
+        name: "Journeyman Recipe: Crude Hide Bracers",
+        description: "A battered scroll describing simple bracers crafted from raw beast hide. Learning this recipe will consume the scroll.",
+        type: "recipe_scroll",
+        slot: "none",
+        rarity: "uncommon",
+        level: 5,
+        stats: {},
+        sellPrice: 80,
+        stackable: false,
+        spriteId: "scroll_recipe",
+        recipeId: "recipe_journeyman_hide_bracers",
+        recipeTier: "journeyman"
+      },
+      {
+        id: "scroll_journeyman_crude_shortsword",
+        name: "Journeyman Recipe: Crude Iron Shortsword",
+        description: "A grimy scroll showing the basics of forging a crude iron shortsword. Learning this recipe will consume the scroll.",
+        type: "recipe_scroll",
+        slot: "none",
+        rarity: "uncommon",
+        level: 5,
+        stats: {},
+        sellPrice: 80,
+        stackable: false,
+        spriteId: "scroll_recipe",
+        recipeId: "recipe_journeyman_crude_shortsword",
+        recipeTier: "journeyman"
+      },
+      {
+        id: "scroll_journeyman_bone_dust_powder",
+        name: "Journeyman Recipe: Bone Dust Powder",
+        description: "A yellowed scroll revealing how to grind bleached bones into alchemical powder. Learning this recipe will consume the scroll.",
+        type: "recipe_scroll",
+        slot: "none",
+        rarity: "uncommon",
+        level: 5,
+        stats: {},
+        sellPrice: 80,
+        stackable: false,
+        spriteId: "scroll_recipe",
+        recipeId: "recipe_journeyman_bone_dust_powder",
+        recipeTier: "journeyman"
+      },
+      {
+        id: "scroll_journeyman_gnoll_tooth_ring",
+        name: "Journeyman Recipe: Gnoll Tooth Ring",
+        description: "A crude scroll scratched on gnoll hide, describing a ring made from gnoll fangs. Learning this recipe will consume the scroll.",
+        type: "recipe_scroll",
+        slot: "none",
+        rarity: "uncommon",
+        level: 8,
+        stats: {},
+        sellPrice: 100,
+        stackable: false,
+        spriteId: "scroll_recipe",
+        recipeId: "recipe_journeyman_gnoll_tooth_ring",
+        recipeTier: "journeyman"
+      },
+      {
+        id: "scroll_journeyman_feather_quill_amulet",
+        name: "Journeyman Recipe: Feather Quill Amulet",
+        description: "A scroll inscribed with harpy feather ink, detailing a light amulet of swiftness. Learning this recipe will consume the scroll.",
+        type: "recipe_scroll",
+        slot: "none",
+        rarity: "uncommon",
+        level: 18,
+        stats: {},
+        sellPrice: 140,
+        stackable: false,
+        spriteId: "scroll_recipe",
+        recipeId: "recipe_journeyman_feather_quill_amulet",
+        recipeTier: "journeyman"
+      },
+      // ── PHASE 2: EXPERT (ADEPT) RECIPE SCROLLS — DUNGEON BOSS DROPS ──────────
+      // High-chance drops from dungeon main bosses.
+      {
+        id: "scroll_expert_warchief_axe",
+        name: "Expert Recipe: Warchief's Heavy Axe",
+        description: "A scroll bearing gnoll war-script, detailing the forging of a brutal warchief's axe. Learning this recipe will consume the scroll.",
+        type: "recipe_scroll",
+        slot: "none",
+        rarity: "rare",
+        level: 12,
+        stats: {},
+        sellPrice: 400,
+        stackable: false,
+        spriteId: "scroll_recipe",
+        recipeId: "recipe_expert_warchief_axe",
+        recipeTier: "expert"
+      },
+      {
+        id: "scroll_expert_overlord_plate",
+        name: "Expert Recipe: Overlord's War Plate",
+        description: "A gnollish war-scroll inscribed by Narlock's own armorer, detailing reinforced war plate. Learning this recipe will consume the scroll.",
+        type: "recipe_scroll",
+        slot: "none",
+        rarity: "rare",
+        level: 22,
+        stats: {},
+        sellPrice: 550,
+        stackable: false,
+        spriteId: "scroll_recipe",
+        recipeId: "recipe_expert_overlord_war_plate",
+        recipeTier: "expert"
+      },
+      {
+        id: "scroll_expert_lich_focus",
+        name: "Expert Recipe: Lich's Necrotic Focus",
+        description: "A necromantic scroll crackling with dark energy, revealing how to craft a lich-touched focus. Learning this recipe will consume the scroll.",
+        type: "recipe_scroll",
+        slot: "none",
+        rarity: "rare",
+        level: 28,
+        stats: {},
+        sellPrice: 600,
+        stackable: false,
+        spriteId: "scroll_recipe",
+        recipeId: "recipe_expert_lich_focus",
+        recipeTier: "expert"
+      },
+      {
+        id: "scroll_expert_shadow_mantle",
+        name: "Expert Recipe: Shadow Mantle of Everling",
+        description: "A cursed scroll bound in dark elf silk, detailing Everling's signature mantle. Learning this recipe will consume the scroll.",
+        type: "recipe_scroll",
+        slot: "none",
+        rarity: "rare",
+        level: 37,
+        stats: {},
+        sellPrice: 700,
+        stackable: false,
+        spriteId: "scroll_recipe",
+        recipeId: "recipe_expert_shadow_mantle",
+        recipeTier: "expert"
+      },
       // ── MYTHIC CRAFTED ITEMS (one-of-a-kind results) ──────────────────────────
       {
         id: "craft_worldbreaker_blade",
@@ -56648,7 +57641,7 @@ var init_gameData = __esm({
         slot: "primary",
         rarity: "mythical",
         level: 55,
-        stats: { strength: 80, agility: 40, attackRating: 600, critChance: 18, weaponDamageMin: 220, weaponDamageMax: 380, weaponDelay: 1.6 },
+        stats: { strength: 80, agility: 40, attackRating: 600, critChance: 18, weaponDamageMin: 220, weaponDamageMax: 380, weaponDelay: 1.6, resistHeat: 15 },
         sellPrice: 5e4,
         spriteId: "sword_fabled",
         noSell: true
@@ -56661,7 +57654,7 @@ var init_gameData = __esm({
         slot: "back",
         rarity: "mythical",
         level: 52,
-        stats: { agility: 60, defenseRating: 320, avoidance: 25, critChance: 12, intelligence: 40 },
+        stats: { agility: 60, defenseRating: 320, avoidance: 25, critChance: 12, intelligence: 40, resistMagic: 20, resistDivine: 10 },
         sellPrice: 45e3,
         spriteId: "back_shadow",
         noSell: true
@@ -56674,7 +57667,7 @@ var init_gameData = __esm({
         slot: "head",
         rarity: "mythical",
         level: 58,
-        stats: { stamina: 120, strength: 60, wisdom: 50, defenseRating: 450, mitigation: 320, health: 500, critChance: 8 },
+        stats: { stamina: 120, strength: 60, wisdom: 50, defenseRating: 450, mitigation: 320, health: 500, critChance: 8, resistDivine: 20, resistMagic: 15 },
         sellPrice: 6e4,
         spriteId: "helm_legendary",
         noSell: true
@@ -56688,7 +57681,7 @@ var init_gameData = __esm({
         slot: "primary",
         rarity: "legendary",
         level: 40,
-        stats: { strength: 45, agility: 22, attackRating: 300, critChance: 10, weaponDamageMin: 110, weaponDamageMax: 175, weaponDelay: 1.7 },
+        stats: { strength: 45, agility: 22, attackRating: 300, critChance: 10, weaponDamageMin: 110, weaponDamageMax: 175, weaponDelay: 1.7, resistMagic: 12, resistPierce: 8 },
         sellPrice: 15e3,
         spriteId: "sword_dark"
       },
@@ -56700,7 +57693,7 @@ var init_gameData = __esm({
         slot: "chest",
         rarity: "legendary",
         level: 45,
-        stats: { stamina: 100, strength: 35, defenseRating: 380, mitigation: 280, health: 300 },
+        stats: { stamina: 100, strength: 35, defenseRating: 380, mitigation: 280, health: 300, resistHeat: 18, resistPierce: 10 },
         sellPrice: 18e3,
         spriteId: "chest_fabled"
       },
@@ -57192,6 +58185,17 @@ var init_gameData = __esm({
       { id: "ancient_shard", name: "Ancient Shard", description: "A fragment of ancient pottery or stone", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 12, spriteId: "mat_iron_ore", stackable: true },
       { id: "relic_fragment", name: "Relic Fragment", description: "A broken piece of an ancient relic", type: "material", slot: "none", rarity: "uncommon", level: 1, stats: {}, sellPrice: 20, spriteId: "mat_iron_ore", stackable: true },
       { id: "engraved_tablet", name: "Engraved Tablet", description: "A stone tablet covered in ancient engravings", type: "material", slot: "none", rarity: "rare", level: 1, stats: {}, sellPrice: 75, spriteId: "mat_iron_ore", stackable: true },
+      // ── TRADESKILL HARVESTING MATERIALS ──────────────────────────────────────
+      { id: "shadowroot_timber", name: "Shadowroot Timber", description: "Dark hardwood from shadowroot trees, prized by weaponsmiths and armorers.", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 8, spriteId: "material_wood", stackable: true },
+      { id: "emberstone_fragment", name: "Emberstone Fragment", description: "A shard of volcanic rock imbued with fire energy, used in high-tier smithing.", type: "material", slot: "none", rarity: "uncommon", level: 1, stats: {}, sellPrice: 14, spriteId: "material_ore", stackable: true },
+      { id: "frostbloom_petal", name: "Frostbloom Petal", description: "A petal from a rare ice-zone flower, used in advanced potions and cloth work.", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 6, spriteId: "material_herb", stackable: true },
+      { id: "manaweave_fiber", name: "Manaweave Fiber", description: "Magical plant fiber that resonates with arcane energy, essential for moon-quality cloth.", type: "material", slot: "none", rarity: "uncommon", level: 1, stats: {}, sellPrice: 18, spriteId: "material_herb", stackable: true },
+      { id: "venom_sac", name: "Venom Sac", description: "A sac from venomous creatures, distilled into powerful alchemical poisons.", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 10, spriteId: "material_reagent", stackable: true },
+      { id: "astral_ore", name: "Astral Ore", description: "A shimmering ore that floats faintly, imbued with celestial energy.", type: "material", slot: "none", rarity: "rare", level: 1, stats: {}, sellPrice: 35, spriteId: "material_ore", stackable: true },
+      { id: "corrupted_hide", name: "Corrupted Hide", description: "Thick hide from a corrupted beast, strangely resilient and imbued with dark power.", type: "material", slot: "none", rarity: "uncommon", level: 1, stats: {}, sellPrice: 20, spriteId: "material_hide", stackable: true },
+      { id: "glimmerdust", name: "Glimmerdust", description: "Sparkling magical dust that amplifies gem-cutting precision.", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 12, spriteId: "material_reagent", stackable: true },
+      { id: "deepmoss", name: "Deepmoss", description: "A thick moss that grows only in deep caves, used in restorative alchemy.", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 5, spriteId: "material_herb", stackable: true },
+      { id: "thornvine", name: "Thornvine", description: "A tough fibrous vine with sharp thorns, used as thread reinforcement or bowstrings.", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 7, spriteId: "material_wood", stackable: true },
       // ── CRAFTING MATERIALS — WOODWORKING ──────────────────────────────────────
       { id: "lumber", name: "Lumber", description: "Rough-cut lumber suitable for woodworking", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 4, spriteId: "material_wood", stackable: true },
       { id: "hardwood_plank", name: "Hardwood Plank", description: "A smoothed plank of hardwood ready for construction", type: "material", slot: "none", rarity: "common", level: 1, stats: {}, sellPrice: 8, spriteId: "material_wood", stackable: true },
@@ -57214,7 +58218,8 @@ var init_gameData = __esm({
         rarity: "common",
         level: 5,
         stats: { weaponDamageMin: 8, weaponDamageMax: 16, weaponDelay: 2.5, attackRating: 10 },
-        sellPrice: 40
+        sellPrice: 40,
+        spriteId: "weapon_bow"
       },
       {
         id: "ash_staff",
@@ -57225,7 +58230,8 @@ var init_gameData = __esm({
         rarity: "uncommon",
         level: 15,
         stats: { weaponDamageMin: 14, weaponDamageMax: 28, weaponDelay: 3, attackRating: 18, intelligence: 5 },
-        sellPrice: 90
+        sellPrice: 90,
+        spriteId: "weapon_staff"
       },
       // ── LEATHERWORKING ARMOR ──────────────────────────────────────────────────
       {
@@ -57237,7 +58243,8 @@ var init_gameData = __esm({
         rarity: "common",
         level: 5,
         stats: { defenseRating: 8, mitigation: 4, agility: 2 },
-        sellPrice: 30
+        sellPrice: 30,
+        spriteId: "wrists_leather"
       },
       {
         id: "supple_leather_gloves",
@@ -57248,7 +58255,8 @@ var init_gameData = __esm({
         rarity: "common",
         level: 10,
         stats: { defenseRating: 10, mitigation: 5, agility: 3 },
-        sellPrice: 40
+        sellPrice: 40,
+        spriteId: "hands_leather"
       },
       {
         id: "reinforced_leather_vest",
@@ -57259,7 +58267,8 @@ var init_gameData = __esm({
         rarity: "uncommon",
         level: 20,
         stats: { defenseRating: 22, mitigation: 12, stamina: 5, agility: 5 },
-        sellPrice: 85
+        sellPrice: 85,
+        spriteId: "chest_leather"
       }
     ];
     ENEMIES = [
@@ -57284,7 +58293,9 @@ var init_gameData = __esm({
         goldMax: 4,
         lootTable: [
           { itemId: "wolf_hide", dropChance: 0.6, minQuantity: 1, maxQuantity: 2 },
-          { itemId: "worn_boots", dropChance: 0.05, minQuantity: 1, maxQuantity: 1 }
+          { itemId: "worn_boots", dropChance: 0.05, minQuantity: 1, maxQuantity: 1 },
+          { itemId: "wolf_fang", dropChance: 0.2, minQuantity: 1, maxQuantity: 2 },
+          { itemId: "scroll_journeyman_hide_bracers", dropChance: 0.03, minQuantity: 1, maxQuantity: 1 }
         ],
         spriteId: "enemy_wolf",
         type: "beast",
@@ -57315,7 +58326,9 @@ var init_gameData = __esm({
         goldMax: 8,
         lootTable: [
           { itemId: "rusty_short_sword", dropChance: 0.15, minQuantity: 1, maxQuantity: 1 },
-          { itemId: "iron_ore", dropChance: 0.3, minQuantity: 1, maxQuantity: 3 }
+          { itemId: "iron_ore", dropChance: 0.3, minQuantity: 1, maxQuantity: 3 },
+          { itemId: "goblin_ear", dropChance: 0.2, minQuantity: 1, maxQuantity: 2 },
+          { itemId: "scroll_journeyman_crude_shortsword", dropChance: 0.03, minQuantity: 1, maxQuantity: 1 }
         ],
         spriteId: "enemy_goblin",
         type: "humanoid",
@@ -57347,7 +58360,9 @@ var init_gameData = __esm({
         lootTable: [
           { itemId: "leather_vest", dropChance: 0.12, minQuantity: 1, maxQuantity: 1 },
           { itemId: "wooden_buckler", dropChance: 0.1, minQuantity: 1, maxQuantity: 1 },
-          { itemId: "coal", dropChance: 0.4, minQuantity: 1, maxQuantity: 2 }
+          { itemId: "coal", dropChance: 0.4, minQuantity: 1, maxQuantity: 2 },
+          { itemId: "bleached_bone", dropChance: 0.2, minQuantity: 1, maxQuantity: 2 },
+          { itemId: "scroll_journeyman_bone_dust_powder", dropChance: 0.03, minQuantity: 1, maxQuantity: 1 }
         ],
         spriteId: "enemy_skeleton",
         type: "undead",
@@ -57378,7 +58393,9 @@ var init_gameData = __esm({
         goldMax: 18,
         lootTable: [
           { itemId: "chain_coif", dropChance: 0.08, minQuantity: 1, maxQuantity: 1 },
-          { itemId: "iron_ore", dropChance: 0.5, minQuantity: 2, maxQuantity: 5 }
+          { itemId: "iron_ore", dropChance: 0.5, minQuantity: 2, maxQuantity: 5 },
+          { itemId: "gnoll_fur_tuft", dropChance: 0.2, minQuantity: 1, maxQuantity: 2 },
+          { itemId: "scroll_journeyman_gnoll_tooth_ring", dropChance: 0.04, minQuantity: 1, maxQuantity: 1 }
         ],
         spriteId: "enemy_gnoll",
         type: "humanoid",
@@ -57410,7 +58427,9 @@ var init_gameData = __esm({
         lootTable: [
           { itemId: "iron_longsword", dropChance: 0.35, minQuantity: 1, maxQuantity: 1 },
           { itemId: "ringmail_chest", dropChance: 0.3, minQuantity: 1, maxQuantity: 1 },
-          { itemId: "ring_of_strength", dropChance: 0.15, minQuantity: 1, maxQuantity: 1 }
+          { itemId: "ring_of_strength", dropChance: 0.15, minQuantity: 1, maxQuantity: 1 },
+          { itemId: "warchief_war_medallion", dropChance: 0.7, minQuantity: 1, maxQuantity: 1 },
+          { itemId: "scroll_expert_warchief_axe", dropChance: 0.5, minQuantity: 1, maxQuantity: 1 }
         ],
         spriteId: "enemy_boss_gnoll",
         type: "humanoid",
@@ -58417,7 +59436,9 @@ var init_gameData = __esm({
           { itemId: "bb_warmaster_blade", dropChance: 0.45, minQuantity: 1, maxQuantity: 1 },
           { itemId: "bb_commander_war_helm", dropChance: 0.6, minQuantity: 1, maxQuantity: 1 },
           { itemId: "ring_of_strength", dropChance: 0.4, minQuantity: 1, maxQuantity: 1 },
-          { itemId: "mithril_blade", dropChance: 0.15, minQuantity: 1, maxQuantity: 1 }
+          { itemId: "mithril_blade", dropChance: 0.15, minQuantity: 1, maxQuantity: 1 },
+          { itemId: "narlock_overlord_seal", dropChance: 0.75, minQuantity: 1, maxQuantity: 1 },
+          { itemId: "scroll_expert_overlord_plate", dropChance: 0.55, minQuantity: 1, maxQuantity: 1 }
         ],
         spriteId: "enemy_boss_gnoll",
         type: "humanoid",
@@ -58455,7 +59476,9 @@ var init_gameData = __esm({
         lootTable: [
           { itemId: "leather_leggings", dropChance: 0.1, minQuantity: 1, maxQuantity: 1 },
           { itemId: "wolf_hide", dropChance: 0.4, minQuantity: 1, maxQuantity: 3 },
-          { itemId: "iron_ore", dropChance: 0.25, minQuantity: 1, maxQuantity: 2 }
+          { itemId: "iron_ore", dropChance: 0.25, minQuantity: 1, maxQuantity: 2 },
+          { itemId: "centaur_hoof_chip", dropChance: 0.15, minQuantity: 1, maxQuantity: 2 },
+          { itemId: "scroll_journeyman_feather_quill_amulet", dropChance: 0.03, minQuantity: 1, maxQuantity: 1 }
         ],
         spriteId: "enemy_centaur",
         type: "humanoid",
@@ -58519,7 +59542,9 @@ var init_gameData = __esm({
         lootTable: [
           { itemId: "silver_pendant", dropChance: 0.12, minQuantity: 1, maxQuantity: 1 },
           { itemId: "spider_silk", dropChance: 0.45, minQuantity: 1, maxQuantity: 3 },
-          { itemId: "wolf_hide", dropChance: 0.3, minQuantity: 1, maxQuantity: 2 }
+          { itemId: "wolf_hide", dropChance: 0.3, minQuantity: 1, maxQuantity: 2 },
+          { itemId: "harpy_feather", dropChance: 0.2, minQuantity: 1, maxQuantity: 3 },
+          { itemId: "scroll_journeyman_feather_quill_amulet", dropChance: 0.04, minQuantity: 1, maxQuantity: 1 }
         ],
         spriteId: "enemy_harpy",
         type: "beast",
@@ -58552,7 +59577,9 @@ var init_gameData = __esm({
           { itemId: "mithril_blade", dropChance: 0.2, minQuantity: 1, maxQuantity: 1 },
           { itemId: "steel_platemail", dropChance: 0.15, minQuantity: 1, maxQuantity: 1 },
           { itemId: "necklace_of_the_deep", dropChance: 0.1, minQuantity: 1, maxQuantity: 1 },
-          { itemId: "varsoon_lich_crystal", dropChance: 0.2, minQuantity: 1, maxQuantity: 1 }
+          { itemId: "varsoon_lich_crystal", dropChance: 0.2, minQuantity: 1, maxQuantity: 1 },
+          { itemId: "varsoon_lich_essence", dropChance: 0.7, minQuantity: 1, maxQuantity: 1 },
+          { itemId: "scroll_expert_lich_focus", dropChance: 0.55, minQuantity: 1, maxQuantity: 1 }
         ],
         spriteId: "enemy_lich",
         type: "undead",
@@ -58588,7 +59615,8 @@ var init_gameData = __esm({
         lootTable: [
           { itemId: "mithril_ore", dropChance: 0.25, minQuantity: 1, maxQuantity: 2 },
           { itemId: "ring_of_power", dropChance: 0.08, minQuantity: 1, maxQuantity: 1 },
-          { itemId: "spider_silk", dropChance: 0.35, minQuantity: 1, maxQuantity: 2 }
+          { itemId: "spider_silk", dropChance: 0.35, minQuantity: 1, maxQuantity: 2 },
+          { itemId: "dark_elf_shadow_dust", dropChance: 0.18, minQuantity: 1, maxQuantity: 2 }
         ],
         spriteId: "enemy_dark_elf",
         type: "humanoid",
@@ -58620,7 +59648,8 @@ var init_gameData = __esm({
         lootTable: [
           { itemId: "steel_legplates", dropChance: 0.1, minQuantity: 1, maxQuantity: 1 },
           { itemId: "fire_opal", dropChance: 0.3, minQuantity: 1, maxQuantity: 2 },
-          { itemId: "spider_silk", dropChance: 0.35, minQuantity: 1, maxQuantity: 2 }
+          { itemId: "spider_silk", dropChance: 0.35, minQuantity: 1, maxQuantity: 2 },
+          { itemId: "treant_heartwood_chip", dropChance: 0.18, minQuantity: 1, maxQuantity: 2 }
         ],
         spriteId: "enemy_treant",
         type: "elemental",
@@ -58653,7 +59682,8 @@ var init_gameData = __esm({
         lootTable: [
           { itemId: "steel_pauldrons", dropChance: 0.12, minQuantity: 1, maxQuantity: 1 },
           { itemId: "cloak_of_shadows", dropChance: 0.05, minQuantity: 1, maxQuantity: 1 },
-          { itemId: "everfrost_mammoth_ivory", dropChance: 0.3, minQuantity: 1, maxQuantity: 2 }
+          { itemId: "everfrost_mammoth_ivory", dropChance: 0.3, minQuantity: 1, maxQuantity: 2 },
+          { itemId: "frost_giant_knuckle", dropChance: 0.18, minQuantity: 1, maxQuantity: 2 }
         ],
         spriteId: "enemy_frost_giant",
         type: "humanoid",
@@ -58755,7 +59785,8 @@ var init_gameData = __esm({
           { itemId: "ring_of_the_ancients", dropChance: 0.1, minQuantity: 1, maxQuantity: 1 },
           { itemId: "scroll_mythic_worldbreaker", dropChance: 0.04, minQuantity: 1, maxQuantity: 1 },
           { itemId: "scroll_mythic_void_mantle", dropChance: 0.03, minQuantity: 1, maxQuantity: 1 },
-          { itemId: "scroll_expert_shadowsteel", dropChance: 0.12, minQuantity: 1, maxQuantity: 1 }
+          { itemId: "scroll_expert_shadowsteel", dropChance: 0.12, minQuantity: 1, maxQuantity: 1 },
+          { itemId: "nagafen_fire_scale", dropChance: 0.8, minQuantity: 1, maxQuantity: 2 }
         ],
         spriteId: "enemy_nagafen",
         type: "dragon",
@@ -58982,7 +60013,8 @@ var init_gameData = __esm({
           { itemId: "iron_breastplate", dropChance: 0.15, minQuantity: 1, maxQuantity: 1 },
           { itemId: "ring_of_strength", dropChance: 0.08, minQuantity: 1, maxQuantity: 1 },
           { itemId: "antonica_gnoll_claw", dropChance: 0.6, minQuantity: 1, maxQuantity: 2 },
-          { itemId: "scroll_expert_shadowsteel", dropChance: 0.06, minQuantity: 1, maxQuantity: 1 }
+          { itemId: "scroll_expert_shadowsteel", dropChance: 0.06, minQuantity: 1, maxQuantity: 1 },
+          { itemId: "stormhold_chieftain_talisman", dropChance: 0.4, minQuantity: 1, maxQuantity: 1 }
         ],
         spriteId: "enemy_gnoll_boss",
         type: "humanoid",
@@ -59178,7 +60210,8 @@ var init_gameData = __esm({
           { itemId: "enchanted_dust", dropChance: 0.9, minQuantity: 3, maxQuantity: 6 },
           { itemId: "ring_of_power", dropChance: 0.15, minQuantity: 1, maxQuantity: 1 },
           { itemId: "titania_crown_shard", dropChance: 0.3, minQuantity: 1, maxQuantity: 1 },
-          { itemId: "scroll_expert_arcane_ring", dropChance: 0.1, minQuantity: 1, maxQuantity: 1 }
+          { itemId: "scroll_expert_arcane_ring", dropChance: 0.1, minQuantity: 1, maxQuantity: 1 },
+          { itemId: "titania_fae_crown_fragment", dropChance: 0.4, minQuantity: 1, maxQuantity: 1 }
         ],
         spriteId: "enemy_fae_queen",
         type: "elemental",
@@ -59342,7 +60375,8 @@ var init_gameData = __esm({
         lootTable: [
           { itemId: "zek_war_rune", dropChance: 0.8, minQuantity: 3, maxQuantity: 6 },
           { itemId: "helm_of_the_guardian", dropChance: 0.12, minQuantity: 1, maxQuantity: 1 },
-          { itemId: "deathfist_seal", dropChance: 0.25, minQuantity: 1, maxQuantity: 1 }
+          { itemId: "deathfist_seal", dropChance: 0.25, minQuantity: 1, maxQuantity: 1 },
+          { itemId: "deathfist_deathseal", dropChance: 0.4, minQuantity: 1, maxQuantity: 1 }
         ],
         spriteId: "enemy_orc_boss",
         type: "humanoid",
@@ -59570,7 +60604,8 @@ var init_gameData = __esm({
         lootTable: [
           { itemId: "faydark_wood", dropChance: 0.9, minQuantity: 3, maxQuantity: 6 },
           { itemId: "darkblade", dropChance: 0.1, minQuantity: 1, maxQuantity: 1 },
-          { itemId: "grimthorn_bark", dropChance: 0.35, minQuantity: 1, maxQuantity: 2 }
+          { itemId: "grimthorn_bark", dropChance: 0.35, minQuantity: 1, maxQuantity: 2 },
+          { itemId: "grimthorn_heartwood", dropChance: 0.4, minQuantity: 1, maxQuantity: 1 }
         ],
         spriteId: "enemy_treant",
         type: "elemental",
@@ -59799,7 +60834,8 @@ var init_gameData = __esm({
           { itemId: "feerrott_scale", dropChance: 0.9, minQuantity: 3, maxQuantity: 6 },
           { itemId: "chestguard_of_the_fallen", dropChance: 0.14, minQuantity: 1, maxQuantity: 1 },
           { itemId: "ring_of_the_ancients", dropChance: 0.12, minQuantity: 1, maxQuantity: 1 },
-          { itemId: "cazic_idol", dropChance: 0.2, minQuantity: 1, maxQuantity: 1 }
+          { itemId: "cazic_idol", dropChance: 0.2, minQuantity: 1, maxQuantity: 1 },
+          { itemId: "cazic_fear_crystal", dropChance: 0.4, minQuantity: 1, maxQuantity: 1 }
         ],
         spriteId: "enemy_demon",
         type: "elemental",
@@ -61069,7 +62105,9 @@ var init_gameData = __esm({
           { itemId: "necklace_of_the_deep", dropChance: 0.2, minQuantity: 1, maxQuantity: 1 },
           { itemId: "darkblade", dropChance: 0.12, minQuantity: 1, maxQuantity: 1 },
           { itemId: "ring_of_the_ancients", dropChance: 0.1, minQuantity: 1, maxQuantity: 1 },
-          { itemId: "everling_signet", dropChance: 0.25, minQuantity: 1, maxQuantity: 1 }
+          { itemId: "everling_signet", dropChance: 0.25, minQuantity: 1, maxQuantity: 1 },
+          { itemId: "everling_dark_shard", dropChance: 0.7, minQuantity: 1, maxQuantity: 1 },
+          { itemId: "scroll_expert_shadow_mantle", dropChance: 0.55, minQuantity: 1, maxQuantity: 1 }
         ],
         spriteId: "enemy_lich",
         type: "undead",
@@ -61306,7 +62344,8 @@ var init_gameData = __esm({
           { itemId: "gauntlets_of_might", dropChance: 0.2, minQuantity: 1, maxQuantity: 1 },
           { itemId: "permafrost_shard", dropChance: 1, minQuantity: 5, maxQuantity: 10 },
           { itemId: "scroll_expert_dragonscale", dropChance: 0.12, minQuantity: 1, maxQuantity: 1 },
-          { itemId: "scroll_mythic_eternal_crown", dropChance: 0.03, minQuantity: 1, maxQuantity: 1 }
+          { itemId: "scroll_mythic_eternal_crown", dropChance: 0.03, minQuantity: 1, maxQuantity: 1 },
+          { itemId: "vox_ice_scale", dropChance: 0.8, minQuantity: 1, maxQuantity: 2 }
         ],
         spriteId: "enemy_dragon",
         type: "dragon",
@@ -61345,7 +62384,8 @@ var init_gameData = __esm({
         lootTable: [
           { itemId: "fire_opal", dropChance: 0.55, minQuantity: 1, maxQuantity: 3 },
           { itemId: "coal", dropChance: 0.4, minQuantity: 2, maxQuantity: 4 },
-          { itemId: "lavastorm_magma_slag", dropChance: 0.4, minQuantity: 1, maxQuantity: 3 }
+          { itemId: "lavastorm_magma_slag", dropChance: 0.4, minQuantity: 1, maxQuantity: 3 },
+          { itemId: "fire_goblin_ash", dropChance: 0.18, minQuantity: 1, maxQuantity: 2 }
         ],
         spriteId: "enemy_imp",
         type: "humanoid",
@@ -61534,7 +62574,7 @@ var init_gameData = __esm({
       // ── Zek materials & boss drops ───────────────────────────────────────────
       { id: "zek_war_rune", name: "Deathfist War Rune", description: "An orc war rune carved by Deathfist shamans \u2014 used in orcish tinkering", type: "material", slot: "none", rarity: "uncommon", level: 33, stats: {}, sellPrice: 28, spriteId: "material_rune" },
       { id: "deathfist_seal", name: "Deathfist Clan Seal", description: "The legendary seal of the Deathfist Clan's Deathcaller \u2014 legendary proof of victory in Zek", type: "quest", slot: "none", rarity: "legendary", level: 40, stats: { strength: 10, stamina: 8 }, sellPrice: 600, spriteId: "material_seal" },
-      { id: "orc_warlord_helm", name: "Warlord's War Helm", description: "The ornate war helm of a Deathfist Warlord, still dented from battle", type: "armor", slot: "head", rarity: "rare", level: 37, stats: { stamina: 14, strength: 8, defenseRating: 80, mitigation: 55 }, sellPrice: 480, spriteId: "helm_orc" },
+      { id: "orc_warlord_helm", name: "Warlord's War Helm", description: "The ornate war helm of a Deathfist Warlord, still dented from battle", type: "armor", slot: "head", rarity: "rare", level: 37, stats: { stamina: 14, strength: 8, defenseRating: 80, mitigation: 55, resistCrush: 10 }, sellPrice: 480, spriteId: "helm_orc" },
       { id: "zek_berserker_axe", name: "Berserker's Cleaving Axe", description: "A double-headed axe wielded by Zek's deadliest berserkers", type: "weapon", slot: "primary", rarity: "rare", level: 35, stats: { strength: 22, attackRating: 160, critChance: 5, weaponDamageMin: 80, weaponDamageMax: 125, weaponDelay: 2.2 }, sellPrice: 650, spriteId: "axe_orc" },
       // ── Lesser Faydark materials & boss drops ────────────────────────────────
       { id: "faydark_wood", name: "Faydark Ancient Wood", description: "Wood from ancient Faydark trees, infused with fae energy \u2014 prized by tinkerers", type: "material", slot: "none", rarity: "uncommon", level: 33, stats: {}, sellPrice: 24, spriteId: "material_wood" },
@@ -61543,21 +62583,1060 @@ var init_gameData = __esm({
       { id: "grimthorn_staff", name: "Staff of the Thornlord", description: "Lord Grimthorn's legendary staff, crackling with primordial forest magic", type: "weapon", slot: "primary", rarity: "fabled", level: 40, stats: { intelligence: 30, wisdom: 18, attackRating: 260, critChance: 8, weaponDamageMin: 100, weaponDamageMax: 155, weaponDelay: 2.2 }, sellPrice: 3200, spriteId: "staff_fabled", noSell: true },
       // ── Feerrott materials & boss drops ─────────────────────────────────────
       { id: "feerrott_scale", name: "Feerrott Lizardman Scale", description: "A tough lizardman scale from the Feerrott swamps, used in heavy armor crafting", type: "material", slot: "none", rarity: "uncommon", level: 43, stats: {}, sellPrice: 32, spriteId: "material_scale" },
-      { id: "cazic_idol", name: "Idol of Cazic-Thule", description: "A terrifying idol dropped by the Avatar of Cazic-Thule, the God of Fear \u2014 a legendary trophy", type: "quest", slot: "none", rarity: "legendary", level: 50, stats: { wisdom: 20, charisma: -10, defenseRating: 120 }, sellPrice: 2e3, spriteId: "material_idol" },
+      { id: "cazic_idol", name: "Idol of Cazic-Thule", description: "A terrifying idol dropped by the Avatar of Cazic-Thule, the God of Fear \u2014 a legendary trophy", type: "quest", slot: "none", rarity: "legendary", level: 50, stats: { wisdom: 20, charisma: -10, defenseRating: 120, resistMagic: 15 }, sellPrice: 2e3, spriteId: "material_idol" },
       { id: "swamp_venom_gland", name: "Swamp Spider Venom Gland", description: "A venom gland from the Swamp Spider Queen \u2014 used in master-level alchemy", type: "material", slot: "none", rarity: "uncommon", level: 43, stats: {}, sellPrice: 28, spriteId: "material_venom" },
       { id: "bog_giant_club", name: "Bog Giant's Club", description: "An enormous club torn from the hands of a Feerrott Bog Giant", type: "weapon", slot: "primary", rarity: "rare", level: 45, stats: { strength: 28, stamina: 12, attackRating: 280, weaponDamageMin: 120, weaponDamageMax: 185, weaponDelay: 3 }, sellPrice: 900, spriteId: "club_giant" },
-      { id: "cazic_fear_cloak", name: "Cloak of the Fearmonger", description: "A cloak soaked in the terror of Cazic-Thule \u2014 enemies feel dread in your presence", type: "armor", slot: "back", rarity: "legendary", level: 50, stats: { charisma: 20, avoidance: 15, defenseRating: 110, stamina: 20 }, sellPrice: 3500, spriteId: "cloak_dark" },
+      { id: "cazic_fear_cloak", name: "Cloak of the Fearmonger", description: "A cloak soaked in the terror of Cazic-Thule \u2014 enemies feel dread in your presence", type: "armor", slot: "back", rarity: "legendary", level: 50, stats: { charisma: 20, avoidance: 15, defenseRating: 110, stamina: 20, resistMagic: 12, resistDivine: 8 }, sellPrice: 3500, spriteId: "cloak_dark" },
       // ── Everfrost / Permafrost materials & boss drops ────────────────────────
       { id: "permafrost_shard", name: "Permafrost Crystal Shard", description: "A fragment of eternal ice from Permafrost Keep, prized by jewelers and mages", type: "material", slot: "none", rarity: "uncommon", level: 38, stats: {}, sellPrice: 30, spriteId: "gem_ice" },
-      { id: "vox_frost_fang", name: "Vox's Frost Fang", description: "A legendary fang broken from Lady Vox herself \u2014 radiates lethal cold", type: "weapon", slot: "primary", rarity: "legendary", level: 45, stats: { intelligence: 28, wisdom: 15, attackRating: 350, critChance: 10, weaponDamageMin: 130, weaponDamageMax: 200, weaponDelay: 2 }, sellPrice: 6500, spriteId: "sword_fabled" },
-      { id: "vox_ice_crown", name: "Ice Crown of Vox", description: "The legendary crown worn by Lady Vox, Queen of Permafrost \u2014 grants mastery over cold magic", type: "armor", slot: "head", rarity: "legendary", level: 45, stats: { intelligence: 35, wisdom: 20, stamina: 18, defenseRating: 140, mitigation: 100 }, sellPrice: 5500, spriteId: "helm_fabled" },
-      { id: "ice_witch_robe", name: "Ice Witch's Enchanted Robe", description: "The robe of an Everfrost ice witch, imbued with cryomantic power", type: "armor", slot: "chest", rarity: "rare", level: 35, stats: { intelligence: 22, wisdom: 12, defenseRating: 95, mitigation: 65 }, sellPrice: 520, spriteId: "robe_ice" },
+      { id: "vox_frost_fang", name: "Vox's Frost Fang", description: "A legendary fang broken from Lady Vox herself \u2014 radiates lethal cold", type: "weapon", slot: "primary", rarity: "legendary", level: 45, stats: { intelligence: 28, wisdom: 15, attackRating: 350, critChance: 10, weaponDamageMin: 130, weaponDamageMax: 200, weaponDelay: 2, resistCold: 20 }, sellPrice: 6500, spriteId: "sword_fabled" },
+      { id: "vox_ice_crown", name: "Ice Crown of Vox", description: "The legendary crown worn by Lady Vox, Queen of Permafrost \u2014 grants mastery over cold magic", type: "armor", slot: "head", rarity: "legendary", level: 45, stats: { intelligence: 35, wisdom: 20, stamina: 18, defenseRating: 140, mitigation: 100, resistCold: 18, resistMagic: 10 }, sellPrice: 5500, spriteId: "helm_fabled" },
+      { id: "ice_witch_robe", name: "Ice Witch's Enchanted Robe", description: "The robe of an Everfrost ice witch, imbued with cryomantic power", type: "armor", slot: "chest", rarity: "rare", level: 35, stats: { intelligence: 22, wisdom: 12, defenseRating: 95, mitigation: 65, resistCold: 12 }, sellPrice: 520, spriteId: "robe_ice" },
       // ── Dungeon trophy and unique items ─────────────────────────────────────
-      { id: "everling_signet", name: "Everling Family Signet", description: "The signet ring of Lord Everling \u2014 proof of conquering Nektropos Castle", type: "accessory", slot: "ringLeft", rarity: "legendary", level: 35, stats: { intelligence: 18, charisma: 12, defenseRating: 60, avoidance: 8 }, sellPrice: 1800, spriteId: "ring_dark" },
-      { id: "varsoon_lich_crystal", name: "Varsoon's Lich Crystal", description: "The power crystal torn from Varsoon's phylactery \u2014 radiates undying dark energy", type: "accessory", slot: "charm", rarity: "legendary", level: 30, stats: { intelligence: 15, wisdom: 10, attackRating: 80, critChance: 5 }, sellPrice: 1500, spriteId: "gem_dark" },
-      { id: "icegrave_relic", name: "Frost Warden's Relic", description: "A relic dropped by Frost Warden Icegrave \u2014 a trophy from the depths of Permafrost Keep", type: "accessory", slot: "charm", rarity: "rare", level: 42, stats: { stamina: 12, defenseRating: 85, mitigation: 60 }, sellPrice: 700, spriteId: "accessory_frost" },
-      { id: "ignus_pyro_focus", name: "Ignus Pyromantic Focus", description: "High Priest Ignus's focus crystal, containing the essence of Sol Ro's inner flame", type: "accessory", slot: "charm", rarity: "legendary", level: 48, stats: { intelligence: 25, wisdom: 18, attackRating: 180, critChance: 8 }, sellPrice: 3800, spriteId: "gem_fire" },
-      { id: "nagafen_scale_armor", name: "Scale of Lord Nagafen", description: "A legendary scale from Lord Nagafen himself \u2014 heat-proof and immensely durable", type: "armor", slot: "chest", rarity: "mythical", level: 50, stats: { stamina: 40, strength: 25, defenseRating: 300, mitigation: 220, avoidance: 10 }, sellPrice: 15e3, spriteId: "chestplate_fabled", noSell: true }
+      { id: "everling_signet", name: "Everling Family Signet", description: "The signet ring of Lord Everling \u2014 proof of conquering Nektropos Castle", type: "accessory", slot: "ringLeft", rarity: "legendary", level: 35, stats: { intelligence: 18, charisma: 12, defenseRating: 60, avoidance: 8, resistMagic: 10 }, sellPrice: 1800, spriteId: "ring_dark" },
+      { id: "varsoon_lich_crystal", name: "Varsoon's Lich Crystal", description: "The power crystal torn from Varsoon's phylactery \u2014 radiates undying dark energy", type: "accessory", slot: "charm", rarity: "legendary", level: 30, stats: { intelligence: 15, wisdom: 10, attackRating: 80, critChance: 5, resistMagic: 15 }, sellPrice: 1500, spriteId: "gem_dark" },
+      { id: "icegrave_relic", name: "Frost Warden's Relic", description: "A relic dropped by Frost Warden Icegrave \u2014 a trophy from the depths of Permafrost Keep", type: "accessory", slot: "charm", rarity: "rare", level: 42, stats: { stamina: 12, defenseRating: 85, mitigation: 60, resistCold: 15 }, sellPrice: 700, spriteId: "accessory_frost" },
+      { id: "ignus_pyro_focus", name: "Ignus Pyromantic Focus", description: "High Priest Ignus's focus crystal, containing the essence of Sol Ro's inner flame", type: "accessory", slot: "charm", rarity: "legendary", level: 48, stats: { intelligence: 25, wisdom: 18, attackRating: 180, critChance: 8, resistHeat: 18 }, sellPrice: 3800, spriteId: "gem_fire" },
+      { id: "nagafen_scale_armor", name: "Scale of Lord Nagafen", description: "A legendary scale from Lord Nagafen himself \u2014 heat-proof and immensely durable", type: "armor", slot: "chest", rarity: "mythical", level: 50, stats: { stamina: 40, strength: 25, defenseRating: 300, mitigation: 220, avoidance: 10, resistHeat: 20 }, sellPrice: 15e3, spriteId: "chestplate_fabled", noSell: true },
+      // ══════════════════════════════════════════════════════════════════════════
+      // RAID MYTHICAL GEAR — Harla Dar (Temple of Harla Dar, levels 55–58)
+      // Theme: Prismatic / Elemental / Dragon
+      // ══════════════════════════════════════════════════════════════════════════
+      // Weapons
+      {
+        id: "raid_harla_dar_weapon_fighter",
+        name: "Prismatic Warblade of Harla Dar",
+        description: "Forged from Harla Dar's shed scales \u2014 cycles through elemental damage with every swing",
+        type: "weapon",
+        slot: "primary",
+        rarity: "mythical",
+        level: 57,
+        armorType: void 0,
+        stats: { strength: 95, stamina: 40, attackRating: 620, critChance: 18, haste: 10, weaponDamageMin: 240, weaponDamageMax: 390, weaponDelay: 1.7 },
+        sellPrice: 55e3,
+        spriteId: "sword_fabled"
+      },
+      {
+        id: "raid_harla_dar_weapon_scout",
+        name: "Chromatic Longbow of the Tangle",
+        description: "A prismatic bow that fires arrows imbued with all elements simultaneously",
+        type: "weapon",
+        slot: "ranged",
+        rarity: "mythical",
+        level: 56,
+        stats: { agility: 100, critChance: 22, haste: 12, attackRating: 580, weaponDamageMin: 220, weaponDamageMax: 360, weaponDelay: 2.4 },
+        sellPrice: 52e3,
+        spriteId: "weapon_crossbow"
+      },
+      {
+        id: "raid_harla_dar_weapon_mage",
+        name: "Prismatic Dragon Staff",
+        description: "A staff tipped with Harla Dar's claw \u2014 channels all elemental schools at once",
+        type: "weapon",
+        slot: "primary",
+        rarity: "mythical",
+        level: 57,
+        stats: { intelligence: 110, wisdom: 50, critChance: 20, attackRating: 520, spellDamageBonus: 180, weaponDamageMin: 180, weaponDamageMax: 300, weaponDelay: 2.2 },
+        sellPrice: 54e3,
+        spriteId: "staff_fabled"
+      },
+      {
+        id: "raid_harla_dar_weapon_priest",
+        name: "Radiant Scepter of the Prismatic Rite",
+        description: "A scepter blessed by all elemental planes \u2014 heals and harms in equal measure",
+        type: "weapon",
+        slot: "primary",
+        rarity: "mythical",
+        level: 57,
+        stats: { wisdom: 115, intelligence: 45, power: 650, critChance: 16, attackRating: 480, healBonus: 160, weaponDamageMin: 165, weaponDamageMax: 275, weaponDelay: 1.9 },
+        sellPrice: 54e3,
+        spriteId: "weapon_scepter"
+      },
+      {
+        id: "raid_harla_dar_weapon_shield",
+        name: "Prismatic Dragon Aegis",
+        description: "A shield fashioned from Harla Dar's underbelly scales \u2014 refracts attacks like a prism",
+        type: "armor",
+        slot: "secondary",
+        rarity: "mythical",
+        level: 56,
+        stats: { stamina: 90, defenseRating: 480, mitigation: 340, health: 600, avoidance: 20, resistPierce: 20, resistSlash: 18, resistCrush: 15 },
+        sellPrice: 48e3,
+        spriteId: "shield_legendary"
+      },
+      // Armor — Plate (Fighter)
+      {
+        id: "raid_harla_dar_head_fighter",
+        name: "Dragonhelm of Chromatic Fury",
+        description: "A helm carved from Harla Dar's skull-plate \u2014 prismatic energy crackles around the visor",
+        type: "armor",
+        slot: "head",
+        rarity: "mythical",
+        level: 57,
+        armorType: "plate",
+        stats: { stamina: 85, strength: 50, defenseRating: 460, mitigation: 320, health: 550, critChance: 10, resistPierce: 15, resistSlash: 12 },
+        sellPrice: 42e3,
+        spriteId: "helm_legendary"
+      },
+      {
+        id: "raid_harla_dar_shoulder_fighter",
+        name: "Prismatic Dragon Pauldrons",
+        description: "Massive pauldrons of layered dragon-scale that shift colour with elemental alignment",
+        type: "armor",
+        slot: "shoulder",
+        rarity: "mythical",
+        level: 57,
+        armorType: "plate",
+        stats: { stamina: 78, strength: 45, defenseRating: 430, mitigation: 300, health: 480 },
+        sellPrice: 4e4,
+        spriteId: "shoulders_plate"
+      },
+      {
+        id: "raid_harla_dar_chest_fighter",
+        name: "Prismatic Scale Breastplate",
+        description: "Full plate breastplate grown from Harla Dar's living scales \u2014 nearly unbreakable",
+        type: "armor",
+        slot: "chest",
+        rarity: "mythical",
+        level: 58,
+        armorType: "plate",
+        stats: { stamina: 105, strength: 60, defenseRating: 580, mitigation: 420, health: 750, avoidance: 12, resistHeat: 15, resistCold: 15, resistMagic: 12 },
+        sellPrice: 58e3,
+        spriteId: "chest_fabled"
+      },
+      {
+        id: "raid_harla_dar_legs_fighter",
+        name: "Chromatic Dragon Legguards",
+        description: "Legguards of overlapping prismatic scales \u2014 each scale aligned to a different element",
+        type: "armor",
+        slot: "legs",
+        rarity: "mythical",
+        level: 57,
+        armorType: "plate",
+        stats: { stamina: 88, strength: 48, defenseRating: 500, mitigation: 355, health: 600 },
+        sellPrice: 44e3,
+        spriteId: "legs_plate"
+      },
+      {
+        id: "raid_harla_dar_waist_fighter",
+        name: "Prismatic Dragon Girdle",
+        description: "A girdle of prismatic dragon-bone that flexes without cracking under any blow",
+        type: "armor",
+        slot: "waist",
+        rarity: "mythical",
+        level: 56,
+        armorType: "plate",
+        stats: { stamina: 70, strength: 38, defenseRating: 380, mitigation: 270, health: 420 },
+        sellPrice: 36e3,
+        spriteId: "waist_plate"
+      },
+      {
+        id: "raid_harla_dar_wrists_fighter",
+        name: "Chromatic Vambraces of Harla Dar",
+        description: "Vambraces forged from Harla Dar's wing-bones \u2014 lightweight yet impenetrable",
+        type: "armor",
+        slot: "wrists",
+        rarity: "mythical",
+        level: 56,
+        armorType: "plate",
+        stats: { stamina: 65, strength: 35, defenseRating: 360, mitigation: 255, attackRating: 80 },
+        sellPrice: 34e3,
+        spriteId: "wrists_plate"
+      },
+      {
+        id: "raid_harla_dar_hands_fighter",
+        name: "Prismatic Dragon Gauntlets",
+        description: "Gauntlets tipped with Harla Dar's claws \u2014 each strike delivers a prismatic elemental burst",
+        type: "armor",
+        slot: "hands",
+        rarity: "mythical",
+        level: 56,
+        armorType: "plate",
+        stats: { stamina: 60, strength: 40, defenseRating: 340, mitigation: 240, haste: 10, critChance: 8 },
+        sellPrice: 36e3,
+        spriteId: "hands_plate"
+      },
+      {
+        id: "raid_harla_dar_feet_fighter",
+        name: "Prismatic Dragon Sabatons",
+        description: "Heavy sabatons of fused dragon-scale \u2014 the wearer leaves prismatic footprints",
+        type: "armor",
+        slot: "feet",
+        rarity: "mythical",
+        level: 56,
+        armorType: "plate",
+        stats: { stamina: 62, strength: 36, defenseRating: 350, mitigation: 248, avoidance: 14 },
+        sellPrice: 34e3,
+        spriteId: "feet_plate"
+      },
+      {
+        id: "raid_harla_dar_back_fighter",
+        name: "Cloak of the Prismatic Lair",
+        description: "A cloak woven from Harla Dar's inner-scale membranes \u2014 shimmers with all elemental hues",
+        type: "armor",
+        slot: "back",
+        rarity: "mythical",
+        level: 56,
+        stats: { stamina: 55, strength: 30, defenseRating: 300, mitigation: 210, avoidance: 18 },
+        sellPrice: 32e3,
+        spriteId: "back_shadow"
+      },
+      // Armor — Cloth (Mage/Priest)
+      {
+        id: "raid_harla_dar_head_caster",
+        name: "Cowl of the Prismatic Rite",
+        description: "A cowl stitched from Harla Dar's wing membrane \u2014 amplifies all schools of magic",
+        type: "armor",
+        slot: "head",
+        rarity: "mythical",
+        level: 57,
+        armorType: "cloth",
+        stats: { intelligence: 105, wisdom: 65, power: 580, critChance: 18, spellDamageBonus: 90, resistMagic: 18, resistDivine: 12 },
+        sellPrice: 42e3,
+        spriteId: "helm_cloth"
+      },
+      {
+        id: "raid_harla_dar_chest_caster",
+        name: "Robes of Chromatic Dominion",
+        description: "Robes woven from the finest prismatic silk, harvested from Harla Dar's own hide",
+        type: "armor",
+        slot: "chest",
+        rarity: "mythical",
+        level: 58,
+        armorType: "cloth",
+        stats: { intelligence: 128, wisdom: 80, power: 720, critChance: 20, spellDamageBonus: 110, defenseRating: 200, resistMagic: 20, resistDivine: 15 },
+        sellPrice: 58e3,
+        spriteId: "robe_ice"
+      },
+      {
+        id: "raid_harla_dar_legs_caster",
+        name: "Prismatic Spellweave Leggings",
+        description: "Leggings of prismatic spellweave \u2014 each panel channels a different elemental school",
+        type: "armor",
+        slot: "legs",
+        rarity: "mythical",
+        level: 57,
+        armorType: "cloth",
+        stats: { intelligence: 110, wisdom: 70, power: 630, critChance: 16, healBonus: 80 },
+        sellPrice: 44e3,
+        spriteId: "legs_cloth"
+      },
+      {
+        id: "raid_harla_dar_wrists_caster",
+        name: "Bracers of the Prismatic Surge",
+        description: "Silk bracers threaded with prismatic dragon sinew \u2014 boost spell velocity",
+        type: "armor",
+        slot: "wrists",
+        rarity: "mythical",
+        level: 56,
+        armorType: "cloth",
+        stats: { intelligence: 90, wisdom: 55, power: 500, critChance: 14, spellDamageBonus: 70 },
+        sellPrice: 34e3,
+        spriteId: "wrists_cloth"
+      },
+      // Armor — Leather (Scout)
+      {
+        id: "raid_harla_dar_legs_scout",
+        name: "Chromatic Stalker's Leggings",
+        description: "Lightweight dragon-leather leggings cut from Harla Dar's underbelly",
+        type: "armor",
+        slot: "legs",
+        rarity: "mythical",
+        level: 57,
+        armorType: "leather",
+        stats: { agility: 100, stamina: 50, defenseRating: 340, mitigation: 220, haste: 12, critChance: 14 },
+        sellPrice: 44e3,
+        spriteId: "legs_leather"
+      },
+      {
+        id: "raid_harla_dar_feet_scout",
+        name: "Boots of the Chromatic Hunter",
+        description: "Swift boots of prismatic dragon-leather \u2014 the wearer moves with elemental speed",
+        type: "armor",
+        slot: "feet",
+        rarity: "mythical",
+        level: 56,
+        armorType: "leather",
+        stats: { agility: 88, stamina: 40, defenseRating: 300, mitigation: 190, haste: 14, avoidance: 20 },
+        sellPrice: 36e3,
+        spriteId: "feet_leather"
+      },
+      // Accessories
+      {
+        id: "raid_harla_dar_ring1",
+        name: "Band of Prismatic Scales",
+        description: "A ring set with a Harla Dar scale chip \u2014 glows with all elemental colours",
+        type: "accessory",
+        slot: "ringLeft",
+        rarity: "mythical",
+        level: 56,
+        stats: { strength: 45, agility: 30, stamina: 40, attackRating: 160, critChance: 12 },
+        sellPrice: 38e3,
+        spriteId: "ring_fabled"
+      },
+      {
+        id: "raid_harla_dar_ring2",
+        name: "Ring of Chromatic Power",
+        description: "A ring containing a fragment of Harla Dar's prismatic heart \u2014 pulsing with raw magic",
+        type: "accessory",
+        slot: "ringRight",
+        rarity: "mythical",
+        level: 56,
+        stats: { intelligence: 80, wisdom: 55, power: 400, critChance: 14, spellDamageBonus: 60 },
+        sellPrice: 38e3,
+        spriteId: "ring_magic"
+      },
+      {
+        id: "raid_harla_dar_neck",
+        name: "Amulet of the Prismatic Dragon",
+        description: "An amulet carved from Harla Dar's dorsal spine \u2014 radiates prismatic warmth",
+        type: "accessory",
+        slot: "neck",
+        rarity: "mythical",
+        level: 57,
+        stats: { stamina: 60, strength: 40, intelligence: 40, wisdom: 35, health: 300, power: 280, resistHeat: 10, resistCold: 10, resistMagic: 10, resistDivine: 8 },
+        sellPrice: 45e3,
+        spriteId: "accessory_neck"
+      },
+      {
+        id: "raid_harla_dar_ear",
+        name: "Earring of Chromatic Resonance",
+        description: "A Harla Dar scale sliver set in adamantine \u2014 attunes the wearer to all elements",
+        type: "accessory",
+        slot: "earLeft",
+        rarity: "mythical",
+        level: 56,
+        stats: { agility: 50, intelligence: 50, critChance: 15, haste: 10, resistHeat: 12, resistCold: 12 },
+        sellPrice: 36e3,
+        spriteId: "accessory_ear"
+      },
+      {
+        id: "raid_harla_dar_charm",
+        name: "Harla Dar's Prismatic Eye",
+        description: "One of Harla Dar's eyes \u2014 a charm that sees through all elemental deception",
+        type: "accessory",
+        slot: "charm",
+        rarity: "mythical",
+        level: 57,
+        stats: { stamina: 70, intelligence: 60, wisdom: 50, attackRating: 120, spellDamageBonus: 80, healBonus: 60 },
+        sellPrice: 48e3,
+        spriteId: "gem_fire"
+      },
+      // ══════════════════════════════════════════════════════════════════════════
+      // RAID MYTHICAL GEAR — Trakanon (The Trakanon Depths, levels 58–62)
+      // Theme: Plague / Undead / Poison
+      // ══════════════════════════════════════════════════════════════════════════
+      // Weapons
+      {
+        id: "raid_trakanon_weapon_fighter",
+        name: "Pestilence Greataxe of Trakanon",
+        description: "A greataxe formed from Trakanon's spine \u2014 drips with plague that never heals",
+        type: "weapon",
+        slot: "primary",
+        rarity: "mythical",
+        level: 61,
+        armorType: void 0,
+        stats: { strength: 105, stamina: 45, attackRating: 660, critChance: 19, haste: 11, weaponDamageMin: 260, weaponDamageMax: 420, weaponDelay: 2 },
+        sellPrice: 58e3,
+        spriteId: "axe_orc"
+      },
+      {
+        id: "raid_trakanon_weapon_scout",
+        name: "Venomous Fang Dagger of Trakanon",
+        description: "A blade carved from a hollow plague-dragon tooth \u2014 injects venom on every hit",
+        type: "weapon",
+        slot: "primary",
+        rarity: "mythical",
+        level: 60,
+        stats: { agility: 112, critChance: 24, haste: 14, attackRating: 620, weaponDamageMin: 235, weaponDamageMax: 385, weaponDelay: 1.5 },
+        sellPrice: 56e3,
+        spriteId: "sword_dark"
+      },
+      {
+        id: "raid_trakanon_weapon_mage",
+        name: "Necrotic Plague Wand of Trakanon",
+        description: "A wand grown from a plague-dragon rib \u2014 channels necrotic and poison energy",
+        type: "weapon",
+        slot: "primary",
+        rarity: "mythical",
+        level: 61,
+        stats: { intelligence: 120, wisdom: 55, critChance: 21, attackRating: 550, spellDamageBonus: 195, weaponDamageMin: 190, weaponDamageMax: 315, weaponDelay: 2 },
+        sellPrice: 57e3,
+        spriteId: "weapon_wand"
+      },
+      {
+        id: "raid_trakanon_weapon_priest",
+        name: "Bone Scepter of the Undying Rite",
+        description: "Carved from Trakanon's own claw \u2014 heals the righteous and corrodes the wicked",
+        type: "weapon",
+        slot: "primary",
+        rarity: "mythical",
+        level: 61,
+        stats: { wisdom: 125, intelligence: 50, power: 700, critChance: 17, attackRating: 510, healBonus: 175, weaponDamageMin: 175, weaponDamageMax: 290, weaponDelay: 1.9 },
+        sellPrice: 57e3,
+        spriteId: "weapon_scepter"
+      },
+      {
+        id: "raid_trakanon_weapon_shield",
+        name: "Plaguebone Shield of Trakanon",
+        description: "A shield of plague-dragon bone \u2014 corrodes incoming blades on contact",
+        type: "armor",
+        slot: "secondary",
+        rarity: "mythical",
+        level: 60,
+        stats: { stamina: 100, defenseRating: 520, mitigation: 370, health: 650, avoidance: 22 },
+        sellPrice: 52e3,
+        spriteId: "shield_legendary"
+      },
+      // Armor — Plate (Fighter)
+      {
+        id: "raid_trakanon_head_fighter",
+        name: "Skull Helm of the Undying Plague",
+        description: "A helm shaped from Trakanon's skull-fragments \u2014 the wearer becomes immune to disease",
+        type: "armor",
+        slot: "head",
+        rarity: "mythical",
+        level: 61,
+        armorType: "plate",
+        stats: { stamina: 95, strength: 55, defenseRating: 500, mitigation: 355, health: 600, critChance: 11 },
+        sellPrice: 46e3,
+        spriteId: "helm_legendary"
+      },
+      {
+        id: "raid_trakanon_shoulder_fighter",
+        name: "Pestilent Dragon Pauldrons",
+        description: "Pauldrons of plague-hardened scale that spray venom shards when struck",
+        type: "armor",
+        slot: "shoulder",
+        rarity: "mythical",
+        level: 61,
+        armorType: "plate",
+        stats: { stamina: 85, strength: 50, defenseRating: 465, mitigation: 330, health: 520 },
+        sellPrice: 43e3,
+        spriteId: "shoulders_plate"
+      },
+      {
+        id: "raid_trakanon_chest_fighter",
+        name: "Breastplate of the Undying Plague",
+        description: "The heaviest plate in all of Sebilis \u2014 dripping with Trakanon's essence",
+        type: "armor",
+        slot: "chest",
+        rarity: "mythical",
+        level: 62,
+        armorType: "plate",
+        stats: { stamina: 115, strength: 65, defenseRating: 620, mitigation: 450, health: 800, avoidance: 13 },
+        sellPrice: 62e3,
+        spriteId: "chest_fabled"
+      },
+      {
+        id: "raid_trakanon_legs_fighter",
+        name: "Plague Dragon Legguards",
+        description: "Heavy legguards forged from Trakanon's tail-scales \u2014 corrosive to the touch",
+        type: "armor",
+        slot: "legs",
+        rarity: "mythical",
+        level: 61,
+        armorType: "plate",
+        stats: { stamina: 96, strength: 53, defenseRating: 540, mitigation: 385, health: 640 },
+        sellPrice: 47e3,
+        spriteId: "legs_plate"
+      },
+      {
+        id: "raid_trakanon_waist_fighter",
+        name: "Plague-Spine Girdle",
+        description: "A girdle threaded with Trakanon's spines \u2014 the wearer's endurance becomes legendary",
+        type: "armor",
+        slot: "waist",
+        rarity: "mythical",
+        level: 60,
+        armorType: "plate",
+        stats: { stamina: 78, strength: 42, defenseRating: 415, mitigation: 295, health: 460 },
+        sellPrice: 38e3,
+        spriteId: "waist_plate"
+      },
+      {
+        id: "raid_trakanon_wrists_fighter",
+        name: "Venom Vambraces of Trakanon",
+        description: "Vambraces dripping with plague-venom \u2014 turn every block into a poisonous counter",
+        type: "armor",
+        slot: "wrists",
+        rarity: "mythical",
+        level: 60,
+        armorType: "plate",
+        stats: { stamina: 72, strength: 40, defenseRating: 390, mitigation: 278, attackRating: 90 },
+        sellPrice: 36e3,
+        spriteId: "wrists_plate"
+      },
+      {
+        id: "raid_trakanon_hands_fighter",
+        name: "Gauntlets of the Plague Lord",
+        description: "Gauntlets grown from calcified plague-bone \u2014 each punch spreads pestilence",
+        type: "armor",
+        slot: "hands",
+        rarity: "mythical",
+        level: 60,
+        armorType: "plate",
+        stats: { stamina: 66, strength: 44, defenseRating: 370, mitigation: 262, haste: 11, critChance: 9 },
+        sellPrice: 38e3,
+        spriteId: "hands_plate"
+      },
+      {
+        id: "raid_trakanon_feet_fighter",
+        name: "Sabatons of the Undying March",
+        description: "Heavy sabatons forged in plague-dragon fire \u2014 leave a trail of corroded ground",
+        type: "armor",
+        slot: "feet",
+        rarity: "mythical",
+        level: 60,
+        armorType: "plate",
+        stats: { stamina: 68, strength: 40, defenseRating: 380, mitigation: 270, avoidance: 16 },
+        sellPrice: 36e3,
+        spriteId: "feet_plate"
+      },
+      {
+        id: "raid_trakanon_back_fighter",
+        name: "Cloak of the Pestilent Depths",
+        description: "A cloak soaked in Trakanon's venom \u2014 enemies hesitate before striking the wearer",
+        type: "armor",
+        slot: "back",
+        rarity: "mythical",
+        level: 60,
+        stats: { stamina: 60, strength: 33, defenseRating: 330, mitigation: 230, avoidance: 20 },
+        sellPrice: 34e3,
+        spriteId: "back_shadow"
+      },
+      // Armor — Cloth (Mage/Priest)
+      {
+        id: "raid_trakanon_head_caster",
+        name: "Death-Shroud Cowl of Trakanon",
+        description: "A cowl woven from plague-dragon membrane \u2014 amplifies necrotic and poison spells",
+        type: "armor",
+        slot: "head",
+        rarity: "mythical",
+        level: 61,
+        armorType: "cloth",
+        stats: { intelligence: 115, wisdom: 72, power: 630, critChance: 19, spellDamageBonus: 100 },
+        sellPrice: 46e3,
+        spriteId: "helm_cloth"
+      },
+      {
+        id: "raid_trakanon_chest_caster",
+        name: "Robes of the Undying Plague",
+        description: "Robes woven from plague-silk \u2014 the wearer's spells carry a virulent after-effect",
+        type: "armor",
+        slot: "chest",
+        rarity: "mythical",
+        level: 62,
+        armorType: "cloth",
+        stats: { intelligence: 140, wisdom: 88, power: 780, critChance: 22, spellDamageBonus: 120, defenseRating: 210 },
+        sellPrice: 62e3,
+        spriteId: "robe_ice"
+      },
+      {
+        id: "raid_trakanon_legs_caster",
+        name: "Pestilence Spellweave Leggings",
+        description: "Leggings woven with plague-silk \u2014 every cast leaves a lingering toxic mist",
+        type: "armor",
+        slot: "legs",
+        rarity: "mythical",
+        level: 61,
+        armorType: "cloth",
+        stats: { intelligence: 120, wisdom: 76, power: 680, critChance: 17, healBonus: 88 },
+        sellPrice: 47e3,
+        spriteId: "legs_cloth"
+      },
+      {
+        id: "raid_trakanon_wrists_caster",
+        name: "Bracers of Necrotic Channelling",
+        description: "Plague-bone bracers etched with necrotic sigils \u2014 amplify death-magic significantly",
+        type: "armor",
+        slot: "wrists",
+        rarity: "mythical",
+        level: 60,
+        armorType: "cloth",
+        stats: { intelligence: 98, wisdom: 60, power: 540, critChance: 15, spellDamageBonus: 78 },
+        sellPrice: 36e3,
+        spriteId: "wrists_cloth"
+      },
+      // Armor — Leather (Scout)
+      {
+        id: "raid_trakanon_legs_scout",
+        name: "Plague-Stalker's Leggings",
+        description: "Leather cut from Trakanon's flanks \u2014 the hunter moves silently through toxic mist",
+        type: "armor",
+        slot: "legs",
+        rarity: "mythical",
+        level: 61,
+        armorType: "leather",
+        stats: { agility: 110, stamina: 55, defenseRating: 370, mitigation: 240, haste: 13, critChance: 15 },
+        sellPrice: 47e3,
+        spriteId: "legs_leather"
+      },
+      {
+        id: "raid_trakanon_feet_scout",
+        name: "Venom-Treader Boots",
+        description: "Boots of plague-dragon hide \u2014 the wearer moves swiftly even through poisoned terrain",
+        type: "armor",
+        slot: "feet",
+        rarity: "mythical",
+        level: 60,
+        armorType: "leather",
+        stats: { agility: 96, stamina: 44, defenseRating: 328, mitigation: 208, haste: 15, avoidance: 22 },
+        sellPrice: 38e3,
+        spriteId: "feet_leather"
+      },
+      // Accessories
+      {
+        id: "raid_trakanon_ring1",
+        name: "Band of the Undying Plague",
+        description: "A ring of plague-dragon bone \u2014 the wearer resists all disease and venom",
+        type: "accessory",
+        slot: "ringLeft",
+        rarity: "mythical",
+        level: 60,
+        stats: { strength: 50, agility: 35, stamina: 45, attackRating: 175, critChance: 13 },
+        sellPrice: 42e3,
+        spriteId: "ring_dark"
+      },
+      {
+        id: "raid_trakanon_ring2",
+        name: "Ring of Pestilent Power",
+        description: "A ring containing a plague-crystal from Trakanon's heart \u2014 empowers all necrotic magic",
+        type: "accessory",
+        slot: "ringRight",
+        rarity: "mythical",
+        level: 60,
+        stats: { intelligence: 88, wisdom: 60, power: 440, critChance: 15, spellDamageBonus: 68 },
+        sellPrice: 42e3,
+        spriteId: "ring_magic"
+      },
+      {
+        id: "raid_trakanon_neck",
+        name: "Necklace of the Plague Depths",
+        description: "A necklace of plague-dragon vertebrae \u2014 empowers body and mind in equal measure",
+        type: "accessory",
+        slot: "neck",
+        rarity: "mythical",
+        level: 61,
+        stats: { stamina: 68, strength: 45, intelligence: 45, wisdom: 40, health: 340, power: 310 },
+        sellPrice: 5e4,
+        spriteId: "accessory_neck"
+      },
+      {
+        id: "raid_trakanon_ear",
+        name: "Earring of Virulent Might",
+        description: "A plague-dragon scale sliver set in bone \u2014 sings a deadly harmonic in combat",
+        type: "accessory",
+        slot: "earLeft",
+        rarity: "mythical",
+        level: 60,
+        stats: { agility: 55, intelligence: 55, critChance: 16, haste: 11 },
+        sellPrice: 4e4,
+        spriteId: "accessory_ear"
+      },
+      {
+        id: "raid_trakanon_charm",
+        name: "Trakanon's Undying Heart",
+        description: "A fossilised fragment of Trakanon's still-beating heart \u2014 a charm of terrifying power",
+        type: "accessory",
+        slot: "charm",
+        rarity: "mythical",
+        level: 61,
+        stats: { stamina: 80, intelligence: 65, wisdom: 55, attackRating: 135, spellDamageBonus: 90, healBonus: 68 },
+        sellPrice: 52e3,
+        spriteId: "gem_dark"
+      },
+      // ══════════════════════════════════════════════════════════════════════════
+      // RAID MYTHICAL GEAR — Mayong Mistmoore (Mistmoore Catacombs, levels 63–67)
+      // Theme: Shadow / Vampire / Blood
+      // ══════════════════════════════════════════════════════════════════════════
+      // Weapons
+      {
+        id: "raid_mayong_mistmoore_weapon_fighter",
+        name: "Blood-Forged Greatsword of Mistmoore",
+        description: "A greatsword tempered in Mayong's own blood \u2014 drains life from every foe it cleaves",
+        type: "weapon",
+        slot: "primary",
+        rarity: "mythical",
+        level: 66,
+        armorType: void 0,
+        stats: { strength: 125, stamina: 55, attackRating: 730, critChance: 22, haste: 14, weaponDamageMin: 295, weaponDamageMax: 470, weaponDelay: 1.8 },
+        sellPrice: 7e4,
+        spriteId: "sword_fabled"
+      },
+      {
+        id: "raid_mayong_mistmoore_weapon_scout",
+        name: "Shadow Crossbow of the Mistmoore Bloodline",
+        description: "A crossbow carved from shadow-oak and strung with vampire sinew \u2014 bolts strike from the dark",
+        type: "weapon",
+        slot: "ranged",
+        rarity: "mythical",
+        level: 65,
+        stats: { agility: 130, critChance: 26, haste: 16, attackRating: 700, weaponDamageMin: 270, weaponDamageMax: 440, weaponDelay: 2.5 },
+        sellPrice: 68e3,
+        spriteId: "weapon_crossbow"
+      },
+      {
+        id: "raid_mayong_mistmoore_weapon_mage",
+        name: "Void Wand of Mayong's Ascension",
+        description: "A wand carved from a shard of Mayong's divine form \u2014 channels the void between worlds",
+        type: "weapon",
+        slot: "primary",
+        rarity: "mythical",
+        level: 66,
+        stats: { intelligence: 140, wisdom: 68, critChance: 24, attackRating: 660, spellDamageBonus: 220, weaponDamageMin: 215, weaponDamageMax: 355, weaponDelay: 2.1 },
+        sellPrice: 7e4,
+        spriteId: "weapon_wand"
+      },
+      {
+        id: "raid_mayong_mistmoore_weapon_priest",
+        name: "Crimson Scepter of Dark Apotheosis",
+        description: "A scepter of vampiric ruby and shadow-steel \u2014 heals allies by draining enemies",
+        type: "weapon",
+        slot: "primary",
+        rarity: "mythical",
+        level: 66,
+        stats: { wisdom: 148, intelligence: 62, power: 820, critChance: 20, attackRating: 600, healBonus: 200, weaponDamageMin: 200, weaponDamageMax: 330, weaponDelay: 2 },
+        sellPrice: 7e4,
+        spriteId: "weapon_scepter"
+      },
+      {
+        id: "raid_mayong_mistmoore_weapon_shield",
+        name: "Blood-Iron Shield of Mistmoore",
+        description: "A shield cast from blood-iron by Mayong's finest armourers \u2014 absorbs life force on block",
+        type: "armor",
+        slot: "secondary",
+        rarity: "mythical",
+        level: 65,
+        stats: { stamina: 120, defenseRating: 610, mitigation: 440, health: 800, avoidance: 26 },
+        sellPrice: 65e3,
+        spriteId: "shield_legendary"
+      },
+      // Armor — Plate (Fighter)
+      {
+        id: "raid_mayong_mistmoore_head_fighter",
+        name: "Crown of the Vampire Lord",
+        description: "Mayong's ceremonial war crown \u2014 grants near-divine endurance to the wearer",
+        type: "armor",
+        slot: "head",
+        rarity: "mythical",
+        level: 66,
+        armorType: "plate",
+        stats: { stamina: 115, strength: 70, defenseRating: 580, mitigation: 415, health: 750, critChance: 13 },
+        sellPrice: 6e4,
+        spriteId: "helm_legendary"
+      },
+      {
+        id: "raid_mayong_mistmoore_shoulder_fighter",
+        name: "Shadow Pauldrons of Mistmoore",
+        description: "Pauldrons forged in shadow-iron \u2014 seem to absorb light and enemy morale alike",
+        type: "armor",
+        slot: "shoulder",
+        rarity: "mythical",
+        level: 66,
+        armorType: "plate",
+        stats: { stamina: 105, strength: 62, defenseRating: 550, mitigation: 392, health: 660 },
+        sellPrice: 56e3,
+        spriteId: "shoulders_plate"
+      },
+      {
+        id: "raid_mayong_mistmoore_chest_fighter",
+        name: "Breastplate of Dark Apotheosis",
+        description: "The pinnacle of vampiric armorcraft \u2014 each plate inscribed with a divine dark sigil",
+        type: "armor",
+        slot: "chest",
+        rarity: "mythical",
+        level: 67,
+        armorType: "plate",
+        stats: { stamina: 135, strength: 80, defenseRating: 720, mitigation: 520, health: 950, avoidance: 16 },
+        sellPrice: 78e3,
+        spriteId: "chest_fabled"
+      },
+      {
+        id: "raid_mayong_mistmoore_legs_fighter",
+        name: "Blood Knight Legguards of Mistmoore",
+        description: "Legguards of shadow-forged plate \u2014 the wearer moves with vampire-like quickness",
+        type: "armor",
+        slot: "legs",
+        rarity: "mythical",
+        level: 66,
+        armorType: "plate",
+        stats: { stamina: 115, strength: 68, defenseRating: 640, mitigation: 460, health: 780 },
+        sellPrice: 62e3,
+        spriteId: "legs_plate"
+      },
+      {
+        id: "raid_mayong_mistmoore_waist_fighter",
+        name: "Girdle of the Undying Court",
+        description: "A shadow-iron girdle blessed by Mayong himself \u2014 binds the wearer to immortal resolve",
+        type: "armor",
+        slot: "waist",
+        rarity: "mythical",
+        level: 65,
+        armorType: "plate",
+        stats: { stamina: 94, strength: 52, defenseRating: 500, mitigation: 358, health: 580 },
+        sellPrice: 5e4,
+        spriteId: "waist_plate"
+      },
+      {
+        id: "raid_mayong_mistmoore_wrists_fighter",
+        name: "Vambraces of the Blood Court",
+        description: "Shadow-iron vambraces worn by Mayong's personal guard \u2014 each block draws enemy blood",
+        type: "armor",
+        slot: "wrists",
+        rarity: "mythical",
+        level: 65,
+        armorType: "plate",
+        stats: { stamina: 86, strength: 50, defenseRating: 470, mitigation: 338, attackRating: 110 },
+        sellPrice: 46e3,
+        spriteId: "wrists_plate"
+      },
+      {
+        id: "raid_mayong_mistmoore_hands_fighter",
+        name: "Gauntlets of Vampiric Ruin",
+        description: "Blood-iron gauntlets forged with Mayong's blessing \u2014 drain life with every punch",
+        type: "armor",
+        slot: "hands",
+        rarity: "mythical",
+        level: 65,
+        armorType: "plate",
+        stats: { stamina: 80, strength: 56, defenseRating: 450, mitigation: 320, haste: 14, critChance: 11 },
+        sellPrice: 5e4,
+        spriteId: "hands_plate"
+      },
+      {
+        id: "raid_mayong_mistmoore_feet_fighter",
+        name: "Sabatons of the Eternal Night",
+        description: "Heavy sabatons of shadow-iron \u2014 the wearer walks without sound, even in full plate",
+        type: "armor",
+        slot: "feet",
+        rarity: "mythical",
+        level: 65,
+        armorType: "plate",
+        stats: { stamina: 82, strength: 50, defenseRating: 460, mitigation: 328, avoidance: 20 },
+        sellPrice: 48e3,
+        spriteId: "feet_plate"
+      },
+      {
+        id: "raid_mayong_mistmoore_back_fighter",
+        name: "Cloak of the Vampire Sovereign",
+        description: "Mayong's own war cloak \u2014 enemies who strike the wearer feel a cold dread in their veins",
+        type: "armor",
+        slot: "back",
+        rarity: "mythical",
+        level: 65,
+        stats: { stamina: 72, strength: 42, defenseRating: 400, mitigation: 280, avoidance: 24 },
+        sellPrice: 44e3,
+        spriteId: "back_shadow"
+      },
+      // Armor — Cloth (Mage/Priest)
+      {
+        id: "raid_mayong_mistmoore_head_caster",
+        name: "Cowl of Dark Apotheosis",
+        description: "A cowl woven from shadow-silk \u2014 the wearer's spells take on a vampiric quality",
+        type: "armor",
+        slot: "head",
+        rarity: "mythical",
+        level: 66,
+        armorType: "cloth",
+        stats: { intelligence: 135, wisdom: 85, power: 760, critChance: 23, spellDamageBonus: 115 },
+        sellPrice: 6e4,
+        spriteId: "helm_cloth"
+      },
+      {
+        id: "raid_mayong_mistmoore_chest_caster",
+        name: "Robes of the Blood God",
+        description: "Robes cut from the finest Mistmoore shadow-silk \u2014 the wearer commands the power of undeath",
+        type: "armor",
+        slot: "chest",
+        rarity: "mythical",
+        level: 67,
+        armorType: "cloth",
+        stats: { intelligence: 162, wisdom: 102, power: 900, critChance: 25, spellDamageBonus: 140, defenseRating: 240 },
+        sellPrice: 78e3,
+        spriteId: "robe_ice"
+      },
+      {
+        id: "raid_mayong_mistmoore_legs_caster",
+        name: "Shadow Spellweave Legwraps",
+        description: "Legwraps woven with shadow thread from Mayong's own sanctum \u2014 amplify void and blood magic",
+        type: "armor",
+        slot: "legs",
+        rarity: "mythical",
+        level: 66,
+        armorType: "cloth",
+        stats: { intelligence: 142, wisdom: 90, power: 810, critChance: 20, healBonus: 100 },
+        sellPrice: 62e3,
+        spriteId: "legs_cloth"
+      },
+      {
+        id: "raid_mayong_mistmoore_wrists_caster",
+        name: "Bracers of Vampiric Dominion",
+        description: "Shadow-silk bracers inscribed with Mayong's own blood sigils \u2014 draw power from the fallen",
+        type: "armor",
+        slot: "wrists",
+        rarity: "mythical",
+        level: 65,
+        armorType: "cloth",
+        stats: { intelligence: 118, wisdom: 74, power: 650, critChance: 18, spellDamageBonus: 90 },
+        sellPrice: 48e3,
+        spriteId: "wrists_cloth"
+      },
+      // Armor — Leather (Scout)
+      {
+        id: "raid_mayong_mistmoore_legs_scout",
+        name: "Shadowstalker's Legwraps of Mistmoore",
+        description: "Leather leggings cured in Mayong's vault \u2014 make the wearer nearly invisible in shadow",
+        type: "armor",
+        slot: "legs",
+        rarity: "mythical",
+        level: 66,
+        armorType: "leather",
+        stats: { agility: 130, stamina: 65, defenseRating: 440, mitigation: 285, haste: 16, critChance: 18 },
+        sellPrice: 62e3,
+        spriteId: "legs_leather"
+      },
+      {
+        id: "raid_mayong_mistmoore_feet_scout",
+        name: "Boots of the Eternal Dark",
+        description: "Shadow-leather boots forged in Mayong's personal armory \u2014 the fastest boots in all of Norrath",
+        type: "armor",
+        slot: "feet",
+        rarity: "mythical",
+        level: 65,
+        armorType: "leather",
+        stats: { agility: 118, stamina: 52, defenseRating: 395, mitigation: 252, haste: 18, avoidance: 26 },
+        sellPrice: 52e3,
+        spriteId: "feet_leather"
+      },
+      // Accessories
+      {
+        id: "raid_mayong_mistmoore_ring1",
+        name: "Signet of the Vampire Sovereign",
+        description: "Mayong's personal signet ring \u2014 the most feared piece of jewelry in all of Norrath",
+        type: "accessory",
+        slot: "ringLeft",
+        rarity: "mythical",
+        level: 65,
+        stats: { strength: 62, agility: 44, stamina: 58, attackRating: 210, critChance: 16 },
+        sellPrice: 58e3,
+        spriteId: "ring_dark"
+      },
+      {
+        id: "raid_mayong_mistmoore_ring2",
+        name: "Ring of the Blood God's Favour",
+        description: "A ring set with a drop of crystallised Mayong's blood \u2014 grants immense magical authority",
+        type: "accessory",
+        slot: "ringRight",
+        rarity: "mythical",
+        level: 65,
+        stats: { intelligence: 105, wisdom: 72, power: 540, critChance: 18, spellDamageBonus: 82 },
+        sellPrice: 58e3,
+        spriteId: "ring_magic"
+      },
+      {
+        id: "raid_mayong_mistmoore_neck",
+        name: "Necklace of Dark Apotheosis",
+        description: "A necklace of shadow-crystal and blood-iron \u2014 marks the wearer as Mayong's chosen",
+        type: "accessory",
+        slot: "neck",
+        rarity: "mythical",
+        level: 66,
+        stats: { stamina: 82, strength: 56, intelligence: 56, wisdom: 50, health: 440, power: 400 },
+        sellPrice: 65e3,
+        spriteId: "accessory_neck"
+      },
+      {
+        id: "raid_mayong_mistmoore_ear",
+        name: "Earring of Eternal Night",
+        description: "A shadow-crystal earring drawn from Mayong's inner sanctum \u2014 attunes the wearer to vampiric energy",
+        type: "accessory",
+        slot: "earLeft",
+        rarity: "mythical",
+        level: 65,
+        stats: { agility: 68, intelligence: 68, critChance: 19, haste: 14 },
+        sellPrice: 55e3,
+        spriteId: "accessory_ear"
+      },
+      {
+        id: "raid_mayong_mistmoore_charm",
+        name: "Mayong's Dark Heart",
+        description: "A shard of Mayong Mistmoore's near-divine heart \u2014 the most powerful charm in all of Norrath",
+        type: "accessory",
+        slot: "charm",
+        rarity: "mythical",
+        level: 66,
+        stats: { stamina: 95, intelligence: 80, wisdom: 68, attackRating: 160, spellDamageBonus: 110, healBonus: 82 },
+        sellPrice: 72e3,
+        spriteId: "gem_dark"
+      },
+      // ── DUNGEON BOSS CRAFTING MATERIALS ──────────────────────────────────────
+      // Unique materials dropped by new dungeon bosses — used as crafting reagents
+      {
+        id: "stormhold_chieftain_talisman",
+        name: "Chieftain's War Talisman",
+        description: "A talisman ripped from Grolnak's neck \u2014 still warm with gnoll war magic",
+        type: "material",
+        slot: "none",
+        rarity: "legendary",
+        level: 15,
+        stats: {},
+        sellPrice: 280,
+        stackable: true,
+        spriteId: "material_bone"
+      },
+      {
+        id: "titania_fae_crown_fragment",
+        name: "Fae Crown Fragment",
+        description: "A shard of Queen Titania's arcane crown \u2014 crackling with raw fae energy",
+        type: "material",
+        slot: "none",
+        rarity: "legendary",
+        level: 35,
+        stats: {},
+        sellPrice: 900,
+        stackable: true,
+        spriteId: "gem_green"
+      },
+      {
+        id: "deathfist_deathseal",
+        name: "Deathfist Clan Death-Seal",
+        description: "The death-seal of the Deathfist Clan's supreme war-priest \u2014 power condensed into bone",
+        type: "material",
+        slot: "none",
+        rarity: "legendary",
+        level: 40,
+        stats: {},
+        sellPrice: 1100,
+        stackable: true,
+        spriteId: "material_seal"
+      },
+      {
+        id: "grimthorn_heartwood",
+        name: "Lord Grimthorn's Heartwood",
+        description: "The living heartwood of Lord Grimthorn \u2014 the primordial core of the Lesser Faydark",
+        type: "material",
+        slot: "none",
+        rarity: "legendary",
+        level: 40,
+        stats: {},
+        sellPrice: 1100,
+        stackable: true,
+        spriteId: "material_bark"
+      },
+      {
+        id: "cazic_fear_crystal",
+        name: "Crystal of Cazic's Fear",
+        description: "A crystallised shard of pure divine fear from the Avatar of Cazic-Thule \u2014 trembles in your hand",
+        type: "material",
+        slot: "none",
+        rarity: "legendary",
+        level: 50,
+        stats: {},
+        sellPrice: 2e3,
+        stackable: true,
+        spriteId: "gem_dark"
+      }
     );
     CRAFTING_RECIPES = [
       {
@@ -62154,7 +64233,409 @@ var init_gameData = __esm({
       // ── LEATHERWORKING RECIPES ────────────────────────────────────────────────
       { id: "recipe_leather_bracers", name: "Craft Leather Bracers", resultItemId: "leather_bracers", resultQuantity: 1, ingredients: [{ itemId: "scraggly_hide", quantity: 2 }], requiredSkillLevel: 1, requiredSkillId: "leatherworking", craftingTime: 6, xpReward: 20, tier: "journeyman" },
       { id: "recipe_supple_leather_gloves", name: "Craft Supple Leather Gloves", resultItemId: "supple_leather_gloves", resultQuantity: 1, ingredients: [{ itemId: "sturdy_hide", quantity: 2 }, { itemId: "scraggly_hide", quantity: 1 }], requiredSkillLevel: 10, requiredSkillId: "leatherworking", craftingTime: 12, xpReward: 50, tier: "journeyman" },
-      { id: "recipe_reinforced_leather_vest", name: "Craft Reinforced Leather Vest", resultItemId: "reinforced_leather_vest", resultQuantity: 1, ingredients: [{ itemId: "thick_pelt", quantity: 3 }, { itemId: "sturdy_hide", quantity: 2 }], requiredSkillLevel: 20, requiredSkillId: "leatherworking", craftingTime: 22, xpReward: 100, tier: "expert" }
+      { id: "recipe_reinforced_leather_vest", name: "Craft Reinforced Leather Vest", resultItemId: "reinforced_leather_vest", resultQuantity: 1, ingredients: [{ itemId: "thick_pelt", quantity: 3 }, { itemId: "sturdy_hide", quantity: 2 }], requiredSkillLevel: 20, requiredSkillId: "leatherworking", craftingTime: 22, xpReward: 100, tier: "expert" },
+      // ── PHASE 2: JOURNEYMAN DROP RECIPES (learned from monster scroll drops) ──
+      {
+        id: "recipe_journeyman_hide_bracers",
+        name: "Craft Crude Hide Bracers",
+        description: "A journeyman technique for stitching raw beast hide into simple protective bracers.",
+        resultItemId: "leather_bracers",
+        resultQuantity: 1,
+        ingredients: [{ itemId: "wolf_fang", quantity: 1 }, { itemId: "wolf_hide", quantity: 2 }],
+        requiredSkillLevel: 5,
+        requiredSkillId: "leatherworking",
+        craftingTime: 8,
+        xpReward: 35,
+        tier: "journeyman"
+      },
+      {
+        id: "recipe_journeyman_crude_shortsword",
+        name: "Forge Crude Iron Shortsword",
+        description: "A journeyman forging technique producing a crude but functional iron shortsword.",
+        resultItemId: "rusty_short_sword",
+        resultQuantity: 1,
+        ingredients: [{ itemId: "iron_ore", quantity: 3 }, { itemId: "goblin_ear", quantity: 1 }, { itemId: "coal", quantity: 1 }],
+        requiredSkillLevel: 5,
+        requiredSkillId: "smithing",
+        craftingTime: 10,
+        xpReward: 40,
+        tier: "journeyman"
+      },
+      {
+        id: "recipe_journeyman_bone_dust_powder",
+        name: "Grind Bone Dust Powder",
+        description: "A journeyman alchemy method for grinding bleached bones into a fine alchemical powder.",
+        resultItemId: "enchanting_dust",
+        resultQuantity: 2,
+        ingredients: [{ itemId: "bleached_bone", quantity: 3 }, { itemId: "coal", quantity: 1 }],
+        requiredSkillLevel: 4,
+        requiredSkillId: "alchemy",
+        craftingTime: 8,
+        xpReward: 30,
+        tier: "journeyman"
+      },
+      {
+        id: "recipe_journeyman_gnoll_tooth_ring",
+        name: "Craft Gnoll Tooth Ring",
+        description: "A journeyman jeweling technique using gnoll fangs wired onto an iron band.",
+        resultItemId: "copper_ring",
+        resultQuantity: 1,
+        ingredients: [{ itemId: "gnoll_fur_tuft", quantity: 2 }, { itemId: "iron_ore", quantity: 1 }],
+        requiredSkillLevel: 8,
+        requiredSkillId: "jeweling",
+        craftingTime: 10,
+        xpReward: 45,
+        tier: "journeyman"
+      },
+      {
+        id: "recipe_journeyman_feather_quill_amulet",
+        name: "Craft Feather Quill Amulet",
+        description: "A journeyman jeweling recipe binding harpy feathers into a light amulet of agility.",
+        resultItemId: "rough_amulet",
+        resultQuantity: 1,
+        ingredients: [{ itemId: "harpy_feather", quantity: 3 }, { itemId: "spider_silk", quantity: 2 }],
+        requiredSkillLevel: 18,
+        requiredSkillId: "jeweling",
+        craftingTime: 14,
+        xpReward: 70,
+        tier: "journeyman"
+      },
+      // ── PHASE 2: EXPERT (ADEPT) DROP RECIPES (learned from dungeon boss drops) ─
+      {
+        id: "recipe_expert_warchief_axe",
+        name: "Forge Warchief's Heavy Axe",
+        description: "An expert smithing technique for crafting the brutal war-axe of a gnoll warchief, using trophy materials.",
+        resultItemId: "iron_longsword",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "iron_bar", quantity: 4 },
+          { itemId: "warchief_war_medallion", quantity: 1 },
+          { itemId: "gnoll_fur_tuft", quantity: 2 }
+        ],
+        requiredSkillLevel: 12,
+        requiredSkillId: "smithing",
+        craftingTime: 25,
+        xpReward: 200,
+        tier: "expert"
+      },
+      {
+        id: "recipe_expert_overlord_war_plate",
+        name: "Forge Overlord's War Plate",
+        description: "An expert armoring technique using Narlock's fractured seal to craft reinforced warlord-tier chest armor.",
+        resultItemId: "iron_breastplate",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "iron_bar", quantity: 5 },
+          { itemId: "narlock_overlord_seal", quantity: 1 },
+          { itemId: "coal", quantity: 3 }
+        ],
+        requiredSkillLevel: 22,
+        requiredSkillId: "smithing",
+        craftingTime: 35,
+        xpReward: 300,
+        tier: "expert"
+      },
+      {
+        id: "recipe_expert_lich_focus",
+        name: "Craft Lich's Necrotic Focus",
+        description: "An expert alchemy recipe channeling Varsoon's lich essence into a potent necrotic focus crystal.",
+        resultItemId: "ring_of_power",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "varsoon_lich_essence", quantity: 1 },
+          { itemId: "mithril_ore", quantity: 2 },
+          { itemId: "spider_silk", quantity: 3 }
+        ],
+        requiredSkillLevel: 28,
+        requiredSkillId: "alchemy",
+        craftingTime: 40,
+        xpReward: 380,
+        tier: "expert"
+      },
+      {
+        id: "recipe_expert_shadow_mantle",
+        name: "Weave Shadow Mantle of Everling",
+        description: "An expert tailoring method weaving Everling's dark shard into a shadow-touched mantle of the night.",
+        resultItemId: "cloak_of_shadows",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "everling_dark_shard", quantity: 1 },
+          { itemId: "spider_silk", quantity: 6 },
+          { itemId: "wolf_hide", quantity: 3 }
+        ],
+        requiredSkillLevel: 37,
+        requiredSkillId: "tailoring",
+        craftingTime: 50,
+        xpReward: 480,
+        tier: "expert"
+      },
+      // ── MYTHIC RAID RECIPES — Harla Dar (Prismatic Dragon) ───────────────────
+      {
+        id: "recipe_mythic_prismatic_warblade",
+        name: "Forge Prismatic Warblade of Harla Dar",
+        description: "A mythic smithing method to forge Harla Dar's prismatic scales and adamantine into the ultimate fighter weapon.",
+        resultItemId: "raid_harla_dar_weapon_fighter",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "prismatic_dragon_scale", quantity: 1 },
+          { itemId: "adamantine_ore", quantity: 4 }
+        ],
+        requiredSkillLevel: 60,
+        requiredSkillId: "smithing",
+        craftingTime: 120,
+        xpReward: 2e3,
+        tier: "mythic",
+        oneOfAKind: true
+      },
+      {
+        id: "recipe_mythic_prismatic_staff",
+        name: "Craft Prismatic Dragon Staff",
+        description: "A mythic woodworking method to channel Harla Dar's prismatic energy through a mithril-tipped staff.",
+        resultItemId: "raid_harla_dar_weapon_mage",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "prismatic_dragon_scale", quantity: 1 },
+          { itemId: "mithril_ore", quantity: 2 },
+          { itemId: "fire_opal", quantity: 1 }
+        ],
+        requiredSkillLevel: 60,
+        requiredSkillId: "jeweling",
+        craftingTime: 120,
+        xpReward: 2e3,
+        tier: "mythic",
+        oneOfAKind: true
+      },
+      {
+        id: "recipe_mythic_radiant_scepter",
+        name: "Consecrate Radiant Scepter of the Prismatic Rite",
+        description: "A mythic jeweling ritual that consecrates Harla Dar's scale into a healer's radiant scepter.",
+        resultItemId: "raid_harla_dar_weapon_priest",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "prismatic_dragon_scale", quantity: 1 },
+          { itemId: "mithril_ore", quantity: 2 },
+          { itemId: "enchanted_dust", quantity: 2 }
+        ],
+        requiredSkillLevel: 60,
+        requiredSkillId: "jeweling",
+        craftingTime: 120,
+        xpReward: 2e3,
+        tier: "mythic",
+        oneOfAKind: true
+      },
+      {
+        id: "recipe_mythic_prismatic_breastplate",
+        name: "Forge Prismatic Scale Breastplate",
+        description: "A mythic smithing method to fuse living prismatic scales into an impenetrable fighter's breastplate.",
+        resultItemId: "raid_harla_dar_chest_fighter",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "prismatic_dragon_scale", quantity: 2 },
+          { itemId: "adamantine_ore", quantity: 3 }
+        ],
+        requiredSkillLevel: 60,
+        requiredSkillId: "smithing",
+        craftingTime: 150,
+        xpReward: 2200,
+        tier: "mythic",
+        oneOfAKind: true
+      },
+      {
+        id: "recipe_mythic_chromatic_robes",
+        name: "Weave Robes of Chromatic Dominion",
+        description: "A mythic tailoring method weaving Harla Dar's wing membrane into robes of unrivalled magical power.",
+        resultItemId: "raid_harla_dar_chest_caster",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "prismatic_dragon_scale", quantity: 2 },
+          { itemId: "spider_silk", quantity: 5 },
+          { itemId: "enchanted_dust", quantity: 2 }
+        ],
+        requiredSkillLevel: 60,
+        requiredSkillId: "tailoring",
+        craftingTime: 150,
+        xpReward: 2200,
+        tier: "mythic",
+        oneOfAKind: true
+      },
+      // ── MYTHIC RAID RECIPES — Trakanon (Plague Dragon) ────────────────────────
+      {
+        id: "recipe_mythic_pestilence_greataxe",
+        name: "Forge Pestilence Greataxe of Trakanon",
+        description: "A mythic smithing method that fuses Trakanon's spine into an adamantine greataxe dripping with plague.",
+        resultItemId: "raid_trakanon_weapon_fighter",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "plague_dragon_spine", quantity: 1 },
+          { itemId: "adamantine_ore", quantity: 4 }
+        ],
+        requiredSkillLevel: 60,
+        requiredSkillId: "smithing",
+        craftingTime: 120,
+        xpReward: 2e3,
+        tier: "mythic",
+        oneOfAKind: true
+      },
+      {
+        id: "recipe_mythic_plague_wand",
+        name: "Craft Necrotic Plague Wand of Trakanon",
+        description: "A mythic jeweling method grown from Trakanon's rib to channel necrotic power.",
+        resultItemId: "raid_trakanon_weapon_mage",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "plague_dragon_spine", quantity: 1 },
+          { itemId: "enchanted_dust", quantity: 2 },
+          { itemId: "mithril_ore", quantity: 1 }
+        ],
+        requiredSkillLevel: 60,
+        requiredSkillId: "jeweling",
+        craftingTime: 120,
+        xpReward: 2e3,
+        tier: "mythic",
+        oneOfAKind: true
+      },
+      {
+        id: "recipe_mythic_bone_scepter",
+        name: "Carve Bone Scepter of the Undying Rite",
+        description: "A mythic alchemy ritual that purifies Trakanon's claw into a divine healing instrument.",
+        resultItemId: "raid_trakanon_weapon_priest",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "plague_dragon_spine", quantity: 1 },
+          { itemId: "mithril_ore", quantity: 2 },
+          { itemId: "enchanted_dust", quantity: 2 }
+        ],
+        requiredSkillLevel: 60,
+        requiredSkillId: "alchemy",
+        craftingTime: 120,
+        xpReward: 2e3,
+        tier: "mythic",
+        oneOfAKind: true
+      },
+      {
+        id: "recipe_mythic_plague_breastplate",
+        name: "Forge Breastplate of the Undying Plague",
+        description: "A mythic smithing method that plates adamantine in Trakanon's living scales for the heaviest armour in Sebilis.",
+        resultItemId: "raid_trakanon_chest_fighter",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "plague_dragon_spine", quantity: 2 },
+          { itemId: "adamantine_ore", quantity: 3 }
+        ],
+        requiredSkillLevel: 60,
+        requiredSkillId: "smithing",
+        craftingTime: 150,
+        xpReward: 2200,
+        tier: "mythic",
+        oneOfAKind: true
+      },
+      {
+        id: "recipe_mythic_undying_robes",
+        name: "Weave Robes of the Undying Plague",
+        description: "A mythic tailoring method weaving plague-silk from Trakanon's lair into robes of virulent arcane power.",
+        resultItemId: "raid_trakanon_chest_caster",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "plague_dragon_spine", quantity: 2 },
+          { itemId: "spider_silk", quantity: 5 },
+          { itemId: "enchanted_dust", quantity: 2 }
+        ],
+        requiredSkillLevel: 60,
+        requiredSkillId: "tailoring",
+        craftingTime: 150,
+        xpReward: 2200,
+        tier: "mythic",
+        oneOfAKind: true
+      },
+      // ── MYTHIC RAID RECIPES — Mayong Mistmoore (Vampire Lord) ────────────────
+      {
+        id: "recipe_mythic_blood_greatsword",
+        name: "Forge Blood-Forged Greatsword of Mistmoore",
+        description: "A mythic smithing method that tempers adamantine in Mayong's own blood to create the mightiest melee weapon in Norrath.",
+        resultItemId: "raid_mayong_mistmoore_weapon_fighter",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "vampire_lord_fang", quantity: 1 },
+          { itemId: "adamantine_ore", quantity: 5 }
+        ],
+        requiredSkillLevel: 65,
+        requiredSkillId: "smithing",
+        craftingTime: 150,
+        xpReward: 2500,
+        tier: "mythic",
+        oneOfAKind: true
+      },
+      {
+        id: "recipe_mythic_void_wand",
+        name: "Carve Void Wand of Mayong's Ascension",
+        description: "A mythic jeweling ritual carving Mayong's divine fang into a wand that channels the void between worlds.",
+        resultItemId: "raid_mayong_mistmoore_weapon_mage",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "vampire_lord_fang", quantity: 1 },
+          { itemId: "fire_opal", quantity: 2 },
+          { itemId: "enchanted_dust", quantity: 2 }
+        ],
+        requiredSkillLevel: 65,
+        requiredSkillId: "jeweling",
+        craftingTime: 150,
+        xpReward: 2500,
+        tier: "mythic",
+        oneOfAKind: true
+      },
+      {
+        id: "recipe_mythic_crimson_scepter",
+        name: "Consecrate Crimson Scepter of Dark Apotheosis",
+        description: "A mythic alchemy ritual that transforms Mayong's fang into a divine vampiric healing scepter.",
+        resultItemId: "raid_mayong_mistmoore_weapon_priest",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "vampire_lord_fang", quantity: 1 },
+          { itemId: "mithril_ore", quantity: 2 },
+          { itemId: "enchanted_dust", quantity: 3 }
+        ],
+        requiredSkillLevel: 65,
+        requiredSkillId: "alchemy",
+        craftingTime: 150,
+        xpReward: 2500,
+        tier: "mythic",
+        oneOfAKind: true
+      },
+      {
+        id: "recipe_mythic_dark_apotheosis_breastplate",
+        name: "Forge Breastplate of Dark Apotheosis",
+        description: "A mythic smithing method inscribing Mayong's divine sigils onto shadow-iron to create the pinnacle of vampiric armorcraft.",
+        resultItemId: "raid_mayong_mistmoore_chest_fighter",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "vampire_lord_fang", quantity: 2 },
+          { itemId: "adamantine_ore", quantity: 4 }
+        ],
+        requiredSkillLevel: 65,
+        requiredSkillId: "smithing",
+        craftingTime: 180,
+        xpReward: 2800,
+        tier: "mythic",
+        oneOfAKind: true
+      },
+      {
+        id: "recipe_mythic_blood_god_robes",
+        name: "Weave Robes of the Blood God",
+        description: "A mythic tailoring method weaving Mayong's shadow-silk into the most powerful caster robes in all of Norrath.",
+        resultItemId: "raid_mayong_mistmoore_chest_caster",
+        resultQuantity: 1,
+        ingredients: [
+          { itemId: "vampire_lord_fang", quantity: 2 },
+          { itemId: "spider_silk", quantity: 6 },
+          { itemId: "enchanted_dust", quantity: 3 }
+        ],
+        requiredSkillLevel: 65,
+        requiredSkillId: "tailoring",
+        craftingTime: 180,
+        xpReward: 2800,
+        tier: "mythic",
+        oneOfAKind: true
+      }
     ].map((r) => ({ tier: "journeyman", ...r }));
     INITIAL_SKILLS = [
       { skillId: "combat", name: "Combat", description: "Proficiency with weapons and melee attacks", category: "combat", icon: "sword", xpPerHour: 0 },
@@ -62576,7 +65057,131 @@ var init_gameData = __esm({
       // ── ARCHAEOLOGY ───────────────────────────────────────────────────────────
       { id: "commonlands_ruins", name: "Commonlands Ruins", icon: "\u{1F3DB}\uFE0F", description: "Crumbled ruins from an ancient civilization", skillId: "archaeology", requiredLevel: 1, xpPerGather: 16, gatherTimeSeconds: 9, yields: [{ itemId: "ancient_shard", baseQuantity: 1, weight: 1 }] },
       { id: "antonica_dig_site", name: "Antonica Dig Site", icon: "\u26CF\uFE0F", description: "A formal dig site uncovering buried relics", skillId: "archaeology", requiredLevel: 15, xpPerGather: 42, gatherTimeSeconds: 14, yields: [{ itemId: "relic_fragment", baseQuantity: 1, weight: 1 }] },
-      { id: "feerrott_temple", name: "Feerrott Temple Excavation", icon: "\u{1F5FF}", description: "An overgrown temple filled with ancient tablets", skillId: "archaeology", requiredLevel: 40, xpPerGather: 110, gatherTimeSeconds: 25, yields: [{ itemId: "relic_fragment", baseQuantity: 1, weight: 1 }, { itemId: "ancient_shard", baseQuantity: 1, weight: 1 }], rareYield: { itemId: "engraved_tablet", quantity: 1 } }
+      { id: "feerrott_temple", name: "Feerrott Temple Excavation", icon: "\u{1F5FF}", description: "An overgrown temple filled with ancient tablets", skillId: "archaeology", requiredLevel: 40, xpPerGather: 110, gatherTimeSeconds: 25, yields: [{ itemId: "relic_fragment", baseQuantity: 1, weight: 1 }, { itemId: "ancient_shard", baseQuantity: 1, weight: 1 }], rareYield: { itemId: "engraved_tablet", quantity: 1 } },
+      // ── TRADESKILL HARVESTING ──────────────────────────────────────────────────
+      {
+        id: "shadowroot_tree",
+        name: "Shadowroot Tree",
+        icon: "\u{1F311}",
+        description: "A gnarled tree with dark bark found in shadowy zones, prized by smiths and armorers",
+        skillId: "woodcutting",
+        requiredLevel: 30,
+        xpPerGather: 80,
+        gatherTimeSeconds: 20,
+        yields: [{ itemId: "shadowroot_timber", baseQuantity: 1, weight: 1 }],
+        rareYield: { itemId: "thornvine", quantity: 2 },
+        zone: "dark"
+      },
+      {
+        id: "emberstone_outcrop",
+        name: "Emberstone Outcrop",
+        icon: "\u{1F525}",
+        description: "A volcanic rock outcrop in fire zones that yields emberstone fragments",
+        skillId: "mining",
+        requiredLevel: 35,
+        xpPerGather: 100,
+        gatherTimeSeconds: 25,
+        yields: [{ itemId: "emberstone_fragment", baseQuantity: 1, weight: 1 }],
+        zone: "fire"
+      },
+      {
+        id: "frostbloom_meadow",
+        name: "Frostbloom Meadow",
+        icon: "\u2744\uFE0F",
+        description: "A frozen meadow where rare frostbloom flowers grow in ice zones",
+        skillId: "herbalism",
+        requiredLevel: 25,
+        xpPerGather: 70,
+        gatherTimeSeconds: 18,
+        yields: [{ itemId: "frostbloom_petal", baseQuantity: 2, weight: 1 }],
+        zone: "ice"
+      },
+      {
+        id: "manaweave_grove",
+        name: "Manaweave Grove",
+        icon: "\u{1F33F}",
+        description: "An arcane grove where magical plants grow, their fibers woven with mana",
+        skillId: "herbalism",
+        requiredLevel: 40,
+        xpPerGather: 120,
+        gatherTimeSeconds: 30,
+        yields: [{ itemId: "manaweave_fiber", baseQuantity: 1, weight: 1 }],
+        rareYield: { itemId: "glimmerdust", quantity: 1 },
+        zone: "arcane"
+      },
+      {
+        id: "venom_nest",
+        name: "Venom Nest",
+        icon: "\u{1F577}\uFE0F",
+        description: "A nest of venomous creatures in mid-tier zones, carefully harvested for venom sacs",
+        skillId: "foraging",
+        requiredLevel: 20,
+        xpPerGather: 60,
+        gatherTimeSeconds: 15,
+        yields: [{ itemId: "venom_sac", baseQuantity: 1, weight: 1 }],
+        zone: "swamp"
+      },
+      {
+        id: "astral_vein",
+        name: "Astral Vein",
+        icon: "\u2728",
+        description: "A rare celestial ore vein found only in high-level arcane zones",
+        skillId: "mining",
+        requiredLevel: 55,
+        xpPerGather: 180,
+        gatherTimeSeconds: 40,
+        yields: [{ itemId: "astral_ore", baseQuantity: 1, weight: 1 }],
+        rareYield: { itemId: "ethereal_crystal", quantity: 1 },
+        zone: "celestial"
+      },
+      {
+        id: "corrupted_hunting_ground",
+        name: "Corrupted Hunting Ground",
+        icon: "\u2620\uFE0F",
+        description: "A zone where corrupted beasts roam, yielding thick corrupted hide when skinned",
+        skillId: "skinning",
+        requiredLevel: 35,
+        xpPerGather: 95,
+        gatherTimeSeconds: 22,
+        yields: [{ itemId: "corrupted_hide", baseQuantity: 1, weight: 1 }],
+        zone: "corrupted"
+      },
+      {
+        id: "glimmerdust_hollow",
+        name: "Glimmerdust Hollow",
+        icon: "\u{1F4AB}",
+        description: "A hollow where magical crystalline formations shed glimmerdust",
+        skillId: "prospecting",
+        requiredLevel: 30,
+        xpPerGather: 85,
+        gatherTimeSeconds: 20,
+        yields: [{ itemId: "glimmerdust", baseQuantity: 2, weight: 1 }],
+        zone: "arcane"
+      },
+      {
+        id: "deepmoss_cave",
+        name: "Deepmoss Cave",
+        icon: "\u{1F344}",
+        description: "Deep caverns where deepmoss grows in thick carpets along cave walls",
+        skillId: "herbalism",
+        requiredLevel: 15,
+        xpPerGather: 45,
+        gatherTimeSeconds: 12,
+        yields: [{ itemId: "deepmoss", baseQuantity: 2, weight: 1 }],
+        zone: "cave"
+      },
+      {
+        id: "thornvine_thicket",
+        name: "Thornvine Thicket",
+        icon: "\u{1F335}",
+        description: "A dense thicket of thornvines that must be carefully harvested",
+        skillId: "woodcutting",
+        requiredLevel: 20,
+        xpPerGather: 55,
+        gatherTimeSeconds: 14,
+        yields: [{ itemId: "thornvine", baseQuantity: 2, weight: 1 }],
+        zone: "forest"
+      }
     ];
   }
 });
@@ -62664,13 +65269,13 @@ var require_ipv4 = __commonJS({
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
-      var desc3 = Object.getOwnPropertyDescriptor(m, k);
-      if (!desc3 || ("get" in desc3 ? !m.__esModule : desc3.writable || desc3.configurable)) {
-        desc3 = { enumerable: true, get: function() {
+      var desc4 = Object.getOwnPropertyDescriptor(m, k);
+      if (!desc4 || ("get" in desc4 ? !m.__esModule : desc4.writable || desc4.configurable)) {
+        desc4 = { enumerable: true, get: function() {
           return m[k];
         } };
       }
-      Object.defineProperty(o, k2, desc3);
+      Object.defineProperty(o, k2, desc4);
     }) : (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
       o[k2] = m[k];
@@ -63093,13 +65698,13 @@ var require_regular_expressions = __commonJS({
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
-      var desc3 = Object.getOwnPropertyDescriptor(m, k);
-      if (!desc3 || ("get" in desc3 ? !m.__esModule : desc3.writable || desc3.configurable)) {
-        desc3 = { enumerable: true, get: function() {
+      var desc4 = Object.getOwnPropertyDescriptor(m, k);
+      if (!desc4 || ("get" in desc4 ? !m.__esModule : desc4.writable || desc4.configurable)) {
+        desc4 = { enumerable: true, get: function() {
           return m[k];
         } };
       }
-      Object.defineProperty(o, k2, desc3);
+      Object.defineProperty(o, k2, desc4);
     }) : (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
       o[k2] = m[k];
@@ -63185,13 +65790,13 @@ var require_ipv6 = __commonJS({
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
-      var desc3 = Object.getOwnPropertyDescriptor(m, k);
-      if (!desc3 || ("get" in desc3 ? !m.__esModule : desc3.writable || desc3.configurable)) {
-        desc3 = { enumerable: true, get: function() {
+      var desc4 = Object.getOwnPropertyDescriptor(m, k);
+      if (!desc4 || ("get" in desc4 ? !m.__esModule : desc4.writable || desc4.configurable)) {
+        desc4 = { enumerable: true, get: function() {
           return m[k];
         } };
       }
-      Object.defineProperty(o, k2, desc3);
+      Object.defineProperty(o, k2, desc4);
     }) : (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
       o[k2] = m[k];
@@ -64099,13 +66704,13 @@ var require_ip_address = __commonJS({
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
-      var desc3 = Object.getOwnPropertyDescriptor(m, k);
-      if (!desc3 || ("get" in desc3 ? !m.__esModule : desc3.writable || desc3.configurable)) {
-        desc3 = { enumerable: true, get: function() {
+      var desc4 = Object.getOwnPropertyDescriptor(m, k);
+      if (!desc4 || ("get" in desc4 ? !m.__esModule : desc4.writable || desc4.configurable)) {
+        desc4 = { enumerable: true, get: function() {
           return m[k];
         } };
       }
-      Object.defineProperty(o, k2, desc3);
+      Object.defineProperty(o, k2, desc4);
     }) : (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
       o[k2] = m[k];
@@ -64144,13 +66749,13 @@ var require_ip_address = __commonJS({
 });
 
 // src/app.ts
-var import_express36 = __toESM(require_express2(), 1);
+var import_express37 = __toESM(require_express2(), 1);
 var import_cors = __toESM(require_lib3(), 1);
 var import_pino_http = __toESM(require_logger(), 1);
 var import_express_session2 = __toESM(require_express_session(), 1);
 
 // src/routes/index.ts
-var import_express35 = __toESM(require_express2(), 1);
+var import_express36 = __toESM(require_express2(), 1);
 
 // src/routes/health.ts
 var import_express = __toESM(require_express2(), 1);
@@ -66393,7 +68998,13 @@ function makeZeroAABonuses() {
     xpBonus: 0,
     wardAbsorb: 0,
     gatheringSpeed: 0,
-    craftYield: 0
+    craftYield: 0,
+    craftCostReduction: 0,
+    lifestealPct: 0,
+    hpRegen: 0,
+    tradeskillXpBonus: 0,
+    bossXpBonus: 0,
+    aaXpCostReduction: 0
   };
 }
 function applyAABonuses(nodes) {
@@ -66474,6 +69085,29 @@ function applyAABonuses(nodes) {
       case "craft_yield":
         b.craftYield += total;
         break;
+      // Compound: boosts both gathering speed and craft yield with one node
+      case "gathering_and_craft":
+        b.gatheringSpeed += total;
+        b.craftYield += total;
+        break;
+      case "craft_cost_reduction":
+        b.craftCostReduction += total;
+        break;
+      case "lifesteal_pct":
+        b.lifestealPct += total;
+        break;
+      case "hp_regen":
+        b.hpRegen += total;
+        break;
+      case "tradeskill_xp_bonus":
+        b.tradeskillXpBonus += total;
+        break;
+      case "boss_xp_bonus":
+        b.bossXpBonus += total;
+        break;
+      case "aa_xp_cost_reduction":
+        b.aaXpCostReduction += total;
+        break;
     }
   }
   return b;
@@ -66526,6 +69160,15 @@ function computeStats(stats, aa, skills) {
   const spellCritChance = Math.min(50, Math.floor(intelligence * 0.2 + level * 0.15) + stats.gearCritChance + bonus.spellCritChanceBonus);
   const spellCritBonus = 30 + Math.floor(wisdom * 0.4) + (stats.gearCritBonus || 0) + bonus.critBonusBonus;
   const combatMitigation = Math.min(75, Math.floor(mitigation * 0.6 + avoidance * 0.3));
+  const resistances = {
+    pierce: Math.min(50, stats.gearResistPierce ?? 0),
+    slash: Math.min(50, stats.gearResistSlash ?? 0),
+    crush: Math.min(50, stats.gearResistCrush ?? 0),
+    heat: Math.min(50, stats.gearResistHeat ?? 0),
+    cold: Math.min(50, stats.gearResistCold ?? 0),
+    divine: Math.min(50, stats.gearResistDivine ?? 0),
+    magic: Math.min(50, stats.gearResistMagic ?? 0)
+  };
   return {
     attackRating,
     defenseRating,
@@ -66540,7 +69183,8 @@ function computeStats(stats, aa, skills) {
     spellCritBonus,
     weaponDamageMin: Math.max(1, Math.floor(weaponDamageMin)),
     weaponDamageMax: Math.max(2, Math.floor(weaponDamageMax)),
-    combatMitigation
+    combatMitigation,
+    resistances
   };
 }
 function calculatePlayerDamage(playerStats, enemyMitigation, enemyDefenseRating, enemyAvoidance, isCrit, damageType = "slash", enemyResistances = {}, meleeDamageBonus = 0) {
@@ -66562,10 +69206,10 @@ function calculatePlayerDamage(playerStats, enemyMitigation, enemyDefenseRating,
   damage = damage - resistAmount;
   return { damage: Math.max(1, Math.round(damage)), avoided: false, resisted, resistAmount };
 }
-function calculateEnemyDamage(enemyDamageMin, enemyDamageMax, enemyAttackRating, playerDefenseRating, playerMitigation, playerAvoidance, dmgReductionBonus = 0) {
+function calculateEnemyDamage(enemyDamageMin, enemyDamageMax, enemyAttackRating, playerDefenseRating, playerMitigation, playerAvoidance, dmgReductionBonus = 0, damageType = "slash", playerResistances = {}) {
   const avoidRoll = Math.random() * 100;
   if (avoidRoll < playerAvoidance) {
-    return { damage: 0, avoided: true, isCrit: false };
+    return { damage: 0, avoided: true, isCrit: false, resisted: false, resistAmount: 0 };
   }
   const isCrit = Math.random() < 0.1;
   const rawDmg = enemyDamageMin + Math.random() * (enemyDamageMax - enemyDamageMin);
@@ -66577,7 +69221,11 @@ function calculateEnemyDamage(enemyDamageMin, enemyDamageMax, enemyAttackRating,
   if (isCrit) {
     damage *= 1.3;
   }
-  return { damage: Math.max(1, Math.round(damage)), avoided: false, isCrit };
+  const resistPct = Math.min(50, playerResistances[damageType] ?? 0);
+  const resisted = resistPct > 0;
+  const resistAmount = Math.floor(damage * resistPct / 100);
+  damage -= resistAmount;
+  return { damage: Math.max(1, Math.round(damage)), avoided: false, isCrit, resisted, resistAmount };
 }
 function calculateXpGain(baseXp, playerLevel, enemyLevel, xpBonus = 0) {
   const levelDiff = enemyLevel - playerLevel;
@@ -68549,7 +71197,13 @@ var AA_TABS = [
       { id: "resilience", name: "Resilience", description: "Reduces damage taken by 1% per rank", maxRank: 5, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 1, effectPerRank: 1, requires: ["endurance"], row: 2, col: 1, icon: "\u{1F3CB}\uFE0F" },
       { id: "swift_footing", name: "Swift Footing", description: "Increases haste by 1% per rank", maxRank: 5, pointsPerRank: 1, effect: "haste", effectValue: 1, effectPerRank: 1, requires: ["focus"], row: 2, col: 2, icon: "\u{1F3C3}" },
       { id: "gilded_touch", name: "Gilded Touch", description: "Increases gold earned from kills by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "gold_bonus", effectValue: 5, effectPerRank: 5, requires: ["swift_footing"], row: 3, col: 2, icon: "\u{1F4B0}" },
-      { id: "xp_mastery", name: "Mastery of Learning", description: "Increases XP earned by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "xp_bonus", effectValue: 3, effectPerRank: 3, requires: ["resilience"], row: 3, col: 1, icon: "\u{1F4DA}" }
+      { id: "xp_mastery", name: "Mastery of Learning", description: "Increases XP earned by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "xp_bonus", effectValue: 3, effectPerRank: 3, requires: ["resilience"], row: 3, col: 1, icon: "\u{1F4DA}" },
+      // ── Tier 2: unlocked by reaching row 3 nodes ──
+      { id: "veteran_knowledge", name: "Veteran's Knowledge", description: "Reduces AA XP cost per point by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "aa_xp_cost_reduction", effectValue: 5, effectPerRank: 5, requires: ["xp_mastery", "gilded_touch"], row: 4, col: 1, icon: "\u{1F393}" },
+      { id: "battle_hardened_body", name: "Battle-Hardened Body", description: "Increases max HP by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "max_hp", effectValue: 2, effectPerRank: 2, requires: ["xp_mastery", "gilded_touch"], row: 4, col: 2, icon: "\u{1F9BE}" },
+      { id: "iron_mind", name: "Iron Mind", description: "Increases max power by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "max_power", effectValue: 2, effectPerRank: 2, requires: ["xp_mastery", "gilded_touch"], row: 4, col: 3, icon: "\u{1F9E0}" },
+      { id: "combat_mastery", name: "Combat Mastery", description: "Increases XP gained from boss kills by 10% per rank", maxRank: 5, pointsPerRank: 1, effect: "boss_xp_bonus", effectValue: 10, effectPerRank: 10, requires: ["veteran_knowledge"], row: 5, col: 1, icon: "\u2694\uFE0F" },
+      { id: "legendary_will", name: "Legendary Will", description: "Increases XP earned by an additional 3% per rank", maxRank: 3, pointsPerRank: 1, effect: "xp_bonus", effectValue: 3, effectPerRank: 3, requires: ["battle_hardened_body", "iron_mind"], row: 5, col: 2, icon: "\u{1F31F}" }
     ]
   }
 ];
@@ -68560,7 +71214,8 @@ var CLASS_AA_TABS = [
     { id: "g_stand_firm", name: "Stand Firm", description: "Increases max HP by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "max_hp", effectValue: 2, effectPerRank: 2, requires: [], row: 1, col: 2, icon: "\u{1F5FF}" },
     { id: "g_iron_bastion", name: "Iron Bastion", description: "Increases avoidance by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "avoidance", effectValue: 2, effectPerRank: 2, requires: ["g_shield_mastery"], row: 2, col: 1, icon: "\u{1F530}" },
     { id: "g_stalwart", name: "Stalwart Defense", description: "Reduces all damage taken by 2% per rank", maxRank: 3, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 2, effectPerRank: 2, requires: ["g_stand_firm"], row: 2, col: 2, icon: "\u2693" },
-    { id: "g_indomitable", name: "Indomitable", description: "Ward absorbs 8% more damage per rank", maxRank: 3, pointsPerRank: 2, effect: "ward_absorb", effectValue: 8, effectPerRank: 8, requires: ["g_iron_bastion", "g_stalwart"], row: 3, col: 1, icon: "\u{1F3F0}" }
+    { id: "g_indomitable", name: "Indomitable", description: "Ward absorbs 8% more damage per rank", maxRank: 3, pointsPerRank: 2, effect: "ward_absorb", effectValue: 8, effectPerRank: 8, requires: ["g_iron_bastion", "g_stalwart"], row: 3, col: 1, icon: "\u{1F3F0}" },
+    { id: "g_sentinel_vigil", name: "Sentinel's Vigil", description: "Regenerate 3 HP per combat tick per rank through steadfast endurance", maxRank: 3, pointsPerRank: 2, effect: "hp_regen", effectValue: 3, effectPerRank: 3, requires: ["g_indomitable"], row: 4, col: 1, icon: "\u{1F56F}\uFE0F" }
   ] },
   // ── BERSERKER ──
   { id: "berserker_class", name: "Path of Rage", archetype: "Fighter", classId: "berserker", tabType: "class", nodes: [
@@ -68568,7 +71223,8 @@ var CLASS_AA_TABS = [
     { id: "bz_raging_strikes", name: "Raging Strikes", description: "Increases double attack chance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "double_attack", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u26A1" },
     { id: "bz_carnage", name: "Carnage", description: "Increases extra attack chance by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 5, effectPerRank: 5, requires: ["bz_blood_frenzy"], row: 2, col: 1, icon: "\u{1F480}" },
     { id: "bz_swift_rage", name: "Swift Rage", description: "Increases haste by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "haste", effectValue: 2, effectPerRank: 2, requires: ["bz_raging_strikes"], row: 2, col: 2, icon: "\u{1F3C3}" },
-    { id: "bz_executioner", name: "Executioner", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: ["bz_carnage", "bz_swift_rage"], row: 3, col: 1, icon: "\u{1FA93}" }
+    { id: "bz_executioner", name: "Executioner", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: ["bz_carnage", "bz_swift_rage"], row: 3, col: 1, icon: "\u{1FA93}" },
+    { id: "bz_bloodlust_surge", name: "Bloodlust Surge", description: "2% of melee damage dealt is returned as HP per rank", maxRank: 3, pointsPerRank: 2, effect: "lifesteal_pct", effectValue: 2, effectPerRank: 2, requires: ["bz_executioner"], row: 4, col: 1, icon: "\u{1F534}" }
   ] },
   // ── PALADIN ──
   { id: "paladin_class", name: "Sacred Oath", archetype: "Fighter", classId: "paladin", tabType: "class", nodes: [
@@ -68576,7 +71232,8 @@ var CLASS_AA_TABS = [
     { id: "pa_divine_strike", name: "Divine Strike", description: "Increases divine damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "divine_damage", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 2, icon: "\u271D\uFE0F" },
     { id: "pa_sacred_ward", name: "Sacred Ward", description: "Increases ward absorption by 6% per rank", maxRank: 3, pointsPerRank: 1, effect: "ward_absorb", effectValue: 6, effectPerRank: 6, requires: ["pa_holy_armor"], row: 2, col: 1, icon: "\u{1F530}" },
     { id: "pa_righteous_fury", name: "Righteous Fury", description: "Increases critical hit chance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: ["pa_divine_strike"], row: 2, col: 2, icon: "\u{1F624}" },
-    { id: "pa_avatar_light", name: "Avatar of Light", description: "Increases divine damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "divine_damage", effectValue: 10, effectPerRank: 10, requires: ["pa_sacred_ward", "pa_righteous_fury"], row: 3, col: 1, icon: "\u{1F31F}" }
+    { id: "pa_avatar_light", name: "Avatar of Light", description: "Increases divine damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "divine_damage", effectValue: 10, effectPerRank: 10, requires: ["pa_sacred_ward", "pa_righteous_fury"], row: 3, col: 1, icon: "\u{1F31F}" },
+    { id: "pa_sacred_bulwark", name: "Sacred Bulwark", description: "Divine blessing restores 2 HP per combat tick per rank", maxRank: 3, pointsPerRank: 2, effect: "hp_regen", effectValue: 2, effectPerRank: 2, requires: ["pa_avatar_light"], row: 4, col: 1, icon: "\u{1F54A}\uFE0F" }
   ] },
   // ── SHADOWKNIGHT ──
   { id: "shadowknight_class", name: "Dark Covenant", archetype: "Fighter", classId: "shadowknight", tabType: "class", nodes: [
@@ -68584,7 +71241,8 @@ var CLASS_AA_TABS = [
     { id: "sk_dark_infusion", name: "Dark Infusion", description: "Increases spell damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "spell_damage", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 2, icon: "\u{1F49C}" },
     { id: "sk_soul_siphon", name: "Soul Siphon", description: "Increases heal amount from life drain by 4% per rank", maxRank: 3, pointsPerRank: 1, effect: "heal_amount", effectValue: 4, effectPerRank: 4, requires: ["sk_shadow_veil"], row: 2, col: 1, icon: "\u{1FA78}" },
     { id: "sk_dark_pact", name: "Dark Pact", description: "Increases critical hit bonus by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 5, effectPerRank: 5, requires: ["sk_dark_infusion"], row: 2, col: 2, icon: "\u{1F4DC}" },
-    { id: "sk_harbinger", name: "Harbinger of Death", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: ["sk_soul_siphon", "sk_dark_pact"], row: 3, col: 1, icon: "\u{1F480}" }
+    { id: "sk_harbinger", name: "Harbinger of Death", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: ["sk_soul_siphon", "sk_dark_pact"], row: 3, col: 1, icon: "\u{1F480}" },
+    { id: "sk_siphon_life", name: "Siphon Life", description: "3% of melee damage dealt is returned as HP per rank via dark life-tap", maxRank: 3, pointsPerRank: 2, effect: "lifesteal_pct", effectValue: 3, effectPerRank: 3, requires: ["sk_harbinger"], row: 4, col: 1, icon: "\u{1F577}\uFE0F" }
   ] },
   // ── MONK ──
   { id: "monk_class", name: "Way of the Iron Fist", archetype: "Fighter", classId: "monk", tabType: "class", nodes: [
@@ -68592,7 +71250,8 @@ var CLASS_AA_TABS = [
     { id: "mo_iron_body", name: "Iron Body", description: "Reduces damage taken by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 2, effectPerRank: 2, requires: [], row: 1, col: 2, icon: "\u{1F4AA}" },
     { id: "mo_eternal_fist", name: "Eternal Fist", description: "Increases extra attack chance by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 5, effectPerRank: 5, requires: ["mo_flowing_water"], row: 2, col: 1, icon: "\u{1F44A}" },
     { id: "mo_chi_focus", name: "Chi Focus", description: "Reduces power costs by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "power_cost_reduction", effectValue: 5, effectPerRank: 5, requires: ["mo_iron_body"], row: 2, col: 2, icon: "\u{1F535}" },
-    { id: "mo_perfect_form", name: "Perfect Form", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: ["mo_eternal_fist", "mo_chi_focus"], row: 3, col: 1, icon: "\u{1F94B}" }
+    { id: "mo_perfect_form", name: "Perfect Form", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: ["mo_eternal_fist", "mo_chi_focus"], row: 3, col: 1, icon: "\u{1F94B}" },
+    { id: "mo_iron_constitution", name: "Iron Constitution", description: "Inner discipline restores 2 HP per combat tick per rank", maxRank: 3, pointsPerRank: 2, effect: "hp_regen", effectValue: 2, effectPerRank: 2, requires: ["mo_perfect_form"], row: 4, col: 1, icon: "\u262F\uFE0F" }
   ] },
   // ── BRUISER ──
   { id: "bruiser_class", name: "Brawler's Might", archetype: "Fighter", classId: "bruiser", tabType: "class", nodes: [
@@ -68600,7 +71259,8 @@ var CLASS_AA_TABS = [
     { id: "br_thick_skin", name: "Thick Skin", description: "Increases max HP by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "max_hp", effectValue: 2, effectPerRank: 2, requires: [], row: 1, col: 2, icon: "\u{1F417}" },
     { id: "br_pile_driver", name: "Pile Driver", description: "Increases crit bonus damage by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 5, effectPerRank: 5, requires: ["br_bone_crusher"], row: 2, col: 1, icon: "\u{1F4A5}" },
     { id: "br_relentless", name: "Relentless Assault", description: "Increases double attack chance by 3% per rank", maxRank: 3, pointsPerRank: 1, effect: "double_attack", effectValue: 3, effectPerRank: 3, requires: ["br_thick_skin"], row: 2, col: 2, icon: "\u26A1" },
-    { id: "br_unstoppable", name: "Unstoppable Force", description: "Increases melee damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 10, effectPerRank: 10, requires: ["br_pile_driver", "br_relentless"], row: 3, col: 1, icon: "\u{1F32A}\uFE0F" }
+    { id: "br_unstoppable", name: "Unstoppable Force", description: "Increases melee damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 10, effectPerRank: 10, requires: ["br_pile_driver", "br_relentless"], row: 3, col: 1, icon: "\u{1F32A}\uFE0F" },
+    { id: "br_brawlers_grit", name: "Brawler's Grit", description: "Sheer toughness restores 1 HP per combat tick per rank", maxRank: 5, pointsPerRank: 1, effect: "hp_regen", effectValue: 1, effectPerRank: 1, requires: ["br_unstoppable"], row: 4, col: 1, icon: "\u{1F94A}" }
   ] },
   // ── RANGER ──
   { id: "ranger_class", name: "Eagle's Eye", archetype: "Scout", classId: "ranger", tabType: "class", nodes: [
@@ -68608,7 +71268,8 @@ var CLASS_AA_TABS = [
     { id: "ra_rangers_focus", name: "Ranger's Focus", description: "Increases backstab damage by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "backstab_damage", effectValue: 5, effectPerRank: 5, requires: [], row: 1, col: 2, icon: "\u{1F3AF}" },
     { id: "ra_careful_aim", name: "Careful Aim", description: "Increases crit bonus damage by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 5, effectPerRank: 5, requires: ["ra_eagle_eye"], row: 2, col: 1, icon: "\u{1F3F9}" },
     { id: "ra_swift_shots", name: "Swift Shots", description: "Increases haste by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "haste", effectValue: 2, effectPerRank: 2, requires: ["ra_rangers_focus"], row: 2, col: 2, icon: "\u{1F4A8}" },
-    { id: "ra_deadeye", name: "Deadeye", description: "Increases critical hit chance by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "crit_chance", effectValue: 8, effectPerRank: 8, requires: ["ra_careful_aim", "ra_swift_shots"], row: 3, col: 1, icon: "\u{1F441}\uFE0F" }
+    { id: "ra_deadeye", name: "Deadeye", description: "Increases critical hit chance by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "crit_chance", effectValue: 8, effectPerRank: 8, requires: ["ra_careful_aim", "ra_swift_shots"], row: 3, col: 1, icon: "\u{1F441}\uFE0F" },
+    { id: "ra_hunters_eye", name: "Hunter's Eye", description: "Bonus XP from defeating powerful enemies \u2014 10% per rank for boss kills", maxRank: 3, pointsPerRank: 2, effect: "boss_xp_bonus", effectValue: 10, effectPerRank: 10, requires: ["ra_deadeye"], row: 4, col: 1, icon: "\u{1F98C}" }
   ] },
   // ── ASSASSIN ──
   { id: "assassin_class", name: "Shadow's Edge", archetype: "Scout", classId: "assassin", tabType: "class", nodes: [
@@ -68616,7 +71277,8 @@ var CLASS_AA_TABS = [
     { id: "as_shadow_mastery", name: "Shadow Mastery", description: "Increases avoidance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "avoidance", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u{1F311}" },
     { id: "as_lethal_strikes", name: "Lethal Strikes", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["as_death_touch"], row: 2, col: 1, icon: "\u2620\uFE0F" },
     { id: "as_hidden_stalker", name: "Hidden Stalker", description: "Increases critical hit chance by 3% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: ["as_shadow_mastery"], row: 2, col: 2, icon: "\u{1F441}\uFE0F" },
-    { id: "as_master_assassin", name: "Master Assassin", description: "Increases backstab damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "backstab_damage", effectValue: 12, effectPerRank: 12, requires: ["as_lethal_strikes", "as_hidden_stalker"], row: 3, col: 1, icon: "\u{1F480}" }
+    { id: "as_master_assassin", name: "Master Assassin", description: "Increases backstab damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "backstab_damage", effectValue: 12, effectPerRank: 12, requires: ["as_lethal_strikes", "as_hidden_stalker"], row: 3, col: 1, icon: "\u{1F480}" },
+    { id: "as_killing_spree", name: "Killing Spree", description: "Each kill sharpens focus \u2014 earn 3% bonus XP per rank", maxRank: 3, pointsPerRank: 2, effect: "xp_bonus", effectValue: 3, effectPerRank: 3, requires: ["as_master_assassin"], row: 4, col: 1, icon: "\u{1F3AD}" }
   ] },
   // ── SWASHBUCKLER ──
   { id: "swashbuckler_class", name: "Rogue's Fortune", archetype: "Scout", classId: "swashbuckler", tabType: "class", nodes: [
@@ -68624,7 +71286,8 @@ var CLASS_AA_TABS = [
     { id: "sw_cunning_strikes", name: "Cunning Strikes", description: "Increases melee damage by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "melee_damage", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u2694\uFE0F" },
     { id: "sw_riposte", name: "Riposte", description: "Increases double attack chance by 4% per rank", maxRank: 3, pointsPerRank: 1, effect: "double_attack", effectValue: 4, effectPerRank: 4, requires: ["sw_fancy_footwork"], row: 2, col: 1, icon: "\u{1F504}" },
     { id: "sw_exploit_weakness", name: "Exploit Weakness", description: "Increases crit bonus damage by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 5, effectPerRank: 5, requires: ["sw_cunning_strikes"], row: 2, col: 2, icon: "\u{1F3AD}" },
-    { id: "sw_swashbuckling", name: "Swashbuckling Mastery", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: ["sw_riposte", "sw_exploit_weakness"], row: 3, col: 1, icon: "\u{1F3F4}\u200D\u2620\uFE0F" }
+    { id: "sw_swashbuckling", name: "Swashbuckling Mastery", description: "Increases melee damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "melee_damage", effectValue: 8, effectPerRank: 8, requires: ["sw_riposte", "sw_exploit_weakness"], row: 3, col: 1, icon: "\u{1F3F4}\u200D\u2620\uFE0F" },
+    { id: "sw_fortunes_favor", name: "Fortune's Favor", description: "Luck follows you \u2014 earn 8% bonus gold per rank", maxRank: 3, pointsPerRank: 2, effect: "gold_bonus", effectValue: 8, effectPerRank: 8, requires: ["sw_swashbuckling"], row: 4, col: 1, icon: "\u{1FA99}" }
   ] },
   // ── BRIGAND ──
   { id: "brigand_class", name: "Criminal's Art", archetype: "Scout", classId: "brigand", tabType: "class", nodes: [
@@ -68632,7 +71295,8 @@ var CLASS_AA_TABS = [
     { id: "bg_coerce", name: "Coerce", description: "Increases critical hit chance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u{1F3B2}" },
     { id: "bg_cheap_shot", name: "Cheap Shot", description: "Increases extra attack chance by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 5, effectPerRank: 5, requires: ["bg_pickpocket"], row: 2, col: 1, icon: "\u{1F94A}" },
     { id: "bg_cutthroat", name: "Cutthroat", description: "Increases backstab damage by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "backstab_damage", effectValue: 5, effectPerRank: 5, requires: ["bg_coerce"], row: 2, col: 2, icon: "\u{1F5E1}\uFE0F" },
-    { id: "bg_criminal_mind", name: "Criminal Mastermind", description: "Increases backstab damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "backstab_damage", effectValue: 10, effectPerRank: 10, requires: ["bg_cheap_shot", "bg_cutthroat"], row: 3, col: 1, icon: "\u{1F3A9}" }
+    { id: "bg_criminal_mind", name: "Criminal Mastermind", description: "Increases backstab damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "backstab_damage", effectValue: 10, effectPerRank: 10, requires: ["bg_cheap_shot", "bg_cutthroat"], row: 3, col: 1, icon: "\u{1F3A9}" },
+    { id: "bg_underworld_connections", name: "Underworld Connections", description: "Criminal network brings 10% extra gold per rank", maxRank: 3, pointsPerRank: 2, effect: "gold_bonus", effectValue: 10, effectPerRank: 10, requires: ["bg_criminal_mind"], row: 4, col: 1, icon: "\u{1F575}\uFE0F" }
   ] },
   // ── TROUBADOR ──
   { id: "troubador_class", name: "Battle Hymn", archetype: "Scout", classId: "troubador", tabType: "class", nodes: [
@@ -68640,7 +71304,8 @@ var CLASS_AA_TABS = [
     { id: "tr_inspiring", name: "Inspiring Melody", description: "Increases haste by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "haste", effectValue: 2, effectPerRank: 2, requires: [], row: 1, col: 2, icon: "\u{1F3B6}" },
     { id: "tr_crescendo", name: "Arcane Crescendo", description: "Increases spell damage by 4% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_damage", effectValue: 4, effectPerRank: 4, requires: ["tr_harmonic"], row: 2, col: 1, icon: "\u{1F30A}" },
     { id: "tr_battle_march", name: "Battle March", description: "Increases melee damage by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "melee_damage", effectValue: 3, effectPerRank: 3, requires: ["tr_inspiring"], row: 2, col: 2, icon: "\u2694\uFE0F" },
-    { id: "tr_master_bard", name: "Master Bard", description: "Increases XP earned by 5% per rank", maxRank: 3, pointsPerRank: 2, effect: "xp_bonus", effectValue: 5, effectPerRank: 5, requires: ["tr_crescendo", "tr_battle_march"], row: 3, col: 1, icon: "\u{1F3BC}" }
+    { id: "tr_master_bard", name: "Master Bard", description: "Increases XP earned by 5% per rank", maxRank: 3, pointsPerRank: 2, effect: "xp_bonus", effectValue: 5, effectPerRank: 5, requires: ["tr_crescendo", "tr_battle_march"], row: 3, col: 1, icon: "\u{1F3BC}" },
+    { id: "tr_inspiration", name: "Inspiration", description: "Songs inspire mastery \u2014 XP bonus also applies to tradeskill XP earned per rank (10%)", maxRank: 3, pointsPerRank: 2, effect: "tradeskill_xp_bonus", effectValue: 10, effectPerRank: 10, requires: ["tr_master_bard"], row: 4, col: 1, icon: "\u{1F3BA}" }
   ] },
   // ── DIRGE ──
   { id: "dirge_class", name: "Lament", archetype: "Scout", classId: "dirge", tabType: "class", nodes: [
@@ -68648,7 +71313,8 @@ var CLASS_AA_TABS = [
     { id: "di_wail", name: "Wail of Torment", description: "Increases crit bonus damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 2, icon: "\u{1F631}" },
     { id: "di_lament", name: "Lament of the Fallen", description: "Increases critical hit chance by 3% per rank", maxRank: 3, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: ["di_deaths_chorus"], row: 2, col: 1, icon: "\u{1F56F}\uFE0F" },
     { id: "di_anthem", name: "Anthem of War", description: "Increases melee damage by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "melee_damage", effectValue: 3, effectPerRank: 3, requires: ["di_wail"], row: 2, col: 2, icon: "\u2694\uFE0F" },
-    { id: "di_dirge_doom", name: "Dirge of Doom", description: "Increases spell damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 8, effectPerRank: 8, requires: ["di_lament", "di_anthem"], row: 3, col: 1, icon: "\u{1F311}" }
+    { id: "di_dirge_doom", name: "Dirge of Doom", description: "Increases spell damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 8, effectPerRank: 8, requires: ["di_lament", "di_anthem"], row: 3, col: 1, icon: "\u{1F311}" },
+    { id: "di_requiem", name: "Requiem", description: "Death's song grants 5% bonus XP per rank as fallen foes empower the dirge", maxRank: 3, pointsPerRank: 2, effect: "xp_bonus", effectValue: 5, effectPerRank: 5, requires: ["di_dirge_doom"], row: 4, col: 1, icon: "\u{1F3BB}" }
   ] },
   // ── WIZARD ──
   { id: "wizard_class", name: "Archmage's Wrath", archetype: "Mage", classId: "wizard", tabType: "class", nodes: [
@@ -68656,7 +71322,8 @@ var CLASS_AA_TABS = [
     { id: "wz_mana_surge", name: "Mana Surge", description: "Increases spell critical chance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "spell_crit_chance", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u26A1" },
     { id: "wz_spell_mastery", name: "Spell Mastery", description: "Increases spell piercing by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_piercing", effectValue: 5, effectPerRank: 5, requires: ["wz_arcane_fury"], row: 2, col: 1, icon: "\u{1F300}" },
     { id: "wz_crit_focus", name: "Critical Focus", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["wz_mana_surge"], row: 2, col: 2, icon: "\u{1F4A5}" },
-    { id: "wz_archmage", name: "Archmage's Wrath", description: "Increases spell damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 12, effectPerRank: 12, requires: ["wz_spell_mastery", "wz_crit_focus"], row: 3, col: 1, icon: "\u{1F52E}" }
+    { id: "wz_archmage", name: "Archmage's Wrath", description: "Increases spell damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 12, effectPerRank: 12, requires: ["wz_spell_mastery", "wz_crit_focus"], row: 3, col: 1, icon: "\u{1F52E}" },
+    { id: "wz_arcane_mastery", name: "Arcane Mastery", description: "Concentrated arcane study boosts spell crit chance by 2% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_crit_chance", effectValue: 2, effectPerRank: 2, requires: ["wz_archmage"], row: 4, col: 1, icon: "\u2728" }
   ] },
   // ── WARLOCK ──
   { id: "warlock_class", name: "Dark Covenant", archetype: "Mage", classId: "warlock", tabType: "class", nodes: [
@@ -68664,7 +71331,8 @@ var CLASS_AA_TABS = [
     { id: "wl_noxious", name: "Noxious Mastery", description: "Increases critical hit chance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u2620\uFE0F" },
     { id: "wl_curse_mastery", name: "Curse Mastery", description: "Reduces power costs by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "power_cost_reduction", effectValue: 5, effectPerRank: 5, requires: ["wl_dark_arts"], row: 2, col: 1, icon: "\u{1F4DC}" },
     { id: "wl_fel_potency", name: "Fel Potency", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["wl_noxious"], row: 2, col: 2, icon: "\u{1F49C}" },
-    { id: "wl_harbinger", name: "Harbinger", description: "Increases spell damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 12, effectPerRank: 12, requires: ["wl_curse_mastery", "wl_fel_potency"], row: 3, col: 1, icon: "\u{1F311}" }
+    { id: "wl_harbinger", name: "Harbinger", description: "Increases spell damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 12, effectPerRank: 12, requires: ["wl_curse_mastery", "wl_fel_potency"], row: 3, col: 1, icon: "\u{1F311}" },
+    { id: "wl_dark_pact_life", name: "Dark Pact of Life", description: "Dark energies drain 2% of spell damage dealt back as HP per rank", maxRank: 3, pointsPerRank: 2, effect: "lifesteal_pct", effectValue: 2, effectPerRank: 2, requires: ["wl_harbinger"], row: 4, col: 1, icon: "\u{1F578}\uFE0F" }
   ] },
   // ── CONJUROR ──
   { id: "conjuror_class", name: "Summoner's Pact", archetype: "Mage", classId: "conjuror", tabType: "class", nodes: [
@@ -68672,7 +71340,8 @@ var CLASS_AA_TABS = [
     { id: "co_arcane_feeding", name: "Arcane Feeding", description: "Increases max power by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "max_power", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u{1F4A7}" },
     { id: "co_elemental_bond", name: "Elemental Bond", description: "Increases extra attack chance by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 5, effectPerRank: 5, requires: ["co_summoning"], row: 2, col: 1, icon: "\u2697\uFE0F" },
     { id: "co_power_conduit", name: "Power Conduit", description: "Reduces power costs by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "power_cost_reduction", effectValue: 5, effectPerRank: 5, requires: ["co_arcane_feeding"], row: 2, col: 2, icon: "\u{1F50B}" },
-    { id: "co_master_summoner", name: "Master Summoner", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: ["co_elemental_bond", "co_power_conduit"], row: 3, col: 1, icon: "\u{1F300}" }
+    { id: "co_master_summoner", name: "Master Summoner", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: ["co_elemental_bond", "co_power_conduit"], row: 3, col: 1, icon: "\u{1F300}" },
+    { id: "co_elemental_synergy", name: "Elemental Synergy", description: "Elemental attunement grants 5% extra attack chance per rank", maxRank: 3, pointsPerRank: 2, effect: "extra_attack_chance", effectValue: 5, effectPerRank: 5, requires: ["co_master_summoner"], row: 4, col: 1, icon: "\u{1F30B}" }
   ] },
   // ── NECROMANCER ──
   { id: "necromancer_class", name: "Lich's Embrace", archetype: "Mage", classId: "necromancer", tabType: "class", nodes: [
@@ -68680,7 +71349,8 @@ var CLASS_AA_TABS = [
     { id: "nc_life_tap", name: "Life Tap", description: "Increases heal amount from life drain by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "heal_amount", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 2, icon: "\u{1FA78}" },
     { id: "nc_deaths_touch", name: "Death's Touch", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["nc_grave_mastery"], row: 2, col: 1, icon: "\u{1F5A4}" },
     { id: "nc_soul_rend", name: "Soul Rend", description: "Increases spell critical chance by 3% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_crit_chance", effectValue: 3, effectPerRank: 3, requires: ["nc_life_tap"], row: 2, col: 2, icon: "\u{1F631}" },
-    { id: "nc_lich_lord", name: "Lich Lord", description: "Increases spell damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 12, effectPerRank: 12, requires: ["nc_deaths_touch", "nc_soul_rend"], row: 3, col: 1, icon: "\u{1F451}" }
+    { id: "nc_lich_lord", name: "Lich Lord", description: "Increases spell damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 12, effectPerRank: 12, requires: ["nc_deaths_touch", "nc_soul_rend"], row: 3, col: 1, icon: "\u{1F451}" },
+    { id: "nc_death_harvest", name: "Death Harvest", description: "Harvesting the power of slain foes grants 10% bonus XP from boss kills per rank", maxRank: 3, pointsPerRank: 2, effect: "boss_xp_bonus", effectValue: 10, effectPerRank: 10, requires: ["nc_lich_lord"], row: 4, col: 1, icon: "\u2620\uFE0F" }
   ] },
   // ── COERCER ──
   { id: "coercer_class", name: "Mind's Dominion", archetype: "Mage", classId: "coercer", tabType: "class", nodes: [
@@ -68688,7 +71358,8 @@ var CLASS_AA_TABS = [
     { id: "ce_domination", name: "Domination", description: "Increases spell damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "spell_damage", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 2, icon: "\u{1F441}\uFE0F" },
     { id: "ce_psychic_drain", name: "Psychic Drain", description: "Reduces power costs by 6% per rank", maxRank: 3, pointsPerRank: 1, effect: "power_cost_reduction", effectValue: 6, effectPerRank: 6, requires: ["ce_mental_acuity"], row: 2, col: 1, icon: "\u{1F4A7}" },
     { id: "ce_bewildering", name: "Bewildering Gaze", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["ce_domination"], row: 2, col: 2, icon: "\u{1F300}" },
-    { id: "ce_grand_coercer", name: "Grand Coercer", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: ["ce_psychic_drain", "ce_bewildering"], row: 3, col: 1, icon: "\u{1F3AD}" }
+    { id: "ce_grand_coercer", name: "Grand Coercer", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: ["ce_psychic_drain", "ce_bewildering"], row: 3, col: 1, icon: "\u{1F3AD}" },
+    { id: "ce_mind_shatter", name: "Mind Shatter", description: "Psychic domination refines spellcraft \u2014 spell crit chance +3% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_crit_chance", effectValue: 3, effectPerRank: 3, requires: ["ce_grand_coercer"], row: 4, col: 1, icon: "\u{1F4AB}" }
   ] },
   // ── ILLUSIONIST ──
   { id: "illusionist_class", name: "Mirror Realm", archetype: "Mage", classId: "illusionist", tabType: "class", nodes: [
@@ -68696,7 +71367,8 @@ var CLASS_AA_TABS = [
     { id: "il_prismatic_ward", name: "Prismatic Ward", description: "Reduces damage taken by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 2, effectPerRank: 2, requires: [], row: 1, col: 2, icon: "\u{1F308}" },
     { id: "il_phantom_double", name: "Phantom Double", description: "Increases double attack chance by 4% per rank", maxRank: 3, pointsPerRank: 1, effect: "double_attack", effectValue: 4, effectPerRank: 4, requires: ["il_mirror_mastery"], row: 2, col: 1, icon: "\u{1F465}" },
     { id: "il_arcane_veil", name: "Arcane Veil", description: "Increases ward absorption by 6% per rank", maxRank: 3, pointsPerRank: 1, effect: "ward_absorb", effectValue: 6, effectPerRank: 6, requires: ["il_prismatic_ward"], row: 2, col: 2, icon: "\u2728" },
-    { id: "il_grand_illusion", name: "Grand Illusion", description: "Increases spell damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 8, effectPerRank: 8, requires: ["il_phantom_double", "il_arcane_veil"], row: 3, col: 1, icon: "\u{1F300}" }
+    { id: "il_grand_illusion", name: "Grand Illusion", description: "Increases spell damage by 8% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 8, effectPerRank: 8, requires: ["il_phantom_double", "il_arcane_veil"], row: 3, col: 1, icon: "\u{1F300}" },
+    { id: "il_reflective_shroud", name: "Reflective Shroud", description: "Illusory defenses reduce all damage taken by 2% per rank", maxRank: 3, pointsPerRank: 2, effect: "dmg_reduction", effectValue: 2, effectPerRank: 2, requires: ["il_grand_illusion"], row: 4, col: 1, icon: "\u{1F52E}" }
   ] },
   // ── TEMPLAR ──
   { id: "templar_class", name: "Holy Conviction", archetype: "Priest", classId: "templar", tabType: "class", nodes: [
@@ -68704,7 +71376,8 @@ var CLASS_AA_TABS = [
     { id: "te_sacred_conviction", name: "Sacred Conviction", description: "Increases divine damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "divine_damage", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 2, icon: "\u271D\uFE0F" },
     { id: "te_healing_grace", name: "Healing Grace", description: "Reduces power costs by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "power_cost_reduction", effectValue: 5, effectPerRank: 5, requires: ["te_divine_light"], row: 2, col: 1, icon: "\u{1F49A}" },
     { id: "te_righteous_smite", name: "Righteous Smite", description: "Increases critical hit chance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: ["te_sacred_conviction"], row: 2, col: 2, icon: "\u26A1" },
-    { id: "te_avatar_healing", name: "Avatar of Healing", description: "Increases heal amount by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "heal_amount", effectValue: 10, effectPerRank: 10, requires: ["te_healing_grace", "te_righteous_smite"], row: 3, col: 1, icon: "\u{1F31F}" }
+    { id: "te_avatar_healing", name: "Avatar of Healing", description: "Increases heal amount by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "heal_amount", effectValue: 10, effectPerRank: 10, requires: ["te_healing_grace", "te_righteous_smite"], row: 3, col: 1, icon: "\u{1F31F}" },
+    { id: "te_holy_renewal", name: "Holy Renewal", description: "Continuous divine blessing restores 3 HP per combat tick per rank", maxRank: 3, pointsPerRank: 2, effect: "hp_regen", effectValue: 3, effectPerRank: 3, requires: ["te_avatar_healing"], row: 4, col: 1, icon: "\u2728" }
   ] },
   // ── INQUISITOR ──
   { id: "inquisitor_class", name: "Fanatic's Zeal", archetype: "Priest", classId: "inquisitor", tabType: "class", nodes: [
@@ -68712,15 +71385,18 @@ var CLASS_AA_TABS = [
     { id: "iq_inquisition", name: "Inquisition", description: "Increases melee damage by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "melee_damage", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u2694\uFE0F" },
     { id: "iq_will", name: "Inquisitor's Will", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["iq_fanatic"], row: 2, col: 1, icon: "\u{1F4AA}" },
     { id: "iq_zealous_fury", name: "Zealous Fury", description: "Increases extra attack chance by 4% per rank", maxRank: 3, pointsPerRank: 1, effect: "extra_attack_chance", effectValue: 4, effectPerRank: 4, requires: ["iq_inquisition"], row: 2, col: 2, icon: "\u{1F624}" },
-    { id: "iq_holy_inquisitor", name: "Holy Inquisitor", description: "Increases divine damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "divine_damage", effectValue: 10, effectPerRank: 10, requires: ["iq_will", "iq_zealous_fury"], row: 3, col: 1, icon: "\u{1F451}" }
+    { id: "iq_holy_inquisitor", name: "Holy Inquisitor", description: "Increases divine damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "divine_damage", effectValue: 10, effectPerRank: 10, requires: ["iq_will", "iq_zealous_fury"], row: 3, col: 1, icon: "\u{1F451}" },
+    { id: "iq_righteous_judgment", name: "Righteous Judgment", description: "Inquisitor's conviction adds 5% divine damage per rank", maxRank: 3, pointsPerRank: 2, effect: "divine_damage", effectValue: 5, effectPerRank: 5, requires: ["iq_holy_inquisitor"], row: 4, col: 1, icon: "\u2696\uFE0F" }
   ] },
+  // ── MYSTIC ──
   // ── MYSTIC ──
   { id: "mystic_class", name: "Spirit's Voice", archetype: "Priest", classId: "mystic", tabType: "class", nodes: [
     { id: "my_spirit_ward", name: "Spirit Ward", description: "Increases ward absorption by 7% per rank", maxRank: 3, pointsPerRank: 1, effect: "ward_absorb", effectValue: 7, effectPerRank: 7, requires: [], row: 1, col: 1, icon: "\u{1F300}" },
     { id: "my_ancestral_aid", name: "Ancestral Aid", description: "Increases heal amount by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "heal_amount", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u{1F47B}" },
     { id: "my_bolster", name: "Bolster", description: "Increases max HP by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "max_hp", effectValue: 2, effectPerRank: 2, requires: ["my_spirit_ward"], row: 2, col: 1, icon: "\u{1F4AA}" },
     { id: "my_spirit_wolf", name: "Spirit of the Wolf", description: "Increases haste by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "haste", effectValue: 2, effectPerRank: 2, requires: ["my_ancestral_aid"], row: 2, col: 2, icon: "\u{1F43A}" },
-    { id: "my_spirit_mastery", name: "Spirit Mastery", description: "Reduces damage taken by 3% per rank", maxRank: 3, pointsPerRank: 2, effect: "dmg_reduction", effectValue: 3, effectPerRank: 3, requires: ["my_bolster", "my_spirit_wolf"], row: 3, col: 1, icon: "\u{1F31F}" }
+    { id: "my_spirit_mastery", name: "Spirit Mastery", description: "Reduces damage taken by 3% per rank", maxRank: 3, pointsPerRank: 2, effect: "dmg_reduction", effectValue: 3, effectPerRank: 3, requires: ["my_bolster", "my_spirit_wolf"], row: 3, col: 1, icon: "\u{1F31F}" },
+    { id: "my_ancestors_blessing", name: "Ancestor's Blessing", description: "Ancestral spirits restore 2 HP per combat tick per rank", maxRank: 3, pointsPerRank: 2, effect: "hp_regen", effectValue: 2, effectPerRank: 2, requires: ["my_spirit_mastery"], row: 4, col: 1, icon: "\u{1F319}" }
   ] },
   // ── DEFILER ──
   { id: "defiler_class", name: "Shadow Covenant", archetype: "Priest", classId: "defiler", tabType: "class", nodes: [
@@ -68728,7 +71404,8 @@ var CLASS_AA_TABS = [
     { id: "df_pandemic", name: "Pandemic", description: "Increases spell damage by 4% per rank", maxRank: 5, pointsPerRank: 1, effect: "spell_damage", effectValue: 4, effectPerRank: 4, requires: [], row: 1, col: 2, icon: "\u2623\uFE0F" },
     { id: "df_shadow_ward", name: "Shadow Ward", description: "Reduces damage taken by 3% per rank", maxRank: 3, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 3, effectPerRank: 3, requires: ["df_dark_ward"], row: 2, col: 1, icon: "\u{1F6E1}\uFE0F" },
     { id: "df_virulent_strike", name: "Virulent Strike", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["df_pandemic"], row: 2, col: 2, icon: "\u2620\uFE0F" },
-    { id: "df_master_defiler", name: "Master Defiler", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: ["df_shadow_ward", "df_virulent_strike"], row: 3, col: 1, icon: "\u{1F480}" }
+    { id: "df_master_defiler", name: "Master Defiler", description: "Increases spell damage by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 10, effectPerRank: 10, requires: ["df_shadow_ward", "df_virulent_strike"], row: 3, col: 1, icon: "\u{1F480}" },
+    { id: "df_soul_drain", name: "Soul Drain", description: "Dark rituals drain 2% of damage dealt back as HP per rank", maxRank: 3, pointsPerRank: 2, effect: "lifesteal_pct", effectValue: 2, effectPerRank: 2, requires: ["df_master_defiler"], row: 4, col: 1, icon: "\u{1FA78}" }
   ] },
   // ── WARDEN ──
   { id: "warden_class", name: "Nature's Embrace", archetype: "Priest", classId: "warden", tabType: "class", nodes: [
@@ -68736,7 +71413,8 @@ var CLASS_AA_TABS = [
     { id: "wa_thorncoat", name: "Thorncoat", description: "Reduces damage taken by 2% per rank", maxRank: 5, pointsPerRank: 1, effect: "dmg_reduction", effectValue: 2, effectPerRank: 2, requires: [], row: 1, col: 2, icon: "\u{1F335}" },
     { id: "wa_regrowth", name: "Regrowth", description: "Reduces power costs by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "power_cost_reduction", effectValue: 5, effectPerRank: 5, requires: ["wa_natures_embrace"], row: 2, col: 1, icon: "\u{1F331}" },
     { id: "wa_verdant_armor", name: "Verdant Armor", description: "Increases max HP by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "max_hp", effectValue: 3, effectPerRank: 3, requires: ["wa_thorncoat"], row: 2, col: 2, icon: "\u{1F343}" },
-    { id: "wa_spirit_nature", name: "Spirit of Nature", description: "Increases heal amount by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "heal_amount", effectValue: 10, effectPerRank: 10, requires: ["wa_regrowth", "wa_verdant_armor"], row: 3, col: 1, icon: "\u{1F333}" }
+    { id: "wa_spirit_nature", name: "Spirit of Nature", description: "Increases heal amount by 10% per rank", maxRank: 3, pointsPerRank: 2, effect: "heal_amount", effectValue: 10, effectPerRank: 10, requires: ["wa_regrowth", "wa_verdant_armor"], row: 3, col: 1, icon: "\u{1F333}" },
+    { id: "wa_regrowth_pulse", name: "Regrowth Pulse", description: "Nature's pulse restores 4 HP per combat tick per rank", maxRank: 3, pointsPerRank: 2, effect: "hp_regen", effectValue: 4, effectPerRank: 4, requires: ["wa_spirit_nature"], row: 4, col: 1, icon: "\u{1F49A}" }
   ] },
   // ── FURY ──
   { id: "fury_class", name: "Tempest's Call", archetype: "Priest", classId: "fury", tabType: "class", nodes: [
@@ -68744,7 +71422,8 @@ var CLASS_AA_TABS = [
     { id: "fu_cyclone", name: "Cyclone", description: "Increases critical hit chance by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_chance", effectValue: 3, effectPerRank: 3, requires: [], row: 1, col: 2, icon: "\u{1F32A}\uFE0F" },
     { id: "fu_stormbringer", name: "Stormbringer", description: "Increases spell piercing by 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "spell_piercing", effectValue: 5, effectPerRank: 5, requires: ["fu_natures_wrath"], row: 2, col: 1, icon: "\u26A1" },
     { id: "fu_tempest", name: "Tempest", description: "Increases crit bonus damage by 6% per rank", maxRank: 5, pointsPerRank: 1, effect: "crit_bonus", effectValue: 6, effectPerRank: 6, requires: ["fu_cyclone"], row: 2, col: 2, icon: "\u{1F30A}" },
-    { id: "fu_avatar_storm", name: "Avatar of Storm", description: "Increases spell damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 12, effectPerRank: 12, requires: ["fu_stormbringer", "fu_tempest"], row: 3, col: 1, icon: "\u{1F31F}" }
+    { id: "fu_avatar_storm", name: "Avatar of Storm", description: "Increases spell damage by 12% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_damage", effectValue: 12, effectPerRank: 12, requires: ["fu_stormbringer", "fu_tempest"], row: 3, col: 1, icon: "\u{1F31F}" },
+    { id: "fu_storm_surge", name: "Storm Surge", description: "Tempest's crescendo raises spell crit chance by 3% per rank", maxRank: 3, pointsPerRank: 2, effect: "spell_crit_chance", effectValue: 3, effectPerRank: 3, requires: ["fu_avatar_storm"], row: 4, col: 1, icon: "\u{1F329}\uFE0F" }
   ] }
 ];
 var PRESTIGE_TABS = [
@@ -68754,7 +71433,7 @@ var PRESTIGE_TABS = [
     archetype: "Fighter",
     classId: "guardian",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Warden's Bastion",
     prestigeRightName: "War General",
     nodes: [
@@ -68772,7 +71451,7 @@ var PRESTIGE_TABS = [
     archetype: "Fighter",
     classId: "berserker",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Endless Rage",
     prestigeRightName: "Tactical Fury",
     nodes: [
@@ -68790,7 +71469,7 @@ var PRESTIGE_TABS = [
     archetype: "Fighter",
     classId: "paladin",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Knight of Light",
     prestigeRightName: "Holy Avenger",
     nodes: [
@@ -68808,7 +71487,7 @@ var PRESTIGE_TABS = [
     archetype: "Fighter",
     classId: "shadowknight",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Death Knight",
     prestigeRightName: "Shadow Lord",
     nodes: [
@@ -68826,7 +71505,7 @@ var PRESTIGE_TABS = [
     archetype: "Fighter",
     classId: "monk",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Iron Monk",
     prestigeRightName: "Shadow Dancer",
     nodes: [
@@ -68844,7 +71523,7 @@ var PRESTIGE_TABS = [
     archetype: "Fighter",
     classId: "bruiser",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Juggernaut",
     prestigeRightName: "Street Fighter",
     nodes: [
@@ -68862,7 +71541,7 @@ var PRESTIGE_TABS = [
     archetype: "Scout",
     classId: "ranger",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Hawkeye",
     prestigeRightName: "Trailblazer",
     nodes: [
@@ -68880,7 +71559,7 @@ var PRESTIGE_TABS = [
     archetype: "Scout",
     classId: "assassin",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Death's Hand",
     prestigeRightName: "Ghost Blade",
     nodes: [
@@ -68898,7 +71577,7 @@ var PRESTIGE_TABS = [
     archetype: "Scout",
     classId: "swashbuckler",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Duelist",
     prestigeRightName: "Buccaneer",
     nodes: [
@@ -68916,7 +71595,7 @@ var PRESTIGE_TABS = [
     archetype: "Scout",
     classId: "brigand",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Kingpin",
     prestigeRightName: "Cutthroat",
     nodes: [
@@ -68934,7 +71613,7 @@ var PRESTIGE_TABS = [
     archetype: "Scout",
     classId: "troubador",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Legend",
     prestigeRightName: "War Bard",
     nodes: [
@@ -68952,7 +71631,7 @@ var PRESTIGE_TABS = [
     archetype: "Scout",
     classId: "dirge",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Death Singer",
     prestigeRightName: "Dark Minstrel",
     nodes: [
@@ -68970,7 +71649,7 @@ var PRESTIGE_TABS = [
     archetype: "Mage",
     classId: "wizard",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Archmage",
     prestigeRightName: "Spellblade",
     nodes: [
@@ -68988,7 +71667,7 @@ var PRESTIGE_TABS = [
     archetype: "Mage",
     classId: "warlock",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Dark Lord",
     prestigeRightName: "Plague Bearer",
     nodes: [
@@ -69006,7 +71685,7 @@ var PRESTIGE_TABS = [
     archetype: "Mage",
     classId: "conjuror",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Golem Master",
     prestigeRightName: "Elemental Lord",
     nodes: [
@@ -69024,7 +71703,7 @@ var PRESTIGE_TABS = [
     archetype: "Mage",
     classId: "necromancer",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Death Lord",
     prestigeRightName: "Undying",
     nodes: [
@@ -69042,7 +71721,7 @@ var PRESTIGE_TABS = [
     archetype: "Mage",
     classId: "coercer",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Mindbreaker",
     prestigeRightName: "Puppetmaster",
     nodes: [
@@ -69060,7 +71739,7 @@ var PRESTIGE_TABS = [
     archetype: "Mage",
     classId: "illusionist",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Grand Illusionist",
     prestigeRightName: "Reality Bender",
     nodes: [
@@ -69078,7 +71757,7 @@ var PRESTIGE_TABS = [
     archetype: "Priest",
     classId: "templar",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "High Templar",
     prestigeRightName: "Battle Templar",
     nodes: [
@@ -69096,7 +71775,7 @@ var PRESTIGE_TABS = [
     archetype: "Priest",
     classId: "inquisitor",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Grand Inquisitor",
     prestigeRightName: "Zealot",
     nodes: [
@@ -69114,7 +71793,7 @@ var PRESTIGE_TABS = [
     archetype: "Priest",
     classId: "mystic",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Ancestral Guardian",
     prestigeRightName: "Spirit Walker",
     nodes: [
@@ -69132,7 +71811,7 @@ var PRESTIGE_TABS = [
     archetype: "Priest",
     classId: "defiler",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Plague Lord",
     prestigeRightName: "Shadow Weaver",
     nodes: [
@@ -69150,7 +71829,7 @@ var PRESTIGE_TABS = [
     archetype: "Priest",
     classId: "warden",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Grove Warden",
     prestigeRightName: "Storm Caller",
     nodes: [
@@ -69168,7 +71847,7 @@ var PRESTIGE_TABS = [
     archetype: "Priest",
     classId: "fury",
     tabType: "prestige",
-    prestigeMinSpent: 50,
+    prestigeMinSpent: 40,
     prestigeLeftName: "Avatar of Storm",
     prestigeRightName: "Primal Fury",
     nodes: [
@@ -69193,7 +71872,13 @@ var TRADESKILL_TAB = {
     { id: "ts_resource_mastery", name: "Resource Mastery", description: "Increases gathering speed by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "gathering_speed", effectValue: 8, effectPerRank: 8, requires: ["ts_gathering_speed"], row: 2, col: 1, icon: "\u{1F33F}" },
     { id: "ts_master_crafter", name: "Master Crafter", description: "Increases crafting yield by 8% per rank", maxRank: 3, pointsPerRank: 1, effect: "craft_yield", effectValue: 8, effectPerRank: 8, requires: ["ts_craft_yield"], row: 2, col: 2, icon: "\u2692\uFE0F" },
     { id: "ts_golden_hands", name: "Golden Hands", description: "Increases gold earned by 5% per rank", maxRank: 5, pointsPerRank: 1, effect: "gold_bonus", effectValue: 5, effectPerRank: 5, requires: ["ts_rare_chance"], row: 2, col: 3, icon: "\u270B" },
-    { id: "ts_grandmaster", name: "Grandmaster", description: "Increases both gathering speed and craft yield by 10%", maxRank: 1, pointsPerRank: 3, effect: "gathering_speed", effectValue: 10, effectPerRank: 0, requires: ["ts_resource_mastery", "ts_master_crafter"], row: 3, col: 1, icon: "\u{1F451}" }
+    // Fixed: was only gathering_speed — now uses compound effect so both bonuses actually apply
+    { id: "ts_grandmaster", name: "Grandmaster", description: "Increases both gathering speed and craft yield by 10%", maxRank: 1, pointsPerRank: 3, effect: "gathering_and_craft", effectValue: 10, effectPerRank: 0, requires: ["ts_resource_mastery", "ts_master_crafter"], row: 3, col: 1, icon: "\u{1F451}" },
+    // New nodes — branch 2: crafting quality/XP
+    { id: "ts_quick_craft", name: "Quick Craft", description: "Reduces crafting material cost by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "craft_cost_reduction", effectValue: 3, effectPerRank: 3, requires: ["ts_master_crafter"], row: 3, col: 2, icon: "\u26A1" },
+    { id: "ts_skill_mastery", name: "Skill Mastery", description: "Increases tradeskill XP earned by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "tradeskill_xp_bonus", effectValue: 10, effectPerRank: 10, requires: ["ts_golden_hands"], row: 3, col: 3, icon: "\u{1F4D6}" },
+    { id: "ts_bounty", name: "Bounty Harvest", description: "Increases crafting yield by an additional 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "craft_yield", effectValue: 5, effectPerRank: 5, requires: ["ts_grandmaster", "ts_quick_craft"], row: 4, col: 1, icon: "\u{1F33E}" },
+    { id: "ts_artisan_legend", name: "Artisan's Legend", description: "Legendary mastery: increases gathering speed, craft yield, and reduces material cost by 10%", maxRank: 1, pointsPerRank: 5, effect: "gathering_and_craft", effectValue: 10, effectPerRank: 0, requires: ["ts_bounty", "ts_skill_mastery"], row: 4, col: 2, icon: "\u{1F3C6}" }
   ]
 };
 var ALL_AA_TABS = [
@@ -69218,23 +71903,101 @@ var SHOP_ITEMS = [
   { itemId: "horse_black", buyPrice: 2500, category: "mounts", zones: ["Thundering Steppes", "Nektulos Forest"] },
   { itemId: "wolf_grey", buyPrice: 3e3, category: "mounts", zones: ["Thundering Steppes"] },
   { itemId: "magic_carpet", buyPrice: 12e3, category: "mounts", zones: ["Lavastorm Mountains"] },
+  // Adornments — White Tier 1 (Commonlands / Antonica)
+  { itemId: "adorn_white_str_t1", buyPrice: 100, category: "adornments", zones: ["Commonlands", "Antonica"] },
+  { itemId: "adorn_white_agi_t1", buyPrice: 100, category: "adornments", zones: ["Commonlands", "Antonica"] },
+  { itemId: "adorn_white_sta_t1", buyPrice: 100, category: "adornments", zones: ["Commonlands", "Antonica"] },
+  { itemId: "adorn_white_int_t1", buyPrice: 100, category: "adornments", zones: ["Commonlands", "Antonica"] },
+  { itemId: "adorn_white_wis_t1", buyPrice: 100, category: "adornments", zones: ["Commonlands", "Antonica"] },
+  // Adornments — White Tier 2 (Thundering Steppes / Nektulos Forest)
   { itemId: "adorn_white_str", buyPrice: 300, category: "adornments", zones: ["Thundering Steppes", "Nektulos Forest", "Everfrost Peaks", "Lavastorm Mountains"] },
   { itemId: "adorn_white_agi", buyPrice: 300, category: "adornments", zones: ["Thundering Steppes", "Nektulos Forest", "Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_white_sta", buyPrice: 300, category: "adornments", zones: ["Thundering Steppes", "Nektulos Forest"] },
+  { itemId: "adorn_white_int", buyPrice: 300, category: "adornments", zones: ["Thundering Steppes", "Nektulos Forest"] },
+  { itemId: "adorn_white_wis", buyPrice: 300, category: "adornments", zones: ["Thundering Steppes", "Nektulos Forest"] },
+  { itemId: "adorn_white_hp", buyPrice: 250, category: "adornments", zones: ["Antonica", "Thundering Steppes", "Nektulos Forest"] },
+  { itemId: "adorn_white_pow", buyPrice: 250, category: "adornments", zones: ["Antonica", "Thundering Steppes", "Nektulos Forest"] },
+  // Adornments — Yellow Tier 1 (Thundering Steppes / Nektulos Forest)
+  { itemId: "adorn_yellow_atk_t1", buyPrice: 800, category: "adornments", zones: ["Thundering Steppes", "Nektulos Forest"] },
+  { itemId: "adorn_yellow_def_t1", buyPrice: 800, category: "adornments", zones: ["Thundering Steppes", "Nektulos Forest"] },
+  // Adornments — Yellow Tier 2 (Everfrost / Lavastorm)
   { itemId: "adorn_yellow_atk", buyPrice: 1500, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
-  { itemId: "adorn_yellow_def", buyPrice: 1500, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] }
+  { itemId: "adorn_yellow_def", buyPrice: 1500, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_yellow_crit", buyPrice: 2e3, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_yellow_mit", buyPrice: 2e3, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_yellow_haste", buyPrice: 2e3, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  // Adornments — White Tier 3 (Everfrost / Lavastorm — higher tier vendor)
+  { itemId: "adorn_white_str_t3", buyPrice: 1200, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_white_agi_t3", buyPrice: 1200, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_white_sta_t3", buyPrice: 1200, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_white_int_t3", buyPrice: 1200, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_white_wis_t3", buyPrice: 1200, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_white_res_phys", buyPrice: 1e3, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] },
+  { itemId: "adorn_white_res_elem", buyPrice: 1e3, category: "adornments", zones: ["Everfrost Peaks", "Lavastorm Mountains"] }
+  // Higher tiers (T3 yellow, T4 white, red adornments) are drop/dungeon-only
 ];
 var ADORNMENTS = [
-  { id: "adorn_white_str", name: "White Adornment of Strength", description: "Adds +5 Strength to any armor piece.", color: "white", stat: "strength", value: 5, slotType: "armor", level: 10, spriteId: "adorn_white" },
-  { id: "adorn_white_agi", name: "White Adornment of Agility", description: "Adds +5 Agility to any armor piece.", color: "white", stat: "agility", value: 5, slotType: "armor", level: 10, spriteId: "adorn_white" },
-  { id: "adorn_white_sta", name: "White Adornment of Stamina", description: "Adds +5 Stamina to any armor piece.", color: "white", stat: "stamina", value: 5, slotType: "armor", level: 10, spriteId: "adorn_white" },
-  { id: "adorn_white_int", name: "White Adornment of Intelligence", description: "Adds +5 Intelligence to any armor piece.", color: "white", stat: "intelligence", value: 5, slotType: "armor", level: 10, spriteId: "adorn_white" },
-  { id: "adorn_white_wis", name: "White Adornment of Wisdom", description: "Adds +5 Wisdom to any armor piece.", color: "white", stat: "wisdom", value: 5, slotType: "armor", level: 10, spriteId: "adorn_white" },
-  { id: "adorn_yellow_atk", name: "Yellow Adornment of Attack", description: "Adds +12 Attack Rating to any weapon.", color: "yellow", stat: "attackRating", value: 12, slotType: "weapon", level: 25, spriteId: "adorn_yellow" },
-  { id: "adorn_yellow_def", name: "Yellow Adornment of Defense", description: "Adds +12 Defense Rating to any armor.", color: "yellow", stat: "defenseRating", value: 12, slotType: "armor", level: 25, spriteId: "adorn_yellow" },
-  { id: "adorn_yellow_crit", name: "Yellow Adornment of Criticals", description: "Adds +2% Crit Chance to any weapon.", color: "yellow", stat: "critChance", value: 2, slotType: "weapon", level: 25, spriteId: "adorn_yellow" },
-  { id: "adorn_yellow_mit", name: "Yellow Adornment of Protection", description: "Adds +8 Mitigation to any armor.", color: "yellow", stat: "mitigation", value: 8, slotType: "armor", level: 25, spriteId: "adorn_yellow" },
-  { id: "adorn_red_might", name: "Red Adornment of Might", description: "Powerful red adornment adding +20 Strength and +15 Attack Rating.", color: "red", stat: "strength", value: 20, slotType: "any", level: 50, spriteId: "adorn_red" },
-  { id: "adorn_red_fury", name: "Red Adornment of Fury", description: "Powerful red adornment adding +25 Attack Rating and +3% Crit Chance.", color: "red", stat: "attackRating", value: 25, slotType: "weapon", level: 50, spriteId: "adorn_red" }
+  // ── WHITE Tier 1 — Level 5, armor, minor primary stats ───────────────────
+  { id: "adorn_white_str_t1", name: "Plain White Adornment of Strength", description: "A simple adornment adding minor Strength to armor.", color: "white", stats: [{ stat: "strength", value: 2 }], slotType: "armor", level: 5, spriteId: "adorn_white" },
+  { id: "adorn_white_agi_t1", name: "Plain White Adornment of Agility", description: "A simple adornment adding minor Agility to armor.", color: "white", stats: [{ stat: "agility", value: 2 }], slotType: "armor", level: 5, spriteId: "adorn_white" },
+  { id: "adorn_white_sta_t1", name: "Plain White Adornment of Stamina", description: "A simple adornment adding minor Stamina to armor.", color: "white", stats: [{ stat: "stamina", value: 2 }], slotType: "armor", level: 5, spriteId: "adorn_white" },
+  { id: "adorn_white_int_t1", name: "Plain White Adornment of Intelligence", description: "A simple adornment adding minor Intelligence to armor.", color: "white", stats: [{ stat: "intelligence", value: 2 }], slotType: "armor", level: 5, spriteId: "adorn_white" },
+  { id: "adorn_white_wis_t1", name: "Plain White Adornment of Wisdom", description: "A simple adornment adding minor Wisdom to armor.", color: "white", stats: [{ stat: "wisdom", value: 2 }], slotType: "armor", level: 5, spriteId: "adorn_white" },
+  // ── WHITE Tier 2 — Level 10, armor, +5 primary stats ────────────────────
+  { id: "adorn_white_str", name: "White Adornment of Strength", description: "Adds +5 Strength to any armor piece.", color: "white", stats: [{ stat: "strength", value: 5 }], slotType: "armor", level: 10, spriteId: "adorn_white" },
+  { id: "adorn_white_agi", name: "White Adornment of Agility", description: "Adds +5 Agility to any armor piece.", color: "white", stats: [{ stat: "agility", value: 5 }], slotType: "armor", level: 10, spriteId: "adorn_white" },
+  { id: "adorn_white_sta", name: "White Adornment of Stamina", description: "Adds +5 Stamina to any armor piece.", color: "white", stats: [{ stat: "stamina", value: 5 }], slotType: "armor", level: 10, spriteId: "adorn_white" },
+  { id: "adorn_white_int", name: "White Adornment of Intelligence", description: "Adds +5 Intelligence to any armor piece.", color: "white", stats: [{ stat: "intelligence", value: 5 }], slotType: "armor", level: 10, spriteId: "adorn_white" },
+  { id: "adorn_white_wis", name: "White Adornment of Wisdom", description: "Adds +5 Wisdom to any armor piece.", color: "white", stats: [{ stat: "wisdom", value: 5 }], slotType: "armor", level: 10, spriteId: "adorn_white" },
+  { id: "adorn_white_hp", name: "White Adornment of Vitality", description: "Adds +25 Health to any armor piece.", color: "white", stats: [{ stat: "health", value: 25 }], slotType: "armor", level: 10, spriteId: "adorn_white" },
+  { id: "adorn_white_pow", name: "White Adornment of Energy", description: "Adds +25 Power to any armor piece.", color: "white", stats: [{ stat: "power", value: 25 }], slotType: "armor", level: 10, spriteId: "adorn_white" },
+  // ── WHITE Tier 3 — Level 25, armor, +10 primary stats + resist bundles ───
+  { id: "adorn_white_str_t3", name: "Runed White Adornment of Strength", description: "Adds +10 Strength to any armor piece.", color: "white", stats: [{ stat: "strength", value: 10 }], slotType: "armor", level: 25, spriteId: "adorn_white" },
+  { id: "adorn_white_agi_t3", name: "Runed White Adornment of Agility", description: "Adds +10 Agility to any armor piece.", color: "white", stats: [{ stat: "agility", value: 10 }], slotType: "armor", level: 25, spriteId: "adorn_white" },
+  { id: "adorn_white_sta_t3", name: "Runed White Adornment of Stamina", description: "Adds +10 Stamina to any armor piece.", color: "white", stats: [{ stat: "stamina", value: 10 }], slotType: "armor", level: 25, spriteId: "adorn_white" },
+  { id: "adorn_white_int_t3", name: "Runed White Adornment of Intelligence", description: "Adds +10 Intelligence to any armor piece.", color: "white", stats: [{ stat: "intelligence", value: 10 }], slotType: "armor", level: 25, spriteId: "adorn_white" },
+  { id: "adorn_white_wis_t3", name: "Runed White Adornment of Wisdom", description: "Adds +10 Wisdom to any armor piece.", color: "white", stats: [{ stat: "wisdom", value: 10 }], slotType: "armor", level: 25, spriteId: "adorn_white" },
+  { id: "adorn_white_res_phys", name: "White Adornment of Physical Ward", description: "Wards against physical damage: +5 Pierce, Slash, and Crush resist.", color: "white", stats: [{ stat: "resistPierce", value: 5 }, { stat: "resistSlash", value: 5 }, { stat: "resistCrush", value: 5 }], slotType: "armor", level: 25, spriteId: "adorn_white" },
+  { id: "adorn_white_res_elem", name: "White Adornment of Elemental Ward", description: "Wards against elemental damage: +5 Heat, Cold, and Magic resist.", color: "white", stats: [{ stat: "resistHeat", value: 5 }, { stat: "resistCold", value: 5 }, { stat: "resistMagic", value: 5 }], slotType: "armor", level: 25, spriteId: "adorn_white" },
+  // ── WHITE Tier 4 — Level 50, armor, +18 primary stats + large HP/Power ───
+  { id: "adorn_white_str_t4", name: "Inscribed White Adornment of Strength", description: "Adds +18 Strength to any armor piece.", color: "white", stats: [{ stat: "strength", value: 18 }], slotType: "armor", level: 50, spriteId: "adorn_white" },
+  { id: "adorn_white_agi_t4", name: "Inscribed White Adornment of Agility", description: "Adds +18 Agility to any armor piece.", color: "white", stats: [{ stat: "agility", value: 18 }], slotType: "armor", level: 50, spriteId: "adorn_white" },
+  { id: "adorn_white_sta_t4", name: "Inscribed White Adornment of Stamina", description: "Adds +18 Stamina to any armor piece.", color: "white", stats: [{ stat: "stamina", value: 18 }], slotType: "armor", level: 50, spriteId: "adorn_white" },
+  { id: "adorn_white_int_t4", name: "Inscribed White Adornment of Intelligence", description: "Adds +18 Intelligence to any armor piece.", color: "white", stats: [{ stat: "intelligence", value: 18 }], slotType: "armor", level: 50, spriteId: "adorn_white" },
+  { id: "adorn_white_wis_t4", name: "Inscribed White Adornment of Wisdom", description: "Adds +18 Wisdom to any armor piece.", color: "white", stats: [{ stat: "wisdom", value: 18 }], slotType: "armor", level: 50, spriteId: "adorn_white" },
+  { id: "adorn_white_hp_t4", name: "Inscribed White Adornment of Fortitude", description: "Adds +100 Health to any armor piece.", color: "white", stats: [{ stat: "health", value: 100 }], slotType: "armor", level: 50, spriteId: "adorn_white" },
+  { id: "adorn_white_pow_t4", name: "Inscribed White Adornment of Clarity", description: "Adds +100 Power to any armor piece.", color: "white", stats: [{ stat: "power", value: 100 }], slotType: "armor", level: 50, spriteId: "adorn_white" },
+  // ── YELLOW Tier 1 — Level 15, weapon/armor, minor combat ratings ─────────
+  { id: "adorn_yellow_atk_t1", name: "Yellow Adornment of Striking", description: "Adds +8 Attack Rating to any weapon.", color: "yellow", stats: [{ stat: "attackRating", value: 8 }], slotType: "weapon", level: 15, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_def_t1", name: "Yellow Adornment of Guard", description: "Adds +8 Defense Rating to any armor.", color: "yellow", stats: [{ stat: "defenseRating", value: 8 }], slotType: "armor", level: 15, spriteId: "adorn_yellow" },
+  // ── YELLOW Tier 2 — Level 25, weapon/armor ───────────────────────────────
+  { id: "adorn_yellow_atk", name: "Yellow Adornment of Attack", description: "Adds +12 Attack Rating to any weapon.", color: "yellow", stats: [{ stat: "attackRating", value: 12 }], slotType: "weapon", level: 25, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_def", name: "Yellow Adornment of Defense", description: "Adds +12 Defense Rating to any armor.", color: "yellow", stats: [{ stat: "defenseRating", value: 12 }], slotType: "armor", level: 25, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_crit", name: "Yellow Adornment of Criticals", description: "Adds +2% Crit Chance to any weapon.", color: "yellow", stats: [{ stat: "critChance", value: 2 }], slotType: "weapon", level: 25, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_mit", name: "Yellow Adornment of Protection", description: "Adds +8 Mitigation to any armor.", color: "yellow", stats: [{ stat: "mitigation", value: 8 }], slotType: "armor", level: 25, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_haste", name: "Yellow Adornment of Swiftness", description: "Adds +3 Haste to any weapon.", color: "yellow", stats: [{ stat: "haste", value: 3 }], slotType: "weapon", level: 25, spriteId: "adorn_yellow" },
+  // ── YELLOW Tier 3 — Level 40, stronger combat ratings ────────────────────
+  { id: "adorn_yellow_atk_t3", name: "Gilded Yellow Adornment of Assault", description: "Adds +22 Attack Rating to any weapon.", color: "yellow", stats: [{ stat: "attackRating", value: 22 }], slotType: "weapon", level: 40, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_def_t3", name: "Gilded Yellow Adornment of Bulwark", description: "Adds +22 Defense Rating to any armor.", color: "yellow", stats: [{ stat: "defenseRating", value: 22 }], slotType: "armor", level: 40, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_crit_t3", name: "Gilded Yellow Adornment of Precision", description: "Adds +3% Crit Chance to any weapon.", color: "yellow", stats: [{ stat: "critChance", value: 3 }], slotType: "weapon", level: 40, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_mit_t3", name: "Gilded Yellow Adornment of Warding", description: "Adds +15 Mitigation to any armor.", color: "yellow", stats: [{ stat: "mitigation", value: 15 }], slotType: "armor", level: 40, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_haste_t3", name: "Gilded Yellow Adornment of Celerity", description: "Adds +5 Haste to any weapon.", color: "yellow", stats: [{ stat: "haste", value: 5 }], slotType: "weapon", level: 40, spriteId: "adorn_yellow" },
+  // ── YELLOW Tier 4 — Level 60, high-end combat ratings ────────────────────
+  { id: "adorn_yellow_atk_t4", name: "Ancient Yellow Adornment of Power", description: "Adds +40 Attack Rating to any weapon.", color: "yellow", stats: [{ stat: "attackRating", value: 40 }], slotType: "weapon", level: 60, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_def_t4", name: "Ancient Yellow Adornment of the Bastion", description: "Adds +40 Defense Rating to any armor.", color: "yellow", stats: [{ stat: "defenseRating", value: 40 }], slotType: "armor", level: 60, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_crit_t4", name: "Ancient Yellow Adornment of Accuracy", description: "Adds +5% Crit Chance to any weapon.", color: "yellow", stats: [{ stat: "critChance", value: 5 }], slotType: "weapon", level: 60, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_mit_t4", name: "Ancient Yellow Adornment of Fortification", description: "Adds +25 Mitigation to any armor.", color: "yellow", stats: [{ stat: "mitigation", value: 25 }], slotType: "armor", level: 60, spriteId: "adorn_yellow" },
+  { id: "adorn_yellow_haste_t4", name: "Ancient Yellow Adornment of Alacrity", description: "Adds +8 Haste to any weapon.", color: "yellow", stats: [{ stat: "haste", value: 8 }], slotType: "weapon", level: 60, spriteId: "adorn_yellow" },
+  // ── RED Tier 1 — Level 50, compound stats ────────────────────────────────
+  { id: "adorn_red_might", name: "Red Adornment of Might", description: "+20 Strength and +15 Attack Rating.", color: "red", stats: [{ stat: "strength", value: 20 }, { stat: "attackRating", value: 15 }], slotType: "any", level: 50, spriteId: "adorn_red" },
+  { id: "adorn_red_fury", name: "Red Adornment of Fury", description: "+25 Attack Rating and +3% Crit Chance.", color: "red", stats: [{ stat: "attackRating", value: 25 }, { stat: "critChance", value: 3 }], slotType: "weapon", level: 50, spriteId: "adorn_red" },
+  { id: "adorn_red_bastion", name: "Red Adornment of the Bastion", description: "+20 Mitigation and +30 Defense Rating.", color: "red", stats: [{ stat: "mitigation", value: 20 }, { stat: "defenseRating", value: 30 }], slotType: "armor", level: 50, spriteId: "adorn_red" },
+  { id: "adorn_red_scholar", name: "Red Adornment of the Scholar", description: "+18 Intelligence, +18 Wisdom, and +60 Power.", color: "red", stats: [{ stat: "intelligence", value: 18 }, { stat: "wisdom", value: 18 }, { stat: "power", value: 60 }], slotType: "any", level: 50, spriteId: "adorn_red" },
+  // ── RED Tier 2 — Level 70, powerful compound stats ────────────────────────
+  { id: "adorn_red_conqueror", name: "Red Adornment of the Conqueror", description: "+35 Strength, +30 Attack Rating, +4% Crit Chance.", color: "red", stats: [{ stat: "strength", value: 35 }, { stat: "attackRating", value: 30 }, { stat: "critChance", value: 4 }], slotType: "any", level: 70, spriteId: "adorn_red" },
+  { id: "adorn_red_sentinel", name: "Red Adornment of the Sentinel", description: "+35 Stamina, +40 Mitigation, +50 Defense Rating.", color: "red", stats: [{ stat: "stamina", value: 35 }, { stat: "mitigation", value: 40 }, { stat: "defenseRating", value: 50 }], slotType: "armor", level: 70, spriteId: "adorn_red" },
+  { id: "adorn_red_arcane", name: "Red Adornment of Arcane Supremacy", description: "+35 Intelligence, +35 Wisdom, +100 Power.", color: "red", stats: [{ stat: "intelligence", value: 35 }, { stat: "wisdom", value: 35 }, { stat: "power", value: 100 }], slotType: "any", level: 70, spriteId: "adorn_red" },
+  { id: "adorn_red_storm", name: "Red Adornment of the Stormcaller", description: "+20 Haste, +6% Crit Chance, +35 Attack Rating.", color: "red", stats: [{ stat: "haste", value: 20 }, { stat: "critChance", value: 6 }, { stat: "attackRating", value: 35 }], slotType: "weapon", level: 70, spriteId: "adorn_red" }
 ];
 var HEROIC_CHAINS = [
   {
@@ -69338,7 +72101,7 @@ async function getOrCreateSkills(characterId) {
         trainingAction: null,
         xpPerHour: s.xpPerHour,
         icon: s.icon,
-        maxLevel: 100
+        maxLevel: 70
       }))
     ).onConflictDoNothing().returning();
     return [...existing, ...inserted];
@@ -69543,6 +72306,8 @@ router4.get("/character/stats", async (req, res) => {
     let hasWeapon = false;
     let gearStrength = 0, gearAgility = 0, gearStamina = 0;
     let gearIntelligence = 0, gearWisdom = 0, gearCharisma = 0;
+    let gearResistPierce = 0, gearResistSlash = 0, gearResistCrush = 0;
+    let gearResistHeat = 0, gearResistCold = 0, gearResistDivine = 0, gearResistMagic = 0;
     for (const slotValue of Object.values(gear)) {
       let s = null;
       if (typeof slotValue === "string") {
@@ -69569,6 +72334,13 @@ router4.get("/character/stats", async (req, res) => {
       gearIntelligence += s.intelligence || 0;
       gearWisdom += s.wisdom || 0;
       gearCharisma += s.charisma || 0;
+      gearResistPierce += s.resistPierce || 0;
+      gearResistSlash += s.resistSlash || 0;
+      gearResistCrush += s.resistCrush || 0;
+      gearResistHeat += s.resistHeat || 0;
+      gearResistCold += s.resistCold || 0;
+      gearResistDivine += s.resistDivine || 0;
+      gearResistMagic += s.resistMagic || 0;
       if (s.weaponDamageMin) {
         gearWeaponDamageMin = s.weaponDamageMin;
         gearWeaponDamageMax = s.weaponDamageMax || s.weaponDamageMin * 2;
@@ -69579,6 +72351,75 @@ router4.get("/character/stats", async (req, res) => {
     if (!hasWeapon) {
       gearWeaponDamageMin = baseStats.strength * 0.5 + character.level;
       gearWeaponDamageMax = baseStats.strength * 1 + character.level * 2;
+    }
+    const adornRows = await db.select().from(adornmentsTable).where(eq(adornmentsTable.characterId, req.characterId));
+    for (const row of adornRows) {
+      const def = ADORNMENTS.find((a) => a.id === row.adornmentId);
+      if (!def) continue;
+      for (const { stat, value } of def.stats) {
+        switch (stat) {
+          case "attackRating":
+            gearAttackRating += value;
+            break;
+          case "defenseRating":
+            gearDefenseRating += value;
+            break;
+          case "mitigation":
+            gearMitigation += value;
+            break;
+          case "haste":
+            gearHaste += value;
+            break;
+          case "critChance":
+            gearCritChance += value;
+            break;
+          case "health":
+            gearHealth += value;
+            break;
+          case "power":
+            gearPower += value;
+            break;
+          case "strength":
+            gearStrength += value;
+            break;
+          case "agility":
+            gearAgility += value;
+            break;
+          case "stamina":
+            gearStamina += value;
+            break;
+          case "intelligence":
+            gearIntelligence += value;
+            break;
+          case "wisdom":
+            gearWisdom += value;
+            break;
+          case "charisma":
+            gearCharisma += value;
+            break;
+          case "resistPierce":
+            gearResistPierce += value;
+            break;
+          case "resistSlash":
+            gearResistSlash += value;
+            break;
+          case "resistCrush":
+            gearResistCrush += value;
+            break;
+          case "resistHeat":
+            gearResistHeat += value;
+            break;
+          case "resistCold":
+            gearResistCold += value;
+            break;
+          case "resistDivine":
+            gearResistDivine += value;
+            break;
+          case "resistMagic":
+            gearResistMagic += value;
+            break;
+        }
+      }
     }
     const nodeDefsMap = new Map(ALL_AA_NODES.map((n) => [n.id, n]));
     const investedRows = await db.select().from(aaPointsTable).where(and(eq(aaPointsTable.characterId, req.characterId), gt(aaPointsTable.rank, 0)));
@@ -69608,6 +72449,13 @@ router4.get("/character/stats", async (req, res) => {
       gearIntelligence,
       gearWisdom,
       gearCharisma,
+      gearResistPierce,
+      gearResistSlash,
+      gearResistCrush,
+      gearResistHeat,
+      gearResistCold,
+      gearResistDivine,
+      gearResistMagic,
       archetype: character.archetype ?? "Fighter"
     }, aaBonuses);
     const effStamina = baseStats.stamina + gearStamina;
@@ -69952,7 +72800,7 @@ var import_express5 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/tslib.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/tslib.mjs
 function __classPrivateFieldSet(receiver, state, value, kind, f) {
   if (kind === "m")
     throw new TypeError("Private method is not writable");
@@ -69970,7 +72818,7 @@ function __classPrivateFieldGet(receiver, state, kind, f) {
   return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 }
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/uuid.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/uuid.mjs
 var uuid42 = function() {
   const { crypto: crypto2 } = globalThis;
   if (crypto2?.randomUUID) {
@@ -69982,7 +72830,7 @@ var uuid42 = function() {
   return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) => (+c ^ randomByte() & 15 >> +c / 4).toString(16));
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/errors.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/errors.mjs
 function isAbortError(err) {
   return typeof err === "object" && err !== null && // Spec-compliant fetch implementations
   ("name" in err && err.name === "AbortError" || // Expo fetch
@@ -70013,7 +72861,7 @@ var castToError = (err) => {
   return new Error(err);
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/core/error.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/core/error.mjs
 var OpenAIError = class extends Error {
 };
 var APIError = class _APIError extends OpenAIError {
@@ -70121,8 +72969,33 @@ var InvalidWebhookSignatureError = class extends Error {
     super(message);
   }
 };
+var OAuthError = class extends APIError {
+  constructor(status, error40, headers) {
+    let finalMessage = "OAuth2 authentication error";
+    let error_code = void 0;
+    if (error40 && typeof error40 === "object") {
+      const errorData = error40;
+      error_code = errorData["error"];
+      const description = errorData["error_description"];
+      if (description && typeof description === "string") {
+        finalMessage = description;
+      } else if (error_code) {
+        finalMessage = error_code;
+      }
+    }
+    super(status, error40, finalMessage, headers);
+    this.error_code = error_code;
+  }
+};
+var SubjectTokenProviderError = class extends OpenAIError {
+  constructor(message, provider, cause) {
+    super(message);
+    this.provider = provider;
+    this.cause = cause;
+  }
+};
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/values.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/values.mjs
 var startsWithSchemeRegexp = /^[a-z][a-z0-9+.-]*:/i;
 var isAbsoluteURL = (url2) => {
   return startsWithSchemeRegexp.test(url2);
@@ -70165,13 +73038,13 @@ var safeJSON = (text2) => {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/sleep.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/sleep.mjs
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/version.mjs
-var VERSION = "6.33.0";
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/version.mjs
+var VERSION = "6.34.0";
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/detect-platform.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/detect-platform.mjs
 var isRunningInBrowser = () => {
   return (
     // @ts-ignore
@@ -70305,7 +73178,7 @@ var getPlatformHeaders = () => {
   return _platformHeaders ?? (_platformHeaders = getPlatformProperties());
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/shims.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/shims.mjs
 function getDefaultFetch() {
   if (typeof fetch !== "undefined") {
     return fetch;
@@ -70377,7 +73250,7 @@ async function CancelReadableStream(stream) {
   await cancelPromise;
 }
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/request-options.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/request-options.mjs
 var FallbackEncoder = ({ headers, body }) => {
   return {
     bodyHeaders: {
@@ -70387,7 +73260,7 @@ var FallbackEncoder = ({ headers, body }) => {
   };
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/qs/formats.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/qs/formats.mjs
 var default_format = "RFC3986";
 var default_formatter = (v) => String(v);
 var formatters = {
@@ -70396,7 +73269,7 @@ var formatters = {
 };
 var RFC1738 = "RFC1738";
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/qs/utils.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/qs/utils.mjs
 var has = (obj, key) => (has = Object.hasOwn ?? Function.prototype.call.bind(Object.prototype.hasOwnProperty), has(obj, key));
 var hex_table = /* @__PURE__ */ (() => {
   const array2 = [];
@@ -70475,7 +73348,7 @@ function maybe_map(val, fn) {
   return fn(val);
 }
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/qs/stringify.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/qs/stringify.mjs
 var array_prefix_generators = {
   brackets(prefix) {
     return String(prefix) + "[]";
@@ -70753,12 +73626,12 @@ function stringify(object2, opts = {}) {
   return joined.length > 0 ? prefix + joined : "";
 }
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/query.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/query.mjs
 function stringifyQuery(query) {
   return stringify(query, { arrayFormat: "brackets" });
 }
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/bytes.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/bytes.mjs
 function concatBytes(buffers) {
   let length = 0;
   for (const buffer of buffers) {
@@ -70783,7 +73656,7 @@ function decodeUTF8(bytes) {
   return (decodeUTF8_ ?? (decoder = new globalThis.TextDecoder(), decodeUTF8_ = decoder.decode.bind(decoder)))(bytes);
 }
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/decoders/line.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/decoders/line.mjs
 var _LineDecoder_buffer;
 var _LineDecoder_carriageReturnIndex;
 var LineDecoder = class {
@@ -70860,7 +73733,7 @@ function findDoubleNewlineIndex(buffer) {
   return -1;
 }
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/log.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/log.mjs
 var levelNumbers = {
   off: 0,
   error: 200,
@@ -70933,7 +73806,7 @@ var formatRequestDetails = (details) => {
   return details;
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/core/streaming.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/core/streaming.mjs
 var _Stream_client;
 var Stream = class _Stream {
   constructor(iterator, controller, client) {
@@ -71191,7 +74064,7 @@ function partition(str2, delimiter) {
   return [str2, "", ""];
 }
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/parse.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/parse.mjs
 async function defaultParseResponse(client, props) {
   const { response, requestLogID, retryOfRequestLogID, startTime } = props;
   const body = await (async () => {
@@ -71241,7 +74114,7 @@ function addRequestID(value, response) {
   });
 }
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/core/api-promise.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/core/api-promise.mjs
 var _APIPromise_client;
 var APIPromise = class _APIPromise extends Promise {
   constructor(client, responsePromise, parseResponse2 = defaultParseResponse) {
@@ -71304,7 +74177,7 @@ var APIPromise = class _APIPromise extends Promise {
 };
 _APIPromise_client = /* @__PURE__ */ new WeakMap();
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/core/pagination.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/core/pagination.mjs
 var _AbstractPage_client;
 var AbstractPage = class {
   constructor(client, response, body, options) {
@@ -71435,7 +74308,92 @@ var ConversationCursorPage = class extends AbstractPage {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/uploads.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/auth/workload-identity-auth.mjs
+var SUBJECT_TOKEN_TYPES = {
+  jwt: "urn:ietf:params:oauth:token-type:jwt",
+  id: "urn:ietf:params:oauth:token-type:id_token"
+};
+var TOKEN_EXCHANGE_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:token-exchange";
+var WorkloadIdentityAuth = class {
+  constructor(config2, fetch2) {
+    this.cachedToken = null;
+    this.refreshPromise = null;
+    this.tokenExchangeUrl = "https://auth.openai.com/oauth/token";
+    this.config = config2;
+    this.fetch = fetch2 ?? getDefaultFetch();
+  }
+  async getToken() {
+    if (!this.cachedToken || this.isTokenExpired(this.cachedToken)) {
+      if (this.refreshPromise) {
+        return await this.refreshPromise;
+      }
+      this.refreshPromise = this.refreshToken();
+      try {
+        const token = await this.refreshPromise;
+        return token;
+      } finally {
+        this.refreshPromise = null;
+      }
+    }
+    if (this.needsRefresh(this.cachedToken) && !this.refreshPromise) {
+      this.refreshPromise = this.refreshToken().finally(() => {
+        this.refreshPromise = null;
+      });
+    }
+    return this.cachedToken.token;
+  }
+  async refreshToken() {
+    const subjectToken = await this.config.provider.getToken();
+    const response = await this.fetch(this.tokenExchangeUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        grant_type: TOKEN_EXCHANGE_GRANT_TYPE,
+        client_id: this.config.clientId,
+        subject_token: subjectToken,
+        subject_token_type: SUBJECT_TOKEN_TYPES[this.config.provider.tokenType],
+        identity_provider_id: this.config.identityProviderId,
+        service_account_id: this.config.serviceAccountId
+      })
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      let body = void 0;
+      try {
+        body = JSON.parse(errorText);
+      } catch {
+      }
+      if (response.status === 400 || response.status === 401 || response.status === 403) {
+        throw new OAuthError(response.status, body, response.headers);
+      }
+      throw APIError.generate(response.status, body, `Token exchange failed with status ${response.status}`, response.headers);
+    }
+    const tokenResponse = await response.json();
+    const expiresIn = tokenResponse.expires_in || 3600;
+    const expiresAt = Date.now() + expiresIn * 1e3;
+    this.cachedToken = {
+      token: tokenResponse.access_token,
+      expiresAt
+    };
+    return tokenResponse.access_token;
+  }
+  isTokenExpired(cachedToken) {
+    return Date.now() >= cachedToken.expiresAt;
+  }
+  needsRefresh(cachedToken) {
+    const bufferSeconds = this.config.refreshBufferSeconds ?? 1200;
+    const bufferMs = bufferSeconds * 1e3;
+    return Date.now() >= cachedToken.expiresAt - bufferMs;
+  }
+  invalidateToken() {
+    this.cachedToken = null;
+    this.refreshPromise = null;
+  }
+};
+
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/uploads.mjs
 var checkFileSupport = () => {
   if (typeof File === "undefined") {
     const { process: process2 } = globalThis;
@@ -71526,7 +74484,7 @@ var addFormValue = async (form, key, value) => {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/to-file.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/to-file.mjs
 var isBlobLike = (value) => value != null && typeof value === "object" && typeof value.size === "number" && typeof value.type === "string" && typeof value.text === "function" && typeof value.slice === "function" && typeof value.arrayBuffer === "function";
 var isFileLike = (value) => value != null && typeof value === "object" && typeof value.name === "string" && typeof value.lastModified === "number" && isBlobLike(value);
 var isResponseLike = (value) => value != null && typeof value === "object" && typeof value.url === "string" && typeof value.blob === "function";
@@ -71578,14 +74536,14 @@ function propsForError(value) {
   return `; props: [${props.map((p) => `"${p}"`).join(", ")}]`;
 }
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/core/resource.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/core/resource.mjs
 var APIResource = class {
   constructor(client) {
     this._client = client;
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/path.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/path.mjs
 function encodeURIPath(str2) {
   return str2.replace(/[^A-Za-z0-9\-._~!$&'()*+,;=:@]+/g, encodeURIComponent);
 }
@@ -71640,7 +74598,7 @@ ${underline}`);
 };
 var path = /* @__PURE__ */ createPathTagFunction(encodeURIPath);
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/chat/completions/messages.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/chat/completions/messages.mjs
 var Messages = class extends APIResource {
   /**
    * Get the messages in a stored chat completion. Only Chat Completions that have
@@ -71661,7 +74619,7 @@ var Messages = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/parser.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/parser.mjs
 function isChatCompletionFunctionTool(tool) {
   return tool !== void 0 && "function" in tool && tool.function !== void 0;
 }
@@ -71768,7 +74726,7 @@ function validateInputTools(tools) {
   }
 }
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/chatCompletionUtils.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/chatCompletionUtils.mjs
 var isAssistantMessage = (message) => {
   return message?.role === "assistant";
 };
@@ -71776,7 +74734,7 @@ var isToolMessage = (message) => {
   return message?.role === "tool";
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/EventStream.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/EventStream.mjs
 var _EventStream_instances;
 var _EventStream_connectedPromise;
 var _EventStream_resolveConnectedPromise;
@@ -71965,12 +74923,12 @@ _EventStream_connectedPromise = /* @__PURE__ */ new WeakMap(), _EventStream_reso
   return this._emit("error", new OpenAIError(String(error40)));
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/RunnableFunction.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/RunnableFunction.mjs
 function isRunnableFunctionWithParse(fn) {
   return typeof fn.parse === "function";
 }
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/AbstractChatCompletionRunner.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/AbstractChatCompletionRunner.mjs
 var _AbstractChatCompletionRunner_instances;
 var _AbstractChatCompletionRunner_getFinalContent;
 var _AbstractChatCompletionRunner_getFinalMessage;
@@ -72240,7 +75198,7 @@ _AbstractChatCompletionRunner_instances = /* @__PURE__ */ new WeakSet(), _Abstra
   return typeof rawContent === "string" ? rawContent : rawContent === void 0 ? "undefined" : JSON.stringify(rawContent);
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionRunner.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionRunner.mjs
 var ChatCompletionRunner = class _ChatCompletionRunner extends AbstractChatCompletionRunner {
   static runTools(client, params, options) {
     const runner = new _ChatCompletionRunner();
@@ -72259,7 +75217,7 @@ var ChatCompletionRunner = class _ChatCompletionRunner extends AbstractChatCompl
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/_vendor/partial-json-parser/parser.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/_vendor/partial-json-parser/parser.mjs
 var STR = 1;
 var NUM = 2;
 var ARR = 4;
@@ -72471,7 +75429,7 @@ var _parseJSON = (jsonString, allow) => {
 };
 var partialParse = (input) => parseJSON(input, Allow.ALL ^ Allow.NUM);
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionStream.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionStream.mjs
 var _ChatCompletionStream_instances;
 var _ChatCompletionStream_params;
 var _ChatCompletionStream_choiceEventStates;
@@ -72951,7 +75909,7 @@ function assertIsEmpty(obj) {
 function assertNever2(_x) {
 }
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionStreamingRunner.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/ChatCompletionStreamingRunner.mjs
 var ChatCompletionStreamingRunner = class _ChatCompletionStreamingRunner extends ChatCompletionStream {
   static fromReadableStream(stream) {
     const runner = new _ChatCompletionStreamingRunner(null);
@@ -72972,7 +75930,7 @@ var ChatCompletionStreamingRunner = class _ChatCompletionStreamingRunner extends
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/chat/completions/completions.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/chat/completions/completions.mjs
 var Completions = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -73063,7 +76021,7 @@ var Completions = class extends APIResource {
 };
 Completions.Messages = Messages;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/chat/chat.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/chat/chat.mjs
 var Chat = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -73072,7 +76030,7 @@ var Chat = class extends APIResource {
 };
 Chat.Completions = Completions;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/headers.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/headers.mjs
 var brand_privateNullableHeaders = /* @__PURE__ */ Symbol("brand.privateNullableHeaders");
 function* iterateHeaders(headers) {
   if (!headers)
@@ -73135,7 +76093,7 @@ var buildHeaders = (newHeaders) => {
   return { [brand_privateNullableHeaders]: true, values: targetHeaders, nulls: nullHeaders };
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/audio/speech.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/audio/speech.mjs
 var Speech = class extends APIResource {
   /**
    * Generates audio from the input text.
@@ -73164,7 +76122,7 @@ var Speech = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/audio/transcriptions.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/audio/transcriptions.mjs
 var Transcriptions = class extends APIResource {
   create(body, options) {
     return this._client.post("/audio/transcriptions", multipartFormRequestOptions({
@@ -73176,14 +76134,14 @@ var Transcriptions = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/audio/translations.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/audio/translations.mjs
 var Translations = class extends APIResource {
   create(body, options) {
     return this._client.post("/audio/translations", multipartFormRequestOptions({ body, ...options, __metadata: { model: body.model } }, this._client));
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/audio/audio.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/audio/audio.mjs
 var Audio = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -73196,7 +76154,7 @@ Audio.Transcriptions = Transcriptions;
 Audio.Translations = Translations;
 Audio.Speech = Speech;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/batches.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/batches.mjs
 var Batches = class extends APIResource {
   /**
    * Creates and executes a batch from an uploaded file of requests
@@ -73226,7 +76184,7 @@ var Batches = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/assistants.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/assistants.mjs
 var Assistants = class extends APIResource {
   /**
    * Create an assistant with a model and instructions.
@@ -73288,7 +76246,7 @@ var Assistants = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/sessions.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/sessions.mjs
 var Sessions = class extends APIResource {
   /**
    * Create an ephemeral API token for use in client-side applications with the
@@ -73314,7 +76272,7 @@ var Sessions = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/transcription-sessions.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/transcription-sessions.mjs
 var TranscriptionSessions = class extends APIResource {
   /**
    * Create an ephemeral API token for use in client-side applications with the
@@ -73340,7 +76298,7 @@ var TranscriptionSessions = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/realtime.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/realtime/realtime.mjs
 var Realtime = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -73351,7 +76309,7 @@ var Realtime = class extends APIResource {
 Realtime.Sessions = Sessions;
 Realtime.TranscriptionSessions = TranscriptionSessions;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/sessions.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/sessions.mjs
 var Sessions2 = class extends APIResource {
   /**
    * Create a ChatKit session.
@@ -73391,7 +76349,7 @@ var Sessions2 = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/threads.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/threads.mjs
 var Threads = class extends APIResource {
   /**
    * Retrieve a ChatKit thread by its identifier.
@@ -73460,7 +76418,7 @@ var Threads = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/chatkit.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/chatkit/chatkit.mjs
 var ChatKit = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -73471,7 +76429,7 @@ var ChatKit = class extends APIResource {
 ChatKit.Sessions = Sessions2;
 ChatKit.Threads = Threads;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/threads/messages.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/threads/messages.mjs
 var Messages2 = class extends APIResource {
   /**
    * Create a message.
@@ -73536,7 +76494,7 @@ var Messages2 = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/threads/runs/steps.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/threads/runs/steps.mjs
 var Steps = class extends APIResource {
   /**
    * Retrieves a run step.
@@ -73566,7 +76524,7 @@ var Steps = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/base64.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/base64.mjs
 var toFloat32Array = (base64Str) => {
   if (typeof Buffer !== "undefined") {
     const buf = Buffer.from(base64Str, "base64");
@@ -73582,7 +76540,7 @@ var toFloat32Array = (base64Str) => {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/env.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/internal/utils/env.mjs
 var readEnv = (env) => {
   if (typeof globalThis.process !== "undefined") {
     return globalThis.process.env?.[env]?.trim() ?? void 0;
@@ -73593,7 +76551,7 @@ var readEnv = (env) => {
   return void 0;
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/AssistantStream.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/AssistantStream.mjs
 var _AssistantStream_instances;
 var _a;
 var _AssistantStream_events;
@@ -74132,7 +77090,7 @@ _a = AssistantStream, _AssistantStream_addEvent = function _AssistantStream_addE
 function assertNever3(_x) {
 }
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/threads/runs/runs.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/threads/runs/runs.mjs
 var Runs = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -74299,7 +77257,7 @@ var Runs = class extends APIResource {
 };
 Runs.Steps = Steps;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/threads/threads.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/threads/threads.mjs
 var Threads2 = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -74380,7 +77338,7 @@ var Threads2 = class extends APIResource {
 Threads2.Runs = Runs;
 Threads2.Messages = Messages2;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/beta.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/beta/beta.mjs
 var Beta = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -74395,14 +77353,14 @@ Beta.ChatKit = ChatKit;
 Beta.Assistants = Assistants;
 Beta.Threads = Threads2;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/completions.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/completions.mjs
 var Completions2 = class extends APIResource {
   create(body, options) {
     return this._client.post("/completions", { body, ...options, stream: body.stream ?? false });
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/containers/files/content.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/containers/files/content.mjs
 var Content = class extends APIResource {
   /**
    * Retrieve Container File Content
@@ -74417,7 +77375,7 @@ var Content = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/containers/files/files.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/containers/files/files.mjs
 var Files = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -74461,7 +77419,7 @@ var Files = class extends APIResource {
 };
 Files.Content = Content;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/containers/containers.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/containers/containers.mjs
 var Containers = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -74497,7 +77455,7 @@ var Containers = class extends APIResource {
 };
 Containers.Files = Files;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/conversations/items.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/conversations/items.mjs
 var Items = class extends APIResource {
   /**
    * Create items in a conversation with the given ID.
@@ -74532,7 +77490,7 @@ var Items = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/conversations/conversations.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/conversations/conversations.mjs
 var Conversations = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -74565,7 +77523,7 @@ var Conversations = class extends APIResource {
 };
 Conversations.Items = Items;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/embeddings.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/embeddings.mjs
 var Embeddings = class extends APIResource {
   /**
    * Creates an embedding vector representing the input text.
@@ -74608,7 +77566,7 @@ var Embeddings = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/evals/runs/output-items.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/evals/runs/output-items.mjs
 var OutputItems = class extends APIResource {
   /**
    * Get an evaluation run output item by ID.
@@ -74626,7 +77584,7 @@ var OutputItems = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/evals/runs/runs.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/evals/runs/runs.mjs
 var Runs2 = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -74673,7 +77631,7 @@ var Runs2 = class extends APIResource {
 };
 Runs2.OutputItems = OutputItems;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/evals/evals.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/evals/evals.mjs
 var Evals = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -74717,7 +77675,7 @@ var Evals = class extends APIResource {
 };
 Evals.Runs = Runs2;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/files.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/files.mjs
 var Files2 = class extends APIResource {
   /**
    * Upload a file that can be used across various endpoints. Individual files can be
@@ -74792,11 +77750,11 @@ var Files2 = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/methods.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/methods.mjs
 var Methods = class extends APIResource {
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/alpha/graders.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/alpha/graders.mjs
 var Graders = class extends APIResource {
   /**
    * Run a grader.
@@ -74840,7 +77798,7 @@ var Graders = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/alpha/alpha.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/alpha/alpha.mjs
 var Alpha = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -74849,7 +77807,7 @@ var Alpha = class extends APIResource {
 };
 Alpha.Graders = Graders;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/checkpoints/permissions.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/checkpoints/permissions.mjs
 var Permissions = class extends APIResource {
   /**
    * **NOTE:** Calling this endpoint requires an [admin API key](../admin-api-keys).
@@ -74928,7 +77886,7 @@ var Permissions = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/checkpoints/checkpoints.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/checkpoints/checkpoints.mjs
 var Checkpoints = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -74937,7 +77895,7 @@ var Checkpoints = class extends APIResource {
 };
 Checkpoints.Permissions = Permissions;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/jobs/checkpoints.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/jobs/checkpoints.mjs
 var Checkpoints2 = class extends APIResource {
   /**
    * List checkpoints for a fine-tuning job.
@@ -74957,7 +77915,7 @@ var Checkpoints2 = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/jobs/jobs.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/jobs/jobs.mjs
 var Jobs = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -75070,7 +78028,7 @@ var Jobs = class extends APIResource {
 };
 Jobs.Checkpoints = Checkpoints2;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/fine-tuning.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/fine-tuning/fine-tuning.mjs
 var FineTuning = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -75085,11 +78043,11 @@ FineTuning.Jobs = Jobs;
 FineTuning.Checkpoints = Checkpoints;
 FineTuning.Alpha = Alpha;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/graders/grader-models.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/graders/grader-models.mjs
 var GraderModels = class extends APIResource {
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/graders/graders.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/graders/graders.mjs
 var Graders2 = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -75098,7 +78056,7 @@ var Graders2 = class extends APIResource {
 };
 Graders2.GraderModels = GraderModels;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/images.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/images.mjs
 var Images = class extends APIResource {
   /**
    * Creates a variation of a given image. This endpoint only supports `dall-e-2`.
@@ -75121,7 +78079,7 @@ var Images = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/models.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/models.mjs
 var Models = class extends APIResource {
   /**
    * Retrieves a model instance, providing basic information about the model such as
@@ -75146,7 +78104,7 @@ var Models = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/moderations.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/moderations.mjs
 var Moderations = class extends APIResource {
   /**
    * Classifies if text and/or image inputs are potentially harmful. Learn more in
@@ -75157,7 +78115,7 @@ var Moderations = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/realtime/calls.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/realtime/calls.mjs
 var Calls = class extends APIResource {
   /**
    * Accept an incoming SIP call and configure the realtime session that will handle
@@ -75225,7 +78183,7 @@ var Calls = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/realtime/client-secrets.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/realtime/client-secrets.mjs
 var ClientSecrets = class extends APIResource {
   /**
    * Create a Realtime client secret with an associated session configuration.
@@ -75255,7 +78213,7 @@ var ClientSecrets = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/realtime/realtime.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/realtime/realtime.mjs
 var Realtime2 = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -75266,7 +78224,7 @@ var Realtime2 = class extends APIResource {
 Realtime2.ClientSecrets = ClientSecrets;
 Realtime2.Calls = Calls;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/ResponsesParser.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/ResponsesParser.mjs
 function maybeParseResponse(response, params) {
   if (!params || !hasAutoParseableInput2(params)) {
     return {
@@ -75387,7 +78345,7 @@ function addOutputText(rsp) {
   rsp.output_text = texts.join("");
 }
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/responses/ResponseStream.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/responses/ResponseStream.mjs
 var _ResponseStream_instances;
 var _ResponseStream_params;
 var _ResponseStream_currentResponseSnapshot;
@@ -75649,7 +78607,7 @@ function finalizeResponse(snapshot, params) {
   return maybeParseResponse(snapshot, params);
 }
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/responses/input-items.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/responses/input-items.mjs
 var InputItems = class extends APIResource {
   /**
    * Returns a list of input items for a given response.
@@ -75669,7 +78627,7 @@ var InputItems = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/responses/input-tokens.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/responses/input-tokens.mjs
 var InputTokens = class extends APIResource {
   /**
    * Returns input token counts of the request.
@@ -75687,7 +78645,7 @@ var InputTokens = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/responses/responses.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/responses/responses.mjs
 var Responses = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -75776,7 +78734,7 @@ var Responses = class extends APIResource {
 Responses.InputItems = InputItems;
 Responses.InputTokens = InputTokens;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/skills/content.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/skills/content.mjs
 var Content2 = class extends APIResource {
   /**
    * Download a skill zip bundle by its ID.
@@ -75790,7 +78748,7 @@ var Content2 = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/skills/versions/content.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/skills/versions/content.mjs
 var Content3 = class extends APIResource {
   /**
    * Download a skill version zip bundle.
@@ -75805,7 +78763,7 @@ var Content3 = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/skills/versions/versions.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/skills/versions/versions.mjs
 var Versions = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -75843,7 +78801,7 @@ var Versions = class extends APIResource {
 };
 Versions.Content = Content3;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/skills/skills.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/skills/skills.mjs
 var Skills = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -75884,7 +78842,7 @@ var Skills = class extends APIResource {
 Skills.Content = Content2;
 Skills.Versions = Versions;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/uploads/parts.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/uploads/parts.mjs
 var Parts = class extends APIResource {
   /**
    * Adds a
@@ -75904,7 +78862,7 @@ var Parts = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/uploads/uploads.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/uploads/uploads.mjs
 var Uploads = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -75967,7 +78925,7 @@ var Uploads = class extends APIResource {
 };
 Uploads.Parts = Parts;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/Util.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/lib/Util.mjs
 var allSettledWithThrow = async (promises) => {
   const results = await Promise.allSettled(promises);
   const rejected = results.filter((result) => result.status === "rejected");
@@ -75986,7 +78944,7 @@ var allSettledWithThrow = async (promises) => {
   return values;
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/vector-stores/file-batches.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/vector-stores/file-batches.mjs
 var FileBatches = class extends APIResource {
   /**
    * Create a vector store file batch.
@@ -76103,7 +79061,7 @@ var FileBatches = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/vector-stores/files.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/vector-stores/files.mjs
 var Files3 = class extends APIResource {
   /**
    * Create a vector store file by attaching a
@@ -76235,7 +79193,7 @@ var Files3 = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/vector-stores/vector-stores.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/vector-stores/vector-stores.mjs
 var VectorStores = class extends APIResource {
   constructor() {
     super(...arguments);
@@ -76306,7 +79264,7 @@ var VectorStores = class extends APIResource {
 VectorStores.Files = Files3;
 VectorStores.FileBatches = FileBatches;
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/videos.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/videos.mjs
 var Videos = class extends APIResource {
   /**
    * Create a new video generation job from a prompt and optional reference assets.
@@ -76378,7 +79336,7 @@ var Videos = class extends APIResource {
   }
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/webhooks/webhooks.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/resources/webhooks/webhooks.mjs
 var _Webhooks_instances;
 var _Webhooks_validateSecret;
 var _Webhooks_getRequiredHeader;
@@ -76457,11 +79415,12 @@ _Webhooks_instances = /* @__PURE__ */ new WeakSet(), _Webhooks_validateSecret = 
   return value;
 };
 
-// ../../node_modules/.pnpm/openai@6.33.0_ws@8.20.0_zod@4.3.6/node_modules/openai/client.mjs
+// ../../node_modules/.pnpm/openai@6.34.0_ws@8.20.0_zod@4.3.6/node_modules/openai/client.mjs
 var _OpenAI_instances;
 var _a2;
 var _OpenAI_encoder;
 var _OpenAI_baseURLOverridden;
+var WORKLOAD_IDENTITY_API_KEY_PLACEHOLDER = "workload-identity-auth";
 var OpenAI = class {
   /**
    * API Client for interfacing with the OpenAI API.
@@ -76479,7 +79438,7 @@ var OpenAI = class {
    * @param {Record<string, string | undefined>} opts.defaultQuery - Default query parameters to include with every request to the API.
    * @param {boolean} [opts.dangerouslyAllowBrowser=false] - By default, client-side use of this library is not allowed, as it risks exposing your secret API credentials to attackers.
    */
-  constructor({ baseURL = readEnv("OPENAI_BASE_URL"), apiKey = readEnv("OPENAI_API_KEY"), organization = readEnv("OPENAI_ORG_ID") ?? null, project = readEnv("OPENAI_PROJECT_ID") ?? null, webhookSecret = readEnv("OPENAI_WEBHOOK_SECRET") ?? null, ...opts } = {}) {
+  constructor({ baseURL = readEnv("OPENAI_BASE_URL"), apiKey = readEnv("OPENAI_API_KEY"), organization = readEnv("OPENAI_ORG_ID") ?? null, project = readEnv("OPENAI_PROJECT_ID") ?? null, webhookSecret = readEnv("OPENAI_WEBHOOK_SECRET") ?? null, workloadIdentity, ...opts } = {}) {
     _OpenAI_instances.add(this);
     _OpenAI_encoder.set(this, void 0);
     this.completions = new Completions2(this);
@@ -76504,14 +79463,20 @@ var OpenAI = class {
     this.containers = new Containers(this);
     this.skills = new Skills(this);
     this.videos = new Videos(this);
-    if (apiKey === void 0) {
-      throw new OpenAIError("Missing credentials. Please pass an `apiKey`, or set the `OPENAI_API_KEY` environment variable.");
+    if (workloadIdentity) {
+      if (apiKey && apiKey !== WORKLOAD_IDENTITY_API_KEY_PLACEHOLDER) {
+        throw new OpenAIError("The `apiKey` and `workloadIdentity` arguments are mutually exclusive; only one can be passed at a time.");
+      }
+      apiKey = WORKLOAD_IDENTITY_API_KEY_PLACEHOLDER;
+    } else if (apiKey === void 0) {
+      throw new OpenAIError("Missing credentials. Please pass an `apiKey`, `workloadIdentity`, or set the `OPENAI_API_KEY` environment variable.");
     }
     const options = {
       apiKey,
       organization,
       project,
       webhookSecret,
+      workloadIdentity,
       ...opts,
       baseURL: baseURL || `https://api.openai.com/v1`
     };
@@ -76529,6 +79494,9 @@ var OpenAI = class {
     this.fetch = options.fetch ?? getDefaultFetch();
     __classPrivateFieldSet(this, _OpenAI_encoder, FallbackEncoder, "f");
     this._options = options;
+    if (workloadIdentity) {
+      this._workloadIdentityAuth = new WorkloadIdentityAuth(workloadIdentity, this.fetch);
+    }
     this.apiKey = typeof apiKey === "string" ? apiKey : "Missing Key";
     this.organization = organization;
     this.project = project;
@@ -76548,6 +79516,7 @@ var OpenAI = class {
       fetch: this.fetch,
       fetchOptions: this.fetchOptions,
       apiKey: this.apiKey,
+      workloadIdentity: this._options.workloadIdentity,
       organization: this.organization,
       project: this.project,
       webhookSecret: this.webhookSecret,
@@ -76673,7 +79642,7 @@ var OpenAI = class {
       throw new APIUserAbortError();
     }
     const controller = new AbortController();
-    const response = await this.fetchWithTimeout(url2, req, timeout, controller).catch(castToError);
+    const response = await this.fetchWithAuth(url2, req, timeout, controller).catch(castToError);
     const headersTime = Date.now();
     if (response instanceof globalThis.Error) {
       const retryMessage = `retrying, ${retriesRemaining} attempts remaining`;
@@ -76698,6 +79667,9 @@ var OpenAI = class {
         durationMs: headersTime - startTime,
         message: response.message
       }));
+      if (response instanceof OAuthError || response instanceof SubjectTokenProviderError) {
+        throw response;
+      }
       if (isTimeout) {
         throw new APIConnectionTimeoutError();
       }
@@ -76706,6 +79678,17 @@ var OpenAI = class {
     const specialHeaders = [...response.headers.entries()].filter(([name]) => name === "x-request-id").map(([name, value]) => ", " + name + ": " + JSON.stringify(value)).join("");
     const responseInfo = `[${requestLogID}${retryLogStr}${specialHeaders}] ${req.method} ${url2} ${response.ok ? "succeeded" : "failed"} with status ${response.status} in ${headersTime - startTime}ms`;
     if (!response.ok) {
+      if (response.status === 401 && this._workloadIdentityAuth && !options.__metadata?.["hasStreamingBody"] && !options.__metadata?.["workloadIdentityTokenRefreshed"]) {
+        await CancelReadableStream(response.body);
+        this._workloadIdentityAuth.invalidateToken();
+        return this.makeRequest({
+          ...options,
+          __metadata: {
+            ...options.__metadata,
+            workloadIdentityTokenRefreshed: true
+          }
+        }, retriesRemaining, retryOfRequestLogID ?? requestLogID);
+      }
       const shouldRetry = await this.shouldRetry(response);
       if (retriesRemaining && shouldRetry) {
         const retryMessage2 = `retrying, ${retriesRemaining} attempts remaining`;
@@ -76752,6 +79735,18 @@ var OpenAI = class {
   requestAPIList(Page2, options) {
     const request = this.makeRequest(options, null, void 0);
     return new PagePromise(this, request, Page2);
+  }
+  async fetchWithAuth(url2, init, timeout, controller) {
+    if (this._workloadIdentityAuth) {
+      const headers = init.headers;
+      const authHeader = headers.get("Authorization");
+      if (!authHeader || authHeader === `Bearer ${WORKLOAD_IDENTITY_API_KEY_PLACEHOLDER}`) {
+        const token = await this._workloadIdentityAuth.getToken();
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+    }
+    const response = await this.fetchWithTimeout(url2, init, timeout, controller);
+    return response;
   }
   async fetchWithTimeout(url2, init, ms, controller) {
     const { signal, method, ...options } = init || {};
@@ -76831,7 +79826,13 @@ var OpenAI = class {
     if ("timeout" in options)
       validatePositiveInteger("timeout", options.timeout);
     options.timeout = options.timeout ?? this.timeout;
-    const { bodyHeaders, body } = this.buildBody({ options });
+    const { bodyHeaders, body, isStreamingBody } = this.buildBody({ options });
+    if (isStreamingBody) {
+      inputOptions.__metadata = {
+        ...inputOptions.__metadata,
+        hasStreamingBody: true
+      };
+    }
     const reqHeaders = await this.buildHeaders({ options: inputOptions, method, bodyHeaders, retryCount });
     const req = {
       method,
@@ -76875,9 +79876,11 @@ var OpenAI = class {
   }
   buildBody({ options: { body, headers: rawHeaders } }) {
     if (!body) {
-      return { bodyHeaders: void 0, body: void 0 };
+      return { bodyHeaders: void 0, body: void 0, isStreamingBody: false };
     }
     const headers = buildHeaders([rawHeaders]);
+    const isReadableStream = typeof globalThis.ReadableStream !== "undefined" && body instanceof globalThis.ReadableStream;
+    const isRetryableBody = !isReadableStream && (typeof body === "string" || body instanceof ArrayBuffer || ArrayBuffer.isView(body) || typeof globalThis.Blob !== "undefined" && body instanceof globalThis.Blob || body instanceof URLSearchParams || body instanceof FormData);
     if (
       // Pass raw type verbatim
       ArrayBuffer.isView(body) || body instanceof ArrayBuffer || body instanceof DataView || typeof body === "string" && // Preserve legacy string encoding behavior for now
@@ -76885,18 +79888,23 @@ var OpenAI = class {
       globalThis.Blob && body instanceof globalThis.Blob || // `FormData` -> `multipart/form-data`
       body instanceof FormData || // `URLSearchParams` -> `application/x-www-form-urlencoded`
       body instanceof URLSearchParams || // Send chunked stream (each chunk has own `length`)
-      globalThis.ReadableStream && body instanceof globalThis.ReadableStream
+      isReadableStream
     ) {
-      return { bodyHeaders: void 0, body };
+      return { bodyHeaders: void 0, body, isStreamingBody: !isRetryableBody };
     } else if (typeof body === "object" && (Symbol.asyncIterator in body || Symbol.iterator in body && "next" in body && typeof body.next === "function")) {
-      return { bodyHeaders: void 0, body: ReadableStreamFrom(body) };
+      return {
+        bodyHeaders: void 0,
+        body: ReadableStreamFrom(body),
+        isStreamingBody: true
+      };
     } else if (typeof body === "object" && headers.values.get("content-type") === "application/x-www-form-urlencoded") {
       return {
         bodyHeaders: { "content-type": "application/x-www-form-urlencoded" },
-        body: this.stringifyQuery(body)
+        body: this.stringifyQuery(body),
+        isStreamingBody: false
       };
     } else {
-      return __classPrivateFieldGet(this, _OpenAI_encoder, "f").call(this, { body, headers });
+      return { ...__classPrivateFieldGet(this, _OpenAI_encoder, "f").call(this, { body, headers }), isStreamingBody: false };
     }
   }
 };
@@ -77139,36 +80147,36 @@ var SLOT_NOUN = {
 };
 var SLOT_STAT_PROFILE = {
   primary: ["attackRating", "strength"],
-  secondary: ["defenseRating", "mitigation", "stamina"],
-  head: ["stamina", "intelligence", "wisdom", "mitigation"],
-  chest: ["stamina", "mitigation", "defenseRating", "health"],
-  shoulder: ["strength", "agility", "mitigation"],
-  back: ["agility", "avoidance", "defenseRating"],
-  wrist: ["intelligence", "wisdom", "attackRating"],
+  secondary: ["defenseRating", "mitigation", "stamina", "resistPierce", "resistSlash", "resistCrush"],
+  head: ["stamina", "intelligence", "wisdom", "mitigation", "resistMagic", "resistDivine"],
+  chest: ["stamina", "mitigation", "defenseRating", "health", "resistHeat", "resistCold"],
+  shoulder: ["strength", "agility", "mitigation", "resistCrush", "resistSlash"],
+  back: ["agility", "avoidance", "defenseRating", "resistPierce", "resistMagic"],
+  wrist: ["intelligence", "wisdom", "attackRating", "resistHeat", "resistCold"],
   hands: ["agility", "attackRating", "haste"],
   waist: ["stamina", "strength", "defenseRating"],
-  legs: ["stamina", "agility", "mitigation"],
+  legs: ["stamina", "agility", "mitigation", "resistPierce", "resistCrush"],
   feet: ["agility", "avoidance", "haste"],
-  neck: ["wisdom", "charisma", "intelligence"],
+  neck: ["wisdom", "charisma", "intelligence", "resistMagic", "resistDivine"],
   ear: ["intelligence", "critChance", "attackRating"],
   ring: ["strength", "stamina", "attackRating"]
 };
 var SUFFIX_STAT_BONUS = {
   "of the Wilds": { agility: 2, avoidance: 1 },
   "of the Adventurer": { strength: 1, stamina: 1 },
-  "of Resilience": { stamina: 3, mitigation: 2 },
+  "of Resilience": { stamina: 3, mitigation: 2, resistPierce: 2, resistSlash: 2 },
   "of Power": { attackRating: 4, strength: 2 },
-  "of the Storm": { haste: 3, critChance: 2 },
-  "of the Ages": { wisdom: 3, intelligence: 3 },
-  "of the Void": { intelligence: 4, attackRating: 2 },
-  "of the Conqueror": { strength: 5, attackRating: 5 },
-  "of Norrath": { stamina: 6, mitigation: 4 },
-  "of the Ancients": { wisdom: 5, intelligence: 5 },
+  "of the Storm": { haste: 3, critChance: 2, resistHeat: 3, resistCold: 3 },
+  "of the Ages": { wisdom: 3, intelligence: 3, resistMagic: 3, resistDivine: 2 },
+  "of the Void": { intelligence: 4, attackRating: 2, resistMagic: 4, resistPierce: 2 },
+  "of the Conqueror": { strength: 5, attackRating: 5, resistCrush: 3 },
+  "of Norrath": { stamina: 6, mitigation: 4, resistPierce: 3, resistSlash: 2 },
+  "of the Ancients": { wisdom: 5, intelligence: 5, resistDivine: 4, resistMagic: 3 },
   "of Might": { strength: 7, weaponDamageMin: 3, weaponDamageMax: 5 },
-  "of the Forsaken": { attackRating: 8, critChance: 4, haste: 4 },
-  "of the Tribunal": { wisdom: 8, intelligence: 8, mitigation: 5 },
-  "of Destiny": { stamina: 10, strength: 8, agility: 8 },
-  "of the Gods": { strength: 10, stamina: 10, intelligence: 10 }
+  "of the Forsaken": { attackRating: 8, critChance: 4, haste: 4, resistMagic: 4 },
+  "of the Tribunal": { wisdom: 8, intelligence: 8, mitigation: 5, resistDivine: 5, resistMagic: 3 },
+  "of Destiny": { stamina: 10, strength: 8, agility: 8, resistCrush: 4, resistPierce: 3 },
+  "of the Gods": { strength: 10, stamina: 10, intelligence: 10, resistHeat: 4, resistCold: 4, resistMagic: 4 }
 };
 function seededRandom(seed) {
   let s = seed;
@@ -77203,6 +80211,16 @@ function rollRaritySeeded(rng, forceRarity) {
   }
   return "common";
 }
+var RESIST_STAT_KEYS = /* @__PURE__ */ new Set([
+  "resistPierce",
+  "resistSlash",
+  "resistCrush",
+  "resistHeat",
+  "resistCold",
+  "resistDivine",
+  "resistMagic"
+]);
+var RESIST_SCALE_FACTOR = 0.15;
 function scaleStats(slot, level, rarity, suffix) {
   const mult = RARITY_STAT_MULT[rarity];
   const base = Math.max(1, Math.floor(level * 0.8));
@@ -77221,7 +80239,8 @@ function scaleStats(slot, level, rarity, suffix) {
     const chosen = [...profile].sort(() => Math.random() - 0.5).slice(0, numStats);
     for (const statKey of chosen) {
       if (statKey === "weaponDamageMin" || statKey === "weaponDamageMax" || statKey === "weaponDelay") continue;
-      const val = Math.floor(base * mult * (0.5 + Math.random() * 0.5));
+      const scaleFactor = RESIST_STAT_KEYS.has(statKey) ? RESIST_SCALE_FACTOR : 0.5 + Math.random() * 0.5;
+      const val = Math.floor(base * mult * scaleFactor);
       stats[statKey] = Math.max(1, val);
     }
     if (slot === "secondary") {
@@ -77243,25 +80262,25 @@ function scaleStats(slot, level, rarity, suffix) {
 }
 function buildItem(zone, level, rarity, rng) {
   const cfg = ZONE_LOOT_CONFIG[zone] ?? DEFAULT_ZONE_CONFIG;
-  const pick3 = rng ? (arr) => pickSeeded(arr, rng) : pickRandom;
-  const slot = pick3(ALL_SLOTS);
+  const pick4 = rng ? (arr) => pickSeeded(arr, rng) : pickRandom;
+  const slot = pick4(ALL_SLOTS);
   const sideRng = rng ?? (() => Math.random());
   const itemSlot = slot === "ear" ? sideRng() < 0.5 ? "earLeft" : "earRight" : slot === "ring" ? sideRng() < 0.5 ? "ringLeft" : "ringRight" : slot;
   const isWeapon = WEAPON_SLOTS.includes(slot);
   const isAccessory = ACCESSORY_SLOTS.includes(slot);
   const itemType = isWeapon ? "weapon" : isAccessory ? "accessory" : "armor";
-  const prefix = pick3(PREFIXES_BY_RARITY[rarity]);
+  const prefix = pick4(PREFIXES_BY_RARITY[rarity]);
   const baseNoun = SLOT_NOUN[slot];
   let materialNoun;
   if (isWeapon) {
-    materialNoun = pick3(cfg.weaponTypes);
+    materialNoun = pick4(cfg.weaponTypes);
   } else if (!isAccessory) {
-    materialNoun = `${pick3(cfg.armorTypes)} ${baseNoun}`;
+    materialNoun = `${pick4(cfg.armorTypes)} ${baseNoun}`;
   } else {
     materialNoun = baseNoun;
   }
   const suffixPool = SUFFIXES_BY_RARITY[rarity];
-  const suffix = pick3(suffixPool);
+  const suffix = pick4(suffixPool);
   const name = suffix ? `${prefix} ${materialNoun} ${suffix}`.trim() : `${prefix} ${materialNoun}`.trim();
   const stats = scaleStats(slot, level, rarity, suffix);
   const sellPrice = Math.max(1, Math.floor(level * 2 * RARITY_SELL_MULT[rarity]));
@@ -77274,7 +80293,7 @@ function buildItem(zone, level, rarity, rng) {
     legendary: [`A legendary artifact whispered about by merchants of Norrath.`, `Few adventurers have laid hands on equipment of this caliber.`],
     fabled: [`A fabled relic of near-mythical power, sought by heroes across Norrath.`, `The greatest warriors would weep to see this item in your hands.`]
   };
-  const description = pick3(descriptions[rarity]);
+  const description = pick4(descriptions[rarity]);
   const spriteId = `proc_${slot}_${zone.toLowerCase().replace(/[^a-z]/g, "_").replace(/_+/g, "_")}`;
   const idSuffix = rng ? `${zone.toLowerCase().replace(/\W/g, "_")}_${slot}_${rarity}_${Math.floor(rng() * 1e6)}` : `${zone.toLowerCase().replace(/\W/g, "_")}_${slot}_${Date.now()}_${Math.floor(Math.random() * 1e4)}`;
   const id = `proc_${idSuffix}`;
@@ -77661,6 +80680,286 @@ var DUNGEONS = [
         normalsRequired: 5
       }
     ]
+  },
+  // ── STORMHOLD (Levels 5-15, Antonica) ───────────────────────────────────
+  {
+    id: "stormhold",
+    name: "Stormhold",
+    zone: "Antonica",
+    description: "The ancient gnoll fortress carved into Antonica's cliffs \u2014 five floors of warriors, shamans, and the fearsome Chieftain Grolnak.",
+    lore: "Stormhold predates the city of Qeynos itself. The gnoll clans have held this crumbling fortress for generations, using it as a staging ground for raids across Antonica. Its five floors descend from the outer ramparts down to the Chieftain's war chamber, where Grolnak commands with absolute brutality. Young adventurers who survive Stormhold emerge hardened and ready for greater challenges.",
+    minLevel: 5,
+    maxLevel: 15,
+    mainBossId: "antonica_gnoll_chieftain",
+    spriteId: "dungeon_ruins",
+    bossPersonality: "arrogant",
+    bossGrudgeThreshold: 3,
+    floors: [
+      {
+        floorNumber: 1,
+        name: "The Outer Ramparts",
+        description: "The crumbling outer walls \u2014 patrolled by scouts and their wolf companions.",
+        enemyIds: ["antonica_gnoll_scout", "antonica_wolf", "antonica_gnoll_scout", "antonica_wolf", "antonica_gnoll_scout"],
+        miniBossId: "antonica_skeleton",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 2,
+        name: "The Gatehouse Tunnels",
+        description: "Narrow passages beneath the gatehouse \u2014 the dead walk here too.",
+        enemyIds: ["antonica_gnoll_scout", "antonica_wolf", "antonica_skeleton", "antonica_gnoll_scout", "antonica_skeleton"],
+        miniBossId: "antonica_gnoll_warrior",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 3,
+        name: "The Warrior Barracks",
+        description: "Where Stormhold's seasoned warriors rest and sharpen their blades.",
+        enemyIds: ["antonica_skeleton", "antonica_gnoll_warrior", "antonica_skeleton", "antonica_gnoll_warrior", "antonica_gnoll_warrior"],
+        miniBossId: "antonica_orc_raider",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 4,
+        name: "The Raider Encampment",
+        description: "A filthy encampment of orc raiders allied with the gnoll clan.",
+        enemyIds: ["antonica_gnoll_warrior", "antonica_orc_raider", "antonica_orc_raider", "antonica_gnoll_warrior", "antonica_orc_raider"],
+        miniBossId: "antonica_gnoll_shaman",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 5,
+        name: "The Chieftain's War Chamber",
+        description: "The deep heart of Stormhold \u2014 where Grolnak rules from his throne of bones.",
+        enemyIds: ["antonica_orc_raider", "antonica_gnoll_shaman", "antonica_gnoll_shaman", "antonica_orc_raider", "antonica_gnoll_shaman"],
+        miniBossId: "antonica_skeleton",
+        normalsRequired: 5
+      }
+    ]
+  },
+  // ── PALACE OF QUEEN TITANIA (Levels 25-35, Enchanted Lands) ─────────────
+  {
+    id: "palace_of_titania",
+    name: "Palace of Queen Titania",
+    zone: "Enchanted Lands",
+    description: "The corrupted fae palace hidden deep in the Enchanted Lands \u2014 five floors of twisted fairy magic leading to the mad queen herself.",
+    lore: "Queen Titania once ruled the Enchanted Lands with whimsy and grace. Something ancient and dark corrupted her court, twisting her sprites and satyrs into vicious predators. Her palace \u2014 once a wonder of fae architecture \u2014 has become a labyrinth of deadly illusions and arcane traps. Those who reach the Throne of Petals face Titania herself, a being of terrible beauty wielding magic that unravels the mind.",
+    minLevel: 25,
+    maxLevel: 35,
+    mainBossId: "enchanted_queen_titania",
+    spriteId: "dungeon_ruins",
+    bossPersonality: "arrogant",
+    bossGrudgeThreshold: 3,
+    floors: [
+      {
+        floorNumber: 1,
+        name: "The Enchanted Gates",
+        description: "The gilded outer gates of the palace \u2014 mischievous pixies harry all who enter.",
+        enemyIds: ["enchanted_pixie", "enchanted_brownie", "enchanted_pixie", "enchanted_brownie", "enchanted_pixie"],
+        miniBossId: "enchanted_satyr",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 2,
+        name: "The Brownie Warrens",
+        description: "Cramped tunnels dug beneath the palace by Titania's brownie servants.",
+        enemyIds: ["enchanted_brownie", "enchanted_satyr", "enchanted_brownie", "enchanted_satyr", "enchanted_brownie"],
+        miniBossId: "enchanted_dryad",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 3,
+        name: "The Hall of Illusions",
+        description: "A grand hall filled with mirror-magic \u2014 satyrs and pixies hunt through false reflections.",
+        enemyIds: ["enchanted_satyr", "enchanted_pixie", "enchanted_satyr", "enchanted_pixie", "enchanted_satyr"],
+        miniBossId: "enchanted_sylph",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 4,
+        name: "The Corrupted Gardens",
+        description: "Once beautiful gardens \u2014 now dryads and wind sylphs attack on sight.",
+        enemyIds: ["enchanted_dryad", "enchanted_sylph", "enchanted_dryad", "enchanted_sylph", "enchanted_dryad"],
+        miniBossId: "enchanted_satyr",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 5,
+        name: "The Throne of Petals",
+        description: "Titania's inner sanctum \u2014 a throne room of dead flowers and shattered mirrors.",
+        enemyIds: ["enchanted_dryad", "enchanted_sylph", "enchanted_sylph", "enchanted_dryad", "enchanted_sylph"],
+        miniBossId: "enchanted_brownie",
+        normalsRequired: 5
+      }
+    ]
+  },
+  // ── DEATHFIST CITADEL (Levels 30-40, Zek, the Orcish Wastes) ────────────
+  {
+    id: "deathfist_citadel",
+    name: "Deathfist Citadel",
+    zone: "Zek, the Orcish Wastes",
+    description: "The iron fortress of the Deathfist orc clan \u2014 five floors of savage warriors and ruthless shamans, commanded by the death-priest Deathcaller.",
+    lore: "The Deathfist Clan built their Citadel on the bones of their enemies in the heart of the Orcish Wastes. Five floors of iron-reinforced stone house the most battle-hardened orcs in Norrath \u2014 grunts, berserkers, warlords, and the war-shamans who bind them together with dark earth magic. The Deathcaller at the top channels the power of death itself, making him perhaps the most dangerous non-dragon boss in all of Zek.",
+    minLevel: 30,
+    maxLevel: 40,
+    mainBossId: "zek_deathcaller",
+    spriteId: "dungeon_blackburrow",
+    bossPersonality: "cold",
+    bossGrudgeThreshold: 3,
+    floors: [
+      {
+        floorNumber: 1,
+        name: "The Outer Palisade",
+        description: "The fortified outer walls patrolled by Deathfist grunts and war shamans.",
+        enemyIds: ["zek_orc_grunt", "zek_war_shaman", "zek_orc_grunt", "zek_war_shaman", "zek_orc_grunt"],
+        miniBossId: "zek_orc_shaman",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 2,
+        name: "The Barracks",
+        description: "Row upon row of orc barracks \u2014 grunts and shamans training for endless war.",
+        enemyIds: ["zek_orc_grunt", "zek_orc_shaman", "zek_orc_grunt", "zek_orc_shaman", "zek_orc_grunt"],
+        miniBossId: "zek_war_shaman",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 3,
+        name: "The Shaman Sanctum",
+        description: "Where Deathfist war-shamans commune with dark earth spirits.",
+        enemyIds: ["zek_orc_shaman", "zek_war_shaman", "zek_orc_shaman", "zek_war_shaman", "zek_orc_shaman"],
+        miniBossId: "zek_orc_berserker",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 4,
+        name: "The Elite War Hall",
+        description: "The domain of Deathfist berserkers and warlords \u2014 the finest orc fighters alive.",
+        enemyIds: ["zek_orc_berserker", "zek_orc_warlord", "zek_orc_berserker", "zek_orc_warlord", "zek_orc_berserker"],
+        miniBossId: "zek_siege_engineer",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 5,
+        name: "The Deathcaller's Throne",
+        description: "The iron throne room of the Deathcaller \u2014 a chamber reeking of death magic.",
+        enemyIds: ["zek_orc_warlord", "zek_orc_berserker", "zek_orc_warlord", "zek_orc_berserker", "zek_orc_warlord"],
+        miniBossId: "zek_war_shaman",
+        normalsRequired: 5
+      }
+    ]
+  },
+  // ── THORNWOOD KEEP (Levels 35-45, Lesser Faydark) ───────────────────────
+  {
+    id: "thornwood_keep",
+    name: "Thornwood Keep",
+    zone: "Lesser Faydark",
+    description: "The tangled fortress of Lord Grimthorn in the heart of the Lesser Faydark \u2014 five floors of nature-corrupted creatures guarding the dryad king.",
+    lore: "Long ago, Thornwood Keep was a sanctuary of natural harmony in the Lesser Faydark. Lord Grimthorn \u2014 once a benevolent spirit lord \u2014 was twisted by ancient dark magic seeping up from Norrath's roots. Now his Keep is a labyrinth of corrupted treants, shadow wolves, and feral sprites. The ancient power Grimthorn draws upon makes him one of the most regenerative bosses in the Faydark \u2014 killing him requires relentless focus.",
+    minLevel: 35,
+    maxLevel: 45,
+    mainBossId: "faydark_lord_grimthorn",
+    spriteId: "dungeon_ruins",
+    bossPersonality: "ancient",
+    bossGrudgeThreshold: 3,
+    floors: [
+      {
+        floorNumber: 1,
+        name: "The Overgrown Approach",
+        description: "Tangled undergrowth patrolled by pixie scouts and shadow wolves.",
+        enemyIds: ["faydark_pixie_scout", "faydark_shadow_wolf", "faydark_pixie_scout", "faydark_shadow_wolf", "faydark_pixie_scout"],
+        miniBossId: "faydark_imp",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 2,
+        name: "The Treant Grove",
+        description: "Ancient treants have taken root in the Keep's lower halls.",
+        enemyIds: ["faydark_treant", "faydark_pixie_scout", "faydark_treant", "faydark_pixie_scout", "faydark_treant"],
+        miniBossId: "faydark_wolf_alpha",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 3,
+        name: "The Imp Warrens",
+        description: "Passages infested with dark sprites and imps drawn to Grimthorn's power.",
+        enemyIds: ["faydark_imp", "faydark_sprite", "faydark_imp", "faydark_sprite", "faydark_imp"],
+        miniBossId: "faydark_shadow_wolf",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 4,
+        name: "The Wolf Dens",
+        description: "The inner dens of the Faydark alpha wolves \u2014 massive and battle-hardened.",
+        enemyIds: ["faydark_wolf_alpha", "faydark_shadow_wolf", "faydark_wolf_alpha", "faydark_shadow_wolf", "faydark_wolf_alpha"],
+        miniBossId: "faydark_treant",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 5,
+        name: "Grimthorn's Heartchamber",
+        description: "The deep root chamber where Lord Grimthorn draws his immortal strength.",
+        enemyIds: ["faydark_treant", "faydark_sprite", "faydark_treant", "faydark_sprite", "faydark_treant"],
+        miniBossId: "faydark_wolf_alpha",
+        normalsRequired: 5
+      }
+    ]
+  },
+  // ── TEMPLE OF CAZIC-THULE (Levels 45-55, Feerrott) ──────────────────────
+  {
+    id: "temple_of_cazic_thule",
+    name: "Temple of Cazic-Thule",
+    zone: "Feerrott",
+    description: "The most feared dungeon in the Feerrott \u2014 a temple of divine terror leading to an Avatar of the God of Fear himself.",
+    lore: "Deep in the festering swamps of the Feerrott stands the Temple of Cazic-Thule, carved from fear-stone by lizardman cultists thousands of years ago. Every floor is more terrifying than the last \u2014 lizardman shamans, swamp basilisks, bog giants, and Cazic's dark disciples guard the inner sanctum. At the temple's heart, the Avatar of Cazic-Thule awaits: a near-divine being of absolute terror that has never been convincingly defeated. Those who survive emerge forever changed.",
+    minLevel: 45,
+    maxLevel: 55,
+    mainBossId: "feerrott_avatar_cazic",
+    spriteId: "dungeon_ruins",
+    bossPersonality: "cold",
+    bossGrudgeThreshold: 3,
+    floors: [
+      {
+        floorNumber: 1,
+        name: "The Fear-Stone Gates",
+        description: "The outer temple grounds \u2014 lizardman warriors guard every archway.",
+        enemyIds: ["feerrott_lizardman", "feerrott_swamp_basilisk", "feerrott_lizardman", "feerrott_swamp_basilisk", "feerrott_lizardman"],
+        miniBossId: "feerrott_swamp_spider",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 2,
+        name: "The Swamp Catacombs",
+        description: "Flooded lower passages where the swamp spider queen holds court.",
+        enemyIds: ["feerrott_lizardman", "feerrott_swamp_spider", "feerrott_lizardman", "feerrott_swamp_spider", "feerrott_lizardman"],
+        miniBossId: "feerrott_swamp_basilisk",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 3,
+        name: "The Giant's Hall",
+        description: "Soaring halls built for beings far larger than any adventurer.",
+        enemyIds: ["feerrott_bog_giant", "feerrott_swamp_basilisk", "feerrott_bog_giant", "feerrott_swamp_basilisk", "feerrott_bog_giant"],
+        miniBossId: "feerrott_lizard_shaman",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 4,
+        name: "The Shaman's Sanctum",
+        description: "The inner ritual chambers where lizard-shamans and dark disciples commune.",
+        enemyIds: ["feerrott_lizard_shaman", "feerrott_dark_disciple", "feerrott_lizard_shaman", "feerrott_dark_disciple", "feerrott_lizard_shaman"],
+        miniBossId: "feerrott_bog_giant",
+        normalsRequired: 5
+      },
+      {
+        floorNumber: 5,
+        name: "The Sanctum of Fear",
+        description: "The innermost sanctum \u2014 the Avatar of Cazic-Thule's domain of absolute terror.",
+        enemyIds: ["feerrott_bog_giant", "feerrott_dark_disciple", "feerrott_lizard_shaman", "feerrott_dark_disciple", "feerrott_bog_giant"],
+        miniBossId: "feerrott_swamp_basilisk",
+        normalsRequired: 5
+      }
+    ]
   }
 ];
 function getDungeonById(id) {
@@ -77853,6 +81152,134 @@ var GEAR_SET_META = [
     }
   },
   {
+    dungeonId: "stormhold",
+    archetypes: {
+      fighter: {
+        difficulties: {
+          normal: { name: "Gnollskin Warrior's", theme: "rough-hewn armor stripped from Stormhold's gnoll warriors, crude but battle-tested" },
+          expert: { name: "Rampart Warchief's", theme: "armor worn by Stormhold's rampart warchiefs who never retreat and never surrender" },
+          legendary: { name: "Chieftain's Iron Will", theme: "the indomitable iron will of Gnoll Chieftain Grolnak forged into formidable battle armor" },
+          mythical: { name: "Grolnak's Dominion", theme: "the supreme dominion of Chieftain Grolnak, the most feared gnoll warlord in Antonica" }
+        },
+        mythicalProc: { name: "Gnoll Warchief's Fury", description: "25% chance on hit to unleash a warchief's fury for +90% damage for 2 ticks", triggerChance: 25, effectType: "damage_burst", effectValue: 90, durationTicks: 2 }
+      },
+      healer: {
+        difficulties: {
+          normal: { name: "Bone Shaman's", theme: "healing charms carved from gnoll bone by Stormhold's tribal shamans" },
+          expert: { name: "Hex-Shaman's Mantle", theme: "mystical robes of Stormhold's hex-shamans who weave curses and healing in equal measure" },
+          legendary: { name: "War-Totem's Calling", theme: "sacred vestments blessed by the war-totems of Stormhold's innermost shamanic sanctum" },
+          mythical: { name: "Spirit of Grolnak", theme: "shamanic regalia channeling the spiritual fury of Chieftain Grolnak into healing power" }
+        },
+        mythicalProc: { name: "Ancestral Ward", description: "20% chance on taking damage to raise an ancestral ward absorbing 45% max HP damage for 5 ticks", triggerChance: 20, effectType: "absorb_shield", effectValue: 45, durationTicks: 5 }
+      },
+      caster: {
+        difficulties: {
+          normal: { name: "Hex-Rune Weaver's", theme: "robes threaded with gnoll hex-runes from Stormhold's ritual chambers" },
+          expert: { name: "Dark Hex-Shaman's", theme: "cursed robes of Stormhold's dark shamans who channel shadow magic through bone fetishes" },
+          legendary: { name: "Warchief's Hexblade", theme: "robes amplifying the terrible hexes of Stormhold's most powerful arcane practitioners" },
+          mythical: { name: "Grolnak's Hex Mastery", theme: "the supreme dark hex-craft of Chieftain Grolnak translated into raw arcane dominion" }
+        },
+        mythicalProc: { name: "Dark Hex Explosion", description: "25% chance on spell hit to trigger a dark hex explosion for 80% bonus shadow damage", triggerChance: 25, effectType: "damage_burst", effectValue: 80, durationTicks: 1 }
+      }
+    }
+  },
+  {
+    dungeonId: "palace_of_titania",
+    archetypes: {
+      fighter: {
+        difficulties: {
+          normal: { name: "Fae Court Guard's", theme: "armor worn by Queen Titania's corrupted fae court guardians in the palace outer halls" },
+          expert: { name: "Pixie Knight's Raiment", theme: "enchanted armor of the pixie knights who defend Titania's inner palace with fanatical devotion" },
+          legendary: { name: "Titania's Champion", theme: "the enchanted armor of Titania's chosen fae champion, infused with wild arcane magic" },
+          mythical: { name: "Queen's Arcane Dominion", theme: "the supreme fae war-power of Queen Titania herself, armor that pulses with raw chaos magic" }
+        },
+        mythicalProc: { name: "Fae Chaos Strike", description: "25% chance on hit to trigger a chaos burst for +95% bonus magic damage for 2 ticks", triggerChance: 25, effectType: "damage_burst", effectValue: 95, durationTicks: 2 }
+      },
+      healer: {
+        difficulties: {
+          normal: { name: "Fairy Court Silk", theme: "silks worn by the fairy court healers who once tended to Titania's corrupted subjects" },
+          expert: { name: "Dryad Warden's Silk", theme: "robes of the dryad wardens who channel Titania's corrupted nature magic into healing" },
+          legendary: { name: "Titania's Chosen Silk", theme: "sacred vestments chosen by Queen Titania for her most devoted healer courtiers" },
+          mythical: { name: "Queen's Eternal Embrace", theme: "robes channeling the immortal fae magic of Queen Titania into life-sustaining power" }
+        },
+        mythicalProc: { name: "Fae Deathward", description: "15% chance to negate a lethal blow \u2014 the fae magic refuses to let the wearer die", triggerChance: 15, effectType: "negate_death", effectValue: 1, durationTicks: 0 }
+      },
+      caster: {
+        difficulties: {
+          normal: { name: "Pixie Arcane Robes", theme: "robes threaded with pixie magic from the outer halls of Titania's enchanted palace" },
+          expert: { name: "Satyr Enchanter's", theme: "robes worn by the satyr enchanters who weave illusions throughout Titania's palace" },
+          legendary: { name: "Palace Arcanum", theme: "the accumulated arcane knowledge of Titania's palace mage council distilled into robes" },
+          mythical: { name: "Titania's Wild Arcanum", theme: "the supreme wild magic of Queen Titania the fae queen whose power unravels reality" }
+        },
+        mythicalProc: { name: "Wild Fae Surge", description: "25% chance on spell hit to trigger a wild fae surge for 85% bonus magic damage", triggerChance: 25, effectType: "damage_burst", effectValue: 85, durationTicks: 1 }
+      }
+    }
+  },
+  {
+    dungeonId: "deathfist_citadel",
+    archetypes: {
+      fighter: {
+        difficulties: {
+          normal: { name: "Deathfist Iron", theme: "crude iron armor beaten into shape by Deathfist orc smiths in the citadel forges" },
+          expert: { name: "Warlord's Battle Plate", theme: "battle-worn plate of the Deathfist warlords who command the citadel's elite fighting force" },
+          legendary: { name: "Deathcaller's Iron Will", theme: "armor forged from the Deathcaller's iron will \u2014 indestructible and terrifying in equal measure" },
+          mythical: { name: "Deathfist Sovereign", theme: "the supreme iron dominion of the Deathfist Clan forged from the bones of their fallen enemies" }
+        },
+        mythicalProc: { name: "Death Frenzy", description: "30% chance on critical hit to trigger a death frenzy for +100% bonus damage for 2 ticks", triggerChance: 30, effectType: "damage_burst", effectValue: 100, durationTicks: 2 }
+      },
+      healer: {
+        difficulties: {
+          normal: { name: "Clan Shaman's", theme: "vestments worn by Deathfist clan shamans who sustain the orc army through dark earth magic" },
+          expert: { name: "War-Priest's Mantle", theme: "robes of the Deathfist war-priests who consecrate their warriors with orc death rites" },
+          legendary: { name: "Deathcaller's Devoted", theme: "sacred vestments of the Deathcaller's most devoted healer-priests in the citadel sanctum" },
+          mythical: { name: "Death Rite Vestments", theme: "vestments channeling the death-rite power of the supreme Deathfist war-priest" }
+        },
+        mythicalProc: { name: "Death Rite Ward", description: "20% chance on being struck to raise a death-rite ward absorbing 50% max HP damage for 4 ticks", triggerChance: 20, effectType: "absorb_shield", effectValue: 50, durationTicks: 4 }
+      },
+      caster: {
+        difficulties: {
+          normal: { name: "Earthen Rune Robes", theme: "robes threaded with earthen runes by the Deathfist shamans who study dark earth magic" },
+          expert: { name: "Necrotic Shaman's", theme: "robes of the Deathfist necrotic shamans who channel death energy in the citadel's sanctum" },
+          legendary: { name: "Death-Caller's Arcanum", theme: "the dark arcane power of the Deathcaller's inner sanctum woven into robes of war" },
+          mythical: { name: "Deathfist Necrotic Dominion", theme: "the supreme necrotic power of the Deathfist Clan's most feared death-caller" }
+        },
+        mythicalProc: { name: "Necrotic Death Burst", description: "25% chance on spell hit to trigger a necrotic death burst for 90% bonus divine damage", triggerChance: 25, effectType: "damage_burst", effectValue: 90, durationTicks: 1 }
+      }
+    }
+  },
+  {
+    dungeonId: "thornwood_keep",
+    archetypes: {
+      fighter: {
+        difficulties: {
+          normal: { name: "Bark-Plate Warden's", theme: "armor plated with enchanted bark from the outermost treants of Thornwood Keep" },
+          expert: { name: "Forest Guardian's Plate", theme: "plate armor of the forest guardians who protect Lord Grimthorn's inner sanctum" },
+          legendary: { name: "Grimthorn's Forest Will", theme: "the indestructible forest will of Lord Grimthorn made manifest as ancient bark-plate armor" },
+          mythical: { name: "Thornwood Sovereign", theme: "the primordial sovereignty of the Thornwood's ancient spirit lord forged from heartwood and thorn" }
+        },
+        mythicalProc: { name: "Thornwood Rend", description: "25% chance on hit to trigger a thorn-rend for +85% bleed damage over 4 ticks", triggerChance: 25, effectType: "damage_burst", effectValue: 85, durationTicks: 4 }
+      },
+      healer: {
+        difficulties: {
+          normal: { name: "Dryad Spirit Silk", theme: "silks woven from dryad spirit-threads found in Thornwood Keep's lower forest floors" },
+          expert: { name: "Grove Warden's Mantle", theme: "vestments of the grove wardens who maintain Thornwood Keep's primal healing energies" },
+          legendary: { name: "Grimthorn's Grove", theme: "sacred vestments imbued with Lord Grimthorn's ancient primordial healing power" },
+          mythical: { name: "Primordial Grove Spirit", theme: "robes channeling the eternal primordial spirit of the Faydark's most ancient forest grove" }
+        },
+        mythicalProc: { name: "Primordial Ward", description: "20% chance on taking damage to raise a primordial ward absorbing 48% max HP for 5 ticks", triggerChance: 20, effectType: "absorb_shield", effectValue: 48, durationTicks: 5 }
+      },
+      caster: {
+        difficulties: {
+          normal: { name: "Faydark Spirit Robes", theme: "robes threaded with faydark spirit-energy from the enchanted groves of Thornwood Keep" },
+          expert: { name: "Sprite Weaver's", theme: "robes of the dark sprite weavers who channel corrupted fae magic in Lord Grimthorn's service" },
+          legendary: { name: "Forest Arcanum", theme: "the ancient forest arcane knowledge of Thornwood's corrupted sprite-mage council" },
+          mythical: { name: "Grimthorn's Wild Arcanum", theme: "the supreme wild forest magic of Lord Grimthorn the twisted spirit lord of the Lesser Faydark" }
+        },
+        mythicalProc: { name: "Nature's Wrath Burst", description: "25% chance on spell hit to trigger nature's wrath for 80% bonus magic damage", triggerChance: 25, effectType: "damage_burst", effectValue: 80, durationTicks: 1 }
+      }
+    }
+  },
+  {
     dungeonId: "soluseks_eye",
     archetypes: {
       fighter: {
@@ -77881,6 +81308,38 @@ var GEAR_SET_META = [
           mythical: { name: "Nagafen's Conflagration", theme: "robes channeling the supreme fire power of Lord Nagafen ancient dragon of flame" }
         },
         mythicalProc: { name: "Conflagration", description: "30% chance on spell critical hit to trigger a conflagration for 100% bonus fire damage", triggerChance: 30, effectType: "damage_burst", effectValue: 100, durationTicks: 1 }
+      }
+    }
+  },
+  {
+    dungeonId: "temple_of_cazic_thule",
+    archetypes: {
+      fighter: {
+        difficulties: {
+          normal: { name: "Fear-Stone Warden's", theme: "armor carved from the fear-stone of Cazic-Thule's outer temple by lizardman warrior priests" },
+          expert: { name: "Lizard Knight's Plate", theme: "battle plate of the lizardman knights who guard Cazic's inner temple with fanatical devotion" },
+          legendary: { name: "Avatar's Iron Resolve", theme: "armor forged from the iron resolve of those who survived the Avatar of Cazic-Thule's terror" },
+          mythical: { name: "Cazic's Fear-Forged", theme: "the supreme fear-forged plate of Cazic-Thule himself \u2014 armor that inspires dread in all who face it" }
+        },
+        mythicalProc: { name: "Touch of Terror", description: "30% chance on hit to trigger a touch of terror \u2014 deals +100% divine damage and fears the target for 1 tick", triggerChance: 30, effectType: "damage_burst", effectValue: 100, durationTicks: 1 }
+      },
+      healer: {
+        difficulties: {
+          normal: { name: "Swamp Cult Vestments", theme: "vestments of the Feerrott swamp cultists who worship Cazic and sustain his lizardman armies" },
+          expert: { name: "Dark Disciple's Mantle", theme: "robes of Cazic's dark disciples who convert divine fear into restorative power" },
+          legendary: { name: "Cazic's Devoted", theme: "sacred vestments of Cazic-Thule's most devoted healer-priests in the temple sanctum" },
+          mythical: { name: "Avatar's Divine Terror", theme: "vestments channeling Cazic's near-divine terror into life-sustaining power for his chosen" }
+        },
+        mythicalProc: { name: "Terror Ward", description: "15% chance to negate a lethal blow \u2014 Cazic's terror grants the wearer an impossible reprieve", triggerChance: 15, effectType: "negate_death", effectValue: 1, durationTicks: 0 }
+      },
+      caster: {
+        difficulties: {
+          normal: { name: "Fear-Rune Robes", theme: "robes threaded with fear-runes by lizardman shamans who study in Cazic's outer temple" },
+          expert: { name: "Swamp Shaman's Arcanum", theme: "robes of the Feerrott swamp shamans who channel the god's terror into destructive magic" },
+          legendary: { name: "Cazic's Arcane Terror", theme: "the terrifying arcane knowledge of the Avatar's inner sanctum woven into robes of conquest" },
+          mythical: { name: "Avatar's Divine Arcanum", theme: "the supreme divine terror of the Avatar of Cazic-Thule distilled into near-godlike arcane robes" }
+        },
+        mythicalProc: { name: "Divine Terror Burst", description: "30% chance on spell critical hit to trigger divine terror for 100% bonus divine damage", triggerChance: 30, effectType: "damage_burst", effectValue: 100, durationTicks: 1 }
       }
     }
   }
@@ -77931,6 +81390,8 @@ var router5 = (0, import_express5.Router)();
 var bossNarrationCache = /* @__PURE__ */ new Map();
 var bossClosingLineCache = /* @__PURE__ */ new Map();
 var ghostQuoteCache = /* @__PURE__ */ new Map();
+var chronicleCache = null;
+var CHRONICLE_TTL_MS = 2 * 60 * 60 * 1e3;
 async function aiComplete(messages2, model = "gpt-4o-mini", maxTokens = 300) {
   const response = await openai.chat.completions.create({
     model,
@@ -78229,6 +81690,43 @@ Make it feel authentic to their race/class archetype. No quotation marks around 
   } catch (err) {
     req.log.error({ err }, "Error generating player quote");
     res.status(500).json({ error: "Failed to generate quote" });
+  }
+});
+router5.get("/world/chronicle", async (req, res) => {
+  try {
+    if (chronicleCache && Date.now() - chronicleCache.generatedAt < CHRONICLE_TTL_MS) {
+      res.json({ text: chronicleCache.text, generatedAt: new Date(chronicleCache.generatedAt).toISOString(), cached: true });
+      return;
+    }
+    const recentEvents = await db.select({ message: worldEventsTable.message, zone: worldEventsTable.zone, type: worldEventsTable.type, importance: worldEventsTable.importance }).from(worldEventsTable).where(gte(worldEventsTable.importance, 3)).orderBy(desc(worldEventsTable.createdAt)).limit(20);
+    const leaderboard = await db.select({ name: worldPlayersTable.name, level: worldPlayersTable.level, class: worldPlayersTable.class, killCount: worldPlayersTable.killCount, zone: worldPlayersTable.zone }).from(worldPlayersTable).orderBy(desc(worldPlayersTable.killCount)).limit(5);
+    const eventSummary = recentEvents.length > 0 ? recentEvents.map((e) => `- ${e.message}${e.zone ? ` (${e.zone})` : ""}`).join("\n") : "No major events recorded recently.";
+    const leaderboardSummary = leaderboard.length > 0 ? leaderboard.map((p) => `${p.name} (Level ${p.level} ${p.class ?? "Adventurer"}, ${p.killCount} kills, last seen in ${p.zone ?? "unknown lands"})`).join("; ") : "No known heroes at this time.";
+    const text2 = await aiComplete(
+      [
+        {
+          role: "system",
+          content: "You are the Chronicle Keeper of Norrath, a mystical scribe who records the epic deeds of adventurers in the world of Idle Echoes (an EverQuest 2 inspired realm). Write in a dramatic, epic fantasy tone. Be specific about character names and their deeds. Do not use bullet points or lists \u2014 write flowing, vivid prose only. 4-6 sentences."
+        },
+        {
+          role: "user",
+          content: `Write a Chronicle of Norrath entry summarizing these recent events:
+
+${eventSummary}
+
+Most celebrated adventurers:
+${leaderboardSummary}`
+        }
+      ],
+      "gpt-4o-mini",
+      280
+    );
+    chronicleCache = { text: text2, generatedAt: Date.now() };
+    res.json({ text: text2, generatedAt: new Date(chronicleCache.generatedAt).toISOString(), cached: false });
+  } catch (err) {
+    req.log.error({ err }, "Error generating world chronicle");
+    const fallback = "The Chronicle Keeper rests their quill. The scribes of Norrath whisper that great deeds are afoot, though the full tale has yet to be written.";
+    res.json({ text: fallback, generatedAt: (/* @__PURE__ */ new Date()).toISOString(), cached: false });
   }
 });
 var BOSS_LORE = {
@@ -79023,7 +82521,27 @@ function weightedRarityPick(difficulty) {
   }
   return "common";
 }
-function generateDungeonLoot(playerLevel, floorNumber, difficulty, dungeonMinLevel, dungeonMaxLevel) {
+function generateAdornmentLoot(difficulty, dungeonMinLevel, dungeonMaxLevel, floorType) {
+  const dropChance = floorType === "finalboss" ? 0.35 : floorType === "miniboss" ? 0.2 : 0.1;
+  if (Math.random() > dropChance) return [];
+  const eligibleColors = /* @__PURE__ */ new Set(["white"]);
+  if (difficulty === "expert" || difficulty === "legendary" || difficulty === "mythical") {
+    eligibleColors.add("yellow");
+  }
+  if (difficulty === "legendary" || difficulty === "mythical") {
+    eligibleColors.add("red");
+  }
+  let pool2 = ADORNMENTS.filter(
+    (a) => eligibleColors.has(a.color) && a.level >= dungeonMinLevel && a.level <= dungeonMaxLevel
+  );
+  if (pool2.length === 0) {
+    pool2 = ADORNMENTS.filter((a) => eligibleColors.has(a.color));
+  }
+  if (pool2.length === 0) return [];
+  const picked = pool2[Math.floor(Math.random() * pool2.length)];
+  return [picked.id];
+}
+function generateDungeonLoot(playerLevel, floorNumber, difficulty, dungeonMinLevel, dungeonMaxLevel, floorType = "normal") {
   const rawTarget = playerLevel + floorNumber - 1;
   const targetLevel = Math.min(rawTarget, dungeonMaxLevel + floorNumber - 1);
   const clampedLevel = Math.max(targetLevel, dungeonMinLevel);
@@ -79046,12 +82564,23 @@ function generateDungeonLoot(playerLevel, floorNumber, difficulty, dungeonMinLev
     const picked = finalPool[Math.floor(Math.random() * finalPool.length)];
     loot.push(picked.id);
   }
-  return loot;
+  const adornmentLoot = generateAdornmentLoot(difficulty, dungeonMinLevel, dungeonMaxLevel, floorType);
+  return [...loot, ...adornmentLoot];
 }
 async function awardItemsToInventory(itemIds, characterId) {
   for (const itemId of itemIds) {
     const item = getItemById(itemId);
-    if (!item) continue;
+    if (!item) {
+      if (ADORNMENTS.some((a) => a.id === itemId)) {
+        await db.insert(inventoryTable).values({
+          characterId,
+          itemId,
+          itemData: { type: "adornment", id: itemId },
+          quantity: 1
+        });
+      }
+      continue;
+    }
     if (item.stackable) {
       const [existing] = await db.select().from(inventoryTable).where(and(eq(inventoryTable.characterId, characterId), eq(inventoryTable.itemId, itemId))).limit(1);
       if (existing) {
@@ -79384,6 +82913,40 @@ async function awardGhostContributions(party) {
   }
 }
 
+// src/lib/guildPerks.ts
+init_schema2();
+init_drizzle_orm();
+var GUILD_LEVEL_THRESHOLDS = [0, 5e3, 15e3, 3e4, 6e4];
+function computeGuildLevel(totalScore) {
+  let level = 1;
+  for (let i = 1; i < GUILD_LEVEL_THRESHOLDS.length; i++) {
+    if (totalScore >= GUILD_LEVEL_THRESHOLDS[i]) level = i + 1;
+    else break;
+  }
+  return level;
+}
+function guildLevelPerks(level) {
+  return {
+    xpBonus: level >= 2 ? 5 : 0,
+    goldBonus: level >= 3 ? 10 : 0,
+    gatheringSpeedBonus: level >= 4 ? 5 : 0,
+    craftYieldBonus: level >= 5 ? 10 : 0
+  };
+}
+function makeZeroGuildPerks() {
+  return { guildLevel: 0, xpBonus: 0, goldBonus: 0, gatheringSpeedBonus: 0, craftYieldBonus: 0 };
+}
+async function getGuildPerksForCharacter(characterId) {
+  const [membership] = await db.select({ guildId: guildMembersTable.guildId }).from(guildMembersTable).where(eq(guildMembersTable.characterId, characterId)).limit(1);
+  if (!membership) return makeZeroGuildPerks();
+  const [agg] = await db.select({
+    totalScore: sql`cast(coalesce(sum(${guildMembersTable.contributionPoints}), 0) as float)`
+  }).from(guildMembersTable).where(eq(guildMembersTable.guildId, membership.guildId));
+  const totalScore = agg?.totalScore ?? 0;
+  const level = computeGuildLevel(totalScore);
+  return { guildLevel: level, ...guildLevelPerks(level) };
+}
+
 // src/routes/combat.ts
 var GRUDGE_ENRAGE_DURATION_TICKS = 10;
 var ZONE_QUALITY_RANGES = {
@@ -79456,6 +83019,8 @@ function computeGearStats(gear, baseStats, level) {
   let gearHealth = 0, gearPower = 0, hasWeapon = false;
   let gearStrength = 0, gearAgility = 0, gearStamina = 0;
   let gearIntelligence = 0, gearWisdom = 0, gearCharisma = 0;
+  let gearResistPierce = 0, gearResistSlash = 0, gearResistCrush = 0;
+  let gearResistHeat = 0, gearResistCold = 0, gearResistDivine = 0, gearResistMagic = 0;
   for (const slotValue of Object.values(gear)) {
     let s = null;
     if (typeof slotValue === "string") {
@@ -79481,6 +83046,13 @@ function computeGearStats(gear, baseStats, level) {
     gearIntelligence += s.intelligence || 0;
     gearWisdom += s.wisdom || 0;
     gearCharisma += s.charisma || 0;
+    gearResistPierce += s.resistPierce || 0;
+    gearResistSlash += s.resistSlash || 0;
+    gearResistCrush += s.resistCrush || 0;
+    gearResistHeat += s.resistHeat || 0;
+    gearResistCold += s.resistCold || 0;
+    gearResistDivine += s.resistDivine || 0;
+    gearResistMagic += s.resistMagic || 0;
     if (s.weaponDamageMin) {
       gearWeaponDamageMin = s.weaponDamageMin;
       gearWeaponDamageMax = s.weaponDamageMax || s.weaponDamageMin * 2;
@@ -79492,7 +83064,21 @@ function computeGearStats(gear, baseStats, level) {
     gearWeaponDamageMin = baseStats.strength * 0.5 + level;
     gearWeaponDamageMax = baseStats.strength * 1 + level * 2;
   }
-  return { gearAttackRating, gearDefenseRating, gearMitigation, gearHaste, gearCritChance, gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay, gearHealth, gearPower, gearStrength, gearAgility, gearStamina, gearIntelligence, gearWisdom, gearCharisma };
+  return { gearAttackRating, gearDefenseRating, gearMitigation, gearHaste, gearCritChance, gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay, gearHealth, gearPower, gearStrength, gearAgility, gearStamina, gearIntelligence, gearWisdom, gearCharisma, gearResistPierce, gearResistSlash, gearResistCrush, gearResistHeat, gearResistCold, gearResistDivine, gearResistMagic };
+}
+function getEnemyAutoAttackDamageType(enemy) {
+  switch (enemy.type) {
+    case "beast":
+      return "pierce";
+    case "undead":
+      return "crush";
+    case "construct":
+      return "crush";
+    case "elemental":
+      return "magic";
+    default:
+      return "slash";
+  }
 }
 function shouldEnemyAbilityFirePassive(ability, tick, enemyHp, enemyMaxHp, cooldowns) {
   if (ability.triggerType === "on_hit_proc") return false;
@@ -79721,6 +83307,7 @@ router8.post("/combat/tick", async (req, res) => {
       return { effect: def.effect, currentRank: r.rank, effectValue: def.effectValue, effectPerRank: def.effectPerRank };
     }).filter((n) => n !== null);
     const aaBonuses = applyAABonuses(investedNodes);
+    const guildPerks = await getGuildPerksForCharacter(characterId);
     const activeAALabels = [];
     if (aaBonuses.critChanceBonus > 0) activeAALabels.push(`+${aaBonuses.critChanceBonus}% Crit`);
     if (aaBonuses.avoidanceBonus > 0) activeAALabels.push(`+${aaBonuses.avoidanceBonus}% Avoidance`);
@@ -79730,6 +83317,75 @@ router8.post("/combat/tick", async (req, res) => {
     if (aaBonuses.spellDamageBonus > 0) activeAALabels.push(`+${aaBonuses.spellDamageBonus}% Spell Dmg`);
     if (aaBonuses.dmgReduction > 0) activeAALabels.push(`-${aaBonuses.dmgReduction}% Dmg Taken`);
     const gearData = computeGearStats(gear, baseStats, character.level);
+    const adornRows = await db.select().from(adornmentsTable).where(eq(adornmentsTable.characterId, characterId));
+    for (const row of adornRows) {
+      const def = ADORNMENTS.find((a) => a.id === row.adornmentId);
+      if (!def) continue;
+      for (const { stat, value } of def.stats) {
+        switch (stat) {
+          case "attackRating":
+            gearData.gearAttackRating += value;
+            break;
+          case "defenseRating":
+            gearData.gearDefenseRating += value;
+            break;
+          case "mitigation":
+            gearData.gearMitigation += value;
+            break;
+          case "haste":
+            gearData.gearHaste += value;
+            break;
+          case "critChance":
+            gearData.gearCritChance += value;
+            break;
+          case "health":
+            gearData.gearHealth += value;
+            break;
+          case "power":
+            gearData.gearPower += value;
+            break;
+          case "strength":
+            gearData.gearStrength += value;
+            break;
+          case "agility":
+            gearData.gearAgility += value;
+            break;
+          case "stamina":
+            gearData.gearStamina += value;
+            break;
+          case "intelligence":
+            gearData.gearIntelligence += value;
+            break;
+          case "wisdom":
+            gearData.gearWisdom += value;
+            break;
+          case "charisma":
+            gearData.gearCharisma += value;
+            break;
+          case "resistPierce":
+            gearData.gearResistPierce += value;
+            break;
+          case "resistSlash":
+            gearData.gearResistSlash += value;
+            break;
+          case "resistCrush":
+            gearData.gearResistCrush += value;
+            break;
+          case "resistHeat":
+            gearData.gearResistHeat += value;
+            break;
+          case "resistCold":
+            gearData.gearResistCold += value;
+            break;
+          case "resistDivine":
+            gearData.gearResistDivine += value;
+            break;
+          case "resistMagic":
+            gearData.gearResistMagic += value;
+            break;
+        }
+      }
+    }
     const allSkillRows = await db.select({ skillId: skillsTable.skillId, level: skillsTable.level }).from(skillsTable).where(eq(skillsTable.characterId, characterId));
     const skillLevels = {};
     for (const sr of allSkillRows) {
@@ -79755,6 +83411,7 @@ router8.post("/combat/tick", async (req, res) => {
     const aaProcs = [];
     const floatEvents = [];
     let lastEnemyAbilityUsedId = null;
+    const damageBySource = {};
     let activeParty = [];
     let activeRunId = null;
     let activeRunType = null;
@@ -79838,6 +83495,7 @@ router8.post("/combat/tick", async (req, res) => {
           await db.insert(combatLogTable).values({ characterId, tick: newTick, message: abilityMsg, type: spellCrit ? "playerCrit" : "ability", value: abilityBonusDamage });
           enemyHp = Math.max(0, enemyHp - abilityBonusDamage);
           playerSoloDamage += abilityBonusDamage;
+          damageBySource[ability.id] = (damageBySource[ability.id] ?? 0) + abilityBonusDamage;
           floatEvents.push({ value: abilityBonusDamage, type: spellCrit ? "crit" : "hit" });
           if (resistedAmt > 0) floatEvents.push({ value: resistedAmt, type: "resist" });
           if (spellCrit) aaProcs.push("spell_crit");
@@ -79854,6 +83512,7 @@ router8.post("/combat/tick", async (req, res) => {
             const divineDmg = Math.floor(healAmt * 0.2 * (1 + aaBonuses.divineDamageBonus / 100));
             enemyHp = Math.max(0, enemyHp - divineDmg);
             playerSoloDamage += divineDmg;
+            damageBySource["divine_wrath"] = (damageBySource["divine_wrath"] ?? 0) + divineDmg;
             const dwMsg = `\u26A1 Divine Wrath: ${divineDmg} divine damage!`;
             combatMessages.push(dwMsg);
             await db.insert(combatLogTable).values({ characterId, tick: newTick, message: dwMsg, type: "ability", value: divineDmg });
@@ -79919,6 +83578,7 @@ router8.post("/combat/tick", async (req, res) => {
         }
         playerDamageDealt = dmg;
         playerSoloDamage += dmg;
+        damageBySource["auto_attack"] = (damageBySource["auto_attack"] ?? 0) + dmg;
         enemyHp = Math.max(0, enemyHp - playerDamageDealt);
         floatEvents.push({ value: playerDamageDealt, type: isCrit ? "crit" : "hit" });
         if (playerAttack.resisted && playerAttack.resistAmount > 0) {
@@ -79949,6 +83609,7 @@ router8.post("/combat/tick", async (req, res) => {
             enemyHp = Math.max(0, enemyHp - dmg2);
             playerDamageDealt += dmg2;
             playerSoloDamage += dmg2;
+            damageBySource["double_attack"] = (damageBySource["double_attack"] ?? 0) + dmg2;
             floatEvents.push({ value: dmg2, type: isCrit2 ? "crit" : "hit" });
             const da2Msg = `\u26A1 DOUBLE ATTACK: ${dmg2} damage!${isCrit2 ? " CRIT!" : ""}`;
             combatMessages.push(da2Msg);
@@ -79972,6 +83633,7 @@ router8.post("/combat/tick", async (req, res) => {
             enemyHp = Math.max(0, enemyHp - dmg3);
             playerDamageDealt += dmg3;
             playerSoloDamage += dmg3;
+            damageBySource["extra_attack"] = (damageBySource["extra_attack"] ?? 0) + dmg3;
             floatEvents.push({ value: dmg3, type: isCrit3 ? "crit" : "hit" });
             const ea3Msg = `\u26A1 EXTRA ATTACK: ${dmg3} damage!`;
             combatMessages.push(ea3Msg);
@@ -79986,9 +83648,18 @@ router8.post("/combat/tick", async (req, res) => {
       combatMessages.push(stunMsg);
       await db.insert(combatLogTable).values({ characterId, tick: newTick, message: stunMsg, type: "info" });
     }
+    if (aaBonuses.lifestealPct > 0 && playerDamageDealt > 0 && playerHp > 0 && playerHp < maxHp) {
+      const lifestealAmt = Math.floor(playerDamageDealt * aaBonuses.lifestealPct / 100);
+      if (lifestealAmt > 0) {
+        playerHp = Math.min(maxHp, playerHp + lifestealAmt);
+        floatEvents.push({ value: lifestealAmt, type: "heal" });
+        await db.insert(combatLogTable).values({ characterId, tick: newTick, message: `\u{1FA78} Life Drain: +${lifestealAmt} HP`, type: "heal", value: lifestealAmt });
+      }
+    }
     if (partyContrib.bonusDamage > 0 && enemyHp > 0) {
       enemyHp = Math.max(0, enemyHp - partyContrib.bonusDamage);
       playerDamageDealt += partyContrib.bonusDamage;
+      damageBySource["party_bonus"] = (damageBySource["party_bonus"] ?? 0) + partyContrib.bonusDamage;
       floatEvents.push({ value: partyContrib.bonusDamage, type: "hit" });
       const partyDmgMsg = `\u2694\uFE0F Party deals ${partyContrib.bonusDamage} bonus damage!`;
       combatMessages.push(partyDmgMsg);
@@ -80087,10 +83758,16 @@ router8.post("/combat/tick", async (req, res) => {
         }
       }
       const baseGold = Math.floor(enemy.goldMin + Math.random() * (enemy.goldMax - enemy.goldMin));
-      goldGained = Math.floor(baseGold * (1 + aaBonuses.goldBonus / 100));
-      xpGained = calculateXpGain(enemy.xpReward, character.level, enemy.level, aaBonuses.xpBonus);
-      if (aaBonuses.goldBonus > 0) {
-        await db.insert(combatLogTable).values({ characterId, tick: newTick, message: `\u{1F4B0} Gold Bonus (+${aaBonuses.goldBonus}%): ${goldGained}g!`, type: "info" });
+      const totalGoldBonus = aaBonuses.goldBonus + guildPerks.goldBonus;
+      goldGained = Math.floor(baseGold * (1 + totalGoldBonus / 100));
+      xpGained = calculateXpGain(
+        enemy.xpReward,
+        character.level,
+        enemy.level,
+        aaBonuses.xpBonus + (enemy.isBoss ? aaBonuses.bossXpBonus : 0) + guildPerks.xpBonus
+      );
+      if (aaBonuses.goldBonus > 0 || guildPerks.goldBonus > 0) {
+        await db.insert(combatLogTable).values({ characterId, tick: newTick, message: `\u{1F4B0} Gold Bonus (+${totalGoldBonus}%): ${goldGained}g!`, type: "info" });
       }
       const craftedOnceRows = await db.select({ recipeId: oneOfAKindCraftedTable.recipeId }).from(oneOfAKindCraftedTable).catch(() => []);
       const craftedOnceRecipeIds = new Set(craftedOnceRows.map((r) => r.recipeId));
@@ -80187,7 +83864,8 @@ router8.post("/combat/tick", async (req, res) => {
       const aaXpRatio = Math.max(0, Math.min(100, character.aaXpRatio ?? 0));
       const aaXpDiverted = Math.floor(xpGained * aaXpRatio / 100);
       const levelXpGained = xpGained - aaXpDiverted;
-      const aaPtsFromRatio = Math.floor(aaXpDiverted / 100);
+      const aaXpCostPerPt = Math.max(1, Math.round(100 * (1 - aaBonuses.aaXpCostReduction / 100)));
+      const aaPtsFromRatio = Math.floor(aaXpDiverted / aaXpCostPerPt);
       const xpMsg = aaXpRatio > 0 ? `\u2728 Gained ${levelXpGained} XP, ${goldGained}g (+${aaPtsFromRatio > 0 ? aaPtsFromRatio + " AA" : aaXpDiverted + " AA XP"} from ${aaXpRatio}% ratio).` : `\u2728 Gained ${xpGained} XP and ${goldGained}g.`;
       combatMessages.push(xpMsg);
       await db.insert(combatLogTable).values({ characterId, tick: newTick, message: xpMsg, type: "info" });
@@ -80313,6 +83991,7 @@ router8.post("/combat/tick", async (req, res) => {
           enemyStatusEffects,
           abilityUsedId,
           floatEvents,
+          damageBySource,
           playerStatsSnapshot: { attackRating: playerStats.attackRating, defenseRating: playerStats.defenseRating, mitigation: playerStats.mitigation, avoidance: playerStats.avoidance, critChance: playerStats.critChance, powerRegen }
         });
       }
@@ -80359,6 +84038,7 @@ router8.post("/combat/tick", async (req, res) => {
         enemyStatusEffects,
         abilityUsedId,
         floatEvents,
+        damageBySource,
         playerStatsSnapshot: { attackRating: playerStats.attackRating, defenseRating: playerStats.defenseRating, mitigation: playerStats.mitigation, avoidance: playerStats.avoidance, critChance: playerStats.critChance, powerRegen }
       });
     }
@@ -80387,6 +84067,7 @@ router8.post("/combat/tick", async (req, res) => {
       switch (ability.effectType) {
         case "damage_burst": {
           const baseDmg = Math.floor(ability.effectValue * (1 + frenzyDmgBonus));
+          const dmgType = ability.damageType ?? "slash";
           let dmg = baseDmg;
           if (!ability.unavoidable) {
             const mitigMod = 1 - Math.min(0.75, (playerStats.mitigation + aaBonuses.dmgReduction) / 100);
@@ -80402,12 +84083,19 @@ router8.post("/combat/tick", async (req, res) => {
             const mitigMod = 1 - Math.min(0.5, (playerStats.mitigation + aaBonuses.dmgReduction) / 200);
             dmg = Math.max(1, Math.floor(baseDmg * mitigMod));
           }
+          const abilityResistPct = Math.min(50, playerStats.resistances[dmgType] ?? 0);
+          const abilityResistAmt = Math.floor(dmg * abilityResistPct / 100);
+          if (abilityResistAmt > 0) {
+            dmg = Math.max(1, dmg - abilityResistAmt);
+            floatEvents.push({ value: abilityResistAmt, type: "resist" });
+          }
           const hpBefore = playerHp;
           playerHp = Math.max(0, playerHp - dmg);
           if (enemy.isBoss && hpBefore > 0 && playerHp <= 0) lastEnemyAbilityUsedId = ability.id;
           enemyDamageDealt += dmg;
           floatEvents.push({ value: dmg, type: "enemy" });
-          abilityLogMsg = `\u{1F4A5} ${enemy.name} uses ${ability.name}${ability.unavoidable ? " (unavoidable)" : ""}! Deals ${dmg} ${ability.damageType ?? "physical"} damage!`;
+          const abilityResistText = abilityResistAmt > 0 ? ` (${abilityResistAmt} resisted)` : "";
+          abilityLogMsg = `\u{1F4A5} ${enemy.name} uses ${ability.name}${ability.unavoidable ? " (unavoidable)" : ""}! Deals ${dmg} ${dmgType} damage!${abilityResistText}`;
           combatMessages.push(abilityLogMsg);
           await db.insert(combatLogTable).values({ characterId, tick: newTick, message: abilityLogMsg, type: "enemyCrit", value: dmg });
           break;
@@ -80585,7 +84273,9 @@ router8.post("/combat/tick", async (req, res) => {
         playerStats.defenseRating,
         playerStats.mitigation,
         effectivePlayerAvoidance,
-        effectiveDmgReduction
+        effectiveDmgReduction,
+        getEnemyAutoAttackDamageType(enemy),
+        playerStats.resistances
       );
       isEnemyCrit = enemyAttack.isCrit;
       let enemyActuallyHit = false;
@@ -80601,10 +84291,14 @@ router8.post("/combat/tick", async (req, res) => {
         enemyDamageDealt += enemyAttack.damage;
         playerHp = Math.max(0, playerHp - enemyAttack.damage);
         floatEvents.push({ value: enemyAttack.damage, type: isEnemyCrit ? "enemyCrit" : "enemy" });
+        if (enemyAttack.resisted && enemyAttack.resistAmount > 0) {
+          floatEvents.push({ value: enemyAttack.resistAmount, type: "resist" });
+        }
         const critText = isEnemyCrit ? " \u{1F4A5} CRITICAL!" : "";
         const frenzyText = frenzyDmgBonus > 0 ? " [FRENZIED]" : "";
         const partyTankText = partyContrib.damageReduction > 0 ? ` [Party: -${Math.round(partyContrib.damageReduction * 100)}% dmg]` : "";
-        const msg = `${enemy.name} hits you for ${enemyAttack.damage} damage.${critText}${frenzyText}${partyTankText}`;
+        const resistText = enemyAttack.resisted ? ` (${enemyAttack.resistAmount} resisted)` : "";
+        const msg = `${enemy.name} hits you for ${enemyAttack.damage} damage.${critText}${frenzyText}${partyTankText}${resistText}`;
         combatMessages.push(msg);
         await db.insert(combatLogTable).values({ characterId, tick: newTick, message: msg, type: isEnemyCrit ? "enemyCrit" : "enemyHit", value: enemyAttack.damage });
         if (enemyAttack.damage > 0) {
@@ -80674,13 +84368,21 @@ router8.post("/combat/tick", async (req, res) => {
               procMsg = `\u{1F4AB} ${enemy.name} procs ${ability.name}! You are stunned!`;
             }
           } else if (ability.effectType === "damage_burst") {
-            const burstDmg = Math.max(1, Math.floor(ability.effectValue * (1 - Math.min(0.75, (playerStats.mitigation + aaBonuses.dmgReduction) / 100))));
+            let burstDmg = Math.max(1, Math.floor(ability.effectValue * (1 - Math.min(0.75, (playerStats.mitigation + aaBonuses.dmgReduction) / 100))));
+            const burstDmgType = ability.damageType ?? "slash";
+            const burstResistPct = Math.min(50, playerStats.resistances[burstDmgType] ?? 0);
+            const burstResistAmt = Math.floor(burstDmg * burstResistPct / 100);
+            if (burstResistAmt > 0) {
+              burstDmg = Math.max(1, burstDmg - burstResistAmt);
+              floatEvents.push({ value: burstResistAmt, type: "resist" });
+            }
             const procHpBefore = playerHp;
             playerHp = Math.max(0, playerHp - burstDmg);
             if (enemy.isBoss && procHpBefore > 0 && playerHp <= 0) lastEnemyAbilityUsedId = ability.id;
             enemyDamageDealt += burstDmg;
             floatEvents.push({ value: burstDmg, type: "enemy" });
-            procMsg = `\u{1F4A5} ${enemy.name} procs ${ability.name}! ${burstDmg} bonus damage!`;
+            const burstResistText = burstResistAmt > 0 ? ` (${burstResistAmt} resisted)` : "";
+            procMsg = `\u{1F4A5} ${enemy.name} procs ${ability.name}! ${burstDmg} bonus damage!${burstResistText}`;
           }
           combatMessages.push(procMsg);
           await db.insert(combatLogTable).values({ characterId, tick: newTick, message: procMsg, type: "enemyHit" });
@@ -80697,13 +84399,19 @@ router8.post("/combat/tick", async (req, res) => {
         playerStats.mitigation,
         Math.max(0, playerStats.avoidance - 10),
         // reduced avoidance for the speed attack
-        aaBonuses.dmgReduction
+        aaBonuses.dmgReduction,
+        getEnemyAutoAttackDamageType(enemy),
+        playerStats.resistances
       );
       if (!enrageExtraAttack.avoided) {
         enemyDamageDealt += enrageExtraAttack.damage;
         playerHp = Math.max(0, playerHp - enrageExtraAttack.damage);
         floatEvents.push({ value: enrageExtraAttack.damage, type: "enemy" });
-        const speedMsg = `\u{1F525} ${enemy.name}'s enraged fury strikes again for ${enrageExtraAttack.damage} damage! [GRUDGE SPEED]`;
+        if (enrageExtraAttack.resisted && enrageExtraAttack.resistAmount > 0) {
+          floatEvents.push({ value: enrageExtraAttack.resistAmount, type: "resist" });
+        }
+        const enrageResistText = enrageExtraAttack.resisted ? ` (${enrageExtraAttack.resistAmount} resisted)` : "";
+        const speedMsg = `\u{1F525} ${enemy.name}'s enraged fury strikes again for ${enrageExtraAttack.damage} damage! [GRUDGE SPEED]${enrageResistText}`;
         combatMessages.push(speedMsg);
         await db.insert(combatLogTable).values({ characterId, tick: newTick, message: speedMsg, type: "enemyHit", value: enrageExtraAttack.damage });
       }
@@ -80730,6 +84438,14 @@ router8.post("/combat/tick", async (req, res) => {
       const healMsg = `\u{1F48A} Auto-heal: +${healAmt} HP (20 power)`;
       combatMessages.push(healMsg);
       await db.insert(combatLogTable).values({ characterId, tick: newTick, message: healMsg, type: "heal", value: healAmt });
+    }
+    if (aaBonuses.hpRegen > 0 && playerHp > 0 && playerHp < maxHp) {
+      const regenAmt = Math.min(aaBonuses.hpRegen, maxHp - playerHp);
+      if (regenAmt > 0) {
+        playerHp = Math.min(maxHp, playerHp + regenAmt);
+        floatEvents.push({ value: regenAmt, type: "heal" });
+        await db.insert(combatLogTable).values({ characterId, tick: newTick, message: `\u{1F49A} HP Regen: +${regenAmt} HP`, type: "heal", value: regenAmt });
+      }
     }
     if (character.autoPotions && playerHp < maxHp * 0.4) {
       const potionRows = await db.select().from(inventoryTable).where(eq(inventoryTable.characterId, characterId));
@@ -80848,6 +84564,7 @@ router8.post("/combat/tick", async (req, res) => {
         enemyStatusEffects: [],
         abilityUsedId,
         floatEvents,
+        damageBySource,
         playerStatsSnapshot: { attackRating: playerStats.attackRating, defenseRating: playerStats.defenseRating, mitigation: playerStats.mitigation, avoidance: playerStats.avoidance, critChance: playerStats.critChance, powerRegen }
       });
     }
@@ -80916,6 +84633,7 @@ router8.post("/combat/tick", async (req, res) => {
       enemyStatusEffects,
       abilityUsedId,
       floatEvents,
+      damageBySource,
       playerStatsSnapshot: { attackRating: playerStats.attackRating, defenseRating: playerStats.defenseRating, mitigation: playerStats.mitigation, avoidance: playerStats.avoidance, critChance: playerStats.critChance, powerRegen }
     });
     return;
@@ -81221,9 +84939,6 @@ router9.post("/inventory/sell", async (req, res) => {
     if (!invItem) return res.status(404).json({ error: "Item not in inventory" });
     const itemData = invItem.itemData;
     const staticItem = getItemById(itemId);
-    if (isNoSell(staticItem ?? itemData)) {
-      return res.status(400).json({ error: "This item is No-Drop and cannot be sold or traded." });
-    }
     const sellPrice = staticItem?.sellPrice ?? (typeof itemData?.sellPrice === "number" ? itemData.sellPrice : 0);
     const qty = Math.min(quantity || 1, invItem.quantity);
     const goldEarned = Math.max(1, sellPrice) * qty;
@@ -81277,15 +84992,10 @@ router9.post("/inventory/sell-all", async (req, res) => {
       return res.json({ goldEarned: 0, newGoldTotal: character.gold, itemCount: 0, skippedCount: 0 });
     }
     let goldEarned = 0;
-    let skippedCount = 0;
     const sellableIds = [];
     for (const invItem of items) {
       const itemData = invItem.itemData;
       const staticItem = getItemById(invItem.itemId);
-      if (isNoSell(staticItem ?? itemData)) {
-        skippedCount++;
-        continue;
-      }
       const sellPrice = staticItem?.sellPrice ?? (typeof itemData?.sellPrice === "number" ? itemData.sellPrice : 0);
       goldEarned += Math.max(1, sellPrice) * invItem.quantity;
       sellableIds.push(invItem.id);
@@ -81295,7 +85005,7 @@ router9.post("/inventory/sell-all", async (req, res) => {
     }
     const newGold = character.gold + goldEarned;
     await db.update(charactersTable).set({ gold: newGold, updatedAt: /* @__PURE__ */ new Date() }).where(eq(charactersTable.id, character.id));
-    return res.json({ goldEarned, newGoldTotal: newGold, itemCount: sellableIds.length, skippedCount });
+    return res.json({ goldEarned, newGoldTotal: newGold, itemCount: sellableIds.length, skippedCount: 0 });
   } catch (err) {
     req.log.error({ err }, "Error selling all items");
     return res.status(500).json({ error: "Internal server error" });
@@ -81368,6 +85078,8 @@ init_schema2();
 init_drizzle_orm();
 init_gameData();
 var router11 = (0, import_express11.Router)();
+var ALL_AA_NODES_CRAFTING = ALL_AA_TABS.flatMap((tab) => tab.nodes);
+var AA_NODE_DEF_MAP_CRAFTING = new Map(ALL_AA_NODES_CRAFTING.map((n) => [n.id, n]));
 var JOURNEYMAN_RECIPE_IDS = CRAFTING_RECIPES.filter((r) => r.tier === "journeyman").map((r) => r.id);
 var RARITY_ORDER2 = ["common", "uncommon", "rare", "legendary", "fabled", "mythical"];
 function bumpRarity(rarity) {
@@ -81485,6 +85197,13 @@ router11.post("/crafting/craft", async (req, res) => {
       return res.status(404).json({ error: "Recipe not found" });
     }
     const character = await getOrCreateCharacter(req.characterId);
+    const aaRows = await db.select().from(aaPointsTable).where(and(eq(aaPointsTable.characterId, character.id), gt(aaPointsTable.rank, 0)));
+    const aaInvested = aaRows.map((r) => {
+      const def = AA_NODE_DEF_MAP_CRAFTING.get(r.nodeId);
+      if (!def) return null;
+      return { effect: def.effect, currentRank: r.rank, effectValue: def.effectValue, effectPerRank: def.effectPerRank };
+    }).filter((n) => n !== null);
+    const aaBonuses = applyAABonuses(aaInvested);
     const knownIds = new Set(JOURNEYMAN_RECIPE_IDS);
     const learnedRows = await db.select({ recipeId: knownRecipesTable.recipeId }).from(knownRecipesTable).where(eq(knownRecipesTable.characterId, character.id));
     learnedRows.forEach((r) => knownIds.add(r.recipeId));
@@ -81518,12 +85237,15 @@ router11.post("/crafting/craft", async (req, res) => {
     );
     const currentInventory = await db.select().from(inventoryTable).where(eq(inventoryTable.characterId, character.id));
     const bagItems = await db.select().from(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.characterId, character.id));
+    const bankItems = await db.select().from(bankItemsTable).where(eq(bankItemsTable.characterId, character.id));
     const inventoryMap = new Map(currentInventory.map((i) => [i.itemId, i]));
     const bagMap = new Map(bagItems.map((i) => [i.itemId, i]));
+    const bankMap = new Map(bankItems.map((i) => [i.itemId, i]));
     for (const ingredient of recipe.ingredients) {
       const invQty = inventoryMap.get(ingredient.itemId)?.quantity ?? 0;
       const bagQty = bagMap.get(ingredient.itemId)?.quantity ?? 0;
-      const totalQty = invQty + bagQty;
+      const bankQty = bankMap.get(ingredient.itemId)?.quantity ?? 0;
+      const totalQty = invQty + bagQty + bankQty;
       if (totalQty < ingredient.quantity) {
         const ingredientItem = getItemById(ingredient.itemId);
         return res.json({
@@ -81551,6 +85273,16 @@ router11.post("/crafting/craft", async (req, res) => {
           const bagData = bagRow.itemData;
           const bagQuality = typeof bagData?.quality === "number" ? bagData.quality : 50;
           for (let q = 0; q < bagUsed; q++) qualityScores.push(bagQuality);
+          remaining -= bagUsed;
+        }
+      }
+      if (remaining > 0) {
+        const bankRow = bankMap.get(ingredient.itemId);
+        if (bankRow) {
+          const bankUsed = Math.min(bankRow.quantity, remaining);
+          const bankData = bankRow.itemData;
+          const bankQuality = typeof bankData?.quality === "number" ? bankData.quality : 50;
+          for (let q = 0; q < bankUsed; q++) qualityScores.push(bankQuality);
         }
       }
     }
@@ -81588,6 +85320,11 @@ router11.post("/crafting/craft", async (req, res) => {
       description: `${baseItem.description} Handcrafted by ${character.name}.`
     };
     const craftedItemId = `crafted_${recipe.resultItemId}_${Date.now()}`;
+    const craftYieldBonus = aaBonuses.craftYield / 100;
+    const extraWholeItems = Math.floor(craftYieldBonus);
+    const extraFractional = craftYieldBonus - extraWholeItems;
+    const bonusItems = extraWholeItems + (Math.random() < extraFractional ? 1 : 0);
+    const finalQuantity = recipe.resultQuantity + bonusItems;
     await db.transaction(async (tx) => {
       if (recipe.oneOfAKind) {
         await tx.insert(oneOfAKindCraftedTable).values({
@@ -81618,6 +85355,19 @@ router11.post("/crafting/craft", async (req, res) => {
             } else {
               await tx.update(gatheringBagItemsTable).set({ quantity: bagRemaining }).where(and(eq(gatheringBagItemsTable.characterId, character.id), eq(gatheringBagItemsTable.itemId, ingredient.itemId)));
             }
+            remaining -= bagUsed;
+          }
+        }
+        if (remaining > 0) {
+          const bankRow = bankMap.get(ingredient.itemId);
+          if (bankRow) {
+            const bankUsed = Math.min(bankRow.quantity, remaining);
+            const bankRemaining = bankRow.quantity - bankUsed;
+            if (bankRemaining <= 0) {
+              await tx.delete(bankItemsTable).where(and(eq(bankItemsTable.characterId, character.id), eq(bankItemsTable.itemId, ingredient.itemId)));
+            } else {
+              await tx.update(bankItemsTable).set({ quantity: bankRemaining }).where(and(eq(bankItemsTable.characterId, character.id), eq(bankItemsTable.itemId, ingredient.itemId)));
+            }
           }
         }
       }
@@ -81625,9 +85375,10 @@ router11.post("/crafting/craft", async (req, res) => {
         characterId: character.id,
         itemId: craftedItemId,
         itemData: resultItemData,
-        quantity: recipe.resultQuantity
+        quantity: finalQuantity
       });
-      let newXp = skill.xp + recipe.xpReward;
+      const xpWithBonus2 = Math.floor(recipe.xpReward * (1 + aaBonuses.tradeskillXpBonus / 100));
+      let newXp = skill.xp + xpWithBonus2;
       let newLevel = skill.level;
       let newXpToNext = skill.xpToNextLevel;
       while (newXp >= newXpToNext && newLevel < skill.maxLevel) {
@@ -81642,19 +85393,21 @@ router11.post("/crafting/craft", async (req, res) => {
     ).catch(() => {
     });
     const critMsg = isCritical ? " Critical Success! Rarity upgraded!" : "";
+    const yieldMsg = bonusItems > 0 ? ` Bonus yield: +${bonusItems}!` : "";
+    const xpWithBonus = Math.floor(recipe.xpReward * (1 + aaBonuses.tradeskillXpBonus / 100));
     return res.json({
       success: true,
       resultItem: {
         ...resultItemData,
         id: craftedItemId,
-        quantity: recipe.resultQuantity
+        quantity: finalQuantity
       },
       craftedMeta,
-      xpGained: recipe.xpReward,
+      xpGained: xpWithBonus,
       isCritical,
       critChance: Math.round(critChance * 100),
       resourceQuality,
-      message: `Crafted ${resultItemData.name}!${critMsg}`
+      message: `Crafted ${resultItemData.name}!${critMsg}${yieldMsg}`
     });
   } catch (err) {
     const pgErr = err;
@@ -82077,7 +85830,11 @@ router15.get("/shop", async (req, res) => {
         const mountItem = MOUNT_ITEMS.find((m) => m.id === si.itemId);
         const adornItem = ADORNMENTS.find((a) => a.id === si.itemId);
         if (mountItem) item = mountItem;
-        else if (adornItem) item = { id: adornItem.id, name: adornItem.name, type: "adornment", slot: adornItem.slotType, rarity: "uncommon", level: adornItem.level, stats: { [adornItem.stat]: adornItem.value }, sellPrice: Math.floor(si.buyPrice * 0.4), buyPrice: si.buyPrice, spriteId: adornItem.spriteId, description: adornItem.description };
+        else if (adornItem) {
+          const adornStats = {};
+          for (const { stat, value } of adornItem.stats) adornStats[stat] = (adornStats[stat] ?? 0) + value;
+          item = { id: adornItem.id, name: adornItem.name, type: "adornment", slot: adornItem.slotType, rarity: "uncommon", level: adornItem.level, stats: adornStats, sellPrice: Math.floor(si.buyPrice * 0.4), buyPrice: si.buyPrice, spriteId: adornItem.spriteId, description: adornItem.description };
+        }
       }
       if (!item) return null;
       const mult = multipliers[si.category] ?? 1;
@@ -82184,6 +85941,8 @@ router15.post("/shop/buy", async (req, res) => {
     if (!itemData) {
       const adorn = ADORNMENTS.find((a) => a.id === itemId);
       if (adorn) {
+        const adornStats = {};
+        for (const { stat, value } of adorn.stats) adornStats[stat] = (adornStats[stat] ?? 0) + value;
         itemData = {
           id: adorn.id,
           name: adorn.name,
@@ -82191,7 +85950,7 @@ router15.post("/shop/buy", async (req, res) => {
           slot: adorn.slotType,
           rarity: "uncommon",
           level: adorn.level,
-          stats: { [adorn.stat]: adorn.value },
+          stats: adornStats,
           sellPrice: Math.floor(shopItem.buyPrice * 0.4),
           spriteId: adorn.spriteId
         };
@@ -82619,6 +86378,8 @@ var import_express20 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
 var router20 = (0, import_express20.Router)();
+var COLOR_SLOT_INDEX = { white: 0, yellow: 1, red: 2 };
+var WEAPON_SLOTS2 = /* @__PURE__ */ new Set(["primary", "secondary"]);
 router20.get("/adornments", async (req, res) => {
   try {
     const characterId = req.characterId;
@@ -82635,8 +86396,7 @@ router20.get("/adornments", async (req, res) => {
         name: adorn.name,
         description: adorn.description,
         color: adorn.color,
-        stat: adorn.stat,
-        value: adorn.value,
+        stats: adorn.stats,
         slotType: adorn.slotType,
         level: adorn.level,
         spriteId: adorn.spriteId,
@@ -82669,8 +86429,7 @@ router20.get("/adornments/catalog", async (req, res) => {
       name: adorn.name,
       description: adorn.description,
       color: adorn.color,
-      stat: adorn.stat,
-      value: adorn.value,
+      stats: adorn.stats,
       slotType: adorn.slotType,
       level: adorn.level,
       spriteId: adorn.spriteId,
@@ -82700,17 +86459,28 @@ router20.get("/adornments/applied", async (req, res) => {
 router20.post("/adornments/apply", async (req, res) => {
   try {
     const characterId = req.characterId;
-    const { adornmentId, gearSlot, adornmentSlotIndex = 0 } = req.body;
+    const { adornmentId, gearSlot } = req.body;
     const adorn = ADORNMENTS.find((a) => a.id === adornmentId);
     if (!adorn) return res.status(404).json({ success: false, message: "Adornment not found" });
+    const [character] = await db.select({ level: charactersTable.level }).from(charactersTable).where(eq(charactersTable.id, characterId)).limit(1);
+    if (!character || character.level < adorn.level) {
+      return res.json({ success: false, message: `Requires level ${adorn.level}` });
+    }
+    if (adorn.slotType === "weapon" && !WEAPON_SLOTS2.has(gearSlot)) {
+      return res.json({ success: false, message: "Weapon adornments can only be applied to weapon slots." });
+    }
+    if (adorn.slotType === "armor" && WEAPON_SLOTS2.has(gearSlot)) {
+      return res.json({ success: false, message: "Armor adornments cannot be applied to weapon slots." });
+    }
     const [invItem] = await db.select().from(inventoryTable).where(
       and(eq(inventoryTable.characterId, characterId), eq(inventoryTable.itemId, adornmentId))
     );
     if (!invItem || invItem.quantity < 1) return res.json({ success: false, message: "You don't have that adornment" });
+    const slotIndex = COLOR_SLOT_INDEX[adorn.color] ?? 0;
     await db.delete(adornmentsTable).where(
-      and(eq(adornmentsTable.characterId, characterId), eq(adornmentsTable.gearSlot, gearSlot))
+      and(eq(adornmentsTable.characterId, characterId), eq(adornmentsTable.gearSlot, gearSlot), eq(adornmentsTable.slotIndex, slotIndex))
     );
-    await db.insert(adornmentsTable).values({ characterId, gearSlot, slotIndex: adornmentSlotIndex, adornmentId });
+    await db.insert(adornmentsTable).values({ characterId, gearSlot, slotIndex, adornmentId });
     if (invItem.quantity <= 1) {
       await db.delete(inventoryTable).where(eq(inventoryTable.id, invItem.id));
     } else {
@@ -82725,11 +86495,17 @@ router20.post("/adornments/apply", async (req, res) => {
 router20.delete("/adornments/remove", async (req, res) => {
   try {
     const characterId = req.characterId;
-    const { gearSlot } = req.body;
+    const { gearSlot, slotIndex } = req.body;
     if (!gearSlot) return res.status(400).json({ success: false, message: "gearSlot required" });
-    await db.delete(adornmentsTable).where(
-      and(eq(adornmentsTable.characterId, characterId), eq(adornmentsTable.gearSlot, gearSlot))
-    );
+    if (slotIndex !== void 0 && slotIndex !== null) {
+      await db.delete(adornmentsTable).where(
+        and(eq(adornmentsTable.characterId, characterId), eq(adornmentsTable.gearSlot, gearSlot), eq(adornmentsTable.slotIndex, slotIndex))
+      );
+    } else {
+      await db.delete(adornmentsTable).where(
+        and(eq(adornmentsTable.characterId, characterId), eq(adornmentsTable.gearSlot, gearSlot))
+      );
+    }
     return res.json({ success: true, message: `Adornment removed from ${gearSlot}` });
   } catch (err) {
     req.log.error({ err }, "Error removing adornment");
@@ -84827,12 +88603,11 @@ var GHOST_SEEDS = [
 // src/lib/auctionService.ts
 init_schema2();
 init_drizzle_orm();
-var PLAYER_SELLER_ID = "player";
 async function cleanExpiredListings() {
   const now = /* @__PURE__ */ new Date();
   const expiredPlayer = await db.select().from(auctionListingsTable).where(
     and(
-      eq(auctionListingsTable.sellerId, PLAYER_SELLER_ID),
+      isNotNull(auctionListingsTable.characterId),
       eq(auctionListingsTable.sold, false),
       eq(auctionListingsTable.cancelled, false),
       lt(auctionListingsTable.expiresAt, now)
@@ -84849,9 +88624,15 @@ async function cleanExpiredListings() {
           )
         ).returning({ id: auctionListingsTable.id });
         if (claimed.length === 0) return;
-        const returned = await tx.update(inventoryTable).set({ quantity: sql`${inventoryTable.quantity} + ${listing.quantity}` }).where(eq(inventoryTable.itemId, listing.itemId)).returning({ id: inventoryTable.id });
+        const returned = await tx.update(inventoryTable).set({ quantity: sql`${inventoryTable.quantity} + ${listing.quantity}` }).where(
+          and(
+            eq(inventoryTable.characterId, listing.characterId),
+            eq(inventoryTable.itemId, listing.itemId)
+          )
+        ).returning({ id: inventoryTable.id });
         if (returned.length === 0) {
           await tx.insert(inventoryTable).values({
+            characterId: listing.characterId,
             itemId: listing.itemId,
             itemData: listing.itemData,
             quantity: listing.quantity
@@ -84864,7 +88645,7 @@ async function cleanExpiredListings() {
   }
   await db.update(auctionListingsTable).set({ cancelled: true }).where(
     and(
-      ne(auctionListingsTable.sellerId, PLAYER_SELLER_ID),
+      isNull(auctionListingsTable.characterId),
       eq(auctionListingsTable.sold, false),
       eq(auctionListingsTable.cancelled, false),
       lt(auctionListingsTable.expiresAt, now)
@@ -85015,8 +88796,3454 @@ function getRaidById(id) {
   return RAIDS.find((r) => r.id === id);
 }
 
+// src/lib/tradeskillData.ts
+var TRADESKILL_CLASSES = ["weaponsmith", "armorer", "tailor", "jeweler", "alchemist"];
+var TRADESKILL_MATERIALS = [
+  // ── Smithing ──────────────────────────────────────────────────────────────
+  { id: "ts_metal_flux", name: "Metal Flux", description: "A chemical flux used to refine metals during smithing.", spriteId: "material_flux", vendorCost: 2, usedBy: ["weaponsmith", "armorer"] },
+  { id: "ts_adamantine_ore", name: "Adamantine Ore", description: "An extremely dense ore found only in the deepest mines.", spriteId: "material_ore", vendorCost: 80, usedBy: ["weaponsmith", "armorer"] },
+  // ── Tailoring ──────────────────────────────────────────────────────────────
+  { id: "ts_strong_thread", name: "Strong Thread", description: "Durable thread used to stitch together all manner of cloth and leather.", spriteId: "material_thread", vendorCost: 3, usedBy: ["tailor"] },
+  { id: "ts_linen_bolt", name: "Linen Bolt", description: "A bolt of plain linen cloth, the most basic tailoring material.", spriteId: "material_cloth", vendorCost: 5, usedBy: ["tailor"] },
+  { id: "ts_silk_cloth", name: "Silk Cloth", description: "Fine silk cloth, smooth and light, favored by mid-tier tailors.", spriteId: "material_cloth", vendorCost: 18, usedBy: ["tailor"] },
+  { id: "ts_spidersilk_cloth", name: "Spidersilk Cloth", description: "Cloth woven from giant spider silk \u2014 strong as steel yet light as air.", spriteId: "material_cloth", vendorCost: 45, usedBy: ["tailor"] },
+  { id: "ts_moonweave", name: "Moonweave Cloth", description: "Magical cloth that shimmers with lunar energy. Used in the finest garments.", spriteId: "material_cloth", vendorCost: 90, usedBy: ["tailor"] },
+  { id: "ts_rough_hide", name: "Rough Hide", description: "Thick, unprocessed animal hide. Serviceable for basic leather armor.", spriteId: "material_hide", vendorCost: 6, usedBy: ["tailor"] },
+  { id: "ts_supple_leather", name: "Supple Leather", description: "Well-tanned leather that is both flexible and durable.", spriteId: "material_hide", vendorCost: 25, usedBy: ["tailor"] },
+  // ── Jeweling ──────────────────────────────────────────────────────────────
+  { id: "ts_jewelers_oil", name: "Jeweler's Oil", description: "A precision cutting oil used to shape gems and metals in jewelry work.", spriteId: "material_reagent", vendorCost: 4, usedBy: ["jeweler"] },
+  { id: "ts_rough_ruby", name: "Rough Ruby", description: "An uncut ruby with a deep red glow. Valuable to jewelers.", spriteId: "material_gem", vendorCost: 15, usedBy: ["jeweler"] },
+  { id: "ts_flawless_sapphire", name: "Flawless Sapphire", description: "A perfectly clear sapphire. Commands a high price from jewelers.", spriteId: "material_gem", vendorCost: 40, usedBy: ["jeweler"] },
+  { id: "ts_void_crystal", name: "Void Crystal", description: "A dark crystal suffused with void energy. Prized for high-tier accessories.", spriteId: "material_gem", vendorCost: 75, usedBy: ["jeweler"] },
+  // ── Alchemy ──────────────────────────────────────────────────────────────
+  { id: "ts_empty_vial", name: "Empty Vial", description: "A clean glass vial used as the base for all alchemical potions.", spriteId: "material_vial", vendorCost: 2, usedBy: ["alchemist"] },
+  { id: "ts_mana_shard", name: "Mana Shard", description: "A crystallized fragment of raw magical energy used in potions.", spriteId: "material_reagent", vendorCost: 8, usedBy: ["alchemist"] },
+  { id: "ts_alchemists_coal", name: "Alchemist's Coal", description: "Specially treated coal that burns at a precise temperature for alchemy.", spriteId: "material_reagent", vendorCost: 4, usedBy: ["alchemist"] }
+];
+var APPRENTICE_RECIPES = [
+  // ════ WEAPONSMITH ════════════════════════════════════════════════════════════
+  {
+    name: "Iron Shortsword",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 1,
+    minLevel: 10,
+    craftTimeSeconds: 60,
+    acquisitionType: "vendor",
+    vendorCost: 10,
+    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Forged Iron Shortsword",
+      type: "weapon",
+      slot: "primary",
+      rarity: "common",
+      description: "A simple iron shortsword hammered out by an apprentice smith.",
+      stats: { weaponDamageMin: 8, weaponDamageMax: 14, weaponDelay: 2, attackRating: 12 },
+      sellPrice: 18,
+      quantity: 1,
+      xpGained: 40,
+      spriteId: "weapon_sword"
+    }
+  },
+  {
+    name: "Iron Battle Axe",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 5,
+    minLevel: 12,
+    craftTimeSeconds: 90,
+    acquisitionType: "vendor",
+    vendorCost: 15,
+    ingredients: [{ itemId: "iron_ore", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Forged Iron Battle Axe",
+      type: "weapon",
+      slot: "primary",
+      rarity: "uncommon",
+      description: "A heavy iron axe, slow but powerful.",
+      stats: { weaponDamageMin: 12, weaponDamageMax: 22, weaponDelay: 2.4, attackRating: 10, strength: 4 },
+      sellPrice: 30,
+      quantity: 1,
+      xpGained: 60,
+      spriteId: "weapon_axe"
+    }
+  },
+  {
+    name: "Steel Longsword",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 12,
+    minLevel: 20,
+    craftTimeSeconds: 120,
+    acquisitionType: "vendor",
+    vendorCost: 35,
+    ingredients: [{ itemId: "steel_bar", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Tempered Steel Longsword",
+      type: "weapon",
+      slot: "primary",
+      rarity: "uncommon",
+      description: "A well-balanced steel blade that holds a keen edge.",
+      stats: { weaponDamageMin: 18, weaponDamageMax: 28, weaponDelay: 2, attackRating: 24, strength: 6 },
+      sellPrice: 65,
+      quantity: 1,
+      xpGained: 100,
+      spriteId: "weapon_sword"
+    }
+  },
+  {
+    name: "Steel War Hammer",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 18,
+    minLevel: 22,
+    craftTimeSeconds: 150,
+    acquisitionType: "vendor",
+    vendorCost: 45,
+    ingredients: [{ itemId: "steel_bar", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel War Hammer",
+      type: "weapon",
+      slot: "primary",
+      rarity: "rare",
+      description: "A crushing two-handed hammer favored by fighters.",
+      stats: { weaponDamageMin: 22, weaponDamageMax: 38, weaponDelay: 2.6, attackRating: 20, strength: 10, stamina: 5 },
+      sellPrice: 90,
+      quantity: 1,
+      xpGained: 140,
+      spriteId: "weapon_hammer"
+    }
+  },
+  {
+    name: "Mithril Blade",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 25,
+    minLevel: 30,
+    craftTimeSeconds: 240,
+    acquisitionType: "vendor",
+    vendorCost: 80,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Mithril Blade",
+      type: "weapon",
+      slot: "primary",
+      rarity: "rare",
+      description: "A shimmering mithril sword that never loses its edge.",
+      stats: { weaponDamageMin: 32, weaponDamageMax: 48, weaponDelay: 1.8, attackRating: 42, agility: 8, critChance: 3 },
+      sellPrice: 160,
+      quantity: 1,
+      xpGained: 200,
+      spriteId: "weapon_sword"
+    }
+  },
+  {
+    name: "Mithril Warstaff",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 30,
+    minLevel: 35,
+    craftTimeSeconds: 300,
+    acquisitionType: "vendor",
+    vendorCost: 100,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }, { itemId: "ts_linen_bolt", quantity: 1 }],
+    output: {
+      name: "Mithril-Tipped Warstaff",
+      type: "weapon",
+      slot: "primary",
+      rarity: "rare",
+      description: "A balanced combat staff reinforced with mithril.",
+      stats: { weaponDamageMin: 28, weaponDamageMax: 44, weaponDelay: 2, attackRating: 35, intelligence: 10, wisdom: 8 },
+      sellPrice: 180,
+      quantity: 1,
+      xpGained: 220,
+      spriteId: "weapon_staff"
+    }
+  },
+  {
+    name: "Adamantine Sword",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 36,
+    minLevel: 40,
+    craftTimeSeconds: 480,
+    acquisitionType: "vendor",
+    vendorCost: 160,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Adamantine Sword",
+      type: "weapon",
+      slot: "primary",
+      rarity: "legendary",
+      description: "An indestructible sword forged from the hardest known metal.",
+      stats: { weaponDamageMin: 52, weaponDamageMax: 74, weaponDelay: 1.8, attackRating: 68, strength: 14, critChance: 5 },
+      sellPrice: 400,
+      quantity: 1,
+      xpGained: 380,
+      spriteId: "weapon_sword"
+    }
+  },
+  {
+    name: "Adamantine Greataxe",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 38,
+    minLevel: 42,
+    craftTimeSeconds: 600,
+    acquisitionType: "vendor",
+    vendorCost: 200,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Adamantine Greataxe",
+      type: "weapon",
+      slot: "primary",
+      rarity: "legendary",
+      description: "A massive two-handed axe that cleaves through armor like cloth.",
+      stats: { weaponDamageMin: 65, weaponDamageMax: 95, weaponDelay: 2.6, attackRating: 60, strength: 20, stamina: 10 },
+      sellPrice: 500,
+      quantity: 1,
+      xpGained: 420,
+      spriteId: "weapon_axe"
+    }
+  },
+  // ── Wands (Mage/Caster) ──────────────────────────────────────────────────────
+  {
+    name: "Iron Novice Wand",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 2,
+    minLevel: 10,
+    craftTimeSeconds: 45,
+    acquisitionType: "vendor",
+    vendorCost: 10,
+    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_linen_bolt", quantity: 1 }],
+    output: {
+      name: "Iron Novice Wand",
+      type: "weapon",
+      slot: "primary",
+      rarity: "common",
+      description: "A simple wand tipped with iron, favoured by beginning spellcasters.",
+      stats: { weaponDamageMin: 6, weaponDamageMax: 12, weaponDelay: 1.6, attackRating: 8, intelligence: 4, wisdom: 2 },
+      sellPrice: 18,
+      quantity: 1,
+      xpGained: 35,
+      spriteId: "weapon_wand"
+    }
+  },
+  {
+    name: "Steel Arcanist Wand",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 14,
+    minLevel: 22,
+    craftTimeSeconds: 120,
+    acquisitionType: "vendor",
+    vendorCost: 40,
+    ingredients: [{ itemId: "steel_bar", quantity: 2 }, { itemId: "ts_silk_cloth", quantity: 1 }],
+    output: {
+      name: "Steel Arcanist Wand",
+      type: "weapon",
+      slot: "primary",
+      rarity: "uncommon",
+      description: "A forged steel wand etched with focusing runes for mid-tier casters.",
+      stats: { weaponDamageMin: 14, weaponDamageMax: 24, weaponDelay: 1.5, attackRating: 18, intelligence: 10, wisdom: 5, spellCritChance: 2 },
+      sellPrice: 80,
+      quantity: 1,
+      xpGained: 110,
+      spriteId: "weapon_wand"
+    }
+  },
+  {
+    name: "Mithril Runewand",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 28,
+    minLevel: 34,
+    craftTimeSeconds: 300,
+    acquisitionType: "vendor",
+    vendorCost: 110,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_silk_cloth", quantity: 1 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Mithril Runewand",
+      type: "weapon",
+      slot: "primary",
+      rarity: "rare",
+      description: "A wand tipped with mithril that hums with channelled spell energy.",
+      stats: { weaponDamageMin: 28, weaponDamageMax: 46, weaponDelay: 1.4, attackRating: 38, intelligence: 22, wisdom: 14, spellCritChance: 5, spellDamage: 10 },
+      sellPrice: 480,
+      quantity: 1,
+      xpGained: 240,
+      spriteId: "weapon_wand"
+    }
+  },
+  {
+    name: "Adamantine Sorcerer's Wand",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 38,
+    minLevel: 42,
+    craftTimeSeconds: 540,
+    acquisitionType: "vendor",
+    vendorCost: 190,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_moonweave", quantity: 1 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Adamantine Sorcerer's Wand",
+      type: "weapon",
+      slot: "primary",
+      rarity: "legendary",
+      description: "A wand forged from adamantine that crackles with barely-contained arcane power.",
+      stats: { weaponDamageMin: 52, weaponDamageMax: 82, weaponDelay: 1.4, attackRating: 70, intelligence: 38, wisdom: 24, spellCritChance: 9, spellDamage: 22 },
+      sellPrice: 1600,
+      quantity: 1,
+      xpGained: 400,
+      spriteId: "weapon_wand"
+    }
+  },
+  // ── Scepters (Priest/Healer) ──────────────────────────────────────────────────
+  {
+    name: "Iron Confessor's Scepter",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 2,
+    minLevel: 10,
+    craftTimeSeconds: 50,
+    acquisitionType: "vendor",
+    vendorCost: 10,
+    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_linen_bolt", quantity: 1 }],
+    output: {
+      name: "Iron Confessor's Scepter",
+      type: "weapon",
+      slot: "primary",
+      rarity: "common",
+      description: "A blunt iron scepter used by novice priests to focus healing prayers.",
+      stats: { weaponDamageMin: 5, weaponDamageMax: 10, weaponDelay: 1.8, attackRating: 6, wisdom: 5, power: 20 },
+      sellPrice: 18,
+      quantity: 1,
+      xpGained: 35,
+      spriteId: "weapon_scepter"
+    }
+  },
+  {
+    name: "Steel Cleric Scepter",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 15,
+    minLevel: 22,
+    craftTimeSeconds: 130,
+    acquisitionType: "vendor",
+    vendorCost: 42,
+    ingredients: [{ itemId: "steel_bar", quantity: 2 }, { itemId: "ts_linen_bolt", quantity: 1 }],
+    output: {
+      name: "Steel Cleric Scepter",
+      type: "weapon",
+      slot: "primary",
+      rarity: "uncommon",
+      description: "A blessed steel scepter wielded by mid-tier clerics of Qeynos.",
+      stats: { weaponDamageMin: 12, weaponDamageMax: 20, weaponDelay: 1.8, attackRating: 16, wisdom: 12, power: 45, spellCritChance: 2 },
+      sellPrice: 82,
+      quantity: 1,
+      xpGained: 115,
+      spriteId: "weapon_scepter"
+    }
+  },
+  {
+    name: "Mithril Channeler's Scepter",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 28,
+    minLevel: 34,
+    craftTimeSeconds: 300,
+    acquisitionType: "vendor",
+    vendorCost: 112,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_silk_cloth", quantity: 1 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Mithril Channeler's Scepter",
+      type: "weapon",
+      slot: "primary",
+      rarity: "rare",
+      description: "A mithril scepter that resonates with divine healing energy.",
+      stats: { weaponDamageMin: 22, weaponDamageMax: 38, weaponDelay: 1.8, attackRating: 30, wisdom: 26, power: 90, spellCritChance: 4, healBonus: 8 },
+      sellPrice: 500,
+      quantity: 1,
+      xpGained: 245,
+      spriteId: "weapon_scepter"
+    }
+  },
+  {
+    name: "Adamantine High Priest's Scepter",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 38,
+    minLevel: 42,
+    craftTimeSeconds: 540,
+    acquisitionType: "vendor",
+    vendorCost: 192,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Adamantine High Priest's Scepter",
+      type: "weapon",
+      slot: "primary",
+      rarity: "legendary",
+      description: "A scepter of adamantine blessed by the highest orders of the Templar church.",
+      stats: { weaponDamageMin: 42, weaponDamageMax: 70, weaponDelay: 1.8, attackRating: 56, wisdom: 44, power: 160, spellCritChance: 7, healBonus: 18 },
+      sellPrice: 1700,
+      quantity: 1,
+      xpGained: 402,
+      spriteId: "weapon_scepter"
+    }
+  },
+  // ── Maces (Fighter/Paladin) ───────────────────────────────────────────────────
+  {
+    name: "Iron Flanged Mace",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 4,
+    minLevel: 12,
+    craftTimeSeconds: 80,
+    acquisitionType: "vendor",
+    vendorCost: 14,
+    ingredients: [{ itemId: "iron_ore", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Iron Flanged Mace",
+      type: "weapon",
+      slot: "primary",
+      rarity: "uncommon",
+      description: "A heavy flanged mace that crushes through even solid plate.",
+      stats: { weaponDamageMin: 10, weaponDamageMax: 18, weaponDelay: 2.2, attackRating: 18, strength: 6, stamina: 4 },
+      sellPrice: 30,
+      quantity: 1,
+      xpGained: 55,
+      spriteId: "weapon_mace"
+    }
+  },
+  {
+    name: "Steel War Mace",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 16,
+    minLevel: 24,
+    craftTimeSeconds: 160,
+    acquisitionType: "vendor",
+    vendorCost: 50,
+    ingredients: [{ itemId: "steel_bar", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel War Mace",
+      type: "weapon",
+      slot: "primary",
+      rarity: "uncommon",
+      description: "A balanced war mace of tempered steel favoured by crusaders.",
+      stats: { weaponDamageMin: 22, weaponDamageMax: 38, weaponDelay: 2.2, attackRating: 45, strength: 12, stamina: 8 },
+      sellPrice: 120,
+      quantity: 1,
+      xpGained: 130,
+      spriteId: "weapon_mace"
+    }
+  },
+  {
+    name: "Mithril Siege Mace",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 27,
+    minLevel: 32,
+    craftTimeSeconds: 270,
+    acquisitionType: "vendor",
+    vendorCost: 90,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Mithril Siege Mace",
+      type: "weapon",
+      slot: "primary",
+      rarity: "rare",
+      description: "A devastating mithril mace used to breach fortifications.",
+      stats: { weaponDamageMin: 40, weaponDamageMax: 65, weaponDelay: 2.3, attackRating: 80, strength: 20, stamina: 14, mitigation: 5 },
+      sellPrice: 520,
+      quantity: 1,
+      xpGained: 220,
+      spriteId: "weapon_mace"
+    }
+  },
+  {
+    name: "Adamantine Judicator's Mace",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 37,
+    minLevel: 42,
+    craftTimeSeconds: 560,
+    acquisitionType: "vendor",
+    vendorCost: 195,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Adamantine Judicator's Mace",
+      type: "weapon",
+      slot: "primary",
+      rarity: "legendary",
+      description: "A holy mace of adamantine inlaid with divine scripture.",
+      stats: { weaponDamageMin: 70, weaponDamageMax: 108, weaponDelay: 2.2, attackRating: 140, strength: 32, stamina: 22, mitigation: 10 },
+      sellPrice: 1800,
+      quantity: 1,
+      xpGained: 410,
+      spriteId: "weapon_mace"
+    }
+  },
+  // ── Fist Weapons (Monk/Bruiser) ───────────────────────────────────────────────
+  {
+    name: "Iron Knuckle Wraps",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 3,
+    minLevel: 10,
+    craftTimeSeconds: 60,
+    acquisitionType: "vendor",
+    vendorCost: 10,
+    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_rough_hide", quantity: 1 }],
+    output: {
+      name: "Iron Knuckle Wraps",
+      type: "weapon",
+      slot: "primary",
+      rarity: "uncommon",
+      description: "Iron-plated wraps that protect the fists and amplify striking force.",
+      stats: { weaponDamageMin: 8, weaponDamageMax: 15, weaponDelay: 1.6, attackRating: 14, strength: 5, agility: 6 },
+      sellPrice: 25,
+      quantity: 1,
+      xpGained: 50,
+      spriteId: "weapon_fist"
+    }
+  },
+  {
+    name: "Mithril Monk's Wraps",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 27,
+    minLevel: 32,
+    craftTimeSeconds: 260,
+    acquisitionType: "vendor",
+    vendorCost: 90,
+    ingredients: [{ itemId: "mithril_ore", quantity: 1 }, { itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Mithril Monk's Wraps",
+      type: "weapon",
+      slot: "primary",
+      rarity: "rare",
+      description: "Woven spidersilk reinforced with mithril rings \u2014 for the disciplined monk.",
+      stats: { weaponDamageMin: 30, weaponDamageMax: 50, weaponDelay: 1.5, attackRating: 65, strength: 18, agility: 20, critChance: 5, haste: 4 },
+      sellPrice: 490,
+      quantity: 1,
+      xpGained: 215,
+      spriteId: "weapon_fist"
+    }
+  },
+  {
+    name: "Adamantine Iron Fists",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 37,
+    minLevel: 42,
+    craftTimeSeconds: 540,
+    acquisitionType: "vendor",
+    vendorCost: 190,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Adamantine Iron Fists",
+      type: "weapon",
+      slot: "primary",
+      rarity: "legendary",
+      description: "Gauntlets shaped into pointed fists from solid adamantine \u2014 brutal and precise.",
+      stats: { weaponDamageMin: 60, weaponDamageMax: 95, weaponDelay: 1.5, attackRating: 120, strength: 30, agility: 26, critChance: 8, haste: 6 },
+      sellPrice: 1750,
+      quantity: 1,
+      xpGained: 398,
+      spriteId: "weapon_fist"
+    }
+  },
+  // ── Crossbows (Scout/Rogue) ───────────────────────────────────────────────────
+  {
+    name: "Steel Crossbow",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 13,
+    minLevel: 20,
+    craftTimeSeconds: 130,
+    acquisitionType: "vendor",
+    vendorCost: 38,
+    ingredients: [{ itemId: "steel_bar", quantity: 3 }, { itemId: "ts_rough_hide", quantity: 1 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel Crossbow",
+      type: "weapon",
+      slot: "ranged",
+      rarity: "uncommon",
+      description: "A reliable steel crossbow capable of punching through light armor.",
+      stats: { weaponDamageMin: 18, weaponDamageMax: 32, weaponDelay: 2.8, attackRating: 28, agility: 8 },
+      sellPrice: 80,
+      quantity: 1,
+      xpGained: 105,
+      spriteId: "weapon_crossbow"
+    }
+  },
+  {
+    name: "Mithril Repeating Crossbow",
+    tradeskillClass: "weaponsmith",
+    tier: "apprentice",
+    minSkill: 29,
+    minLevel: 36,
+    craftTimeSeconds: 330,
+    acquisitionType: "vendor",
+    vendorCost: 120,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Mithril Repeating Crossbow",
+      type: "weapon",
+      slot: "ranged",
+      rarity: "rare",
+      description: "A precision mithril crossbow with a rapid-fire repeating mechanism.",
+      stats: { weaponDamageMin: 42, weaponDamageMax: 68, weaponDelay: 2.6, attackRating: 75, agility: 20, critChance: 6 },
+      sellPrice: 600,
+      quantity: 1,
+      xpGained: 250,
+      spriteId: "weapon_crossbow"
+    }
+  },
+  // ════ ARMORER ════════════════════════════════════════════════════════════════
+  {
+    name: "Iron Cap",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 1,
+    minLevel: 10,
+    craftTimeSeconds: 60,
+    acquisitionType: "vendor",
+    vendorCost: 10,
+    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Forged Iron Cap",
+      type: "armor",
+      slot: "head",
+      rarity: "common",
+      armorType: "plate",
+      description: "A simple iron helmet offering basic protection.",
+      stats: { defenseRating: 14, stamina: 5 },
+      sellPrice: 16,
+      quantity: 1,
+      xpGained: 40,
+      spriteId: "helm_plate"
+    }
+  },
+  {
+    name: "Iron Chestplate",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 5,
+    minLevel: 10,
+    craftTimeSeconds: 120,
+    acquisitionType: "vendor",
+    vendorCost: 20,
+    ingredients: [{ itemId: "iron_ore", quantity: 4 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Forged Iron Chestplate",
+      type: "armor",
+      slot: "chest",
+      rarity: "common",
+      armorType: "plate",
+      description: "A solid iron breastplate for a beginning armorer.",
+      stats: { defenseRating: 22, stamina: 8, health: 12 },
+      sellPrice: 30,
+      quantity: 1,
+      xpGained: 60,
+      spriteId: "chest_plate"
+    }
+  },
+  {
+    name: "Iron Greaves",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 8,
+    minLevel: 12,
+    craftTimeSeconds: 90,
+    acquisitionType: "vendor",
+    vendorCost: 15,
+    ingredients: [{ itemId: "iron_ore", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Forged Iron Greaves",
+      type: "armor",
+      slot: "legs",
+      rarity: "common",
+      armorType: "plate",
+      description: "Iron leg plates that protect from knee to hip.",
+      stats: { defenseRating: 18, stamina: 6 },
+      sellPrice: 22,
+      quantity: 1,
+      xpGained: 50,
+      spriteId: "legs_plate"
+    }
+  },
+  {
+    name: "Steel Helm",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 12,
+    minLevel: 20,
+    craftTimeSeconds: 120,
+    acquisitionType: "vendor",
+    vendorCost: 35,
+    ingredients: [{ itemId: "steel_bar", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel Helm",
+      type: "armor",
+      slot: "head",
+      rarity: "uncommon",
+      armorType: "plate",
+      description: "A well-crafted steel helmet with cheek guards.",
+      stats: { defenseRating: 28, stamina: 12, health: 18 },
+      sellPrice: 60,
+      quantity: 1,
+      xpGained: 100,
+      spriteId: "helm_plate"
+    }
+  },
+  {
+    name: "Steel Breastplate",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 18,
+    minLevel: 22,
+    craftTimeSeconds: 180,
+    acquisitionType: "vendor",
+    vendorCost: 55,
+    ingredients: [{ itemId: "steel_bar", quantity: 4 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel Breastplate",
+      type: "armor",
+      slot: "chest",
+      rarity: "rare",
+      armorType: "plate",
+      description: "Expertly crafted steel plate that offers serious protection.",
+      stats: { defenseRating: 42, stamina: 20, health: 30, strength: 6 },
+      sellPrice: 110,
+      quantity: 1,
+      xpGained: 150,
+      spriteId: "chest_plate"
+    }
+  },
+  {
+    name: "Mithril Coif",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 25,
+    minLevel: 30,
+    craftTimeSeconds: 240,
+    acquisitionType: "vendor",
+    vendorCost: 80,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Mithril Coif",
+      type: "armor",
+      slot: "head",
+      rarity: "rare",
+      armorType: "plate",
+      description: "A lightweight mithril helmet providing excellent protection.",
+      stats: { defenseRating: 48, stamina: 22, health: 32 },
+      sellPrice: 190,
+      quantity: 1,
+      xpGained: 200,
+      spriteId: "helm_plate"
+    }
+  },
+  {
+    name: "Mithril Plate",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 30,
+    minLevel: 34,
+    craftTimeSeconds: 360,
+    acquisitionType: "vendor",
+    vendorCost: 120,
+    ingredients: [{ itemId: "mithril_ore", quantity: 4 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Mithril Plate",
+      type: "armor",
+      slot: "chest",
+      rarity: "rare",
+      armorType: "plate",
+      description: "Gleaming mithril plate armor, lighter than steel but far stronger.",
+      stats: { defenseRating: 72, stamina: 38, health: 52, strength: 10 },
+      sellPrice: 280,
+      quantity: 1,
+      xpGained: 280,
+      spriteId: "chest_plate"
+    }
+  },
+  {
+    name: "Adamantine Helm",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 36,
+    minLevel: 40,
+    craftTimeSeconds: 480,
+    acquisitionType: "vendor",
+    vendorCost: 160,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Adamantine Helm",
+      type: "armor",
+      slot: "head",
+      rarity: "legendary",
+      armorType: "plate",
+      description: "The pinnacle of plate craftsmanship \u2014 nearly indestructible.",
+      stats: { defenseRating: 86, stamina: 50, health: 70, strength: 14 },
+      sellPrice: 450,
+      quantity: 1,
+      xpGained: 380,
+      spriteId: "helm_plate"
+    }
+  },
+  {
+    name: "Adamantine Breastplate",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 40,
+    minLevel: 44,
+    craftTimeSeconds: 600,
+    acquisitionType: "vendor",
+    vendorCost: 220,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 5 }, { itemId: "ts_metal_flux", quantity: 3 }],
+    output: {
+      name: "Adamantine Breastplate",
+      type: "armor",
+      slot: "chest",
+      rarity: "legendary",
+      armorType: "plate",
+      description: "The mightiest crafted breastplate in all of Norrath.",
+      stats: { defenseRating: 130, stamina: 80, health: 110, strength: 22 },
+      sellPrice: 650,
+      quantity: 1,
+      xpGained: 450,
+      spriteId: "chest_plate"
+    }
+  },
+  // ── Shields ──────────────────────────────────────────────────────────────────
+  {
+    name: "Iron Bulwark Shield",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 3,
+    minLevel: 10,
+    craftTimeSeconds: 60,
+    acquisitionType: "vendor",
+    vendorCost: 12,
+    ingredients: [{ itemId: "iron_ore", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Iron Bulwark Shield",
+      type: "armor",
+      slot: "secondary",
+      rarity: "common",
+      armorType: "plate",
+      description: "A sturdy iron shield fashioned in the bulwark style, preferred by city guards.",
+      stats: { defenseRating: 20, stamina: 8, mitigation: 15 },
+      sellPrice: 22,
+      quantity: 1,
+      xpGained: 45,
+      spriteId: "shield_iron"
+    }
+  },
+  {
+    name: "Steel Round Shield",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 15,
+    minLevel: 22,
+    craftTimeSeconds: 150,
+    acquisitionType: "vendor",
+    vendorCost: 45,
+    ingredients: [{ itemId: "steel_bar", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel Round Shield",
+      type: "armor",
+      slot: "secondary",
+      rarity: "uncommon",
+      armorType: "plate",
+      description: "A round steel shield banded with reinforcing strips.",
+      stats: { defenseRating: 40, stamina: 15, mitigation: 28, health: 25 },
+      sellPrice: 95,
+      quantity: 1,
+      xpGained: 130,
+      spriteId: "shield_iron"
+    }
+  },
+  {
+    name: "Mithril Kite Shield",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 26,
+    minLevel: 30,
+    craftTimeSeconds: 270,
+    acquisitionType: "vendor",
+    vendorCost: 90,
+    ingredients: [{ itemId: "mithril_ore", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Mithril Kite Shield",
+      type: "armor",
+      slot: "secondary",
+      rarity: "rare",
+      armorType: "plate",
+      description: "A kite-shaped mithril shield that catches blows at optimal angles.",
+      stats: { defenseRating: 72, stamina: 26, mitigation: 48, health: 50, avoidance: 3 },
+      sellPrice: 240,
+      quantity: 1,
+      xpGained: 210,
+      spriteId: "shield_mithril"
+    }
+  },
+  {
+    name: "Adamantine Tower Shield",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 38,
+    minLevel: 42,
+    craftTimeSeconds: 580,
+    acquisitionType: "vendor",
+    vendorCost: 210,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 4 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Adamantine Tower Shield",
+      type: "armor",
+      slot: "secondary",
+      rarity: "legendary",
+      armorType: "plate",
+      description: "An enormous shield of adamantine that can turn aside siege weapons.",
+      stats: { defenseRating: 160, stamina: 42, mitigation: 120, health: 160, strength: 10 },
+      sellPrice: 2200,
+      quantity: 1,
+      xpGained: 410,
+      spriteId: "shield_legendary"
+    }
+  },
+  // ── Gauntlets (hands) ─────────────────────────────────────────────────────────
+  {
+    name: "Iron Gauntlets",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 6,
+    minLevel: 12,
+    craftTimeSeconds: 70,
+    acquisitionType: "vendor",
+    vendorCost: 12,
+    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Iron Gauntlets",
+      type: "armor",
+      slot: "hands",
+      rarity: "common",
+      armorType: "plate",
+      description: "Heavy iron gauntlets that protect the hands without sacrificing grip.",
+      stats: { defenseRating: 10, stamina: 4, haste: 1 },
+      sellPrice: 16,
+      quantity: 1,
+      xpGained: 42,
+      spriteId: "hands_plate"
+    }
+  },
+  {
+    name: "Steel Gauntlets",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 16,
+    minLevel: 22,
+    craftTimeSeconds: 140,
+    acquisitionType: "vendor",
+    vendorCost: 42,
+    ingredients: [{ itemId: "steel_bar", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel Gauntlets",
+      type: "armor",
+      slot: "hands",
+      rarity: "uncommon",
+      armorType: "plate",
+      description: "Well-crafted steel gauntlets with articulated finger plates.",
+      stats: { defenseRating: 22, stamina: 10, haste: 3, critChance: 1 },
+      sellPrice: 78,
+      quantity: 1,
+      xpGained: 110,
+      spriteId: "hands_plate"
+    }
+  },
+  {
+    name: "Mithril Gauntlets",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 26,
+    minLevel: 32,
+    craftTimeSeconds: 250,
+    acquisitionType: "vendor",
+    vendorCost: 88,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Mithril Gauntlets",
+      type: "armor",
+      slot: "hands",
+      rarity: "rare",
+      armorType: "plate",
+      description: "Gleaming mithril gauntlets offering exceptional protection and dexterity.",
+      stats: { defenseRating: 42, stamina: 20, haste: 5, critChance: 2, attackRating: 18 },
+      sellPrice: 540,
+      quantity: 1,
+      xpGained: 210,
+      spriteId: "hands_plate"
+    }
+  },
+  {
+    name: "Adamantine Gauntlets",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 37,
+    minLevel: 42,
+    craftTimeSeconds: 490,
+    acquisitionType: "vendor",
+    vendorCost: 185,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Adamantine Gauntlets",
+      type: "armor",
+      slot: "hands",
+      rarity: "legendary",
+      armorType: "plate",
+      description: "The pinnacle of hand armour \u2014 these gauntlets can crush stone.",
+      stats: { defenseRating: 68, stamina: 36, haste: 8, critChance: 4, attackRating: 32 },
+      sellPrice: 1500,
+      quantity: 1,
+      xpGained: 385,
+      spriteId: "hands_plate"
+    }
+  },
+  // ── Sabatons (feet) ───────────────────────────────────────────────────────────
+  {
+    name: "Iron Sabatons",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 7,
+    minLevel: 12,
+    craftTimeSeconds: 70,
+    acquisitionType: "vendor",
+    vendorCost: 12,
+    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Iron Sabatons",
+      type: "armor",
+      slot: "feet",
+      rarity: "common",
+      armorType: "plate",
+      description: "Heavy iron foot armor that protects from ankle to toe.",
+      stats: { defenseRating: 8, stamina: 3, agility: 2 },
+      sellPrice: 14,
+      quantity: 1,
+      xpGained: 40,
+      spriteId: "feet_plate"
+    }
+  },
+  {
+    name: "Steel Sabatons",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 17,
+    minLevel: 24,
+    craftTimeSeconds: 145,
+    acquisitionType: "vendor",
+    vendorCost: 44,
+    ingredients: [{ itemId: "steel_bar", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel Sabatons",
+      type: "armor",
+      slot: "feet",
+      rarity: "uncommon",
+      armorType: "plate",
+      description: "Articulated steel foot armor that balances protection with mobility.",
+      stats: { defenseRating: 20, stamina: 8, agility: 6, avoidance: 2 },
+      sellPrice: 76,
+      quantity: 1,
+      xpGained: 112,
+      spriteId: "feet_plate"
+    }
+  },
+  {
+    name: "Mithril Sabatons",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 27,
+    minLevel: 32,
+    craftTimeSeconds: 255,
+    acquisitionType: "vendor",
+    vendorCost: 88,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Mithril Sabatons",
+      type: "armor",
+      slot: "feet",
+      rarity: "rare",
+      armorType: "plate",
+      description: "Lightweight mithril foot armor that lets the wearer move swiftly.",
+      stats: { defenseRating: 36, stamina: 16, agility: 14, avoidance: 4, haste: 3 },
+      sellPrice: 530,
+      quantity: 1,
+      xpGained: 212,
+      spriteId: "feet_plate"
+    }
+  },
+  {
+    name: "Adamantine Sabatons",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 37,
+    minLevel: 42,
+    craftTimeSeconds: 490,
+    acquisitionType: "vendor",
+    vendorCost: 185,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Adamantine Sabatons",
+      type: "armor",
+      slot: "feet",
+      rarity: "legendary",
+      armorType: "plate",
+      description: "Boots of adamantine that feel as light as leather despite their strength.",
+      stats: { defenseRating: 56, stamina: 28, agility: 22, avoidance: 6, haste: 5 },
+      sellPrice: 1480,
+      quantity: 1,
+      xpGained: 383,
+      spriteId: "feet_plate"
+    }
+  },
+  // ── Vambraces (wrists) ────────────────────────────────────────────────────────
+  {
+    name: "Iron Vambraces",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 8,
+    minLevel: 14,
+    craftTimeSeconds: 65,
+    acquisitionType: "vendor",
+    vendorCost: 13,
+    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Iron Vambraces",
+      type: "armor",
+      slot: "wrists",
+      rarity: "common",
+      armorType: "plate",
+      description: "Simple iron bracers that guard the forearms in combat.",
+      stats: { defenseRating: 8, strength: 3, stamina: 2 },
+      sellPrice: 13,
+      quantity: 1,
+      xpGained: 38,
+      spriteId: "wrists_plate"
+    }
+  },
+  {
+    name: "Steel Vambraces",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 18,
+    minLevel: 26,
+    craftTimeSeconds: 148,
+    acquisitionType: "vendor",
+    vendorCost: 46,
+    ingredients: [{ itemId: "steel_bar", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel Vambraces",
+      type: "armor",
+      slot: "wrists",
+      rarity: "uncommon",
+      armorType: "plate",
+      description: "Reinforced steel vambraces worn by seasoned fighters.",
+      stats: { defenseRating: 18, strength: 8, attackRating: 10 },
+      sellPrice: 72,
+      quantity: 1,
+      xpGained: 114,
+      spriteId: "wrists_plate"
+    }
+  },
+  {
+    name: "Mithril Vambraces",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 28,
+    minLevel: 34,
+    craftTimeSeconds: 260,
+    acquisitionType: "vendor",
+    vendorCost: 90,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Mithril Vambraces",
+      type: "armor",
+      slot: "wrists",
+      rarity: "rare",
+      armorType: "plate",
+      description: "Lightweight mithril bracers etched with strengthening runes.",
+      stats: { defenseRating: 32, strength: 16, attackRating: 24, critChance: 2 },
+      sellPrice: 520,
+      quantity: 1,
+      xpGained: 214,
+      spriteId: "wrists_plate"
+    }
+  },
+  {
+    name: "Adamantine Vambraces",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 37,
+    minLevel: 42,
+    craftTimeSeconds: 490,
+    acquisitionType: "vendor",
+    vendorCost: 184,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Adamantine Vambraces",
+      type: "armor",
+      slot: "wrists",
+      rarity: "legendary",
+      armorType: "plate",
+      description: "Vambraces of adamantine that protect the wrists while channelling striking force.",
+      stats: { defenseRating: 50, strength: 26, attackRating: 38, critChance: 4 },
+      sellPrice: 1460,
+      quantity: 1,
+      xpGained: 382,
+      spriteId: "wrists_plate"
+    }
+  },
+  // ── Plate Belt (waist) ────────────────────────────────────────────────────────
+  {
+    name: "Iron Plate Belt",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 9,
+    minLevel: 14,
+    craftTimeSeconds: 65,
+    acquisitionType: "vendor",
+    vendorCost: 13,
+    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Iron Plate Belt",
+      type: "armor",
+      slot: "waist",
+      rarity: "common",
+      armorType: "plate",
+      description: "A wide iron belt that provides core protection.",
+      stats: { defenseRating: 8, stamina: 5, strength: 2 },
+      sellPrice: 14,
+      quantity: 1,
+      xpGained: 38,
+      spriteId: "waist_plate"
+    }
+  },
+  {
+    name: "Steel Plate Belt",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 19,
+    minLevel: 26,
+    craftTimeSeconds: 148,
+    acquisitionType: "vendor",
+    vendorCost: 46,
+    ingredients: [{ itemId: "steel_bar", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Steel Plate Belt",
+      type: "armor",
+      slot: "waist",
+      rarity: "uncommon",
+      armorType: "plate",
+      description: "A reinforced steel belt that doubles as a brace against heavy blows.",
+      stats: { defenseRating: 18, stamina: 12, health: 20, strength: 5 },
+      sellPrice: 74,
+      quantity: 1,
+      xpGained: 114,
+      spriteId: "waist_plate"
+    }
+  },
+  {
+    name: "Mithril Plate Belt",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 28,
+    minLevel: 34,
+    craftTimeSeconds: 258,
+    acquisitionType: "vendor",
+    vendorCost: 90,
+    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Mithril Plate Belt",
+      type: "armor",
+      slot: "waist",
+      rarity: "rare",
+      armorType: "plate",
+      description: "A gleaming mithril belt that braces the torso.",
+      stats: { defenseRating: 30, stamina: 20, health: 35, strength: 10 },
+      sellPrice: 520,
+      quantity: 1,
+      xpGained: 212,
+      spriteId: "waist_plate"
+    }
+  },
+  {
+    name: "Adamantine Plate Belt",
+    tradeskillClass: "armorer",
+    tier: "apprentice",
+    minSkill: 37,
+    minLevel: 42,
+    craftTimeSeconds: 490,
+    acquisitionType: "vendor",
+    vendorCost: 184,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
+    output: {
+      name: "Adamantine Plate Belt",
+      type: "armor",
+      slot: "waist",
+      rarity: "legendary",
+      armorType: "plate",
+      description: "An adamantine belt that doubles as a piece of torso plate \u2014 unbreakable.",
+      stats: { defenseRating: 46, stamina: 32, health: 55, mitigation: 10 },
+      sellPrice: 1460,
+      quantity: 1,
+      xpGained: 382,
+      spriteId: "waist_plate"
+    }
+  },
+  // ════ TAILOR ═════════════════════════════════════════════════════════════════
+  {
+    name: "Linen Tunic",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 1,
+    minLevel: 10,
+    craftTimeSeconds: 60,
+    acquisitionType: "vendor",
+    vendorCost: 8,
+    ingredients: [{ itemId: "ts_linen_bolt", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Stitched Linen Tunic",
+      type: "armor",
+      slot: "chest",
+      rarity: "common",
+      armorType: "cloth",
+      description: "A simple cloth tunic stitched together by a novice tailor.",
+      stats: { intelligence: 6, wisdom: 4 },
+      sellPrice: 12,
+      quantity: 1,
+      xpGained: 35,
+      spriteId: "chest_cloth"
+    }
+  },
+  {
+    name: "Rough Leather Vest",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 5,
+    minLevel: 12,
+    craftTimeSeconds: 90,
+    acquisitionType: "vendor",
+    vendorCost: 18,
+    ingredients: [{ itemId: "ts_rough_hide", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Rough Leather Vest",
+      type: "armor",
+      slot: "chest",
+      rarity: "common",
+      armorType: "leather",
+      description: "A serviceable leather vest for scouts and rogues.",
+      stats: { agility: 8, attackRating: 6 },
+      sellPrice: 20,
+      quantity: 1,
+      xpGained: 45,
+      spriteId: "chest_leather"
+    }
+  },
+  {
+    name: "Silk Robe",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 12,
+    minLevel: 20,
+    craftTimeSeconds: 120,
+    acquisitionType: "vendor",
+    vendorCost: 40,
+    ingredients: [{ itemId: "ts_silk_cloth", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Silk Robe",
+      type: "armor",
+      slot: "chest",
+      rarity: "uncommon",
+      armorType: "cloth",
+      description: "A flowing silk robe that channels magical energy.",
+      stats: { intelligence: 18, wisdom: 12, spellCritChance: 3 },
+      sellPrice: 75,
+      quantity: 1,
+      xpGained: 100,
+      spriteId: "chest_cloth"
+    }
+  },
+  {
+    name: "Supple Leather Jerkin",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 18,
+    minLevel: 25,
+    craftTimeSeconds: 150,
+    acquisitionType: "vendor",
+    vendorCost: 55,
+    ingredients: [{ itemId: "ts_supple_leather", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Supple Leather Jerkin",
+      type: "armor",
+      slot: "chest",
+      rarity: "rare",
+      armorType: "leather",
+      description: "Flexible yet tough leather that moves with the wearer.",
+      stats: { agility: 22, attackRating: 16, critChance: 4 },
+      sellPrice: 110,
+      quantity: 1,
+      xpGained: 140,
+      spriteId: "chest_leather"
+    }
+  },
+  {
+    name: "Silk Hood",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 14,
+    minLevel: 20,
+    craftTimeSeconds: 100,
+    acquisitionType: "vendor",
+    vendorCost: 35,
+    ingredients: [{ itemId: "ts_silk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Silk Hood",
+      type: "armor",
+      slot: "head",
+      rarity: "uncommon",
+      armorType: "cloth",
+      description: "A hood woven from fine silk that amplifies mental acuity.",
+      stats: { intelligence: 14, wisdom: 10 },
+      sellPrice: 55,
+      quantity: 1,
+      xpGained: 90,
+      spriteId: "helm_cloth"
+    }
+  },
+  {
+    name: "Spidersilk Vestments",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 26,
+    minLevel: 32,
+    craftTimeSeconds: 270,
+    acquisitionType: "vendor",
+    vendorCost: 100,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Spidersilk Vestments",
+      type: "armor",
+      slot: "chest",
+      rarity: "rare",
+      armorType: "cloth",
+      description: "Incredibly strong yet featherlight vestments woven from spider silk.",
+      stats: { intelligence: 32, wisdom: 22, spellCritChance: 6, spellDamage: 12 },
+      sellPrice: 200,
+      quantity: 1,
+      xpGained: 220,
+      spriteId: "chest_cloth"
+    }
+  },
+  {
+    name: "Spidersilk Scout Armor",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 28,
+    minLevel: 34,
+    craftTimeSeconds: 300,
+    acquisitionType: "vendor",
+    vendorCost: 110,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 2 }, { itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Spidersilk Scout Armor",
+      type: "armor",
+      slot: "chest",
+      rarity: "rare",
+      armorType: "leather",
+      description: "Lightweight scout armor reinforced with spidersilk weave.",
+      stats: { agility: 36, attackRating: 28, critChance: 6, haste: 4 },
+      sellPrice: 220,
+      quantity: 1,
+      xpGained: 240,
+      spriteId: "chest_leather"
+    }
+  },
+  {
+    name: "Moonweave Robe",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 36,
+    minLevel: 40,
+    craftTimeSeconds: 480,
+    acquisitionType: "vendor",
+    vendorCost: 180,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Moonweave Robe",
+      type: "armor",
+      slot: "chest",
+      rarity: "legendary",
+      armorType: "cloth",
+      description: "A robe stitched from moonweave, shimmering with lunar energy.",
+      stats: { intelligence: 60, wisdom: 42, spellCritChance: 10, spellDamage: 24 },
+      sellPrice: 480,
+      quantity: 1,
+      xpGained: 400,
+      spriteId: "chest_cloth"
+    }
+  },
+  {
+    name: "Moonweave Leggings",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 38,
+    minLevel: 42,
+    craftTimeSeconds: 420,
+    acquisitionType: "vendor",
+    vendorCost: 160,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Moonweave Leggings",
+      type: "armor",
+      slot: "legs",
+      rarity: "legendary",
+      armorType: "cloth",
+      description: "Flowing leggings of moonweave that ripple with arcane power.",
+      stats: { intelligence: 50, wisdom: 36, spellCritChance: 8 },
+      sellPrice: 380,
+      quantity: 1,
+      xpGained: 360,
+      spriteId: "legs_cloth"
+    }
+  },
+  // ── Leather/Cloth Gloves (hands) ──────────────────────────────────────────────
+  {
+    name: "Rough Leather Gloves",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 6,
+    minLevel: 12,
+    craftTimeSeconds: 70,
+    acquisitionType: "vendor",
+    vendorCost: 12,
+    ingredients: [{ itemId: "ts_rough_hide", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Rough Leather Gloves",
+      type: "armor",
+      slot: "hands",
+      rarity: "common",
+      armorType: "leather",
+      description: "Thick leather gloves that protect the hands in combat.",
+      stats: { agility: 5, haste: 2, defenseRating: 6 },
+      sellPrice: 14,
+      quantity: 1,
+      xpGained: 38,
+      spriteId: "hands_leather"
+    }
+  },
+  {
+    name: "Supple Leather Scout Gloves",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 19,
+    minLevel: 25,
+    craftTimeSeconds: 140,
+    acquisitionType: "vendor",
+    vendorCost: 42,
+    ingredients: [{ itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Supple Leather Scout Gloves",
+      type: "armor",
+      slot: "hands",
+      rarity: "uncommon",
+      armorType: "leather",
+      description: "Fitted leather gloves for scouts and rogues that leave the fingertips free.",
+      stats: { agility: 10, critChance: 2, haste: 3, attackRating: 8 },
+      sellPrice: 72,
+      quantity: 1,
+      xpGained: 110,
+      spriteId: "hands_leather"
+    }
+  },
+  {
+    name: "Spidersilk Ranger Gloves",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 29,
+    minLevel: 35,
+    craftTimeSeconds: 290,
+    acquisitionType: "vendor",
+    vendorCost: 105,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Spidersilk Ranger Gloves",
+      type: "armor",
+      slot: "hands",
+      rarity: "rare",
+      armorType: "leather",
+      description: "Ranger gloves reinforced with spidersilk weave for superior grip and protection.",
+      stats: { agility: 18, critChance: 4, haste: 5, attackRating: 16 },
+      sellPrice: 520,
+      quantity: 1,
+      xpGained: 215,
+      spriteId: "hands_leather"
+    }
+  },
+  {
+    name: "Moonweave Tracker Gloves",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 38,
+    minLevel: 42,
+    craftTimeSeconds: 450,
+    acquisitionType: "vendor",
+    vendorCost: 168,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 1 }, { itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Moonweave Tracker Gloves",
+      type: "armor",
+      slot: "hands",
+      rarity: "legendary",
+      armorType: "leather",
+      description: "Legendary gloves woven from moonweave that move with supernatural speed.",
+      stats: { agility: 30, critChance: 8, haste: 8, attackRating: 28 },
+      sellPrice: 1520,
+      quantity: 1,
+      xpGained: 375,
+      spriteId: "hands_leather"
+    }
+  },
+  {
+    name: "Linen Cloth Gloves",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 4,
+    minLevel: 10,
+    craftTimeSeconds: 55,
+    acquisitionType: "vendor",
+    vendorCost: 9,
+    ingredients: [{ itemId: "ts_linen_bolt", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Linen Cloth Gloves",
+      type: "armor",
+      slot: "hands",
+      rarity: "common",
+      armorType: "cloth",
+      description: "Simple cloth gloves worn by apprentice mages to protect spell-burned fingers.",
+      stats: { intelligence: 5, wisdom: 3 },
+      sellPrice: 10,
+      quantity: 1,
+      xpGained: 32,
+      spriteId: "hands_cloth"
+    }
+  },
+  {
+    name: "Silk Spell Gloves",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 15,
+    minLevel: 22,
+    craftTimeSeconds: 120,
+    acquisitionType: "vendor",
+    vendorCost: 38,
+    ingredients: [{ itemId: "ts_silk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Silk Spell Gloves",
+      type: "armor",
+      slot: "hands",
+      rarity: "uncommon",
+      armorType: "cloth",
+      description: "Thin silk gloves that focus magical energies through the palms.",
+      stats: { intelligence: 10, wisdom: 6, spellCritChance: 2 },
+      sellPrice: 68,
+      quantity: 1,
+      xpGained: 105,
+      spriteId: "hands_cloth"
+    }
+  },
+  {
+    name: "Spidersilk Mage Gloves",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 28,
+    minLevel: 34,
+    craftTimeSeconds: 285,
+    acquisitionType: "vendor",
+    vendorCost: 103,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Spidersilk Mage Gloves",
+      type: "armor",
+      slot: "hands",
+      rarity: "rare",
+      armorType: "cloth",
+      description: "Delicate spidersilk gloves that amplify spell focus and critical chance.",
+      stats: { intelligence: 20, wisdom: 14, spellCritChance: 5, spellDamage: 8 },
+      sellPrice: 510,
+      quantity: 1,
+      xpGained: 212,
+      spriteId: "hands_cloth"
+    }
+  },
+  {
+    name: "Moonweave Arcane Gloves",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 37,
+    minLevel: 42,
+    craftTimeSeconds: 448,
+    acquisitionType: "vendor",
+    vendorCost: 166,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Moonweave Arcane Gloves",
+      type: "armor",
+      slot: "hands",
+      rarity: "legendary",
+      armorType: "cloth",
+      description: "Moonweave gloves that crackle with trapped arcane energy.",
+      stats: { intelligence: 32, wisdom: 22, spellCritChance: 9, spellDamage: 18 },
+      sellPrice: 1500,
+      quantity: 1,
+      xpGained: 372,
+      spriteId: "hands_cloth"
+    }
+  },
+  // ── Leather/Cloth Boots (feet) ────────────────────────────────────────────────
+  {
+    name: "Rough Leather Boots",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 7,
+    minLevel: 12,
+    craftTimeSeconds: 70,
+    acquisitionType: "vendor",
+    vendorCost: 12,
+    ingredients: [{ itemId: "ts_rough_hide", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Rough Leather Boots",
+      type: "armor",
+      slot: "feet",
+      rarity: "common",
+      armorType: "leather",
+      description: "Sturdy leather boots that can take a beating on the road.",
+      stats: { agility: 5, avoidance: 1, defenseRating: 6 },
+      sellPrice: 14,
+      quantity: 1,
+      xpGained: 38,
+      spriteId: "feet_leather"
+    }
+  },
+  {
+    name: "Supple Leather Ranger Boots",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 20,
+    minLevel: 26,
+    craftTimeSeconds: 148,
+    acquisitionType: "vendor",
+    vendorCost: 44,
+    ingredients: [{ itemId: "ts_supple_leather", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Supple Leather Ranger Boots",
+      type: "armor",
+      slot: "feet",
+      rarity: "uncommon",
+      armorType: "leather",
+      description: "Supple boots crafted for rangers who spend days in the field.",
+      stats: { agility: 10, avoidance: 3, haste: 3 },
+      sellPrice: 74,
+      quantity: 1,
+      xpGained: 112,
+      spriteId: "feet_leather"
+    }
+  },
+  {
+    name: "Spidersilk Scout Boots",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 29,
+    minLevel: 36,
+    craftTimeSeconds: 292,
+    acquisitionType: "vendor",
+    vendorCost: 108,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Spidersilk Scout Boots",
+      type: "armor",
+      slot: "feet",
+      rarity: "rare",
+      armorType: "leather",
+      description: "Near-silent boots woven with spidersilk that enhance a scout's mobility.",
+      stats: { agility: 18, avoidance: 5, haste: 5, critChance: 3 },
+      sellPrice: 525,
+      quantity: 1,
+      xpGained: 218,
+      spriteId: "feet_leather"
+    }
+  },
+  {
+    name: "Moonweave Shadowstep Boots",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 38,
+    minLevel: 42,
+    craftTimeSeconds: 452,
+    acquisitionType: "vendor",
+    vendorCost: 169,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 1 }, { itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Moonweave Shadowstep Boots",
+      type: "armor",
+      slot: "feet",
+      rarity: "legendary",
+      armorType: "leather",
+      description: "Boots enchanted with moonweave that allow the wearer to move like a whisper.",
+      stats: { agility: 30, avoidance: 7, haste: 8, critChance: 4 },
+      sellPrice: 1530,
+      quantity: 1,
+      xpGained: 378,
+      spriteId: "feet_leather"
+    }
+  },
+  {
+    name: "Linen Cloth Sandals",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 5,
+    minLevel: 10,
+    craftTimeSeconds: 55,
+    acquisitionType: "vendor",
+    vendorCost: 9,
+    ingredients: [{ itemId: "ts_linen_bolt", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Linen Cloth Sandals",
+      type: "armor",
+      slot: "feet",
+      rarity: "common",
+      armorType: "cloth",
+      description: "Simple linen sandals enchanted to protect the caster's feet.",
+      stats: { intelligence: 4, power: 15, avoidance: 1 },
+      sellPrice: 10,
+      quantity: 1,
+      xpGained: 32,
+      spriteId: "feet_cloth"
+    }
+  },
+  {
+    name: "Silk Mage Slippers",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 16,
+    minLevel: 22,
+    craftTimeSeconds: 122,
+    acquisitionType: "vendor",
+    vendorCost: 38,
+    ingredients: [{ itemId: "ts_silk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Silk Mage Slippers",
+      type: "armor",
+      slot: "feet",
+      rarity: "uncommon",
+      armorType: "cloth",
+      description: "Enchanted slippers that keep the caster light on their feet.",
+      stats: { intelligence: 8, wisdom: 5, avoidance: 2, power: 28 },
+      sellPrice: 70,
+      quantity: 1,
+      xpGained: 107,
+      spriteId: "feet_cloth"
+    }
+  },
+  {
+    name: "Spidersilk Arcane Slippers",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 29,
+    minLevel: 36,
+    craftTimeSeconds: 292,
+    acquisitionType: "vendor",
+    vendorCost: 108,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Spidersilk Arcane Slippers",
+      type: "armor",
+      slot: "feet",
+      rarity: "rare",
+      armorType: "cloth",
+      description: "Delicate slippers of spidersilk that allow silent movement and quick spellcasting.",
+      stats: { intelligence: 18, wisdom: 12, spellCritChance: 4, avoidance: 3, power: 55 },
+      sellPrice: 518,
+      quantity: 1,
+      xpGained: 215,
+      spriteId: "feet_cloth"
+    }
+  },
+  {
+    name: "Moonweave Ethereal Slippers",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 37,
+    minLevel: 42,
+    craftTimeSeconds: 450,
+    acquisitionType: "vendor",
+    vendorCost: 166,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Moonweave Ethereal Slippers",
+      type: "armor",
+      slot: "feet",
+      rarity: "legendary",
+      armorType: "cloth",
+      description: "Slippers that glow softly with moonweave \u2014 the wearer feels as if floating.",
+      stats: { intelligence: 28, wisdom: 18, spellCritChance: 7, avoidance: 4, power: 90 },
+      sellPrice: 1490,
+      quantity: 1,
+      xpGained: 370,
+      spriteId: "feet_cloth"
+    }
+  },
+  // ── Leather/Cloth Bracers (wrists) ────────────────────────────────────────────
+  {
+    name: "Rough Leather Bracers",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 8,
+    minLevel: 14,
+    craftTimeSeconds: 68,
+    acquisitionType: "vendor",
+    vendorCost: 12,
+    ingredients: [{ itemId: "ts_rough_hide", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Rough Leather Bracers",
+      type: "armor",
+      slot: "wrists",
+      rarity: "common",
+      armorType: "leather",
+      description: "Serviceable leather bracers that protect the wrists from blade strikes.",
+      stats: { agility: 4, attackRating: 6, defenseRating: 5 },
+      sellPrice: 12,
+      quantity: 1,
+      xpGained: 36,
+      spriteId: "wrists_leather"
+    }
+  },
+  {
+    name: "Supple Leather Scout Bracers",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 21,
+    minLevel: 28,
+    craftTimeSeconds: 152,
+    acquisitionType: "vendor",
+    vendorCost: 48,
+    ingredients: [{ itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Supple Leather Scout Bracers",
+      type: "armor",
+      slot: "wrists",
+      rarity: "uncommon",
+      armorType: "leather",
+      description: "Flexible leather bracers worn by experienced scouts.",
+      stats: { agility: 8, attackRating: 12, critChance: 2 },
+      sellPrice: 72,
+      quantity: 1,
+      xpGained: 112,
+      spriteId: "wrists_leather"
+    }
+  },
+  {
+    name: "Spidersilk Scout Bracers",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 30,
+    minLevel: 36,
+    craftTimeSeconds: 295,
+    acquisitionType: "vendor",
+    vendorCost: 108,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_rough_hide", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Spidersilk Scout Bracers",
+      type: "armor",
+      slot: "wrists",
+      rarity: "rare",
+      armorType: "leather",
+      description: "Bracers reinforced with spidersilk weave for the quick and the deadly.",
+      stats: { agility: 16, attackRating: 22, critChance: 4, haste: 3 },
+      sellPrice: 524,
+      quantity: 1,
+      xpGained: 218,
+      spriteId: "wrists_leather"
+    }
+  },
+  {
+    name: "Moonweave Marksman Bracers",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 38,
+    minLevel: 42,
+    craftTimeSeconds: 452,
+    acquisitionType: "vendor",
+    vendorCost: 168,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 1 }, { itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Moonweave Marksman Bracers",
+      type: "armor",
+      slot: "wrists",
+      rarity: "legendary",
+      armorType: "leather",
+      description: "Wrists wrapped in moonweave that guide every shot and blow with precision.",
+      stats: { agility: 26, attackRating: 36, critChance: 7, haste: 5 },
+      sellPrice: 1510,
+      quantity: 1,
+      xpGained: 374,
+      spriteId: "wrists_leather"
+    }
+  },
+  {
+    name: "Linen Cloth Bracers",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 5,
+    minLevel: 10,
+    craftTimeSeconds: 55,
+    acquisitionType: "vendor",
+    vendorCost: 9,
+    ingredients: [{ itemId: "ts_linen_bolt", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Linen Cloth Bracers",
+      type: "armor",
+      slot: "wrists",
+      rarity: "common",
+      armorType: "cloth",
+      description: "Linen bracers stitched with basic focusing runes for apprentice casters.",
+      stats: { intelligence: 4, wisdom: 3 },
+      sellPrice: 10,
+      quantity: 1,
+      xpGained: 30,
+      spriteId: "wrists_cloth"
+    }
+  },
+  {
+    name: "Silk Arcanist Bracers",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 17,
+    minLevel: 22,
+    craftTimeSeconds: 124,
+    acquisitionType: "vendor",
+    vendorCost: 40,
+    ingredients: [{ itemId: "ts_silk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Silk Arcanist Bracers",
+      type: "armor",
+      slot: "wrists",
+      rarity: "uncommon",
+      armorType: "cloth",
+      description: "Silk bracers embroidered with runes that amplify spellcasting.",
+      stats: { intelligence: 10, wisdom: 7, spellCritChance: 2 },
+      sellPrice: 68,
+      quantity: 1,
+      xpGained: 106,
+      spriteId: "wrists_cloth"
+    }
+  },
+  {
+    name: "Spidersilk Sorcerer Bracers",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 30,
+    minLevel: 36,
+    craftTimeSeconds: 295,
+    acquisitionType: "vendor",
+    vendorCost: 108,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Spidersilk Sorcerer Bracers",
+      type: "armor",
+      slot: "wrists",
+      rarity: "rare",
+      armorType: "cloth",
+      description: "Arcane bracers of spidersilk that channel excess magical energy safely.",
+      stats: { intelligence: 18, wisdom: 12, spellCritChance: 4, spellDamage: 7 },
+      sellPrice: 514,
+      quantity: 1,
+      xpGained: 216,
+      spriteId: "wrists_cloth"
+    }
+  },
+  {
+    name: "Moonweave Mage Bracers",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 37,
+    minLevel: 42,
+    craftTimeSeconds: 448,
+    acquisitionType: "vendor",
+    vendorCost: 166,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Moonweave Mage Bracers",
+      type: "armor",
+      slot: "wrists",
+      rarity: "legendary",
+      armorType: "cloth",
+      description: "Moonweave bracers that shimmer with stored arcane energy.",
+      stats: { intelligence: 28, wisdom: 18, spellCritChance: 7, spellDamage: 16 },
+      sellPrice: 1490,
+      quantity: 1,
+      xpGained: 370,
+      spriteId: "wrists_cloth"
+    }
+  },
+  // ── Belts/Sashes (waist) ──────────────────────────────────────────────────────
+  {
+    name: "Rough Leather Belt",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 9,
+    minLevel: 14,
+    craftTimeSeconds: 68,
+    acquisitionType: "vendor",
+    vendorCost: 12,
+    ingredients: [{ itemId: "ts_rough_hide", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Rough Leather Belt",
+      type: "armor",
+      slot: "waist",
+      rarity: "common",
+      armorType: "leather",
+      description: "A practical leather belt worn by scouts and wanderers.",
+      stats: { agility: 4, stamina: 3 },
+      sellPrice: 12,
+      quantity: 1,
+      xpGained: 36,
+      spriteId: "waist_leather"
+    }
+  },
+  {
+    name: "Supple Leather Sash",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 22,
+    minLevel: 28,
+    craftTimeSeconds: 154,
+    acquisitionType: "vendor",
+    vendorCost: 48,
+    ingredients: [{ itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Supple Leather Sash",
+      type: "armor",
+      slot: "waist",
+      rarity: "uncommon",
+      armorType: "leather",
+      description: "A well-fitted leather sash that provides mobility and protection.",
+      stats: { agility: 8, stamina: 6, haste: 2, attackRating: 8 },
+      sellPrice: 74,
+      quantity: 1,
+      xpGained: 112,
+      spriteId: "waist_leather"
+    }
+  },
+  {
+    name: "Spidersilk Ranger Belt",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 30,
+    minLevel: 36,
+    craftTimeSeconds: 294,
+    acquisitionType: "vendor",
+    vendorCost: 108,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_rough_hide", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Spidersilk Ranger Belt",
+      type: "armor",
+      slot: "waist",
+      rarity: "rare",
+      armorType: "leather",
+      description: "A ranger's belt reinforced with spidersilk that holds gear and resists cuts.",
+      stats: { agility: 14, stamina: 10, attackRating: 14, haste: 3 },
+      sellPrice: 516,
+      quantity: 1,
+      xpGained: 216,
+      spriteId: "waist_leather"
+    }
+  },
+  {
+    name: "Moonweave Scout Sash",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 38,
+    minLevel: 42,
+    craftTimeSeconds: 450,
+    acquisitionType: "vendor",
+    vendorCost: 167,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 1 }, { itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Moonweave Scout Sash",
+      type: "armor",
+      slot: "waist",
+      rarity: "legendary",
+      armorType: "leather",
+      description: "A sash of moonweave that shimmers with accumulated kinetic energy.",
+      stats: { agility: 24, stamina: 18, attackRating: 24, haste: 6 },
+      sellPrice: 1500,
+      quantity: 1,
+      xpGained: 373,
+      spriteId: "waist_leather"
+    }
+  },
+  {
+    name: "Linen Cloth Sash",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 6,
+    minLevel: 10,
+    craftTimeSeconds: 55,
+    acquisitionType: "vendor",
+    vendorCost: 9,
+    ingredients: [{ itemId: "ts_linen_bolt", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Linen Cloth Sash",
+      type: "armor",
+      slot: "waist",
+      rarity: "common",
+      armorType: "cloth",
+      description: "A basic linen sash worn by novice casters.",
+      stats: { intelligence: 4, wisdom: 3, power: 12 },
+      sellPrice: 10,
+      quantity: 1,
+      xpGained: 30,
+      spriteId: "waist_cloth"
+    }
+  },
+  {
+    name: "Silk Arcanist Sash",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 18,
+    minLevel: 24,
+    craftTimeSeconds: 124,
+    acquisitionType: "vendor",
+    vendorCost: 40,
+    ingredients: [{ itemId: "ts_silk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Silk Arcanist Sash",
+      type: "armor",
+      slot: "waist",
+      rarity: "uncommon",
+      armorType: "cloth",
+      description: "A silk sash that helps contain magical overflow.",
+      stats: { intelligence: 8, wisdom: 6, power: 28 },
+      sellPrice: 68,
+      quantity: 1,
+      xpGained: 106,
+      spriteId: "waist_cloth"
+    }
+  },
+  {
+    name: "Spidersilk Channeler Sash",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 30,
+    minLevel: 36,
+    craftTimeSeconds: 294,
+    acquisitionType: "vendor",
+    vendorCost: 108,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Spidersilk Channeler Sash",
+      type: "armor",
+      slot: "waist",
+      rarity: "rare",
+      armorType: "cloth",
+      description: "A spidersilk sash that acts as a magical reservoir for casters.",
+      stats: { intelligence: 16, wisdom: 10, spellDamage: 8, power: 48 },
+      sellPrice: 512,
+      quantity: 1,
+      xpGained: 214,
+      spriteId: "waist_cloth"
+    }
+  },
+  {
+    name: "Moonweave Archmage Sash",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 37,
+    minLevel: 42,
+    craftTimeSeconds: 450,
+    acquisitionType: "vendor",
+    vendorCost: 166,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Moonweave Archmage Sash",
+      type: "armor",
+      slot: "waist",
+      rarity: "legendary",
+      armorType: "cloth",
+      description: "A sash of moonweave worn by archmages \u2014 it stores and releases magical energy on demand.",
+      stats: { intelligence: 26, wisdom: 16, spellDamage: 20, spellCritChance: 5, power: 85 },
+      sellPrice: 1480,
+      quantity: 1,
+      xpGained: 370,
+      spriteId: "waist_cloth"
+    }
+  },
+  // ── Cloaks/Capes (back) ───────────────────────────────────────────────────────
+  {
+    name: "Rough Hide Cloak",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 10,
+    minLevel: 14,
+    craftTimeSeconds: 72,
+    acquisitionType: "vendor",
+    vendorCost: 13,
+    ingredients: [{ itemId: "ts_rough_hide", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Rough Hide Cloak",
+      type: "armor",
+      slot: "back",
+      rarity: "common",
+      armorType: "leather",
+      description: "A thick cloak of rough animal hide, good for cold nights in the field.",
+      stats: { stamina: 5, defenseRating: 6, agility: 2 },
+      sellPrice: 14,
+      quantity: 1,
+      xpGained: 38,
+      spriteId: "back_leather"
+    }
+  },
+  {
+    name: "Supple Leather Cloak",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 22,
+    minLevel: 28,
+    craftTimeSeconds: 155,
+    acquisitionType: "vendor",
+    vendorCost: 50,
+    ingredients: [{ itemId: "ts_supple_leather", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
+    output: {
+      name: "Supple Leather Cloak",
+      type: "armor",
+      slot: "back",
+      rarity: "uncommon",
+      armorType: "leather",
+      description: "A well-tanned leather cloak that offers freedom of movement.",
+      stats: { agility: 8, stamina: 8, avoidance: 3, defenseRating: 14 },
+      sellPrice: 78,
+      quantity: 1,
+      xpGained: 115,
+      spriteId: "back_leather"
+    }
+  },
+  {
+    name: "Spidersilk Cloak",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 31,
+    minLevel: 36,
+    craftTimeSeconds: 298,
+    acquisitionType: "vendor",
+    vendorCost: 110,
+    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Spidersilk Cloak",
+      type: "armor",
+      slot: "back",
+      rarity: "rare",
+      armorType: "cloth",
+      description: "A shimmering cloak of spidersilk that is nearly weightless yet strong as mail.",
+      stats: { agility: 16, stamina: 14, avoidance: 5, critChance: 3, intelligence: 10 },
+      sellPrice: 525,
+      quantity: 1,
+      xpGained: 220,
+      spriteId: "back_silk"
+    }
+  },
+  {
+    name: "Moonweave Arcane Cloak",
+    tradeskillClass: "tailor",
+    tier: "apprentice",
+    minSkill: 38,
+    minLevel: 42,
+    craftTimeSeconds: 455,
+    acquisitionType: "vendor",
+    vendorCost: 170,
+    ingredients: [{ itemId: "ts_moonweave", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Moonweave Arcane Cloak",
+      type: "armor",
+      slot: "back",
+      rarity: "legendary",
+      armorType: "cloth",
+      description: "A cloak woven from moonweave that crackles with stored arcane energy.",
+      stats: { intelligence: 28, wisdom: 20, spellCritChance: 6, stamina: 18, avoidance: 4 },
+      sellPrice: 1550,
+      quantity: 1,
+      xpGained: 378,
+      spriteId: "back_arcane"
+    }
+  },
+  // ════ JEWELER ════════════════════════════════════════════════════════════════
+  {
+    name: "Iron Ring",
+    tradeskillClass: "jeweler",
+    tier: "apprentice",
+    minSkill: 1,
+    minLevel: 10,
+    craftTimeSeconds: 45,
+    acquisitionType: "vendor",
+    vendorCost: 8,
+    ingredients: [{ itemId: "iron_ore", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
+    output: {
+      name: "Polished Iron Ring",
+      type: "accessory",
+      slot: "ring",
+      rarity: "common",
+      description: "A simple iron ring, worn smooth by the jeweler's polishing cloth.",
+      stats: { strength: 4, stamina: 3 },
+      sellPrice: 12,
+      quantity: 1,
+      xpGained: 30,
+      spriteId: "ring"
+    }
+  },
+  {
+    name: "Ruby Stud Earring",
+    tradeskillClass: "jeweler",
+    tier: "apprentice",
+    minSkill: 5,
+    minLevel: 12,
+    craftTimeSeconds: 60,
+    acquisitionType: "vendor",
+    vendorCost: 22,
+    ingredients: [{ itemId: "iron_ore", quantity: 1 }, { itemId: "ts_rough_ruby", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
+    output: {
+      name: "Ruby Stud Earring",
+      type: "accessory",
+      slot: "ear",
+      rarity: "uncommon",
+      description: "A gleaming iron earring set with a rough ruby.",
+      stats: { attackRating: 8, critChance: 2 },
+      sellPrice: 35,
+      quantity: 1,
+      xpGained: 55,
+      spriteId: "earring"
+    }
+  },
+  {
+    name: "Steel Band",
+    tradeskillClass: "jeweler",
+    tier: "apprentice",
+    minSkill: 10,
+    minLevel: 18,
+    craftTimeSeconds: 75,
+    acquisitionType: "vendor",
+    vendorCost: 30,
+    ingredients: [{ itemId: "steel_bar", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
+    output: {
+      name: "Polished Steel Band",
+      type: "accessory",
+      slot: "ring",
+      rarity: "uncommon",
+      description: "A smooth steel ring that imparts martial focus.",
+      stats: { attackRating: 12, strength: 6 },
+      sellPrice: 55,
+      quantity: 1,
+      xpGained: 80,
+      spriteId: "ring"
+    }
+  },
+  {
+    name: "Sapphire Pendant",
+    tradeskillClass: "jeweler",
+    tier: "apprentice",
+    minSkill: 15,
+    minLevel: 22,
+    craftTimeSeconds: 100,
+    acquisitionType: "vendor",
+    vendorCost: 60,
+    ingredients: [{ itemId: "steel_bar", quantity: 1 }, { itemId: "ts_flawless_sapphire", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
+    output: {
+      name: "Sapphire Pendant",
+      type: "accessory",
+      slot: "neck",
+      rarity: "rare",
+      description: "A brilliant sapphire set in polished steel, it amplifies the wearer's focus.",
+      stats: { intelligence: 14, wisdom: 10, spellCritChance: 3 },
+      sellPrice: 120,
+      quantity: 1,
+      xpGained: 130,
+      spriteId: "necklace"
+    }
+  },
+  {
+    name: "Mithril Loop",
+    tradeskillClass: "jeweler",
+    tier: "apprentice",
+    minSkill: 22,
+    minLevel: 28,
+    craftTimeSeconds: 150,
+    acquisitionType: "vendor",
+    vendorCost: 80,
+    ingredients: [{ itemId: "mithril_ore", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
+    output: {
+      name: "Mithril Loop",
+      type: "accessory",
+      slot: "ring",
+      rarity: "rare",
+      description: "A seamless ring of pure mithril \u2014 lightweight yet incredibly strong.",
+      stats: { agility: 12, attackRating: 18, avoidance: 3 },
+      sellPrice: 180,
+      quantity: 1,
+      xpGained: 180,
+      spriteId: "ring"
+    }
+  },
+  {
+    name: "Void Crystal Ring",
+    tradeskillClass: "jeweler",
+    tier: "apprentice",
+    minSkill: 30,
+    minLevel: 35,
+    craftTimeSeconds: 240,
+    acquisitionType: "vendor",
+    vendorCost: 130,
+    ingredients: [{ itemId: "mithril_ore", quantity: 1 }, { itemId: "ts_void_crystal", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
+    output: {
+      name: "Void Crystal Ring",
+      type: "accessory",
+      slot: "ring",
+      rarity: "rare",
+      description: "A ring set with a dark crystal that pulses with shadow energy.",
+      stats: { intelligence: 20, spellDamage: 14, spellCritChance: 5 },
+      sellPrice: 260,
+      quantity: 1,
+      xpGained: 250,
+      spriteId: "ring"
+    }
+  },
+  {
+    name: "Adamantine Choker",
+    tradeskillClass: "jeweler",
+    tier: "apprentice",
+    minSkill: 35,
+    minLevel: 40,
+    craftTimeSeconds: 360,
+    acquisitionType: "vendor",
+    vendorCost: 180,
+    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 1 }, { itemId: "ts_rough_ruby", quantity: 2 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
+    output: {
+      name: "Adamantine Choker",
+      type: "accessory",
+      slot: "neck",
+      rarity: "legendary",
+      description: "A sturdy choker of adamantine accented with rubies \u2014 a sign of great wealth and power.",
+      stats: { strength: 18, attackRating: 30, critChance: 6, stamina: 12 },
+      sellPrice: 450,
+      quantity: 1,
+      xpGained: 380,
+      spriteId: "necklace"
+    }
+  },
+  {
+    name: "Moonstone Amulet",
+    tradeskillClass: "jeweler",
+    tier: "apprentice",
+    minSkill: 38,
+    minLevel: 42,
+    craftTimeSeconds: 420,
+    acquisitionType: "vendor",
+    vendorCost: 200,
+    ingredients: [{ itemId: "mithril_ore", quantity: 1 }, { itemId: "ts_flawless_sapphire", quantity: 1 }, { itemId: "ts_void_crystal", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
+    output: {
+      name: "Moonstone Amulet",
+      type: "accessory",
+      slot: "neck",
+      rarity: "legendary",
+      description: "A masterwork amulet combining sapphire clarity with void crystal power.",
+      stats: { intelligence: 38, wisdom: 28, spellCritChance: 9, spellDamage: 22 },
+      sellPrice: 520,
+      quantity: 1,
+      xpGained: 420,
+      spriteId: "necklace"
+    }
+  },
+  // ════ ALCHEMIST ══════════════════════════════════════════════════════════════
+  {
+    name: "Minor Health Potion",
+    tradeskillClass: "alchemist",
+    tier: "apprentice",
+    minSkill: 1,
+    minLevel: 10,
+    craftTimeSeconds: 30,
+    acquisitionType: "vendor",
+    vendorCost: 5,
+    ingredients: [{ itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_alchemists_coal", quantity: 1 }, { itemId: "ts_mana_shard", quantity: 1 }],
+    output: {
+      name: "Minor Health Potion",
+      type: "consumable",
+      slot: "none",
+      rarity: "common",
+      description: "A basic red potion that restores a small amount of health.",
+      stats: {},
+      sellPrice: 8,
+      quantity: 2,
+      xpGained: 25,
+      spriteId: "potion_red",
+      stackable: true,
+      effect: { type: "heal", value: 150 }
+    }
+  },
+  {
+    name: "Minor Power Potion",
+    tradeskillClass: "alchemist",
+    tier: "apprentice",
+    minSkill: 3,
+    minLevel: 10,
+    craftTimeSeconds: 30,
+    acquisitionType: "vendor",
+    vendorCost: 5,
+    ingredients: [{ itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_alchemists_coal", quantity: 1 }, { itemId: "ts_mana_shard", quantity: 1 }],
+    output: {
+      name: "Minor Power Potion",
+      type: "consumable",
+      slot: "none",
+      rarity: "common",
+      description: "A small blue potion that restores magical power.",
+      stats: {},
+      sellPrice: 8,
+      quantity: 2,
+      xpGained: 25,
+      spriteId: "potion_blue",
+      stackable: true,
+      effect: { type: "restore_power", value: 100 }
+    }
+  },
+  {
+    name: "Elixir of Strength",
+    tradeskillClass: "alchemist",
+    tier: "apprentice",
+    minSkill: 8,
+    minLevel: 15,
+    craftTimeSeconds: 60,
+    acquisitionType: "vendor",
+    vendorCost: 20,
+    ingredients: [{ itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_alchemists_coal", quantity: 2 }, { itemId: "ts_mana_shard", quantity: 1 }],
+    output: {
+      name: "Elixir of Strength",
+      type: "consumable",
+      slot: "none",
+      rarity: "uncommon",
+      description: "A fizzing green potion that temporarily boosts physical strength.",
+      stats: {},
+      sellPrice: 35,
+      quantity: 1,
+      xpGained: 60,
+      spriteId: "potion_green",
+      stackable: true,
+      effect: { type: "buff_strength", value: 20 }
+    }
+  },
+  {
+    name: "Health Potion",
+    tradeskillClass: "alchemist",
+    tier: "apprentice",
+    minSkill: 14,
+    minLevel: 20,
+    craftTimeSeconds: 60,
+    acquisitionType: "vendor",
+    vendorCost: 22,
+    ingredients: [{ itemId: "ts_empty_vial", quantity: 2 }, { itemId: "ts_alchemists_coal", quantity: 2 }, { itemId: "ts_mana_shard", quantity: 1 }],
+    output: {
+      name: "Health Potion",
+      type: "consumable",
+      slot: "none",
+      rarity: "uncommon",
+      description: "A reliable health potion that restores a significant amount of health.",
+      stats: {},
+      sellPrice: 40,
+      quantity: 2,
+      xpGained: 90,
+      spriteId: "potion_red",
+      stackable: true,
+      effect: { type: "heal", value: 350 }
+    }
+  },
+  {
+    name: "Elixir of Agility",
+    tradeskillClass: "alchemist",
+    tier: "apprentice",
+    minSkill: 16,
+    minLevel: 22,
+    craftTimeSeconds: 75,
+    acquisitionType: "vendor",
+    vendorCost: 28,
+    ingredients: [{ itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_alchemists_coal", quantity: 2 }, { itemId: "ts_mana_shard", quantity: 2 }],
+    output: {
+      name: "Elixir of Agility",
+      type: "consumable",
+      slot: "none",
+      rarity: "uncommon",
+      description: "A shimmering potion that sharpens reflexes and quickens feet.",
+      stats: {},
+      sellPrice: 45,
+      quantity: 1,
+      xpGained: 100,
+      spriteId: "potion_green",
+      stackable: true,
+      effect: { type: "buff_agility", value: 20 }
+    }
+  },
+  {
+    name: "Elixir of the Warrior",
+    tradeskillClass: "alchemist",
+    tier: "apprentice",
+    minSkill: 22,
+    minLevel: 28,
+    craftTimeSeconds: 120,
+    acquisitionType: "vendor",
+    vendorCost: 55,
+    ingredients: [{ itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_alchemists_coal", quantity: 3 }, { itemId: "ts_mana_shard", quantity: 2 }],
+    output: {
+      name: "Elixir of the Warrior",
+      type: "consumable",
+      slot: "none",
+      rarity: "rare",
+      description: "A potent elixir that enhances the drinker's fighting capability for a short time.",
+      stats: {},
+      sellPrice: 90,
+      quantity: 1,
+      xpGained: 160,
+      spriteId: "potion_orange",
+      stackable: true,
+      effect: { type: "buff_attack", value: 30 }
+    }
+  },
+  {
+    name: "Strong Health Potion",
+    tradeskillClass: "alchemist",
+    tier: "apprentice",
+    minSkill: 28,
+    minLevel: 32,
+    craftTimeSeconds: 120,
+    acquisitionType: "vendor",
+    vendorCost: 65,
+    ingredients: [{ itemId: "ts_empty_vial", quantity: 2 }, { itemId: "ts_alchemists_coal", quantity: 3 }, { itemId: "ts_mana_shard", quantity: 2 }],
+    output: {
+      name: "Strong Health Potion",
+      type: "consumable",
+      slot: "none",
+      rarity: "rare",
+      description: "A concentrated health potion that rapidly restores health.",
+      stats: {},
+      sellPrice: 100,
+      quantity: 2,
+      xpGained: 180,
+      spriteId: "potion_red",
+      stackable: true,
+      effect: { type: "heal", value: 700 }
+    }
+  },
+  {
+    name: "Elixir of Intelligence",
+    tradeskillClass: "alchemist",
+    tier: "apprentice",
+    minSkill: 34,
+    minLevel: 38,
+    craftTimeSeconds: 150,
+    acquisitionType: "vendor",
+    vendorCost: 90,
+    ingredients: [{ itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_alchemists_coal", quantity: 3 }, { itemId: "ts_mana_shard", quantity: 3 }],
+    output: {
+      name: "Elixir of Intelligence",
+      type: "consumable",
+      slot: "none",
+      rarity: "rare",
+      description: "A sparkling golden potion that greatly enhances magical intellect.",
+      stats: {},
+      sellPrice: 140,
+      quantity: 1,
+      xpGained: 240,
+      spriteId: "potion_gold",
+      stackable: true,
+      effect: { type: "buff_intelligence", value: 30 }
+    }
+  },
+  {
+    name: "Flask of Undying Resolve",
+    tradeskillClass: "alchemist",
+    tier: "apprentice",
+    minSkill: 40,
+    minLevel: 44,
+    craftTimeSeconds: 300,
+    acquisitionType: "vendor",
+    vendorCost: 180,
+    ingredients: [{ itemId: "ts_empty_vial", quantity: 2 }, { itemId: "ts_alchemists_coal", quantity: 4 }, { itemId: "ts_mana_shard", quantity: 3 }],
+    output: {
+      name: "Flask of Undying Resolve",
+      type: "consumable",
+      slot: "none",
+      rarity: "legendary",
+      description: "A master alchemist's masterwork \u2014 a flask that dramatically extends the drinker's endurance.",
+      stats: {},
+      sellPrice: 350,
+      quantity: 1,
+      xpGained: 420,
+      spriteId: "potion_purple",
+      stackable: true,
+      effect: { type: "heal", value: 1500 }
+    }
+  }
+];
+var ALL_APPRENTICE_RECIPE_NAMES = new Set(APPRENTICE_RECIPES.map((r) => r.name));
+var MASTER_RECIPES = [
+  // ── Harla Dar (prismatic dragon) drops ──────────────────────────────────────
+  {
+    name: "Prismatic Dragon Fang Blade",
+    tradeskillClass: "weaponsmith",
+    tier: "master",
+    minSkill: 75,
+    minLevel: 55,
+    craftTimeSeconds: 1800,
+    acquisitionType: "raid",
+    raidBossId: "harla_dar",
+    ingredients: [
+      { itemId: "prismatic_dragon_scale", quantity: 3 },
+      { itemId: "ts_adamantine_ore", quantity: 4 },
+      { itemId: "ts_metal_flux", quantity: 2 }
+    ],
+    output: {
+      name: "Prismatic Dragon Fang Blade",
+      type: "weapon",
+      slot: "primary",
+      rarity: "legendary",
+      description: "A greatsword forged from the fangs and scales of Harla Dar \u2014 it shifts between elemental damage types as it strikes.",
+      stats: { weaponDamageMin: 220, weaponDamageMax: 380, weaponDelay: 2.8, attackRating: 180, strength: 45, critChance: 12 },
+      sellPrice: 8e3,
+      quantity: 1,
+      xpGained: 2500,
+      spriteId: "weapon_sword"
+    }
+  },
+  {
+    name: "Chromatic Dragon Scale Hauberk",
+    tradeskillClass: "armorer",
+    tier: "master",
+    minSkill: 75,
+    minLevel: 55,
+    craftTimeSeconds: 2400,
+    acquisitionType: "raid",
+    raidBossId: "harla_dar",
+    ingredients: [
+      { itemId: "prismatic_dragon_scale", quantity: 5 },
+      { itemId: "ts_adamantine_ore", quantity: 3 },
+      { itemId: "ts_metal_flux", quantity: 2 }
+    ],
+    output: {
+      name: "Chromatic Dragon Scale Hauberk",
+      type: "armor",
+      slot: "chest",
+      rarity: "legendary",
+      description: "A masterwork breastplate fashioned from prismatic dragon scales that cycle through elemental resistances.",
+      stats: { armorClass: 420, stamina: 60, strength: 40, mitigation: 35, avoidance: 18 },
+      sellPrice: 9500,
+      quantity: 1,
+      xpGained: 3e3,
+      spriteId: "chest_plate",
+      armorType: "plate"
+    }
+  },
+  // ── Trakanon (plague dragon) drops ──────────────────────────────────────────
+  {
+    name: "Plague Dragon Spine Greatbow",
+    tradeskillClass: "weaponsmith",
+    tier: "master",
+    minSkill: 70,
+    minLevel: 60,
+    craftTimeSeconds: 1800,
+    acquisitionType: "raid",
+    raidBossId: "trakanon",
+    ingredients: [
+      { itemId: "plague_dragon_spine", quantity: 3 },
+      { itemId: "ts_adamantine_ore", quantity: 2 },
+      { itemId: "ts_metal_flux", quantity: 2 }
+    ],
+    output: {
+      name: "Plague Dragon Spine Greatbow",
+      type: "weapon",
+      slot: "ranged",
+      rarity: "legendary",
+      description: "A bow strung with tendons from Trakanon \u2014 each arrow carries a virulent plague.",
+      stats: { weaponDamageMin: 190, weaponDamageMax: 340, weaponDelay: 3.2, attackRating: 160, agility: 50, critChance: 10 },
+      sellPrice: 7500,
+      quantity: 1,
+      xpGained: 2200,
+      spriteId: "weapon_bow"
+    }
+  },
+  {
+    name: "Venom-Laced Plague Mantle",
+    tradeskillClass: "tailor",
+    tier: "master",
+    minSkill: 70,
+    minLevel: 60,
+    craftTimeSeconds: 2100,
+    acquisitionType: "raid",
+    raidBossId: "trakanon",
+    ingredients: [
+      { itemId: "plague_dragon_spine", quantity: 2 },
+      { itemId: "ts_spidersilk_cloth", quantity: 4 },
+      { itemId: "ts_strong_thread", quantity: 3 }
+    ],
+    output: {
+      name: "Venom-Laced Plague Mantle",
+      type: "armor",
+      slot: "shoulders",
+      rarity: "legendary",
+      description: "A hooded mantle woven from plague dragon sinew and spidersilk \u2014 toxic to the touch.",
+      stats: { armorClass: 220, intelligence: 60, wisdom: 45, spellDamage: 40, spellCritChance: 14 },
+      sellPrice: 7e3,
+      quantity: 1,
+      xpGained: 2e3,
+      spriteId: "shoulders_cloth",
+      armorType: "cloth"
+    }
+  },
+  // ── Mayong Mistmoore (vampire lord) drops ────────────────────────────────────
+  {
+    name: "Vampire Lord's Fang Dagger",
+    tradeskillClass: "weaponsmith",
+    tier: "master",
+    minSkill: 80,
+    minLevel: 65,
+    craftTimeSeconds: 1500,
+    acquisitionType: "raid",
+    raidBossId: "mayong_mistmoore",
+    ingredients: [
+      { itemId: "vampire_lord_fang", quantity: 2 },
+      { itemId: "ts_adamantine_ore", quantity: 2 },
+      { itemId: "ts_metal_flux", quantity: 1 }
+    ],
+    output: {
+      name: "Vampire Lord's Fang Dagger",
+      type: "weapon",
+      slot: "secondary",
+      rarity: "legendary",
+      description: "A razor dagger carved from Mayong Mistmoore's own fang \u2014 it drains the life of those it pierces.",
+      stats: { weaponDamageMin: 160, weaponDamageMax: 260, weaponDelay: 1.6, attackRating: 200, agility: 55, critChance: 18 },
+      sellPrice: 1e4,
+      quantity: 1,
+      xpGained: 3200,
+      spriteId: "weapon_dagger"
+    }
+  },
+  {
+    name: "Mistmoore Blood Amulet",
+    tradeskillClass: "jeweler",
+    tier: "master",
+    minSkill: 80,
+    minLevel: 65,
+    craftTimeSeconds: 1200,
+    acquisitionType: "raid",
+    raidBossId: "mayong_mistmoore",
+    ingredients: [
+      { itemId: "vampire_lord_fang", quantity: 1 },
+      { itemId: "ts_void_crystal", quantity: 2 },
+      { itemId: "ts_jewelers_oil", quantity: 2 }
+    ],
+    output: {
+      name: "Mistmoore Blood Amulet",
+      type: "accessory",
+      slot: "neck",
+      rarity: "legendary",
+      description: "An amulet set with Mayong's fang and void crystals \u2014 it pulses with dark life-stealing energy.",
+      stats: { intelligence: 70, wisdom: 55, spellDamage: 55, spellCritChance: 18, stamina: 40 },
+      sellPrice: 11e3,
+      quantity: 1,
+      xpGained: 3500,
+      spriteId: "necklace"
+    }
+  },
+  {
+    name: "Elixir of Eternal Night",
+    tradeskillClass: "alchemist",
+    tier: "master",
+    minSkill: 80,
+    minLevel: 65,
+    craftTimeSeconds: 900,
+    acquisitionType: "raid",
+    raidBossId: "mayong_mistmoore",
+    ingredients: [
+      { itemId: "vampire_lord_fang", quantity: 1 },
+      { itemId: "ts_empty_vial", quantity: 2 },
+      { itemId: "ts_mana_shard", quantity: 4 },
+      { itemId: "ts_alchemists_coal", quantity: 3 }
+    ],
+    output: {
+      name: "Elixir of Eternal Night",
+      type: "consumable",
+      slot: "none",
+      rarity: "legendary",
+      description: "A draught distilled from Mayong's essence \u2014 the drinker heals catastrophically and fights with vampiric fury for a short time.",
+      stats: {},
+      sellPrice: 5e3,
+      quantity: 1,
+      xpGained: 2800,
+      spriteId: "potion_purple",
+      stackable: true,
+      effect: { type: "heal", value: 5e3 }
+    }
+  },
+  // ── Additional Harla Dar (prismatic dragon) drops ────────────────────────────
+  {
+    name: "Prismatic Dragon Eye Wand",
+    tradeskillClass: "weaponsmith",
+    tier: "master",
+    minSkill: 75,
+    minLevel: 55,
+    craftTimeSeconds: 1500,
+    acquisitionType: "raid",
+    raidBossId: "harla_dar",
+    ingredients: [
+      { itemId: "prismatic_dragon_scale", quantity: 2 },
+      { itemId: "ts_adamantine_ore", quantity: 2 },
+      { itemId: "ts_moonweave", quantity: 1 },
+      { itemId: "ts_metal_flux", quantity: 2 }
+    ],
+    output: {
+      name: "Prismatic Dragon Eye Wand",
+      type: "weapon",
+      slot: "primary",
+      rarity: "legendary",
+      description: "A wand tipped with one of Harla Dar's own eyes \u2014 it shifts prismatic spell energies into devastating strikes.",
+      stats: { weaponDamageMin: 180, weaponDamageMax: 300, weaponDelay: 1.4, attackRating: 160, intelligence: 75, wisdom: 40, spellCritChance: 20, spellDamage: 55 },
+      sellPrice: 9e3,
+      quantity: 1,
+      xpGained: 2800,
+      spriteId: "weapon_wand"
+    }
+  },
+  // ── Additional Mayong Mistmoore (vampire lord) drops ─────────────────────────
+  {
+    name: "Scepter of Undying Faith",
+    tradeskillClass: "weaponsmith",
+    tier: "master",
+    minSkill: 80,
+    minLevel: 65,
+    craftTimeSeconds: 1500,
+    acquisitionType: "raid",
+    raidBossId: "mayong_mistmoore",
+    ingredients: [
+      { itemId: "vampire_lord_fang", quantity: 2 },
+      { itemId: "ts_adamantine_ore", quantity: 2 },
+      { itemId: "ts_spidersilk_cloth", quantity: 1 },
+      { itemId: "ts_metal_flux", quantity: 1 }
+    ],
+    output: {
+      name: "Scepter of Undying Faith",
+      type: "weapon",
+      slot: "primary",
+      rarity: "legendary",
+      description: "A scepter wrought from Mayong's fangs \u2014 it channels the darkest healing arts, drawing life from enemies to restore allies.",
+      stats: { weaponDamageMin: 150, weaponDamageMax: 240, weaponDelay: 1.8, attackRating: 170, wisdom: 80, power: 350, spellCritChance: 18, healBonus: 45 },
+      sellPrice: 10500,
+      quantity: 1,
+      xpGained: 3300,
+      spriteId: "weapon_scepter"
+    }
+  },
+  {
+    name: "Paladin's Holy Bulwark",
+    tradeskillClass: "armorer",
+    tier: "master",
+    minSkill: 78,
+    minLevel: 62,
+    craftTimeSeconds: 1800,
+    acquisitionType: "raid",
+    raidBossId: "mayong_mistmoore",
+    ingredients: [
+      { itemId: "vampire_lord_fang", quantity: 1 },
+      { itemId: "ts_adamantine_ore", quantity: 4 },
+      { itemId: "ts_metal_flux", quantity: 2 }
+    ],
+    output: {
+      name: "Paladin's Holy Bulwark",
+      type: "armor",
+      slot: "secondary",
+      rarity: "legendary",
+      armorType: "plate",
+      description: "A shield consecrated with Mayong's own fang as a trophy \u2014 it radiates divine protection that repels the undead.",
+      stats: { defenseRating: 240, stamina: 65, mitigation: 180, health: 220, wisdom: 30, power: 120 },
+      sellPrice: 1e4,
+      quantity: 1,
+      xpGained: 3e3,
+      spriteId: "shield_holy"
+    }
+  }
+];
+var ALL_MASTER_RECIPE_NAMES = new Set(MASTER_RECIPES.map((r) => r.name));
+var JOURNEYMAN_TS_RECIPES = [
+  // Weaponsmith
+  {
+    name: "Shadowroot Warclub",
+    tradeskillClass: "weaponsmith",
+    tier: "journeyman",
+    minSkill: 45,
+    minLevel: 45,
+    craftTimeSeconds: 600,
+    acquisitionType: "drop",
+    ingredients: [{ itemId: "shadowroot_timber", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Shadowroot Warclub",
+      type: "weapon",
+      slot: "primary",
+      rarity: "rare",
+      description: "A heavy club of shadowroot wood banded with metal \u2014 it carries a dark energy.",
+      stats: { weaponDamageMin: 78, weaponDamageMax: 120, weaponDelay: 2.4, attackRating: 85, strength: 22 },
+      sellPrice: 600,
+      quantity: 1,
+      xpGained: 550,
+      spriteId: "weapon_hammer"
+    }
+  },
+  {
+    name: "Embersteel Sword",
+    tradeskillClass: "weaponsmith",
+    tier: "journeyman",
+    minSkill: 50,
+    minLevel: 48,
+    craftTimeSeconds: 720,
+    acquisitionType: "drop",
+    ingredients: [{ itemId: "emberstone_fragment", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }, { itemId: "ts_adamantine_ore", quantity: 1 }],
+    output: {
+      name: "Embersteel Blade",
+      type: "weapon",
+      slot: "primary",
+      rarity: "rare",
+      description: "A sword forged with emberstone \u2014 its edge glows faintly with heat.",
+      stats: { weaponDamageMin: 95, weaponDamageMax: 145, weaponDelay: 1.9, attackRating: 110, agility: 18, critChance: 6 },
+      sellPrice: 800,
+      quantity: 1,
+      xpGained: 700,
+      spriteId: "weapon_sword"
+    }
+  },
+  // Armorer
+  {
+    name: "Emberstone Pauldrons",
+    tradeskillClass: "armorer",
+    tier: "journeyman",
+    minSkill: 45,
+    minLevel: 45,
+    craftTimeSeconds: 600,
+    acquisitionType: "drop",
+    ingredients: [{ itemId: "emberstone_fragment", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
+    output: {
+      name: "Emberstone Pauldrons",
+      type: "armor",
+      slot: "shoulders",
+      rarity: "rare",
+      armorType: "plate",
+      description: "Shoulder armor infused with emberstone heat resistance.",
+      stats: { defenseRating: 95, stamina: 42, health: 60, strength: 16 },
+      sellPrice: 650,
+      quantity: 1,
+      xpGained: 580,
+      spriteId: "shoulders_plate"
+    }
+  },
+  {
+    name: "Corrupted Beast Hauberk",
+    tradeskillClass: "armorer",
+    tier: "journeyman",
+    minSkill: 52,
+    minLevel: 50,
+    craftTimeSeconds: 750,
+    acquisitionType: "drop",
+    ingredients: [{ itemId: "corrupted_hide", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 2 }, { itemId: "ts_adamantine_ore", quantity: 1 }],
+    output: {
+      name: "Corrupted Beast Hauberk",
+      type: "armor",
+      slot: "chest",
+      rarity: "legendary",
+      armorType: "chain",
+      description: "A chain hauberk reinforced with corrupted beast hide \u2014 both fierce and eerie.",
+      stats: { defenseRating: 145, stamina: 65, health: 90, strength: 24, mitigation: 12 },
+      sellPrice: 1100,
+      quantity: 1,
+      xpGained: 900,
+      spriteId: "chest_chain"
+    }
+  },
+  // Tailor
+  {
+    name: "Thornvine Trapper's Vest",
+    tradeskillClass: "tailor",
+    tier: "journeyman",
+    minSkill: 45,
+    minLevel: 45,
+    craftTimeSeconds: 540,
+    acquisitionType: "drop",
+    ingredients: [{ itemId: "thornvine", quantity: 3 }, { itemId: "ts_rough_hide", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Thornvine Trapper's Vest",
+      type: "armor",
+      slot: "chest",
+      rarity: "rare",
+      armorType: "leather",
+      description: "A scout's vest reinforced with thornvine binding for resilience in the field.",
+      stats: { agility: 48, attackRating: 38, critChance: 8, haste: 6 },
+      sellPrice: 600,
+      quantity: 1,
+      xpGained: 560,
+      spriteId: "chest_leather"
+    }
+  },
+  {
+    name: "Manaweave Sorcerer's Robe",
+    tradeskillClass: "tailor",
+    tier: "journeyman",
+    minSkill: 52,
+    minLevel: 50,
+    craftTimeSeconds: 720,
+    acquisitionType: "drop",
+    ingredients: [{ itemId: "manaweave_fiber", quantity: 3 }, { itemId: "ts_silk_cloth", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 2 }],
+    output: {
+      name: "Manaweave Sorcerer's Robe",
+      type: "armor",
+      slot: "chest",
+      rarity: "legendary",
+      armorType: "cloth",
+      description: "A robe woven from manaweave fiber \u2014 it hums with absorbed arcane energy.",
+      stats: { intelligence: 82, wisdom: 58, spellCritChance: 12, spellDamage: 32 },
+      sellPrice: 1e3,
+      quantity: 1,
+      xpGained: 850,
+      spriteId: "chest_cloth"
+    }
+  },
+  // Jeweler
+  {
+    name: "Glimmerdust Ring",
+    tradeskillClass: "jeweler",
+    tier: "journeyman",
+    minSkill: 45,
+    minLevel: 45,
+    craftTimeSeconds: 480,
+    acquisitionType: "drop",
+    ingredients: [{ itemId: "glimmerdust", quantity: 3 }, { itemId: "mithril_ore", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
+    output: {
+      name: "Glimmerdust Ring",
+      type: "accessory",
+      slot: "ring",
+      rarity: "rare",
+      description: "A ring dusted with glimmerdust that focuses magical energies precisely.",
+      stats: { intelligence: 28, spellCritChance: 7, wisdom: 20 },
+      sellPrice: 550,
+      quantity: 1,
+      xpGained: 520,
+      spriteId: "ring"
+    }
+  },
+  {
+    name: "Astral Pendant",
+    tradeskillClass: "jeweler",
+    tier: "journeyman",
+    minSkill: 55,
+    minLevel: 52,
+    craftTimeSeconds: 720,
+    acquisitionType: "drop",
+    ingredients: [{ itemId: "astral_ore", quantity: 2 }, { itemId: "ts_flawless_sapphire", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 2 }],
+    output: {
+      name: "Astral Pendant",
+      type: "accessory",
+      slot: "neck",
+      rarity: "legendary",
+      description: "A pendant forged from astral ore \u2014 it resonates with celestial power.",
+      stats: { intelligence: 52, wisdom: 40, spellDamage: 36, spellCritChance: 12 },
+      sellPrice: 1200,
+      quantity: 1,
+      xpGained: 1e3,
+      spriteId: "necklace"
+    }
+  },
+  // Alchemist
+  {
+    name: "Deepmoss Restorative",
+    tradeskillClass: "alchemist",
+    tier: "journeyman",
+    minSkill: 45,
+    minLevel: 45,
+    craftTimeSeconds: 300,
+    acquisitionType: "drop",
+    ingredients: [{ itemId: "deepmoss", quantity: 3 }, { itemId: "ts_empty_vial", quantity: 2 }, { itemId: "ts_mana_shard", quantity: 2 }],
+    output: {
+      name: "Deepmoss Restorative",
+      type: "consumable",
+      slot: "none",
+      rarity: "rare",
+      description: "A powerful restorative brew made from deep cave moss.",
+      stats: {},
+      sellPrice: 180,
+      quantity: 2,
+      xpGained: 400,
+      spriteId: "potion_green",
+      stackable: true,
+      effect: { type: "heal", value: 1200 }
+    }
+  },
+  {
+    name: "Frostbloom Clarity Draught",
+    tradeskillClass: "alchemist",
+    tier: "journeyman",
+    minSkill: 48,
+    minLevel: 47,
+    craftTimeSeconds: 360,
+    acquisitionType: "drop",
+    ingredients: [{ itemId: "frostbloom_petal", quantity: 3 }, { itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_mana_shard", quantity: 3 }],
+    output: {
+      name: "Frostbloom Clarity Draught",
+      type: "consumable",
+      slot: "none",
+      rarity: "rare",
+      description: "A chilled draught that sharpens mental clarity and boosts intelligence.",
+      stats: {},
+      sellPrice: 200,
+      quantity: 1,
+      xpGained: 450,
+      spriteId: "potion_blue",
+      stackable: true,
+      effect: { type: "buff_intelligence", value: 45 }
+    }
+  },
+  {
+    name: "Venom Elixir of Shadows",
+    tradeskillClass: "alchemist",
+    tier: "journeyman",
+    minSkill: 52,
+    minLevel: 50,
+    craftTimeSeconds: 480,
+    acquisitionType: "drop",
+    ingredients: [{ itemId: "venom_sac", quantity: 2 }, { itemId: "ts_empty_vial", quantity: 2 }, { itemId: "ts_alchemists_coal", quantity: 3 }, { itemId: "ts_mana_shard", quantity: 2 }],
+    output: {
+      name: "Venom Elixir of Shadows",
+      type: "consumable",
+      slot: "none",
+      rarity: "legendary",
+      description: "A deadly elixir brewed from creature venom \u2014 poisons enemies on contact.",
+      stats: {},
+      sellPrice: 400,
+      quantity: 1,
+      xpGained: 700,
+      spriteId: "potion_purple",
+      stackable: true,
+      effect: { type: "buff_attack", value: 55 }
+    }
+  }
+];
+var ALL_JOURNEYMAN_TS_RECIPE_NAMES = new Set(JOURNEYMAN_TS_RECIPES.map((r) => r.name));
+var OOAK_ADJECTIVES = [
+  "Ashen",
+  "Bloodforged",
+  "Celestial",
+  "Deathmarch",
+  "Emberstoked",
+  "Frosted",
+  "Ghostwalker's",
+  "Hallowed",
+  "Ironbound",
+  "Jagged",
+  "Krait-Touched",
+  "Lifedrinker",
+  "Moonwracked",
+  "Nameless",
+  "Obsidian",
+  "Plagueborn",
+  "Quenched",
+  "Ruinbringer",
+  "Shadowpierced",
+  "Thornwoven",
+  "Umbral",
+  "Voidtouched",
+  "Wraithbone",
+  "Xenolithic",
+  "Ymirborn",
+  "Zealot's"
+];
+var OOAK_MATERIALS = [
+  "Adamantine",
+  "Bloodsteel",
+  "Celestite",
+  "Duskweave",
+  "Ebonite",
+  "Frostite",
+  "Ghostsilver",
+  "Hallite",
+  "Ironhide",
+  "Jadesteel",
+  "Kryptonite",
+  "Lifewood",
+  "Moonstone",
+  "Nightshade",
+  "Obsidian",
+  "Plaguesteel",
+  "Quicksilver",
+  "Runite",
+  "Shadowcloth",
+  "Thornhide",
+  "Umbrite",
+  "Voidglass",
+  "Wraithsteel",
+  "Xenite",
+  "Ymirstone",
+  "Zenite"
+];
+var OOAK_ITEM_TYPES = {
+  weaponsmith: ["Greatsword", "Waraxe", "Warhammer", "Glaive", "Spear", "Maul", "Falchion", "Broadsword"],
+  armorer: ["Breastplate", "Hauberk", "Helm", "Pauldrons", "Vambraces", "Greaves", "Shield"],
+  tailor: ["Robe", "Mantle", "Vestment", "Cowl", "Girdle", "Cloak", "Shroud"],
+  jeweler: ["Amulet", "Ring", "Choker", "Signet", "Talisman", "Pendant", "Circlet"],
+  alchemist: ["Elixir", "Philter", "Tincture", "Draught", "Brew", "Concoction", "Flask"]
+};
+var OOAK_SUFFIXES = [
+  "of the Fallen",
+  "of Eternal Ruin",
+  "of the Forsaken",
+  "of Undying Rage",
+  "of the Void",
+  "of the Ancient Pact",
+  "of Shadowflame",
+  "of the Crimson Dawn",
+  "of the Last Stand",
+  "of the Wailing Dark",
+  "of Lost Souls",
+  "of the Sundered Age",
+  "of Bloodmoon",
+  "of the Nightmare Keep",
+  "of the Dying Star",
+  "of Endless Night"
+];
+function pick2(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+function generateOoakName(tradeskillClass, ghostName) {
+  const itemTypes = OOAK_ITEM_TYPES[tradeskillClass] ?? ["Relic"];
+  const baseName = `${pick2(OOAK_ADJECTIVES)} ${pick2(OOAK_MATERIALS)} ${pick2(itemTypes)} ${pick2(OOAK_SUFFIXES)}`;
+  if (ghostName) {
+    return `${ghostName}'s ${baseName}`;
+  }
+  return baseName;
+}
+
 // src/lib/ghostSimulator.ts
-var SIMULATOR_VERSION = 5;
+var SIMULATOR_VERSION = 6;
 var ZONE_LIST = [
   { id: "commonlands", name: "Commonlands", min: 1, max: 10, factionId: "freeport" },
   { id: "antonica", name: "Antonica", min: 1, max: 10, factionId: "qeynos" },
@@ -85472,7 +92699,7 @@ var PURCHASE_MSGS = {
   adornments: "{name} buys adornments to enhance their gear in {zone}.",
   accessories: "{name} picks up accessories from a {zone} merchant."
 };
-function pick2(arr) {
+function pick3(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 function fmt(tmpl, vars) {
@@ -85480,7 +92707,7 @@ function fmt(tmpl, vars) {
 }
 function zoneForLevel(level) {
   const suitable = ZONE_LIST.filter((z) => level >= z.min - 2 && level <= z.max + 3);
-  return pick2(suitable.length ? suitable : ZONE_LIST);
+  return pick3(suitable.length ? suitable : ZONE_LIST);
 }
 function alignedZone(alignment, level) {
   const factionMap = {
@@ -85490,7 +92717,7 @@ function alignedZone(alignment, level) {
   const factionId = factionMap[alignment];
   if (!factionId) return null;
   const candidates = ZONE_LIST.filter((z) => z.factionId === factionId && level >= z.min - 2 && level <= z.max + 3);
-  return candidates.length ? pick2(candidates) : null;
+  return candidates.length ? pick3(candidates) : null;
 }
 function enemiesForZone(zoneId) {
   return ZONE_ENEMIES[zoneId] ?? ZONE_ENEMIES["commonlands"];
@@ -86185,7 +93412,8 @@ async function ghostGatheringTick(players, _events, tick) {
         postedAt: now,
         expiresAt: new Date(now.getTime() + listingDuration),
         sold: false,
-        cancelled: false
+        cancelled: false,
+        sellerPersonality: personality
       }).catch(() => {
       });
       await db.update(ghostInventoryTable).set({ quantity: 0, updatedAt: now }).where(and(
@@ -86285,39 +93513,89 @@ async function ghostAuctionTick(players, tick) {
     const pCfg = PERSONALITY_CONFIG[personality];
     const personalityPriceMult = PERSONALITY_PRICE_MULT[personality];
     if (Math.random() < pCfg.lootChance && activeGhostListings + ghostListingsInserted < MAX_GHOST_ACTIVE_LISTINGS) {
-      const preferredCat = Math.random() < 0.9 ? weightedPick(pCfg.spendCategories).cat : null;
-      const eligible = GHOST_LOOT_POOL.filter(
-        (l) => preferredCat === null || l.category === preferredCat || Math.random() < 0.15
-      );
-      const pool2 = eligible.length > 0 ? eligible : GHOST_LOOT_POOL;
-      const template = pool2[Math.floor(Math.random() * pool2.length)];
-      const qty = Math.random() < 0.3 ? Math.floor(Math.random() * 4) + 2 : 1;
       const levelMult = 1 + (ghost.level - 1) * 0.02;
-      const demandMult = demandMultipliers[template.category] ?? 1;
-      const scholarlyCatBonus = personality === "Scholarly" && (template.category === "materials" || template.category === "adornments") ? 1.1 : 1;
-      const variance = 0.7 + Math.random() * 0.6;
-      const price = Math.max(1, Math.floor(
-        template.basePrice * levelMult * personalityPriceMult * scholarlyCatBonus * demandMult * variance
-      ));
       const expiresAt = new Date(now.getTime() + GHOST_AUCTION_LISTING_DURATION_MS);
-      const inserted = await db.insert(auctionListingsTable).values({
-        sellerId: String(ghost.id),
-        sellerName: ghost.name,
-        itemId: template.itemId,
-        itemName: template.itemName,
-        itemData: template.itemData,
-        quantity: qty,
-        buyoutPrice: price,
-        category: template.category,
-        postedAt: now,
-        expiresAt,
-        sold: false,
-        cancelled: false
-      }).returning({ id: auctionListingsTable.id }).catch((err) => {
-        console.error("[Auction] Ghost listing insert failed:", err);
-        return [];
-      });
-      if (inserted.length > 0) ghostListingsInserted++;
+      if (Math.random() < 0.6) {
+        const rarityRoll = Math.random();
+        const rarity = ghost.level >= 50 ? rarityRoll < 0.15 ? "fabled" : rarityRoll < 0.45 ? "legendary" : "rare" : ghost.level >= 30 ? rarityRoll < 0.05 ? "fabled" : rarityRoll < 0.25 ? "legendary" : rarityRoll < 0.55 ? "rare" : "uncommon" : rarityRoll < 0.15 ? "rare" : rarityRoll < 0.45 ? "uncommon" : "common";
+        const procItem = rollItem(ghost.zone ?? "commonlands", ghost.level, rarity);
+        const basePrice = procItem.sellPrice ?? Math.max(10, ghost.level * 15);
+        const demandMult = demandMultipliers[procItem.type === "weapon" ? "weapons" : procItem.type === "armor" ? "armor" : "misc"] ?? 1;
+        const variance = 0.7 + Math.random() * 0.6;
+        const listPrice = Math.max(1, Math.floor(basePrice * levelMult * personalityPriceMult * demandMult * variance));
+        const category = procItem.type === "weapon" ? "weapons" : procItem.type === "armor" ? "armor" : procItem.type === "accessory" ? "accessories" : "misc";
+        const inserted = await db.insert(auctionListingsTable).values({
+          sellerId: String(ghost.id),
+          sellerName: ghost.name,
+          itemId: procItem.id,
+          itemName: procItem.name,
+          itemData: procItem,
+          quantity: 1,
+          buyoutPrice: listPrice,
+          category,
+          postedAt: now,
+          expiresAt,
+          sold: false,
+          cancelled: false,
+          sellerPersonality: personality
+        }).returning({ id: auctionListingsTable.id }).catch(() => []);
+        if (inserted.length > 0) ghostListingsInserted++;
+      } else {
+        const preferredCat = Math.random() < 0.9 ? weightedPick(pCfg.spendCategories).cat : null;
+        const eligible = GHOST_LOOT_POOL.filter(
+          (l) => preferredCat === null || l.category === preferredCat || Math.random() < 0.15
+        );
+        const pool2 = eligible.length > 0 ? eligible : GHOST_LOOT_POOL;
+        const template = pool2[Math.floor(Math.random() * pool2.length)];
+        const qty = Math.random() < 0.3 ? Math.floor(Math.random() * 4) + 2 : 1;
+        const demandMult = demandMultipliers[template.category] ?? 1;
+        const scholarlyCatBonus = personality === "Scholarly" && (template.category === "materials" || template.category === "adornments") ? 1.1 : 1;
+        const variance = 0.7 + Math.random() * 0.6;
+        const price = Math.max(1, Math.floor(
+          template.basePrice * levelMult * personalityPriceMult * scholarlyCatBonus * demandMult * variance
+        ));
+        const inserted = await db.insert(auctionListingsTable).values({
+          sellerId: String(ghost.id),
+          sellerName: ghost.name,
+          itemId: template.itemId,
+          itemName: template.itemName,
+          itemData: template.itemData,
+          quantity: qty,
+          buyoutPrice: price,
+          category: template.category,
+          postedAt: now,
+          expiresAt,
+          sold: false,
+          cancelled: false,
+          sellerPersonality: personality
+        }).returning({ id: auctionListingsTable.id }).catch((err) => {
+          console.error("[Auction] Ghost listing insert failed:", err);
+          return [];
+        });
+        if (inserted.length > 0) ghostListingsInserted++;
+      }
+      if (ghost.level >= 50 && Math.random() < 0.1 && activeGhostListings + ghostListingsInserted < MAX_GHOST_ACTIVE_LISTINGS) {
+        const raidRarity = Math.random() < 0.3 ? "fabled" : "legendary";
+        const raidItem = rollItem(ghost.zone ?? "commonlands", ghost.level, raidRarity);
+        const raidPrice = Math.max(500, (raidItem.sellPrice ?? 500) * (3 + Math.random() * 2) * personalityPriceMult);
+        await db.insert(auctionListingsTable).values({
+          sellerId: String(ghost.id),
+          sellerName: ghost.name,
+          itemId: raidItem.id,
+          itemName: raidItem.name,
+          itemData: raidItem,
+          quantity: 1,
+          buyoutPrice: Math.floor(raidPrice),
+          category: raidItem.type === "weapon" ? "weapons" : "armor",
+          postedAt: now,
+          expiresAt: new Date(now.getTime() + GHOST_AUCTION_LISTING_DURATION_MS * 2),
+          sold: false,
+          cancelled: false,
+          sellerPersonality: personality
+        }).catch(() => {
+        });
+        ghostListingsInserted++;
+      }
     }
     if (Math.random() < pCfg.spendChance) {
       const playerListings = await db.select().from(auctionListingsTable).where(
@@ -86376,6 +93654,109 @@ async function ghostAuctionTick(players, tick) {
     }
   }
 }
+async function generateGhostLegacyDrop(ghost, tick) {
+  const roll = Math.random();
+  if (roll < 0.07) {
+    const tsClass = TRADESKILL_CLASSES[Math.floor(Math.random() * TRADESKILL_CLASSES.length)];
+    const ooakName = generateOoakName(tsClass, ghost.name);
+    const ooakOutput = {
+      name: ooakName,
+      description: `A legendary relic left behind by the ghost of ${ghost.name} \u2014 it can never be replicated.`,
+      type: "weapon",
+      slot: "primary",
+      rarity: "legendary",
+      stats: { weaponDamageMin: 280, weaponDamageMax: 460, attackRating: 230, strength: 75, critChance: 18 },
+      sellPrice: 45e3,
+      quantity: 1,
+      xpGained: 6e3,
+      spriteId: "weapon_sword"
+    };
+    const [inserted] = await db.insert(recipesTable).values({
+      name: ooakName,
+      tradeskillClass: tsClass,
+      tier: "master",
+      minSkill: 80,
+      minLevel: 60,
+      craftTimeSeconds: 3600,
+      ingredients: [
+        { itemId: "prismatic_dragon_scale", quantity: 1 },
+        { itemId: "vampire_lord_fang", quantity: 1 },
+        { itemId: "plague_dragon_spine", quantity: 1 }
+      ],
+      output: ooakOutput,
+      acquisitionType: "raid",
+      vendorCost: null,
+      isOoak: true,
+      claimedBy: null
+    }).returning();
+    if (inserted) {
+      await db.insert(ghostLegacyTable).values({
+        ghostId: ghost.id,
+        ghostName: ghost.name,
+        dropType: "ooak_recipe",
+        dropName: ooakName,
+        dropReference: String(inserted.id)
+      });
+      await db.insert(worldEventsTable).values({
+        type: "ghost_legacy",
+        message: `The ghost of ${ghost.name} has retired and left behind a legendary recipe: [${ooakName}] \u2014 unclaimed and waiting for a worthy crafter!`,
+        playerName: ghost.name,
+        zone: ghost.zone,
+        importance: 9,
+        tick
+      });
+    }
+    return;
+  }
+  if (roll < 0.37) {
+    const ghostKnown = await db.select({ recipeId: ghostKnownRecipesTable.recipeId }).from(ghostKnownRecipesTable).where(eq(ghostKnownRecipesTable.ghostId, ghost.id));
+    if (ghostKnown.length > 0) {
+      const picked = ghostKnown[Math.floor(Math.random() * ghostKnown.length)];
+      const [recipe] = await db.select({ id: recipesTable.id, name: recipesTable.name, tier: recipesTable.tier }).from(recipesTable).where(eq(recipesTable.id, Number(picked.recipeId))).limit(1);
+      if (recipe) {
+        await db.insert(ghostLegacyTable).values({
+          ghostId: ghost.id,
+          ghostName: ghost.name,
+          dropType: "recipe",
+          dropName: recipe.name,
+          dropReference: String(recipe.id)
+        });
+        await db.insert(worldEventsTable).values({
+          type: "ghost_legacy",
+          message: `The ghost of ${ghost.name} has retired and left behind the recipe [${recipe.name}] in the world legacy pool.`,
+          playerName: ghost.name,
+          zone: ghost.zone,
+          importance: 6,
+          tick
+        });
+      }
+      return;
+    }
+  }
+  if (roll < 0.67) {
+    const gearSlots = Object.values(ghost.gear ?? {}).filter(Boolean);
+    if (gearSlots.length > 0) {
+      const itemId = gearSlots[Math.floor(Math.random() * gearSlots.length)];
+      const item = getItemById(itemId);
+      const dropName = item?.name ?? itemId;
+      await db.insert(ghostLegacyTable).values({
+        ghostId: ghost.id,
+        ghostName: ghost.name,
+        dropType: "item",
+        dropName,
+        dropReference: itemId
+      });
+      await db.insert(worldEventsTable).values({
+        type: "ghost_legacy",
+        message: `The ghost of ${ghost.name} has retired and left behind [${dropName}] in the world legacy pool.`,
+        playerName: ghost.name,
+        zone: ghost.zone,
+        importance: 5,
+        tick
+      });
+    }
+  }
+}
 async function tickGhostSimulation() {
   globalTick++;
   const tick = globalTick;
@@ -86399,9 +93780,9 @@ async function tickGhostSimulation() {
     const regularCandidates = candidates.filter((e) => !e.isBoss);
     let enemy;
     if (isBossRoll && bossCandidates.length > 0) {
-      enemy = pick2(bossCandidates);
+      enemy = pick3(bossCandidates);
     } else {
-      enemy = pick2(regularCandidates.length ? regularCandidates : candidates);
+      enemy = pick3(regularCandidates.length ? regularCandidates : candidates);
     }
     const enemyLevel = Math.max(1, player.level + enemy.levelMod);
     const combat = simulateCombat(player, enemy, enemyLevel);
@@ -86413,7 +93794,7 @@ async function tickGhostSimulation() {
       let newLevel = player.level;
       const xpRequired = xpForLevel2(newLevel);
       let leveledUp = false;
-      if (newXp >= xpRequired && newLevel < 50) {
+      if (newXp >= xpRequired && newLevel < 70) {
         newXp -= xpRequired;
         newLevel++;
         leveledUp = true;
@@ -86428,7 +93809,7 @@ async function tickGhostSimulation() {
             player.level >= z.min - 2 && player.level <= z.max + 3
           );
           if (betterZones.length) {
-            newZone = pick2(betterZones).name;
+            newZone = pick3(betterZones).name;
             explorerTickTracker.set(player.id, tick);
           }
         }
@@ -86439,11 +93820,11 @@ async function tickGhostSimulation() {
             newZone = aligned.name;
           } else {
             const betterZones = ZONE_LIST.filter((z) => newLevel >= z.min && newLevel <= z.max);
-            if (betterZones.length && Math.random() < 0.5) newZone = pick2(betterZones).name;
+            if (betterZones.length && Math.random() < 0.5) newZone = pick3(betterZones).name;
           }
         } else {
           const betterZones = ZONE_LIST.filter((z) => newLevel >= z.min && newLevel <= z.max);
-          if (betterZones.length && Math.random() < 0.5) newZone = pick2(betterZones).name;
+          if (betterZones.length && Math.random() < 0.5) newZone = pick3(betterZones).name;
         }
       }
       let goldSpent = 0;
@@ -86493,7 +93874,7 @@ async function tickGhostSimulation() {
       const killPool = KILL_MSGS[personality][player.archetype] ?? KILL_MSGS[personality]["Fighter"];
       events.push({
         type: enemy.isBoss ? "boss_kill" : "kill",
-        message: fmt(pick2(enemy.isBoss ? BOSS_MSGS[personality] : killPool), {
+        message: fmt(pick3(enemy.isBoss ? BOSS_MSGS[personality] : killPool), {
           name: player.name,
           enemy: enemy.name,
           zone: newZone
@@ -86506,7 +93887,7 @@ async function tickGhostSimulation() {
       if (leveledUp) {
         events.push({
           type: "level_up",
-          message: fmt(pick2(LEVEL_MSGS[personality]), { name: player.name, level: newLevel, zone: newZone }),
+          message: fmt(pick3(LEVEL_MSGS[personality]), { name: player.name, level: newLevel, zone: newZone }),
           playerName: player.name,
           zone: newZone,
           importance: 4,
@@ -86516,7 +93897,7 @@ async function tickGhostSimulation() {
       if (newZone !== player.zone) {
         events.push({
           type: "zone_travel",
-          message: fmt(pick2(ZONE_MSGS[personality]), { name: player.name, zone: newZone }),
+          message: fmt(pick3(ZONE_MSGS[personality]), { name: player.name, zone: newZone }),
           playerName: player.name,
           zone: newZone,
           importance: 2,
@@ -86531,7 +93912,7 @@ async function tickGhostSimulation() {
         }).where(eq(worldPlayersTable.id, player.id));
         events.push({
           type: "loot",
-          message: fmt(pick2(LOOT_MSGS[personality]), { name: player.name, gold: bonusGold, zone: newZone }),
+          message: fmt(pick3(LOOT_MSGS[personality]), { name: player.name, gold: bonusGold, zone: newZone }),
           playerName: player.name,
           zone: newZone,
           importance: 1,
@@ -86542,7 +93923,7 @@ async function tickGhostSimulation() {
       if (discoveryPool && discoveryPool.length > 0 && Math.random() < 0.15) {
         events.push({
           type: "discovery",
-          message: fmt(pick2(discoveryPool), { name: player.name, zone: newZone }),
+          message: fmt(pick3(discoveryPool), { name: player.name, zone: newZone }),
           playerName: player.name,
           zone: newZone,
           importance: 2,
@@ -86562,7 +93943,7 @@ async function tickGhostSimulation() {
       }
     } else {
       const saferZones = ZONE_LIST.filter((z) => player.level >= z.min + 3 && player.level > z.min);
-      const safeZone = saferZones.length ? pick2(saferZones) : zoneForLevel(Math.max(1, player.level - 5));
+      const safeZone = saferZones.length ? pick3(saferZones) : zoneForLevel(Math.max(1, player.level - 5));
       const newDeathCount = player.deathCount + 1;
       await db.update(worldPlayersTable).set({
         deathCount: newDeathCount,
@@ -86581,6 +93962,9 @@ async function tickGhostSimulation() {
         });
         await db.delete(ghostRaidClearsTable).where(eq(ghostRaidClearsTable.ghostId, player.id)).catch((e) => {
           console.error("[Ghost] Failed to delete raid clears for retired ghost:", e);
+        });
+        await generateGhostLegacyDrop(player, tick).catch((e) => {
+          console.error("[Ghost] Failed to generate legacy drop:", e);
         });
         await db.insert(worldEventsTable).values({
           type: "ghost_retirement",
@@ -86737,7 +94121,7 @@ function ghostPortraitKey(name, race, cls) {
 function ghostChronicleKey(name) {
   return `ghost_chronicle_${name}_v1`.toLowerCase().replace(/[\s]+/g, "_").replace(/[^a-z0-9_]/g, "");
 }
-var router23 = (0, import_express23.Router)();
+var worldPublicRouter = (0, import_express23.Router)();
 var worldRateLimit = rate_limit_default({
   windowMs: 60 * 1e3,
   max: 100,
@@ -86745,7 +94129,7 @@ var worldRateLimit = rate_limit_default({
   legacyHeaders: false,
   message: { error: "Too many requests, please try again later." }
 });
-router23.use("/world", worldRateLimit);
+worldPublicRouter.use("/world", worldRateLimit);
 var ZONE_LIST2 = [
   { id: "commonlands", name: "Commonlands", min: 1, max: 10 },
   { id: "antonica", name: "Antonica", min: 1, max: 10 },
@@ -86758,7 +94142,7 @@ var ZONE_LIST2 = [
   { id: "lesser_faydark", name: "Lesser Faydark", min: 35, max: 45 },
   { id: "feerrott", name: "Feerrott", min: 45, max: 55 }
 ];
-router23.get("/world/players", async (_req, res, next) => {
+worldPublicRouter.get("/world/players", async (_req, res, next) => {
   try {
     const ghosts = await db.select().from(worldPlayersTable).orderBy(desc(worldPlayersTable.level), desc(worldPlayersTable.killCount));
     const [char2] = await db.select().from(charactersTable).limit(1);
@@ -86792,7 +94176,7 @@ router23.get("/world/players", async (_req, res, next) => {
     next(err);
   }
 });
-router23.get("/world/player/:id", async (req, res, next) => {
+worldPublicRouter.get("/world/player/:id", async (req, res, next) => {
   try {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id)) {
@@ -86837,7 +94221,7 @@ router23.get("/world/player/:id", async (req, res, next) => {
     next(err);
   }
 });
-router23.get("/world/events", async (req, res, next) => {
+worldPublicRouter.get("/world/events", async (req, res, next) => {
   try {
     const limit2 = Math.min(100, Number(req.query.limit ?? 50));
     const zone = req.query.zone;
@@ -86852,7 +94236,7 @@ router23.get("/world/events", async (req, res, next) => {
     next(err);
   }
 });
-router23.get("/world/leaderboard", async (_req, res, next) => {
+worldPublicRouter.get("/world/leaderboard", async (_req, res, next) => {
   try {
     const ghosts = await db.select({
       id: worldPlayersTable.id,
@@ -86892,7 +94276,7 @@ router23.get("/world/leaderboard", async (_req, res, next) => {
     next(err);
   }
 });
-router23.get("/world/zones", async (_req, res, next) => {
+worldPublicRouter.get("/world/zones", async (_req, res, next) => {
   try {
     const rows = await db.select({
       zone: worldPlayersTable.zone,
@@ -86927,7 +94311,7 @@ router23.get("/world/zones", async (_req, res, next) => {
     next(err);
   }
 });
-router23.get("/world/stats", async (_req, res, next) => {
+worldPublicRouter.get("/world/stats", async (_req, res, next) => {
   try {
     const [totals] = await db.select({
       totalPlayers: sql`count(*)`,
@@ -86951,7 +94335,7 @@ router23.get("/world/stats", async (_req, res, next) => {
     next(err);
   }
 });
-router23.get("/world/player/:id/portrait", async (req, res, next) => {
+worldPublicRouter.get("/world/player/:id/portrait", async (req, res, next) => {
   try {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id) || id < 1) {
@@ -86992,6 +94376,7 @@ router23.get("/world/player/:id/portrait", async (req, res, next) => {
     next(err);
   }
 });
+var router23 = (0, import_express23.Router)();
 router23.post("/world/player/:id/portrait/refresh", async (req, res, next) => {
   try {
     const id = parseInt(req.params.id, 10);
@@ -87011,7 +94396,7 @@ router23.post("/world/player/:id/portrait/refresh", async (req, res, next) => {
     next(err);
   }
 });
-router23.get("/world/player/:id/chronicle", async (req, res, next) => {
+worldPublicRouter.get("/world/player/:id/chronicle", async (req, res, next) => {
   try {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id) || id < 1) {
@@ -87094,7 +94479,7 @@ function buildChronicleString(name, detail) {
   if (detail.deeds) parts.push(detail.deeds.trim());
   return parts.slice(0, 3).join(" ");
 }
-router23.get("/world/docs", (_req, res) => {
+worldPublicRouter.get("/world/docs", (_req, res) => {
   res.json({
     openapi: "3.0.3",
     info: {
@@ -87255,7 +94640,14 @@ function formatRun(run) {
     items: floorLoot.items.map((idOrObj) => {
       if (typeof idOrObj !== "string") return idOrObj;
       const item = getItemById(idOrObj);
-      return item ?? { id: idOrObj, name: idOrObj, rarity: "common", level: 1, type: "unknown", slot: null };
+      return item ?? {
+        id: idOrObj,
+        name: idOrObj,
+        rarity: "common",
+        level: 1,
+        type: idOrObj.startsWith("adorn_") ? "adornment" : "unknown",
+        slot: null
+      };
     })
   }));
   return {
@@ -87754,7 +95146,7 @@ router24.post("/dungeons/run/advance", async (req, res) => {
     if (isLastFloor && !run.mainBossDefeated) {
       return res.status(400).json({ error: "Final floor not cleared: main boss not yet defeated" });
     }
-    const loot = generateDungeonLoot(character.level, run.currentFloor, run.difficulty, dungeon.minLevel, dungeon.maxLevel);
+    const loot = generateDungeonLoot(character.level, run.currentFloor, run.difficulty, dungeon.minLevel, dungeon.maxLevel, isLastFloor ? "finalboss" : currentFloorDef.miniBossId ? "miniboss" : "normal");
     await awardItemsToInventory(loot, character.id);
     const charClass = character.class ?? "Fighter";
     const setArchetype = charClass === "Priest" ? "healer" : charClass === "Mage" ? "caster" : "fighter";
@@ -87981,8 +95373,9 @@ function formatRaidRun(run) {
 }
 function buildScaledRaidBoss(raid, playerLevel, phaseDef) {
   const levelFactor = Math.max(1, playerLevel / raid.minLevel);
+  const dmgLevelFactor = Math.max(1, Math.min(1.5, playerLevel / raid.minLevel));
   const baseHp = 5e4;
-  const baseDmg = 400;
+  const baseDmg = 150;
   const phase = phaseDef ?? raid.phases[0];
   const dmgMult = phase.damageMultiplier ?? 1;
   const hpMult = phase.hpMultiplier ?? 1;
@@ -87992,8 +95385,17 @@ function buildScaledRaidBoss(raid, playerLevel, phaseDef) {
     level: raid.minLevel + 5,
     maxHp: Math.round(baseHp * levelFactor * hpMult),
     hp: Math.round(baseHp * levelFactor * hpMult),
-    damageMin: Math.round(baseDmg * levelFactor * 0.8 * dmgMult),
-    damageMax: Math.round(baseDmg * levelFactor * 1.2 * dmgMult),
+    damageMin: Math.round(baseDmg * dmgLevelFactor * 0.8 * dmgMult),
+    damageMax: Math.round(baseDmg * dmgLevelFactor * 1.2 * dmgMult),
+    // Combat formula fields — required to prevent NaN in calculateEnemyDamage / calculatePlayerDamage
+    attackRating: Math.round(600 * levelFactor),
+    defenseRating: Math.round(480 * levelFactor),
+    mitigation: 50,
+    // %-based; capped at 75 in formula → ~50% melee damage reduction
+    avoidance: 15,
+    // % avoidance roll against player attacks
+    resistances: {},
+    // no elemental resistances by default; phases may override
     xpReward: Math.round(5e3 * levelFactor),
     goldMin: Math.round(500 * levelFactor),
     goldMax: Math.round(1e3 * levelFactor),
@@ -88007,26 +95409,113 @@ function generateRaidLoot(raidId, playerLevel) {
   const raid = getRaidById(raidId);
   const tier = raid?.lootTier ?? "legendary";
   const raidMinLevel = raid?.minLevel ?? playerLevel;
-  const raidMaxLevel = raidMinLevel + RAID_LEVEL_RANGE;
-  const clampedLevel = Math.min(Math.max(playerLevel, raidMinLevel), raidMaxLevel);
+  const WIDE_RANGE = RAID_LEVEL_RANGE * 2;
+  const clampedLevel = Math.min(Math.max(playerLevel, raidMinLevel), raidMinLevel + RAID_LEVEL_RANGE);
   const pool2 = ITEMS.filter((item) => {
     if (item.type === "material" || item.type === "consumable" || item.type === "quest") return false;
-    if (Math.abs(item.level - clampedLevel) > RAID_LEVEL_RANGE) return false;
+    if (Math.abs(item.level - clampedLevel) > WIDE_RANGE) return false;
     return true;
   });
-  const rarityPools = {
-    legendary: pool2.filter((i) => i.rarity === "legendary" || i.rarity === "fabled" || i.rarity === "mythical"),
-    fabled: pool2.filter((i) => i.rarity === "fabled" || i.rarity === "mythical" || i.rarity === "legendary"),
-    mythical: pool2.filter((i) => i.rarity === "mythical" || i.rarity === "fabled")
+  const mythicalPool = pool2.filter((i) => i.rarity === "mythical");
+  const legendaryPool = pool2.filter((i) => i.rarity === "legendary" || i.rarity === "fabled" || i.rarity === "mythical");
+  const rarePool = pool2.filter((i) => i.rarity === "rare");
+  const fallbackPool = pool2.length > 0 ? pool2 : ITEMS.filter((i) => i.type !== "material" && i.type !== "consumable" && i.type !== "quest");
+  const raidSpecificMythicalPool = mythicalPool.filter((i) => i.id.startsWith(`raid_${raidId}_`));
+  const guaranteedPool = raidSpecificMythicalPool.length >= 3 ? raidSpecificMythicalPool : mythicalPool.length > 0 ? mythicalPool : legendaryPool;
+  const pick4 = (from) => {
+    const src = from.length > 0 ? from : fallbackPool;
+    const item = src[Math.floor(Math.random() * src.length)];
+    return item?.id ?? null;
   };
-  const targetPool = rarityPools[tier]?.length > 0 ? rarityPools[tier] : pool2;
-  const count = 3 + Math.floor(Math.random() * 3);
   const loot = [];
-  for (let i = 0; i < count; i++) {
-    const picked = targetPool[Math.floor(Math.random() * targetPool.length)];
-    if (picked) loot.push(picked.id);
+  const guaranteedCount = tier === "mythical" ? 8 : 6;
+  for (let i = 0; i < guaranteedCount; i++) {
+    const id = pick4(guaranteedPool);
+    if (id) loot.push(id);
   }
+  const bonusCount = 4 + Math.floor(Math.random() * 3);
+  const bonusPool = raidSpecificMythicalPool.length > 0 ? [...raidSpecificMythicalPool, ...legendaryPool] : [...mythicalPool, ...legendaryPool];
+  for (let i = 0; i < bonusCount; i++) {
+    const id = pick4(bonusPool);
+    if (id) loot.push(id);
+  }
+  const RAID_BOSS_MATERIALS = {
+    harla_dar: "prismatic_dragon_scale",
+    mayong_mistmoore: "vampire_lord_fang",
+    trakanon: "plague_dragon_spine"
+  };
+  const bossMaterial = RAID_BOSS_MATERIALS[raidId];
+  if (bossMaterial) loot.push(bossMaterial);
   return loot;
+}
+async function awardRaidRecipeDrops(raidId, characterId, tick, characterName, zone) {
+  const result = { masterRecipe: null, ooakRecipe: null };
+  if (Math.random() < 0.15) {
+    const candidates = MASTER_RECIPES.filter((r) => r.raidBossId === raidId);
+    if (candidates.length > 0) {
+      const picked = candidates[Math.floor(Math.random() * candidates.length)];
+      const [dbRecipe] = await db.select({ id: recipesTable.id, name: recipesTable.name, tier: recipesTable.tier }).from(recipesTable).where(and(eq(recipesTable.name, picked.name), eq(recipesTable.tier, "master"))).limit(1);
+      if (dbRecipe) {
+        const [alreadyKnown] = await db.select().from(knownRecipesTable).where(and(eq(knownRecipesTable.characterId, characterId), eq(knownRecipesTable.recipeId, String(dbRecipe.id)))).limit(1);
+        if (!alreadyKnown) {
+          await db.insert(knownRecipesTable).values({ characterId, recipeId: String(dbRecipe.id) });
+        }
+        result.masterRecipe = { id: dbRecipe.id, name: dbRecipe.name, tier: dbRecipe.tier };
+      }
+    }
+  }
+  if (Math.random() < 0.02) {
+    const tsClass = TRADESKILL_CLASSES[Math.floor(Math.random() * TRADESKILL_CLASSES.length)];
+    const ooakName = generateOoakName(tsClass);
+    const ooakOutput = {
+      name: ooakName,
+      description: `A legendary One-of-a-Kind creation \u2014 ${ooakName}. Only one may ever exist.`,
+      type: "weapon",
+      slot: "primary",
+      rarity: "legendary",
+      stats: { weaponDamageMin: 300, weaponDamageMax: 500, attackRating: 250, strength: 80, critChance: 20 },
+      sellPrice: 5e4,
+      quantity: 1,
+      xpGained: 5e3,
+      spriteId: "weapon_sword"
+    };
+    const [insertedOoak] = await db.insert(recipesTable).values({
+      name: ooakName,
+      tradeskillClass: tsClass,
+      tier: "master",
+      minSkill: 80,
+      minLevel: 60,
+      craftTimeSeconds: 3600,
+      ingredients: [
+        { itemId: "prismatic_dragon_scale", quantity: 1 },
+        { itemId: "vampire_lord_fang", quantity: 1 },
+        { itemId: "plague_dragon_spine", quantity: 1 }
+      ],
+      output: ooakOutput,
+      acquisitionType: "raid",
+      vendorCost: null,
+      isOoak: true,
+      claimedBy: null
+    }).returning();
+    if (insertedOoak) {
+      const [claimed] = await db.update(recipesTable).set({ claimedBy: String(characterId) }).where(and(eq(recipesTable.id, insertedOoak.id), isNull(recipesTable.claimedBy))).returning({ id: recipesTable.id });
+      if (claimed) {
+        await db.insert(knownRecipesTable).values({ characterId, recipeId: String(insertedOoak.id) });
+        const raid = getRaidById(raidId);
+        await db.insert(worldEventsTable).values({
+          type: "ooak_recipe_drop",
+          message: `${characterName ?? "An adventurer"} has discovered the legendary recipe [${ooakName}] in ${raid?.name ?? raidId}!`,
+          playerName: characterName ?? "Unknown",
+          zone: zone ?? raid?.zone ?? "Unknown",
+          importance: 8,
+          tick
+        }).catch(() => {
+        });
+        result.ooakRecipe = { id: insertedOoak.id, name: insertedOoak.name, tier: insertedOoak.tier };
+      }
+    }
+  }
+  return result;
 }
 router25.get("/raids", async (req, res) => {
   try {
@@ -88132,7 +95621,15 @@ router25.post("/raids/:raidId/start", async (req, res) => {
         eq(raidRunsTable.status, "active")
       )
     ).limit(1);
-    if (activeRaid) return res.status(400).json({ error: "You already have an active raid run", run: formatRaidRun(activeRaid) });
+    if (activeRaid) {
+      const STALE_MS = 24 * 60 * 60 * 1e3;
+      const isStale = Date.now() - new Date(activeRaid.startedAt).getTime() > STALE_MS;
+      if (isStale) {
+        await db.update(raidRunsTable).set({ status: "abandoned", abandoned: true }).where(eq(raidRunsTable.id, activeRaid.id));
+      } else {
+        return res.status(400).json({ error: "You already have an active raid run", run: formatRaidRun(activeRaid) });
+      }
+    }
     const [activeDungeon] = await db.select().from(dungeonRunsTable).where(
       and(
         eq(dungeonRunsTable.characterId, character.id),
@@ -88235,6 +95732,21 @@ router25.post("/raids/run/phase-advance", async (req, res) => {
     const currentParty = run.party ?? [];
     if (isFinalPhase) {
       const loot = generateRaidLoot(run.raidId, character.level);
+      await awardItemsToInventory(loot, character.id);
+      const raidZone = raid?.zone ?? character.zone;
+      const proceduralBonusCount = 3 + Math.floor(Math.random() * 3);
+      const proceduralRarities = ["legendary", "legendary", "fabled", "legendary", "fabled"];
+      for (let i = 0; i < proceduralBonusCount; i++) {
+        const rarity = proceduralRarities[i % proceduralRarities.length];
+        const procItem = rollItem(raidZone, character.level, rarity);
+        loot.push(procItem.id);
+        const [existingProc] = await db.select().from(inventoryTable).where(and(eq(inventoryTable.characterId, character.id), eq(inventoryTable.itemId, procItem.id)));
+        if (existingProc) {
+          await db.update(inventoryTable).set({ quantity: existingProc.quantity + 1 }).where(eq(inventoryTable.id, existingProc.id));
+        } else {
+          await db.insert(inventoryTable).values({ characterId: character.id, itemId: procItem.id, itemData: serializeForDb(procItem), quantity: 1 });
+        }
+      }
       const [completed] = await db.update(raidRunsTable).set({
         status: "completed",
         completed: true,
@@ -88251,6 +95763,13 @@ router25.post("/raids/run/phase-advance", async (req, res) => {
       });
       await checkAndUnlockAchievements(character.id);
       await awardGhostContributions(currentParty);
+      const recipeDrop = await awardRaidRecipeDrops(
+        run.raidId,
+        character.id,
+        0,
+        character.name,
+        raid.zone
+      ).catch(() => ({ masterRecipe: null, ooakRecipe: null }));
       const goldEarned = loot.reduce((sum, id) => {
         const it = getItemById(id);
         return sum + (it?.sellPrice ?? 0);
@@ -88271,12 +95790,24 @@ router25.post("/raids/run/phase-advance", async (req, res) => {
         xpEarned,
         goldEarned,
         party: partyWithInfo,
+        recipeDrop,
         message: `${raid.bossName} defeated! ${raid.name} conquered!`
       });
     }
     const revivedParty = revivePartyOnFloorAdvance(currentParty);
     const newPhase = run.currentPhase + 1;
     const nextPhaseDef = raid.phases.find((p) => p.phase === newPhase);
+    const phaseZone = raid?.zone ?? character.zone;
+    for (let i = 0; i < 2; i++) {
+      const rarity = Math.random() < 0.4 ? "fabled" : "legendary";
+      const procItem = rollItem(phaseZone, character.level, rarity);
+      const [existingProc] = await db.select().from(inventoryTable).where(and(eq(inventoryTable.characterId, character.id), eq(inventoryTable.itemId, procItem.id)));
+      if (existingProc) {
+        await db.update(inventoryTable).set({ quantity: existingProc.quantity + 1 }).where(eq(inventoryTable.id, existingProc.id));
+      } else {
+        await db.insert(inventoryTable).values({ characterId: character.id, itemId: procItem.id, itemData: serializeForDb(procItem), quantity: 1 });
+      }
+    }
     const nextScaledBoss = buildScaledRaidBoss(raid, character.level, nextPhaseDef);
     const [updated] = await db.update(raidRunsTable).set({
       currentPhase: newPhase,
@@ -88311,6 +95842,22 @@ router25.post("/raids/run/abandon", async (req, res) => {
     return res.json({ success: true, run: formatRaidRun(updated), abandoned: true, message: "Raid run abandoned." });
   } catch (err) {
     req.log.error({ err }, "Error abandoning raid run");
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+router25.delete("/raids/active", async (req, res) => {
+  try {
+    const character = await getOrCreateCharacter(req.characterId);
+    const [updated] = await db.update(raidRunsTable).set({ status: "abandoned", abandoned: true, completed: false }).where(
+      and(
+        eq(raidRunsTable.characterId, character.id),
+        eq(raidRunsTable.status, "active")
+      )
+    ).returning();
+    if (!updated) return res.status(404).json({ error: "No active raid run found" });
+    return res.json({ ok: true });
+  } catch (err) {
+    req.log.error({ err }, "Error abandoning active raid run");
     return res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -88495,7 +96042,6 @@ var portrait_default = router26;
 var import_express27 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
-init_gameData();
 var router27 = (0, import_express27.Router)();
 var LISTING_DURATION_MS = 24 * 30 * 1e3;
 var MAX_PLAYER_LISTINGS = 20;
@@ -88595,13 +96141,9 @@ router27.post("/auction/list", async (req, res) => {
     if (!invRow || invRow.quantity < qty) {
       return res.json({ success: false, message: "You don't have enough of that item." });
     }
-    const itemData = invRow.itemData;
-    const staticItem = getItemById(itemId);
-    if (isNoSell(staticItem ?? itemData)) {
-      return res.status(400).json({ success: false, message: "This item is No-Drop and cannot be sold or traded." });
-    }
     const now = /* @__PURE__ */ new Date();
     const expiresAt = new Date(now.getTime() + LISTING_DURATION_MS);
+    const itemData = invRow.itemData;
     const itemName = itemData?.name ?? itemId;
     await db.transaction(async (tx) => {
       let deducted;
@@ -88671,7 +96213,7 @@ router27.post("/auction/buy/:listingId", async (req, res) => {
       return res.json({ success: false, message: "Not enough gold." });
     }
     const result = await db.transaction(async (tx) => {
-      const [c] = await tx.update(auctionListingsTable).set({ sold: true }).where(
+      const [c] = await tx.update(auctionListingsTable).set({ sold: true, soldAt: /* @__PURE__ */ new Date() }).where(
         and(
           eq(auctionListingsTable.id, listingId),
           eq(auctionListingsTable.sold, false),
@@ -88764,6 +96306,48 @@ router27.delete("/auction/:listingId", async (req, res) => {
   } catch (err) {
     console.error("[Auction] DELETE /auction error:", err);
     return res.status(500).json({ error: "Internal server error" });
+  }
+});
+router27.get("/auction/recent-sales", async (_req, res) => {
+  try {
+    const sales = await db.select().from(auctionListingsTable).where(eq(auctionListingsTable.sold, true)).orderBy(desc(auctionListingsTable.soldAt)).limit(15);
+    return res.json(sales.map((s) => ({
+      id: s.id,
+      itemName: s.itemName,
+      itemId: s.itemId,
+      itemData: s.itemData,
+      buyoutPrice: s.buyoutPrice,
+      sellerName: s.sellerName,
+      quantity: s.quantity,
+      soldAt: s.soldAt
+    })));
+  } catch (err) {
+    console.error("[Auction] GET /auction/recent-sales error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+router27.get("/auction/price-suggestion", async (req, res) => {
+  try {
+    const itemId = req.query.itemId;
+    if (!itemId) return res.json({ suggestion: null });
+    const recent = await db.select({ price: auctionListingsTable.buyoutPrice, qty: auctionListingsTable.quantity }).from(auctionListingsTable).where(and(eq(auctionListingsTable.itemId, itemId), eq(auctionListingsTable.sold, true))).orderBy(desc(auctionListingsTable.soldAt)).limit(5);
+    if (recent.length === 0) {
+      const active = await db.select({ price: auctionListingsTable.buyoutPrice }).from(auctionListingsTable).where(and(
+        eq(auctionListingsTable.itemId, itemId),
+        eq(auctionListingsTable.sold, false),
+        eq(auctionListingsTable.cancelled, false)
+      )).limit(10);
+      if (active.length === 0) return res.json({ suggestion: null });
+      const avg = Math.floor(active.reduce((s, r) => s + r.price, 0) / active.length);
+      return res.json({ suggestion: avg, basis: "active_listings" });
+    }
+    const perUnit = recent.map((r) => Math.floor(r.price / Math.max(1, r.qty)));
+    const sorted = [...perUnit].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    const median = sorted.length % 2 !== 0 ? sorted[mid] : Math.floor(((sorted[mid - 1] ?? 0) + (sorted[mid] ?? 0)) / 2);
+    return res.json({ suggestion: median, basis: "recent_sales" });
+  } catch {
+    return res.json({ suggestion: null });
   }
 });
 var auction_default = router27;
@@ -89301,8 +96885,10 @@ router29.post("/bank/deposit-item", async (req, res) => {
     const { itemId, quantity } = req.body;
     if (!itemId) return res.status(400).json({ error: "itemId required" });
     const [invItem] = await db.select().from(inventoryTable).where(and(eq(inventoryTable.characterId, characterId), eq(inventoryTable.itemId, itemId))).limit(1);
-    if (!invItem) return res.status(404).json({ error: "Item not in inventory" });
-    const qty = Math.min(quantity ?? invItem.quantity, invItem.quantity);
+    const [bagItem] = !invItem ? await db.select().from(gatheringBagItemsTable).where(and(eq(gatheringBagItemsTable.characterId, characterId), eq(gatheringBagItemsTable.itemId, itemId))).limit(1) : [void 0];
+    if (!invItem && !bagItem) return res.status(404).json({ error: "Item not in inventory" });
+    const sourceItem = invItem ?? bagItem;
+    const qty = Math.min(quantity ?? sourceItem.quantity, sourceItem.quantity);
     const [existingBank] = await db.select().from(bankItemsTable).where(and(eq(bankItemsTable.characterId, characterId), eq(bankItemsTable.itemId, itemId))).limit(1);
     if (existingBank) {
       await db.update(bankItemsTable).set({ quantity: existingBank.quantity + qty }).where(eq(bankItemsTable.id, existingBank.id));
@@ -89310,14 +96896,22 @@ router29.post("/bank/deposit-item", async (req, res) => {
       await db.insert(bankItemsTable).values({
         characterId,
         itemId,
-        itemData: invItem.itemData,
+        itemData: sourceItem.itemData,
         quantity: qty
       });
     }
-    if (invItem.quantity <= qty) {
-      await db.delete(inventoryTable).where(eq(inventoryTable.id, invItem.id));
+    if (invItem) {
+      if (invItem.quantity <= qty) {
+        await db.delete(inventoryTable).where(eq(inventoryTable.id, invItem.id));
+      } else {
+        await db.update(inventoryTable).set({ quantity: invItem.quantity - qty }).where(eq(inventoryTable.id, invItem.id));
+      }
     } else {
-      await db.update(inventoryTable).set({ quantity: invItem.quantity - qty }).where(eq(inventoryTable.id, invItem.id));
+      if (bagItem.quantity <= qty) {
+        await db.delete(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.id, bagItem.id));
+      } else {
+        await db.update(gatheringBagItemsTable).set({ quantity: bagItem.quantity - qty }).where(eq(gatheringBagItemsTable.id, bagItem.id));
+      }
     }
     return res.json({ success: true, itemId, quantity: qty });
   } catch (err) {
@@ -89401,6 +96995,8 @@ init_schema2();
 init_drizzle_orm();
 init_gameData();
 var router30 = (0, import_express30.Router)();
+var ALL_AA_NODES_GATHERING = ALL_AA_TABS.flatMap((tab) => tab.nodes);
+var AA_NODE_DEF_MAP_GATHERING = new Map(ALL_AA_NODES_GATHERING.map((n) => [n.id, n]));
 function yieldBonusQty(baseQuantity, skillLevel) {
   const bonusMultiplier = Math.floor(skillLevel / 25) * 0.1;
   const exactBonus = baseQuantity * bonusMultiplier;
@@ -89570,6 +97166,15 @@ router30.get("/gathering/status", async (req, res) => {
     await getOrCreateSkills(characterId);
     const skills = await db.select().from(skillsTable).where(eq(skillsTable.characterId, characterId));
     const skillLevelMap = new Map(skills.map((s) => [s.skillId, s.level]));
+    const aaRows = await db.select().from(aaPointsTable).where(and(eq(aaPointsTable.characterId, characterId), gt(aaPointsTable.rank, 0)));
+    const aaInvested = aaRows.map((r) => {
+      const def = AA_NODE_DEF_MAP_GATHERING.get(r.nodeId);
+      if (!def) return null;
+      return { effect: def.effect, currentRank: r.rank, effectValue: def.effectValue, effectPerRank: def.effectPerRank };
+    }).filter((n) => n !== null);
+    const aaBonuses = applyAABonuses(aaInvested);
+    const guildPerks = await getGuildPerksForCharacter(characterId);
+    const totalGatheringSpeedBonus = aaBonuses.gatheringSpeed + guildPerks.gatheringSpeedBonus;
     const sessions = await db.select().from(gatheringSessionsTable).where(and(
       eq(gatheringSessionsTable.characterId, character.id),
       eq(gatheringSessionsTable.isActive, true)
@@ -89587,13 +97192,14 @@ router30.get("/gathering/status", async (req, res) => {
       if (!node) continue;
       const skillLevel = skillLevelMap.get(session2.skillId) ?? 1;
       const elapsedMs = now.getTime() - new Date(session2.lastTickAt).getTime();
-      const ticksElapsed = Math.floor(elapsedMs / (node.gatherTimeSeconds * 1e3));
+      const effectiveGatherMs = node.gatherTimeSeconds * 1e3 / Math.max(0.1, 1 + totalGatheringSpeedBonus / 100);
+      const ticksElapsed = Math.floor(elapsedMs / effectiveGatherMs);
       if (ticksElapsed <= 0) {
         allYields.push({ skillId: session2.skillId, nodeId: session2.nodeId, items: [], rareItemIds: [] });
         continue;
       }
       const capTicks = Math.min(ticksElapsed, 50);
-      const newLastTickAt = new Date(new Date(session2.lastTickAt).getTime() + capTicks * node.gatherTimeSeconds * 1e3);
+      const newLastTickAt = new Date(new Date(session2.lastTickAt).getTime() + capTicks * effectiveGatherMs);
       const lastTickAtSnapshot = session2.lastTickAt;
       const updateResult = await db.update(gatheringSessionsTable).set({
         lastTickAt: newLastTickAt,
@@ -89652,14 +97258,15 @@ router30.get("/gathering/status", async (req, res) => {
       const updated = sessionUpdates.get(s.id);
       const effectiveLastTickAt = updated ? updated.lastTickAt : new Date(s.lastTickAt);
       const effectiveTotalGathered = updated ? updated.totalGathered : s.totalGathered;
+      const effectiveGatherTimeSec = node ? node.gatherTimeSeconds / Math.max(0.1, 1 + totalGatheringSpeedBonus / 100) : 10;
       return {
         skillId: s.skillId,
         nodeId: s.nodeId,
         nodeName: node?.name ?? s.nodeId,
         nodeIcon: node?.icon ?? "\u26CF\uFE0F",
-        gatherTimeSeconds: node?.gatherTimeSeconds ?? 10,
+        gatherTimeSeconds: effectiveGatherTimeSec,
         skillLevel: skill?.level ?? 1,
-        nextTickIn: node ? Math.max(0, node.gatherTimeSeconds - Math.floor((now.getTime() - effectiveLastTickAt.getTime()) / 1e3) % node.gatherTimeSeconds) : 0,
+        nextTickIn: node ? Math.max(0, effectiveGatherTimeSec - Math.floor((now.getTime() - effectiveLastTickAt.getTime()) / 1e3) % effectiveGatherTimeSec) : 0,
         totalGathered: effectiveTotalGathered
       };
     });
@@ -89879,1071 +97486,420 @@ router33.get("/gear-sets/active", async (req, res) => {
 });
 var gear_sets_default = router33;
 
-// src/routes/tradeskills.ts
+// src/routes/guild.ts
 var import_express34 = __toESM(require_express2(), 1);
 init_schema2();
 init_drizzle_orm();
 
-// src/lib/tradeskillData.ts
-var TRADESKILL_CLASSES = ["weaponsmith", "armorer", "tailor", "jeweler", "alchemist"];
-var TRADESKILL_MATERIALS = [
-  // ── Smithing ──────────────────────────────────────────────────────────────
-  { id: "ts_metal_flux", name: "Metal Flux", description: "A chemical flux used to refine metals during smithing.", spriteId: "material_flux", vendorCost: 2, usedBy: ["weaponsmith", "armorer"] },
-  { id: "ts_adamantine_ore", name: "Adamantine Ore", description: "An extremely dense ore found only in the deepest mines.", spriteId: "material_ore", vendorCost: 80, usedBy: ["weaponsmith", "armorer"] },
-  // ── Tailoring ──────────────────────────────────────────────────────────────
-  { id: "ts_strong_thread", name: "Strong Thread", description: "Durable thread used to stitch together all manner of cloth and leather.", spriteId: "material_thread", vendorCost: 3, usedBy: ["tailor"] },
-  { id: "ts_linen_bolt", name: "Linen Bolt", description: "A bolt of plain linen cloth, the most basic tailoring material.", spriteId: "material_cloth", vendorCost: 5, usedBy: ["tailor"] },
-  { id: "ts_silk_cloth", name: "Silk Cloth", description: "Fine silk cloth, smooth and light, favored by mid-tier tailors.", spriteId: "material_cloth", vendorCost: 18, usedBy: ["tailor"] },
-  { id: "ts_spidersilk_cloth", name: "Spidersilk Cloth", description: "Cloth woven from giant spider silk \u2014 strong as steel yet light as air.", spriteId: "material_cloth", vendorCost: 45, usedBy: ["tailor"] },
-  { id: "ts_moonweave", name: "Moonweave Cloth", description: "Magical cloth that shimmers with lunar energy. Used in the finest garments.", spriteId: "material_cloth", vendorCost: 90, usedBy: ["tailor"] },
-  { id: "ts_rough_hide", name: "Rough Hide", description: "Thick, unprocessed animal hide. Serviceable for basic leather armor.", spriteId: "material_hide", vendorCost: 6, usedBy: ["tailor"] },
-  { id: "ts_supple_leather", name: "Supple Leather", description: "Well-tanned leather that is both flexible and durable.", spriteId: "material_hide", vendorCost: 25, usedBy: ["tailor"] },
-  // ── Jeweling ──────────────────────────────────────────────────────────────
-  { id: "ts_jewelers_oil", name: "Jeweler's Oil", description: "A precision cutting oil used to shape gems and metals in jewelry work.", spriteId: "material_reagent", vendorCost: 4, usedBy: ["jeweler"] },
-  { id: "ts_rough_ruby", name: "Rough Ruby", description: "An uncut ruby with a deep red glow. Valuable to jewelers.", spriteId: "material_gem", vendorCost: 15, usedBy: ["jeweler"] },
-  { id: "ts_flawless_sapphire", name: "Flawless Sapphire", description: "A perfectly clear sapphire. Commands a high price from jewelers.", spriteId: "material_gem", vendorCost: 40, usedBy: ["jeweler"] },
-  { id: "ts_void_crystal", name: "Void Crystal", description: "A dark crystal suffused with void energy. Prized for high-tier accessories.", spriteId: "material_gem", vendorCost: 75, usedBy: ["jeweler"] },
-  // ── Alchemy ──────────────────────────────────────────────────────────────
-  { id: "ts_empty_vial", name: "Empty Vial", description: "A clean glass vial used as the base for all alchemical potions.", spriteId: "material_vial", vendorCost: 2, usedBy: ["alchemist"] },
-  { id: "ts_mana_shard", name: "Mana Shard", description: "A crystallized fragment of raw magical energy used in potions.", spriteId: "material_reagent", vendorCost: 8, usedBy: ["alchemist"] },
-  { id: "ts_alchemists_coal", name: "Alchemist's Coal", description: "Specially treated coal that burns at a precise temperature for alchemy.", spriteId: "material_reagent", vendorCost: 4, usedBy: ["alchemist"] }
-];
-var APPRENTICE_RECIPES = [
-  // ════ WEAPONSMITH ════════════════════════════════════════════════════════════
-  {
-    name: "Iron Shortsword",
-    tradeskillClass: "weaponsmith",
-    tier: "apprentice",
-    minSkill: 1,
-    minLevel: 10,
-    craftTimeSeconds: 60,
-    acquisitionType: "vendor",
-    vendorCost: 10,
-    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
-    output: {
-      name: "Forged Iron Shortsword",
-      type: "weapon",
-      slot: "primary",
-      rarity: "common",
-      description: "A simple iron shortsword hammered out by an apprentice smith.",
-      stats: { weaponDamageMin: 8, weaponDamageMax: 14, weaponDelay: 2, attackRating: 12 },
-      sellPrice: 18,
-      quantity: 1,
-      xpGained: 40,
-      spriteId: "weapon_sword"
-    }
-  },
-  {
-    name: "Iron Battle Axe",
-    tradeskillClass: "weaponsmith",
-    tier: "apprentice",
-    minSkill: 5,
-    minLevel: 12,
-    craftTimeSeconds: 90,
-    acquisitionType: "vendor",
-    vendorCost: 15,
-    ingredients: [{ itemId: "iron_ore", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 1 }],
-    output: {
-      name: "Forged Iron Battle Axe",
-      type: "weapon",
-      slot: "primary",
-      rarity: "uncommon",
-      description: "A heavy iron axe, slow but powerful.",
-      stats: { weaponDamageMin: 12, weaponDamageMax: 22, weaponDelay: 2.4, attackRating: 10, strength: 4 },
-      sellPrice: 30,
-      quantity: 1,
-      xpGained: 60,
-      spriteId: "weapon_axe"
-    }
-  },
-  {
-    name: "Steel Longsword",
-    tradeskillClass: "weaponsmith",
-    tier: "apprentice",
-    minSkill: 12,
-    minLevel: 20,
-    craftTimeSeconds: 120,
-    acquisitionType: "vendor",
-    vendorCost: 35,
-    ingredients: [{ itemId: "steel_bar", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
-    output: {
-      name: "Tempered Steel Longsword",
-      type: "weapon",
-      slot: "primary",
-      rarity: "uncommon",
-      description: "A well-balanced steel blade that holds a keen edge.",
-      stats: { weaponDamageMin: 18, weaponDamageMax: 28, weaponDelay: 2, attackRating: 24, strength: 6 },
-      sellPrice: 65,
-      quantity: 1,
-      xpGained: 100,
-      spriteId: "weapon_sword"
-    }
-  },
-  {
-    name: "Steel War Hammer",
-    tradeskillClass: "weaponsmith",
-    tier: "apprentice",
-    minSkill: 18,
-    minLevel: 22,
-    craftTimeSeconds: 150,
-    acquisitionType: "vendor",
-    vendorCost: 45,
-    ingredients: [{ itemId: "steel_bar", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 1 }],
-    output: {
-      name: "Steel War Hammer",
-      type: "weapon",
-      slot: "primary",
-      rarity: "rare",
-      description: "A crushing two-handed hammer favored by fighters.",
-      stats: { weaponDamageMin: 22, weaponDamageMax: 38, weaponDelay: 2.6, attackRating: 20, strength: 10, stamina: 5 },
-      sellPrice: 90,
-      quantity: 1,
-      xpGained: 140,
-      spriteId: "weapon_hammer"
-    }
-  },
-  {
-    name: "Mithril Blade",
-    tradeskillClass: "weaponsmith",
-    tier: "apprentice",
-    minSkill: 25,
-    minLevel: 30,
-    craftTimeSeconds: 240,
-    acquisitionType: "vendor",
-    vendorCost: 80,
-    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
-    output: {
-      name: "Mithril Blade",
-      type: "weapon",
-      slot: "primary",
-      rarity: "rare",
-      description: "A shimmering mithril sword that never loses its edge.",
-      stats: { weaponDamageMin: 32, weaponDamageMax: 48, weaponDelay: 1.8, attackRating: 42, agility: 8, critChance: 3 },
-      sellPrice: 160,
-      quantity: 1,
-      xpGained: 200,
-      spriteId: "weapon_sword"
-    }
-  },
-  {
-    name: "Mithril Warstaff",
-    tradeskillClass: "weaponsmith",
-    tier: "apprentice",
-    minSkill: 30,
-    minLevel: 35,
-    craftTimeSeconds: 300,
-    acquisitionType: "vendor",
-    vendorCost: 100,
-    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }, { itemId: "ts_linen_bolt", quantity: 1 }],
-    output: {
-      name: "Mithril-Tipped Warstaff",
-      type: "weapon",
-      slot: "primary",
-      rarity: "rare",
-      description: "A balanced combat staff reinforced with mithril.",
-      stats: { weaponDamageMin: 28, weaponDamageMax: 44, weaponDelay: 2, attackRating: 35, intelligence: 10, wisdom: 8 },
-      sellPrice: 180,
-      quantity: 1,
-      xpGained: 220,
-      spriteId: "weapon_staff"
-    }
-  },
-  {
-    name: "Adamantine Sword",
-    tradeskillClass: "weaponsmith",
-    tier: "apprentice",
-    minSkill: 36,
-    minLevel: 40,
-    craftTimeSeconds: 480,
-    acquisitionType: "vendor",
-    vendorCost: 160,
-    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
-    output: {
-      name: "Adamantine Sword",
-      type: "weapon",
-      slot: "primary",
-      rarity: "legendary",
-      description: "An indestructible sword forged from the hardest known metal.",
-      stats: { weaponDamageMin: 52, weaponDamageMax: 74, weaponDelay: 1.8, attackRating: 68, strength: 14, critChance: 5 },
-      sellPrice: 400,
-      quantity: 1,
-      xpGained: 380,
-      spriteId: "weapon_sword"
-    }
-  },
-  {
-    name: "Adamantine Greataxe",
-    tradeskillClass: "weaponsmith",
-    tier: "apprentice",
-    minSkill: 38,
-    minLevel: 42,
-    craftTimeSeconds: 600,
-    acquisitionType: "vendor",
-    vendorCost: 200,
-    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 2 }],
-    output: {
-      name: "Adamantine Greataxe",
-      type: "weapon",
-      slot: "primary",
-      rarity: "legendary",
-      description: "A massive two-handed axe that cleaves through armor like cloth.",
-      stats: { weaponDamageMin: 65, weaponDamageMax: 95, weaponDelay: 2.6, attackRating: 60, strength: 20, stamina: 10 },
-      sellPrice: 500,
-      quantity: 1,
-      xpGained: 420,
-      spriteId: "weapon_axe"
-    }
-  },
-  // ════ ARMORER ════════════════════════════════════════════════════════════════
-  {
-    name: "Iron Cap",
-    tradeskillClass: "armorer",
-    tier: "apprentice",
-    minSkill: 1,
-    minLevel: 10,
-    craftTimeSeconds: 60,
-    acquisitionType: "vendor",
-    vendorCost: 10,
-    ingredients: [{ itemId: "iron_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
-    output: {
-      name: "Forged Iron Cap",
-      type: "armor",
-      slot: "head",
-      rarity: "common",
-      armorType: "plate",
-      description: "A simple iron helmet offering basic protection.",
-      stats: { defenseRating: 14, stamina: 5 },
-      sellPrice: 16,
-      quantity: 1,
-      xpGained: 40,
-      spriteId: "helm_plate"
-    }
-  },
-  {
-    name: "Iron Chestplate",
-    tradeskillClass: "armorer",
-    tier: "apprentice",
-    minSkill: 5,
-    minLevel: 10,
-    craftTimeSeconds: 120,
-    acquisitionType: "vendor",
-    vendorCost: 20,
-    ingredients: [{ itemId: "iron_ore", quantity: 4 }, { itemId: "ts_metal_flux", quantity: 1 }],
-    output: {
-      name: "Forged Iron Chestplate",
-      type: "armor",
-      slot: "chest",
-      rarity: "common",
-      armorType: "plate",
-      description: "A solid iron breastplate for a beginning armorer.",
-      stats: { defenseRating: 22, stamina: 8, health: 12 },
-      sellPrice: 30,
-      quantity: 1,
-      xpGained: 60,
-      spriteId: "chest_plate"
-    }
-  },
-  {
-    name: "Iron Greaves",
-    tradeskillClass: "armorer",
-    tier: "apprentice",
-    minSkill: 8,
-    minLevel: 12,
-    craftTimeSeconds: 90,
-    acquisitionType: "vendor",
-    vendorCost: 15,
-    ingredients: [{ itemId: "iron_ore", quantity: 3 }, { itemId: "ts_metal_flux", quantity: 1 }],
-    output: {
-      name: "Forged Iron Greaves",
-      type: "armor",
-      slot: "legs",
-      rarity: "common",
-      armorType: "plate",
-      description: "Iron leg plates that protect from knee to hip.",
-      stats: { defenseRating: 18, stamina: 6 },
-      sellPrice: 22,
-      quantity: 1,
-      xpGained: 50,
-      spriteId: "legs_plate"
-    }
-  },
-  {
-    name: "Steel Helm",
-    tradeskillClass: "armorer",
-    tier: "apprentice",
-    minSkill: 12,
-    minLevel: 20,
-    craftTimeSeconds: 120,
-    acquisitionType: "vendor",
-    vendorCost: 35,
-    ingredients: [{ itemId: "steel_bar", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 1 }],
-    output: {
-      name: "Steel Helm",
-      type: "armor",
-      slot: "head",
-      rarity: "uncommon",
-      armorType: "plate",
-      description: "A well-crafted steel helmet with cheek guards.",
-      stats: { defenseRating: 28, stamina: 12, health: 18 },
-      sellPrice: 60,
-      quantity: 1,
-      xpGained: 100,
-      spriteId: "helm_plate"
-    }
-  },
-  {
-    name: "Steel Breastplate",
-    tradeskillClass: "armorer",
-    tier: "apprentice",
-    minSkill: 18,
-    minLevel: 22,
-    craftTimeSeconds: 180,
-    acquisitionType: "vendor",
-    vendorCost: 55,
-    ingredients: [{ itemId: "steel_bar", quantity: 4 }, { itemId: "ts_metal_flux", quantity: 1 }],
-    output: {
-      name: "Steel Breastplate",
-      type: "armor",
-      slot: "chest",
-      rarity: "rare",
-      armorType: "plate",
-      description: "Expertly crafted steel plate that offers serious protection.",
-      stats: { defenseRating: 42, stamina: 20, health: 30, strength: 6 },
-      sellPrice: 110,
-      quantity: 1,
-      xpGained: 150,
-      spriteId: "chest_plate"
-    }
-  },
-  {
-    name: "Mithril Coif",
-    tradeskillClass: "armorer",
-    tier: "apprentice",
-    minSkill: 25,
-    minLevel: 30,
-    craftTimeSeconds: 240,
-    acquisitionType: "vendor",
-    vendorCost: 80,
-    ingredients: [{ itemId: "mithril_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
-    output: {
-      name: "Mithril Coif",
-      type: "armor",
-      slot: "head",
-      rarity: "rare",
-      armorType: "plate",
-      description: "A lightweight mithril helmet providing excellent protection.",
-      stats: { defenseRating: 48, stamina: 22, health: 32 },
-      sellPrice: 190,
-      quantity: 1,
-      xpGained: 200,
-      spriteId: "helm_plate"
-    }
-  },
-  {
-    name: "Mithril Plate",
-    tradeskillClass: "armorer",
-    tier: "apprentice",
-    minSkill: 30,
-    minLevel: 34,
-    craftTimeSeconds: 360,
-    acquisitionType: "vendor",
-    vendorCost: 120,
-    ingredients: [{ itemId: "mithril_ore", quantity: 4 }, { itemId: "ts_metal_flux", quantity: 2 }],
-    output: {
-      name: "Mithril Plate",
-      type: "armor",
-      slot: "chest",
-      rarity: "rare",
-      armorType: "plate",
-      description: "Gleaming mithril plate armor, lighter than steel but far stronger.",
-      stats: { defenseRating: 72, stamina: 38, health: 52, strength: 10 },
-      sellPrice: 280,
-      quantity: 1,
-      xpGained: 280,
-      spriteId: "chest_plate"
-    }
-  },
-  {
-    name: "Adamantine Helm",
-    tradeskillClass: "armorer",
-    tier: "apprentice",
-    minSkill: 36,
-    minLevel: 40,
-    craftTimeSeconds: 480,
-    acquisitionType: "vendor",
-    vendorCost: 160,
-    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 2 }, { itemId: "ts_metal_flux", quantity: 2 }],
-    output: {
-      name: "Adamantine Helm",
-      type: "armor",
-      slot: "head",
-      rarity: "legendary",
-      armorType: "plate",
-      description: "The pinnacle of plate craftsmanship \u2014 nearly indestructible.",
-      stats: { defenseRating: 86, stamina: 50, health: 70, strength: 14 },
-      sellPrice: 450,
-      quantity: 1,
-      xpGained: 380,
-      spriteId: "helm_plate"
-    }
-  },
-  {
-    name: "Adamantine Breastplate",
-    tradeskillClass: "armorer",
-    tier: "apprentice",
-    minSkill: 40,
-    minLevel: 44,
-    craftTimeSeconds: 600,
-    acquisitionType: "vendor",
-    vendorCost: 220,
-    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 5 }, { itemId: "ts_metal_flux", quantity: 3 }],
-    output: {
-      name: "Adamantine Breastplate",
-      type: "armor",
-      slot: "chest",
-      rarity: "legendary",
-      armorType: "plate",
-      description: "The mightiest crafted breastplate in all of Norrath.",
-      stats: { defenseRating: 130, stamina: 80, health: 110, strength: 22 },
-      sellPrice: 650,
-      quantity: 1,
-      xpGained: 450,
-      spriteId: "chest_plate"
-    }
-  },
-  // ════ TAILOR ═════════════════════════════════════════════════════════════════
-  {
-    name: "Linen Tunic",
-    tradeskillClass: "tailor",
-    tier: "apprentice",
-    minSkill: 1,
-    minLevel: 10,
-    craftTimeSeconds: 60,
-    acquisitionType: "vendor",
-    vendorCost: 8,
-    ingredients: [{ itemId: "ts_linen_bolt", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
-    output: {
-      name: "Stitched Linen Tunic",
-      type: "armor",
-      slot: "chest",
-      rarity: "common",
-      armorType: "cloth",
-      description: "A simple cloth tunic stitched together by a novice tailor.",
-      stats: { intelligence: 6, wisdom: 4 },
-      sellPrice: 12,
-      quantity: 1,
-      xpGained: 35,
-      spriteId: "chest_cloth"
-    }
-  },
-  {
-    name: "Rough Leather Vest",
-    tradeskillClass: "tailor",
-    tier: "apprentice",
-    minSkill: 5,
-    minLevel: 12,
-    craftTimeSeconds: 90,
-    acquisitionType: "vendor",
-    vendorCost: 18,
-    ingredients: [{ itemId: "ts_rough_hide", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
-    output: {
-      name: "Rough Leather Vest",
-      type: "armor",
-      slot: "chest",
-      rarity: "common",
-      armorType: "leather",
-      description: "A serviceable leather vest for scouts and rogues.",
-      stats: { agility: 8, attackRating: 6 },
-      sellPrice: 20,
-      quantity: 1,
-      xpGained: 45,
-      spriteId: "chest_leather"
-    }
-  },
-  {
-    name: "Silk Robe",
-    tradeskillClass: "tailor",
-    tier: "apprentice",
-    minSkill: 12,
-    minLevel: 20,
-    craftTimeSeconds: 120,
-    acquisitionType: "vendor",
-    vendorCost: 40,
-    ingredients: [{ itemId: "ts_silk_cloth", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
-    output: {
-      name: "Silk Robe",
-      type: "armor",
-      slot: "chest",
-      rarity: "uncommon",
-      armorType: "cloth",
-      description: "A flowing silk robe that channels magical energy.",
-      stats: { intelligence: 18, wisdom: 12, spellCritChance: 3 },
-      sellPrice: 75,
-      quantity: 1,
-      xpGained: 100,
-      spriteId: "chest_cloth"
-    }
-  },
-  {
-    name: "Supple Leather Jerkin",
-    tradeskillClass: "tailor",
-    tier: "apprentice",
-    minSkill: 18,
-    minLevel: 25,
-    craftTimeSeconds: 150,
-    acquisitionType: "vendor",
-    vendorCost: 55,
-    ingredients: [{ itemId: "ts_supple_leather", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
-    output: {
-      name: "Supple Leather Jerkin",
-      type: "armor",
-      slot: "chest",
-      rarity: "rare",
-      armorType: "leather",
-      description: "Flexible yet tough leather that moves with the wearer.",
-      stats: { agility: 22, attackRating: 16, critChance: 4 },
-      sellPrice: 110,
-      quantity: 1,
-      xpGained: 140,
-      spriteId: "chest_leather"
-    }
-  },
-  {
-    name: "Silk Hood",
-    tradeskillClass: "tailor",
-    tier: "apprentice",
-    minSkill: 14,
-    minLevel: 20,
-    craftTimeSeconds: 100,
-    acquisitionType: "vendor",
-    vendorCost: 35,
-    ingredients: [{ itemId: "ts_silk_cloth", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
-    output: {
-      name: "Silk Hood",
-      type: "armor",
-      slot: "head",
-      rarity: "uncommon",
-      armorType: "cloth",
-      description: "A hood woven from fine silk that amplifies mental acuity.",
-      stats: { intelligence: 14, wisdom: 10 },
-      sellPrice: 55,
-      quantity: 1,
-      xpGained: 90,
-      spriteId: "helm_cloth"
-    }
-  },
-  {
-    name: "Spidersilk Vestments",
-    tradeskillClass: "tailor",
-    tier: "apprentice",
-    minSkill: 26,
-    minLevel: 32,
-    craftTimeSeconds: 270,
-    acquisitionType: "vendor",
-    vendorCost: 100,
-    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 2 }],
-    output: {
-      name: "Spidersilk Vestments",
-      type: "armor",
-      slot: "chest",
-      rarity: "rare",
-      armorType: "cloth",
-      description: "Incredibly strong yet featherlight vestments woven from spider silk.",
-      stats: { intelligence: 32, wisdom: 22, spellCritChance: 6, spellDamage: 12 },
-      sellPrice: 200,
-      quantity: 1,
-      xpGained: 220,
-      spriteId: "chest_cloth"
-    }
-  },
-  {
-    name: "Spidersilk Scout Armor",
-    tradeskillClass: "tailor",
-    tier: "apprentice",
-    minSkill: 28,
-    minLevel: 34,
-    craftTimeSeconds: 300,
-    acquisitionType: "vendor",
-    vendorCost: 110,
-    ingredients: [{ itemId: "ts_spidersilk_cloth", quantity: 2 }, { itemId: "ts_supple_leather", quantity: 1 }, { itemId: "ts_strong_thread", quantity: 1 }],
-    output: {
-      name: "Spidersilk Scout Armor",
-      type: "armor",
-      slot: "chest",
-      rarity: "rare",
-      armorType: "leather",
-      description: "Lightweight scout armor reinforced with spidersilk weave.",
-      stats: { agility: 36, attackRating: 28, critChance: 6, haste: 4 },
-      sellPrice: 220,
-      quantity: 1,
-      xpGained: 240,
-      spriteId: "chest_leather"
-    }
-  },
-  {
-    name: "Moonweave Robe",
-    tradeskillClass: "tailor",
-    tier: "apprentice",
-    minSkill: 36,
-    minLevel: 40,
-    craftTimeSeconds: 480,
-    acquisitionType: "vendor",
-    vendorCost: 180,
-    ingredients: [{ itemId: "ts_moonweave", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 2 }],
-    output: {
-      name: "Moonweave Robe",
-      type: "armor",
-      slot: "chest",
-      rarity: "legendary",
-      armorType: "cloth",
-      description: "A robe stitched from moonweave, shimmering with lunar energy.",
-      stats: { intelligence: 60, wisdom: 42, spellCritChance: 10, spellDamage: 24 },
-      sellPrice: 480,
-      quantity: 1,
-      xpGained: 400,
-      spriteId: "chest_cloth"
-    }
-  },
-  {
-    name: "Moonweave Leggings",
-    tradeskillClass: "tailor",
-    tier: "apprentice",
-    minSkill: 38,
-    minLevel: 42,
-    craftTimeSeconds: 420,
-    acquisitionType: "vendor",
-    vendorCost: 160,
-    ingredients: [{ itemId: "ts_moonweave", quantity: 2 }, { itemId: "ts_strong_thread", quantity: 1 }],
-    output: {
-      name: "Moonweave Leggings",
-      type: "armor",
-      slot: "legs",
-      rarity: "legendary",
-      armorType: "cloth",
-      description: "Flowing leggings of moonweave that ripple with arcane power.",
-      stats: { intelligence: 50, wisdom: 36, spellCritChance: 8 },
-      sellPrice: 380,
-      quantity: 1,
-      xpGained: 360,
-      spriteId: "legs_cloth"
-    }
-  },
-  // ════ JEWELER ════════════════════════════════════════════════════════════════
-  {
-    name: "Iron Ring",
-    tradeskillClass: "jeweler",
-    tier: "apprentice",
-    minSkill: 1,
-    minLevel: 10,
-    craftTimeSeconds: 45,
-    acquisitionType: "vendor",
-    vendorCost: 8,
-    ingredients: [{ itemId: "iron_ore", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
-    output: {
-      name: "Polished Iron Ring",
-      type: "accessory",
-      slot: "ring",
-      rarity: "common",
-      description: "A simple iron ring, worn smooth by the jeweler's polishing cloth.",
-      stats: { strength: 4, stamina: 3 },
-      sellPrice: 12,
-      quantity: 1,
-      xpGained: 30,
-      spriteId: "ring"
-    }
-  },
-  {
-    name: "Ruby Stud Earring",
-    tradeskillClass: "jeweler",
-    tier: "apprentice",
-    minSkill: 5,
-    minLevel: 12,
-    craftTimeSeconds: 60,
-    acquisitionType: "vendor",
-    vendorCost: 22,
-    ingredients: [{ itemId: "iron_ore", quantity: 1 }, { itemId: "ts_rough_ruby", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
-    output: {
-      name: "Ruby Stud Earring",
-      type: "accessory",
-      slot: "ear",
-      rarity: "uncommon",
-      description: "A gleaming iron earring set with a rough ruby.",
-      stats: { attackRating: 8, critChance: 2 },
-      sellPrice: 35,
-      quantity: 1,
-      xpGained: 55,
-      spriteId: "earring"
-    }
-  },
-  {
-    name: "Steel Band",
-    tradeskillClass: "jeweler",
-    tier: "apprentice",
-    minSkill: 10,
-    minLevel: 18,
-    craftTimeSeconds: 75,
-    acquisitionType: "vendor",
-    vendorCost: 30,
-    ingredients: [{ itemId: "steel_bar", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
-    output: {
-      name: "Polished Steel Band",
-      type: "accessory",
-      slot: "ring",
-      rarity: "uncommon",
-      description: "A smooth steel ring that imparts martial focus.",
-      stats: { attackRating: 12, strength: 6 },
-      sellPrice: 55,
-      quantity: 1,
-      xpGained: 80,
-      spriteId: "ring"
-    }
-  },
-  {
-    name: "Sapphire Pendant",
-    tradeskillClass: "jeweler",
-    tier: "apprentice",
-    minSkill: 15,
-    minLevel: 22,
-    craftTimeSeconds: 100,
-    acquisitionType: "vendor",
-    vendorCost: 60,
-    ingredients: [{ itemId: "steel_bar", quantity: 1 }, { itemId: "ts_flawless_sapphire", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
-    output: {
-      name: "Sapphire Pendant",
-      type: "accessory",
-      slot: "neck",
-      rarity: "rare",
-      description: "A brilliant sapphire set in polished steel, it amplifies the wearer's focus.",
-      stats: { intelligence: 14, wisdom: 10, spellCritChance: 3 },
-      sellPrice: 120,
-      quantity: 1,
-      xpGained: 130,
-      spriteId: "necklace"
-    }
-  },
-  {
-    name: "Mithril Loop",
-    tradeskillClass: "jeweler",
-    tier: "apprentice",
-    minSkill: 22,
-    minLevel: 28,
-    craftTimeSeconds: 150,
-    acquisitionType: "vendor",
-    vendorCost: 80,
-    ingredients: [{ itemId: "mithril_ore", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
-    output: {
-      name: "Mithril Loop",
-      type: "accessory",
-      slot: "ring",
-      rarity: "rare",
-      description: "A seamless ring of pure mithril \u2014 lightweight yet incredibly strong.",
-      stats: { agility: 12, attackRating: 18, avoidance: 3 },
-      sellPrice: 180,
-      quantity: 1,
-      xpGained: 180,
-      spriteId: "ring"
-    }
-  },
-  {
-    name: "Void Crystal Ring",
-    tradeskillClass: "jeweler",
-    tier: "apprentice",
-    minSkill: 30,
-    minLevel: 35,
-    craftTimeSeconds: 240,
-    acquisitionType: "vendor",
-    vendorCost: 130,
-    ingredients: [{ itemId: "mithril_ore", quantity: 1 }, { itemId: "ts_void_crystal", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
-    output: {
-      name: "Void Crystal Ring",
-      type: "accessory",
-      slot: "ring",
-      rarity: "rare",
-      description: "A ring set with a dark crystal that pulses with shadow energy.",
-      stats: { intelligence: 20, spellDamage: 14, spellCritChance: 5 },
-      sellPrice: 260,
-      quantity: 1,
-      xpGained: 250,
-      spriteId: "ring"
-    }
-  },
-  {
-    name: "Adamantine Choker",
-    tradeskillClass: "jeweler",
-    tier: "apprentice",
-    minSkill: 35,
-    minLevel: 40,
-    craftTimeSeconds: 360,
-    acquisitionType: "vendor",
-    vendorCost: 180,
-    ingredients: [{ itemId: "ts_adamantine_ore", quantity: 1 }, { itemId: "ts_rough_ruby", quantity: 2 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
-    output: {
-      name: "Adamantine Choker",
-      type: "accessory",
-      slot: "neck",
-      rarity: "legendary",
-      description: "A sturdy choker of adamantine accented with rubies \u2014 a sign of great wealth and power.",
-      stats: { strength: 18, attackRating: 30, critChance: 6, stamina: 12 },
-      sellPrice: 450,
-      quantity: 1,
-      xpGained: 380,
-      spriteId: "necklace"
-    }
-  },
-  {
-    name: "Moonstone Amulet",
-    tradeskillClass: "jeweler",
-    tier: "apprentice",
-    minSkill: 38,
-    minLevel: 42,
-    craftTimeSeconds: 420,
-    acquisitionType: "vendor",
-    vendorCost: 200,
-    ingredients: [{ itemId: "mithril_ore", quantity: 1 }, { itemId: "ts_flawless_sapphire", quantity: 1 }, { itemId: "ts_void_crystal", quantity: 1 }, { itemId: "ts_jewelers_oil", quantity: 1 }],
-    output: {
-      name: "Moonstone Amulet",
-      type: "accessory",
-      slot: "neck",
-      rarity: "legendary",
-      description: "A masterwork amulet combining sapphire clarity with void crystal power.",
-      stats: { intelligence: 38, wisdom: 28, spellCritChance: 9, spellDamage: 22 },
-      sellPrice: 520,
-      quantity: 1,
-      xpGained: 420,
-      spriteId: "necklace"
-    }
-  },
-  // ════ ALCHEMIST ══════════════════════════════════════════════════════════════
-  {
-    name: "Minor Health Potion",
-    tradeskillClass: "alchemist",
-    tier: "apprentice",
-    minSkill: 1,
-    minLevel: 10,
-    craftTimeSeconds: 30,
-    acquisitionType: "vendor",
-    vendorCost: 5,
-    ingredients: [{ itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_alchemists_coal", quantity: 1 }, { itemId: "ts_mana_shard", quantity: 1 }],
-    output: {
-      name: "Minor Health Potion",
-      type: "consumable",
-      slot: "none",
-      rarity: "common",
-      description: "A basic red potion that restores a small amount of health.",
-      stats: {},
-      sellPrice: 8,
-      quantity: 2,
-      xpGained: 25,
-      spriteId: "potion_red",
-      stackable: true,
-      effect: { type: "heal", value: 150 }
-    }
-  },
-  {
-    name: "Minor Power Potion",
-    tradeskillClass: "alchemist",
-    tier: "apprentice",
-    minSkill: 3,
-    minLevel: 10,
-    craftTimeSeconds: 30,
-    acquisitionType: "vendor",
-    vendorCost: 5,
-    ingredients: [{ itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_alchemists_coal", quantity: 1 }, { itemId: "ts_mana_shard", quantity: 1 }],
-    output: {
-      name: "Minor Power Potion",
-      type: "consumable",
-      slot: "none",
-      rarity: "common",
-      description: "A small blue potion that restores magical power.",
-      stats: {},
-      sellPrice: 8,
-      quantity: 2,
-      xpGained: 25,
-      spriteId: "potion_blue",
-      stackable: true,
-      effect: { type: "restore_power", value: 100 }
-    }
-  },
-  {
-    name: "Elixir of Strength",
-    tradeskillClass: "alchemist",
-    tier: "apprentice",
-    minSkill: 8,
-    minLevel: 15,
-    craftTimeSeconds: 60,
-    acquisitionType: "vendor",
-    vendorCost: 20,
-    ingredients: [{ itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_alchemists_coal", quantity: 2 }, { itemId: "ts_mana_shard", quantity: 1 }],
-    output: {
-      name: "Elixir of Strength",
-      type: "consumable",
-      slot: "none",
-      rarity: "uncommon",
-      description: "A fizzing green potion that temporarily boosts physical strength.",
-      stats: {},
-      sellPrice: 35,
-      quantity: 1,
-      xpGained: 60,
-      spriteId: "potion_green",
-      stackable: true,
-      effect: { type: "buff_strength", value: 20 }
-    }
-  },
-  {
-    name: "Health Potion",
-    tradeskillClass: "alchemist",
-    tier: "apprentice",
-    minSkill: 14,
-    minLevel: 20,
-    craftTimeSeconds: 60,
-    acquisitionType: "vendor",
-    vendorCost: 22,
-    ingredients: [{ itemId: "ts_empty_vial", quantity: 2 }, { itemId: "ts_alchemists_coal", quantity: 2 }, { itemId: "ts_mana_shard", quantity: 1 }],
-    output: {
-      name: "Health Potion",
-      type: "consumable",
-      slot: "none",
-      rarity: "uncommon",
-      description: "A reliable health potion that restores a significant amount of health.",
-      stats: {},
-      sellPrice: 40,
-      quantity: 2,
-      xpGained: 90,
-      spriteId: "potion_red",
-      stackable: true,
-      effect: { type: "heal", value: 350 }
-    }
-  },
-  {
-    name: "Elixir of Agility",
-    tradeskillClass: "alchemist",
-    tier: "apprentice",
-    minSkill: 16,
-    minLevel: 22,
-    craftTimeSeconds: 75,
-    acquisitionType: "vendor",
-    vendorCost: 28,
-    ingredients: [{ itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_alchemists_coal", quantity: 2 }, { itemId: "ts_mana_shard", quantity: 2 }],
-    output: {
-      name: "Elixir of Agility",
-      type: "consumable",
-      slot: "none",
-      rarity: "uncommon",
-      description: "A shimmering potion that sharpens reflexes and quickens feet.",
-      stats: {},
-      sellPrice: 45,
-      quantity: 1,
-      xpGained: 100,
-      spriteId: "potion_green",
-      stackable: true,
-      effect: { type: "buff_agility", value: 20 }
-    }
-  },
-  {
-    name: "Elixir of the Warrior",
-    tradeskillClass: "alchemist",
-    tier: "apprentice",
-    minSkill: 22,
-    minLevel: 28,
-    craftTimeSeconds: 120,
-    acquisitionType: "vendor",
-    vendorCost: 55,
-    ingredients: [{ itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_alchemists_coal", quantity: 3 }, { itemId: "ts_mana_shard", quantity: 2 }],
-    output: {
-      name: "Elixir of the Warrior",
-      type: "consumable",
-      slot: "none",
-      rarity: "rare",
-      description: "A potent elixir that enhances the drinker's fighting capability for a short time.",
-      stats: {},
-      sellPrice: 90,
-      quantity: 1,
-      xpGained: 160,
-      spriteId: "potion_orange",
-      stackable: true,
-      effect: { type: "buff_attack", value: 30 }
-    }
-  },
-  {
-    name: "Strong Health Potion",
-    tradeskillClass: "alchemist",
-    tier: "apprentice",
-    minSkill: 28,
-    minLevel: 32,
-    craftTimeSeconds: 120,
-    acquisitionType: "vendor",
-    vendorCost: 65,
-    ingredients: [{ itemId: "ts_empty_vial", quantity: 2 }, { itemId: "ts_alchemists_coal", quantity: 3 }, { itemId: "ts_mana_shard", quantity: 2 }],
-    output: {
-      name: "Strong Health Potion",
-      type: "consumable",
-      slot: "none",
-      rarity: "rare",
-      description: "A concentrated health potion that rapidly restores health.",
-      stats: {},
-      sellPrice: 100,
-      quantity: 2,
-      xpGained: 180,
-      spriteId: "potion_red",
-      stackable: true,
-      effect: { type: "heal", value: 700 }
-    }
-  },
-  {
-    name: "Elixir of Intelligence",
-    tradeskillClass: "alchemist",
-    tier: "apprentice",
-    minSkill: 34,
-    minLevel: 38,
-    craftTimeSeconds: 150,
-    acquisitionType: "vendor",
-    vendorCost: 90,
-    ingredients: [{ itemId: "ts_empty_vial", quantity: 1 }, { itemId: "ts_alchemists_coal", quantity: 3 }, { itemId: "ts_mana_shard", quantity: 3 }],
-    output: {
-      name: "Elixir of Intelligence",
-      type: "consumable",
-      slot: "none",
-      rarity: "rare",
-      description: "A sparkling golden potion that greatly enhances magical intellect.",
-      stats: {},
-      sellPrice: 140,
-      quantity: 1,
-      xpGained: 240,
-      spriteId: "potion_gold",
-      stackable: true,
-      effect: { type: "buff_intelligence", value: 30 }
-    }
-  },
-  {
-    name: "Flask of Undying Resolve",
-    tradeskillClass: "alchemist",
-    tier: "apprentice",
-    minSkill: 40,
-    minLevel: 44,
-    craftTimeSeconds: 300,
-    acquisitionType: "vendor",
-    vendorCost: 180,
-    ingredients: [{ itemId: "ts_empty_vial", quantity: 2 }, { itemId: "ts_alchemists_coal", quantity: 4 }, { itemId: "ts_mana_shard", quantity: 3 }],
-    output: {
-      name: "Flask of Undying Resolve",
-      type: "consumable",
-      slot: "none",
-      rarity: "legendary",
-      description: "A master alchemist's masterwork \u2014 a flask that dramatically extends the drinker's endurance.",
-      stats: {},
-      sellPrice: 350,
-      quantity: 1,
-      xpGained: 420,
-      spriteId: "potion_purple",
-      stackable: true,
-      effect: { type: "heal", value: 1500 }
-    }
+// src/middleware/auth.ts
+function requireAuth(req, res, next) {
+  if (!req.session.userId || !req.session.activeCharacterId) {
+    return res.status(401).json({ error: "Not authenticated" });
   }
-];
-var ALL_APPRENTICE_RECIPE_NAMES = new Set(APPRENTICE_RECIPES.map((r) => r.name));
+  req.userId = req.session.userId;
+  req.characterId = req.session.activeCharacterId;
+  return next();
+}
+
+// src/routes/guild.ts
+var router34 = (0, import_express34.Router)();
+function computeContribution(char2) {
+  return char2.level * 100 + Math.floor(char2.killCount * 0.5) + char2.bossKills * 10 + char2.heroicCompleted * 100;
+}
+function isValidGuildName(name) {
+  return /^[A-Za-z0-9 ']{3,30}$/.test(name.trim());
+}
+function isValidTag(tag) {
+  return /^[A-Z0-9]{2,5}$/.test(tag.trim());
+}
+router34.get("/guild", requireAuth, async (req, res, next) => {
+  try {
+    const characterId = req.characterId;
+    const [membership] = await db.select().from(guildMembersTable).where(eq(guildMembersTable.characterId, characterId)).limit(1);
+    if (!membership) {
+      return res.json(null);
+    }
+    const [guild] = await db.select().from(guildsTable).where(eq(guildsTable.id, membership.guildId)).limit(1);
+    if (!guild) {
+      return res.json(null);
+    }
+    await refreshRealMemberContributions(guild.id);
+    const members = await buildGuildMembers(guild.id);
+    const currentScore = members.reduce((s, m) => s + m.contributionPoints, 0);
+    const guildLevel = computeGuildLevel(currentScore);
+    const perks = guildLevelPerks(guildLevel);
+    const maxLevel = GUILD_LEVEL_THRESHOLDS.length;
+    const nextLevelScore = guildLevel < maxLevel ? GUILD_LEVEL_THRESHOLDS[guildLevel] : null;
+    return res.json({ guild, membership, members, guildLevel, perks, currentScore: Math.round(currentScore), nextLevelScore });
+  } catch (err) {
+    next(err);
+  }
+});
+router34.get("/guild/leaderboard", requireAuth, async (req, res, next) => {
+  try {
+    const scores = await db.select({
+      guildId: guildMembersTable.guildId,
+      totalScore: sql`cast(sum(${guildMembersTable.contributionPoints}) as float)`,
+      memberCount: sql`cast(count(*) as int)`
+    }).from(guildMembersTable).groupBy(guildMembersTable.guildId);
+    const scoreMap = new Map(scores.map((s) => [s.guildId, s]));
+    const allGuilds = await db.select().from(guildsTable).orderBy(guildsTable.name);
+    const ranked = allGuilds.map((guild) => {
+      const agg = scoreMap.get(guild.id);
+      const score = Math.round(agg?.totalScore ?? 0);
+      return {
+        id: guild.id,
+        name: guild.name,
+        tag: guild.tag,
+        alignment: guild.alignment,
+        description: guild.description,
+        motto: guild.motto,
+        isGhost: guild.isGhost,
+        score,
+        memberCount: agg?.memberCount ?? 0,
+        bankGold: guild.bankGold,
+        guildLevel: computeGuildLevel(score)
+      };
+    }).sort((a, b) => b.score - a.score).map((g, i) => ({ ...g, rank: i + 1 }));
+    return res.json(ranked);
+  } catch (err) {
+    next(err);
+  }
+});
+router34.get("/guild/:id", requireAuth, async (req, res, next) => {
+  try {
+    const guildId = parseInt(req.params.id, 10);
+    if (isNaN(guildId)) return res.status(400).json({ error: "Invalid guild ID" });
+    const [guild] = await db.select().from(guildsTable).where(eq(guildsTable.id, guildId)).limit(1);
+    if (!guild) return res.status(404).json({ error: "Guild not found" });
+    const members = await buildGuildMembers(guild.id);
+    return res.json({ guild, members });
+  } catch (err) {
+    next(err);
+  }
+});
+router34.post("/guild/create", requireAuth, async (req, res, next) => {
+  try {
+    const characterId = req.characterId;
+    const { name, tag, description = "", alignment = "Neutral", motto = "" } = req.body;
+    if (!name || !tag) {
+      return res.status(400).json({ error: "name and tag are required" });
+    }
+    const trimmedName = String(name).trim();
+    const trimmedTag = String(tag).trim().toUpperCase();
+    if (!isValidGuildName(trimmedName)) {
+      return res.status(400).json({ error: "Guild name must be 3\u201330 characters (letters, numbers, spaces, apostrophes)" });
+    }
+    if (!isValidTag(trimmedTag)) {
+      return res.status(400).json({ error: "Tag must be 2\u20135 uppercase letters/numbers (e.g. IRON)" });
+    }
+    if (!["Qeynos", "Freeport", "Neutral"].includes(alignment)) {
+      return res.status(400).json({ error: "alignment must be Qeynos, Freeport, or Neutral" });
+    }
+    const [existingMembership] = await db.select({ id: guildMembersTable.id }).from(guildMembersTable).where(eq(guildMembersTable.characterId, characterId)).limit(1);
+    if (existingMembership) {
+      return res.status(409).json({ error: "You are already in a guild. Leave it before creating a new one." });
+    }
+    const [nameConflict] = await db.select({ id: guildsTable.id }).from(guildsTable).where(eq(guildsTable.name, trimmedName)).limit(1);
+    if (nameConflict) return res.status(409).json({ error: "A guild with that name already exists" });
+    const [tagConflict] = await db.select({ id: guildsTable.id }).from(guildsTable).where(eq(guildsTable.tag, trimmedTag)).limit(1);
+    if (tagConflict) return res.status(409).json({ error: "A guild with that tag already exists" });
+    const [char2] = await db.select({ level: charactersTable.level, killCount: charactersTable.killCount, bossKills: charactersTable.bossKills, heroicCompleted: charactersTable.heroicCompleted }).from(charactersTable).where(eq(charactersTable.id, characterId)).limit(1);
+    if (!char2) return res.status(404).json({ error: "Character not found" });
+    if (char2.level < 5) {
+      return res.status(403).json({ error: "You must be at least level 5 to found a guild" });
+    }
+    const [guild] = await db.transaction(async (tx) => {
+      const [newGuild] = await tx.insert(guildsTable).values({
+        name: trimmedName,
+        tag: trimmedTag,
+        description: String(description).slice(0, 200),
+        motto: String(motto).slice(0, 80),
+        alignment,
+        leaderId: characterId,
+        isGhost: false,
+        bankGold: 0
+      }).returning();
+      await tx.insert(guildMembersTable).values({
+        guildId: newGuild.id,
+        characterId,
+        rank: "leader",
+        contributionPoints: computeContribution(char2)
+      });
+      return [newGuild];
+    });
+    const members = await buildGuildMembers(guild.id);
+    return res.status(201).json({ guild, members });
+  } catch (err) {
+    if (err?.code === "23505") {
+      return res.status(409).json({ error: "A guild with that name or tag already exists" });
+    }
+    next(err);
+  }
+});
+router34.patch("/guild", requireAuth, async (req, res, next) => {
+  try {
+    const characterId = req.characterId;
+    const [membership] = await db.select().from(guildMembersTable).where(eq(guildMembersTable.characterId, characterId)).limit(1);
+    if (!membership) return res.status(404).json({ error: "You are not in a guild" });
+    if (membership.rank !== "leader" && membership.rank !== "officer") {
+      return res.status(403).json({ error: "Only officers and leaders can edit guild info" });
+    }
+    const { description, motto } = req.body;
+    const updates = {
+      updatedAt: /* @__PURE__ */ new Date()
+    };
+    if (description !== void 0) updates.description = String(description).slice(0, 200);
+    if (motto !== void 0) updates.motto = String(motto).slice(0, 80);
+    const [updated] = await db.update(guildsTable).set(updates).where(eq(guildsTable.id, membership.guildId)).returning();
+    return res.json(updated);
+  } catch (err) {
+    next(err);
+  }
+});
+router34.post("/guild/invite", requireAuth, async (req, res, next) => {
+  try {
+    const characterId = req.characterId;
+    const { characterName } = req.body;
+    if (!characterName) return res.status(400).json({ error: "characterName is required" });
+    const [membership] = await db.select().from(guildMembersTable).where(eq(guildMembersTable.characterId, characterId)).limit(1);
+    if (!membership) return res.status(404).json({ error: "You are not in a guild" });
+    if (membership.rank !== "leader" && membership.rank !== "officer") {
+      return res.status(403).json({ error: "Only officers and leaders can invite members" });
+    }
+    const [target] = await db.select({ id: charactersTable.id, name: charactersTable.name, level: charactersTable.level, killCount: charactersTable.killCount, bossKills: charactersTable.bossKills, heroicCompleted: charactersTable.heroicCompleted }).from(charactersTable).where(sql`lower(${charactersTable.name}) = lower(${characterName})`).limit(1);
+    if (!target) return res.status(404).json({ error: "Character not found" });
+    if (target.id === characterId) return res.status(400).json({ error: "You cannot invite yourself" });
+    if (target.level < 5) {
+      return res.status(403).json({ error: `${target.name} must be at least level 5 to join a guild` });
+    }
+    const [targetMembership] = await db.select({ id: guildMembersTable.id }).from(guildMembersTable).where(eq(guildMembersTable.characterId, target.id)).limit(1);
+    if (targetMembership) {
+      return res.status(409).json({ error: `${target.name} is already in a guild` });
+    }
+    await db.insert(guildMembersTable).values({
+      guildId: membership.guildId,
+      characterId: target.id,
+      rank: "member",
+      contributionPoints: computeContribution(target)
+    });
+    return res.json({ ok: true, characterName: target.name });
+  } catch (err) {
+    next(err);
+  }
+});
+router34.post("/guild/kick", requireAuth, async (req, res, next) => {
+  try {
+    const characterId = req.characterId;
+    const { targetCharacterId } = req.body;
+    if (!targetCharacterId) return res.status(400).json({ error: "targetCharacterId is required" });
+    const targetId = Number(targetCharacterId);
+    const [membership] = await db.select().from(guildMembersTable).where(eq(guildMembersTable.characterId, characterId)).limit(1);
+    if (!membership) return res.status(404).json({ error: "You are not in a guild" });
+    if (membership.rank !== "leader" && membership.rank !== "officer") {
+      return res.status(403).json({ error: "Only officers and leaders can kick members" });
+    }
+    const [targetMembership] = await db.select().from(guildMembersTable).where(and(
+      eq(guildMembersTable.characterId, targetId),
+      eq(guildMembersTable.guildId, membership.guildId)
+    )).limit(1);
+    if (!targetMembership) return res.status(404).json({ error: "Member not found in your guild" });
+    if (targetMembership.rank === "leader") {
+      return res.status(403).json({ error: "Cannot kick the guild leader" });
+    }
+    if (membership.rank === "officer" && targetMembership.rank === "officer") {
+      return res.status(403).json({ error: "Officers cannot kick other officers" });
+    }
+    await db.delete(guildMembersTable).where(eq(guildMembersTable.id, targetMembership.id));
+    return res.json({ ok: true });
+  } catch (err) {
+    next(err);
+  }
+});
+router34.post("/guild/promote", requireAuth, async (req, res, next) => {
+  try {
+    const characterId = req.characterId;
+    const { targetCharacterId } = req.body;
+    if (!targetCharacterId) return res.status(400).json({ error: "targetCharacterId is required" });
+    const targetId = Number(targetCharacterId);
+    const [membership] = await db.select().from(guildMembersTable).where(eq(guildMembersTable.characterId, characterId)).limit(1);
+    if (!membership || membership.rank !== "leader") {
+      return res.status(403).json({ error: "Only the guild leader can promote members" });
+    }
+    const [targetMembership] = await db.select().from(guildMembersTable).where(and(
+      eq(guildMembersTable.characterId, targetId),
+      eq(guildMembersTable.guildId, membership.guildId)
+    )).limit(1);
+    if (!targetMembership) return res.status(404).json({ error: "Member not found" });
+    if (targetMembership.rank !== "member") {
+      return res.status(400).json({ error: "Only members can be promoted to officer" });
+    }
+    await db.update(guildMembersTable).set({ rank: "officer" }).where(eq(guildMembersTable.id, targetMembership.id));
+    return res.json({ ok: true });
+  } catch (err) {
+    next(err);
+  }
+});
+router34.post("/guild/demote", requireAuth, async (req, res, next) => {
+  try {
+    const characterId = req.characterId;
+    const { targetCharacterId } = req.body;
+    if (!targetCharacterId) return res.status(400).json({ error: "targetCharacterId is required" });
+    const targetId = Number(targetCharacterId);
+    const [membership] = await db.select().from(guildMembersTable).where(eq(guildMembersTable.characterId, characterId)).limit(1);
+    if (!membership || membership.rank !== "leader") {
+      return res.status(403).json({ error: "Only the guild leader can demote members" });
+    }
+    const [targetMembership] = await db.select().from(guildMembersTable).where(and(
+      eq(guildMembersTable.characterId, targetId),
+      eq(guildMembersTable.guildId, membership.guildId)
+    )).limit(1);
+    if (!targetMembership) return res.status(404).json({ error: "Member not found" });
+    if (targetMembership.rank !== "officer") {
+      return res.status(400).json({ error: "Only officers can be demoted" });
+    }
+    await db.update(guildMembersTable).set({ rank: "member" }).where(eq(guildMembersTable.id, targetMembership.id));
+    return res.json({ ok: true });
+  } catch (err) {
+    next(err);
+  }
+});
+router34.post("/guild/transfer", requireAuth, async (req, res, next) => {
+  try {
+    const characterId = req.characterId;
+    const { targetCharacterId } = req.body;
+    if (!targetCharacterId) return res.status(400).json({ error: "targetCharacterId is required" });
+    const targetId = Number(targetCharacterId);
+    const [membership] = await db.select().from(guildMembersTable).where(eq(guildMembersTable.characterId, characterId)).limit(1);
+    if (!membership || membership.rank !== "leader") {
+      return res.status(403).json({ error: "Only the guild leader can transfer leadership" });
+    }
+    if (targetId === characterId) return res.status(400).json({ error: "Cannot transfer leadership to yourself" });
+    const [targetMembership] = await db.select().from(guildMembersTable).where(and(
+      eq(guildMembersTable.characterId, targetId),
+      eq(guildMembersTable.guildId, membership.guildId)
+    )).limit(1);
+    if (!targetMembership) return res.status(404).json({ error: "Member not found in your guild" });
+    await db.update(guildMembersTable).set({ rank: "leader" }).where(eq(guildMembersTable.id, targetMembership.id));
+    await db.update(guildMembersTable).set({ rank: "officer" }).where(eq(guildMembersTable.id, membership.id));
+    await db.update(guildsTable).set({ leaderId: targetId, updatedAt: /* @__PURE__ */ new Date() }).where(eq(guildsTable.id, membership.guildId));
+    return res.json({ ok: true });
+  } catch (err) {
+    next(err);
+  }
+});
+router34.post("/guild/leave", requireAuth, async (req, res, next) => {
+  try {
+    const characterId = req.characterId;
+    const [membership] = await db.select().from(guildMembersTable).where(eq(guildMembersTable.characterId, characterId)).limit(1);
+    if (!membership) return res.status(404).json({ error: "You are not in a guild" });
+    if (membership.rank === "leader") {
+      const otherMembers = await db.select({ id: guildMembersTable.id }).from(guildMembersTable).where(and(
+        eq(guildMembersTable.guildId, membership.guildId),
+        sql`${guildMembersTable.characterId} != ${characterId}`,
+        isNotNull(guildMembersTable.characterId)
+      ));
+      if (otherMembers.length > 0) {
+        return res.status(400).json({ error: "Transfer leadership or disband the guild before leaving" });
+      }
+      await disbandGuild(membership.guildId);
+    } else {
+      await db.delete(guildMembersTable).where(eq(guildMembersTable.id, membership.id));
+    }
+    return res.json({ ok: true });
+  } catch (err) {
+    next(err);
+  }
+});
+router34.post("/guild/disband", requireAuth, async (req, res, next) => {
+  try {
+    const characterId = req.characterId;
+    const [membership] = await db.select().from(guildMembersTable).where(eq(guildMembersTable.characterId, characterId)).limit(1);
+    if (!membership) return res.status(404).json({ error: "You are not in a guild" });
+    if (membership.rank !== "leader") {
+      return res.status(403).json({ error: "Only the guild leader can disband the guild" });
+    }
+    await disbandGuild(membership.guildId);
+    return res.json({ ok: true });
+  } catch (err) {
+    next(err);
+  }
+});
+router34.post("/guild/bank/deposit", requireAuth, async (req, res, next) => {
+  try {
+    const characterId = req.characterId;
+    const { amount } = req.body;
+    const depositAmount = Number(amount);
+    if (!isFinite(depositAmount) || depositAmount <= 0) {
+      return res.status(400).json({ error: "amount must be a positive number" });
+    }
+    const [membership] = await db.select({ guildId: guildMembersTable.guildId }).from(guildMembersTable).where(eq(guildMembersTable.characterId, characterId)).limit(1);
+    if (!membership) return res.status(404).json({ error: "You are not in a guild" });
+    const [char2] = await db.select({ gold: charactersTable.gold }).from(charactersTable).where(eq(charactersTable.id, characterId)).limit(1);
+    if (!char2) return res.status(404).json({ error: "Character not found" });
+    const actualDeposit = Math.min(Math.floor(depositAmount), Math.floor(char2.gold));
+    if (actualDeposit <= 0) {
+      return res.status(400).json({ error: "Not enough gold" });
+    }
+    await db.transaction(async (tx) => {
+      await tx.update(charactersTable).set({ gold: char2.gold - actualDeposit, updatedAt: /* @__PURE__ */ new Date() }).where(eq(charactersTable.id, characterId));
+      await tx.update(guildsTable).set({ bankGold: sql`${guildsTable.bankGold} + ${actualDeposit}`, updatedAt: /* @__PURE__ */ new Date() }).where(eq(guildsTable.id, membership.guildId));
+    });
+    return res.json({ ok: true, deposited: actualDeposit });
+  } catch (err) {
+    next(err);
+  }
+});
+async function disbandGuild(guildId) {
+  await db.transaction(async (tx) => {
+    await tx.delete(guildMembersTable).where(eq(guildMembersTable.guildId, guildId));
+    await tx.delete(guildsTable).where(and(eq(guildsTable.id, guildId), eq(guildsTable.isGhost, false)));
+  });
+}
+async function refreshRealMemberContributions(guildId) {
+  const realRows = await db.select({ id: guildMembersTable.id, characterId: guildMembersTable.characterId }).from(guildMembersTable).where(and(eq(guildMembersTable.guildId, guildId), isNotNull(guildMembersTable.characterId)));
+  if (realRows.length === 0) return;
+  const charIds = realRows.map((r) => r.characterId);
+  const chars = await db.select({ id: charactersTable.id, level: charactersTable.level, killCount: charactersTable.killCount, bossKills: charactersTable.bossKills, heroicCompleted: charactersTable.heroicCompleted }).from(charactersTable).where(inArray(charactersTable.id, charIds));
+  const charMap = new Map(chars.map((c) => [c.id, c]));
+  for (const row of realRows) {
+    const c = charMap.get(row.characterId);
+    if (!c) continue;
+    const points = computeContribution(c);
+    await db.update(guildMembersTable).set({ contributionPoints: points }).where(eq(guildMembersTable.id, row.id)).catch(() => {
+    });
+  }
+}
+async function buildGuildMembers(guildId) {
+  const memberRows = await db.select().from(guildMembersTable).where(eq(guildMembersTable.guildId, guildId));
+  const realIds = memberRows.filter((m) => m.characterId !== null && m.characterId !== void 0).map((m) => m.characterId);
+  const ghostIds = memberRows.filter((m) => m.ghostId !== null && m.ghostId !== void 0).map((m) => m.ghostId);
+  const chars = realIds.length > 0 ? await db.select({ id: charactersTable.id, name: charactersTable.name, race: charactersTable.race, class: charactersTable.class, archetype: charactersTable.archetype, level: charactersTable.level, zone: charactersTable.zone, killCount: charactersTable.killCount, bossKills: charactersTable.bossKills, heroicCompleted: charactersTable.heroicCompleted }).from(charactersTable).where(sql`${charactersTable.id} = any(${realIds})`) : [];
+  const ghosts = ghostIds.length > 0 ? await db.select({ id: worldPlayersTable.id, name: worldPlayersTable.name, race: worldPlayersTable.race, class: worldPlayersTable.class, archetype: worldPlayersTable.archetype, level: worldPlayersTable.level, zone: worldPlayersTable.zone, killCount: worldPlayersTable.killCount, bossKills: worldPlayersTable.bossKills }).from(worldPlayersTable).where(sql`${worldPlayersTable.id} = any(${ghostIds})`) : [];
+  const charMap = new Map(chars.map((c) => [c.id, c]));
+  const ghostMap = new Map(ghosts.map((g) => [g.id, g]));
+  return memberRows.map((m) => {
+    if (m.characterId !== null && m.characterId !== void 0) {
+      const c = charMap.get(m.characterId);
+      return { ...m, isGhost: false, name: c?.name ?? "Unknown", race: c?.race ?? "", class: c?.class ?? "", archetype: c?.archetype ?? "", level: c?.level ?? 1, zone: c?.zone ?? "", killCount: c?.killCount ?? 0, bossKills: c?.bossKills ?? 0 };
+    } else {
+      const g = ghostMap.get(m.ghostId);
+      return { ...m, isGhost: true, name: g?.name ?? "Unknown", race: g?.race ?? "", class: g?.class ?? "", archetype: g?.archetype ?? "", level: g?.level ?? 1, zone: g?.zone ?? "", killCount: g?.killCount ?? 0, bossKills: g?.bossKills ?? 0 };
+    }
+  }).sort((a, b) => {
+    const rankOrder = { leader: 0, officer: 1, member: 2 };
+    const rankDiff = (rankOrder[a.rank] ?? 2) - (rankOrder[b.rank] ?? 2);
+    if (rankDiff !== 0) return rankDiff;
+    return b.level - a.level;
+  });
+}
+var guild_default = router34;
 
 // src/routes/tradeskills.ts
-var router34 = (0, import_express34.Router)();
+var import_express35 = __toESM(require_express2(), 1);
+init_schema2();
+init_drizzle_orm();
+var router35 = (0, import_express35.Router)();
 function defaultTradeskills() {
   return { weaponsmith: 0, armorer: 0, tailor: 0, jeweler: 0, alchemist: 0 };
 }
@@ -90955,9 +97911,9 @@ async function seedRecipesIfNeeded() {
   if (seeded) return;
   seeded = true;
   try {
-    const [countRow] = await db.select({ count: sql`COUNT(*)::int` }).from(recipesTable);
-    if ((countRow?.count ?? 0) > 0) return;
-    const rows = APPRENTICE_RECIPES.map((r) => ({
+    const existing = await db.select({ name: recipesTable.name }).from(recipesTable);
+    const existingNames = new Set(existing.map((r) => r.name));
+    const newApprenticeRows = APPRENTICE_RECIPES.filter((r) => !existingNames.has(r.name)).map((r) => ({
       name: r.name,
       tradeskillClass: r.tradeskillClass,
       tier: r.tier,
@@ -90970,43 +97926,149 @@ async function seedRecipesIfNeeded() {
       vendorCost: r.vendorCost,
       isOoak: false
     }));
-    await db.insert(recipesTable).values(rows);
-    console.log(`[tradeskills] Seeded ${rows.length} apprentice recipes.`);
+    if (newApprenticeRows.length > 0) {
+      await db.insert(recipesTable).values(newApprenticeRows);
+      console.log(`[tradeskills] Seeded ${newApprenticeRows.length} apprentice recipes.`);
+    }
+    const newJourneymanTsRows = JOURNEYMAN_TS_RECIPES.filter((r) => !existingNames.has(r.name)).map((r) => ({
+      name: r.name,
+      tradeskillClass: r.tradeskillClass,
+      tier: r.tier,
+      minSkill: r.minSkill,
+      minLevel: r.minLevel,
+      craftTimeSeconds: r.craftTimeSeconds,
+      ingredients: r.ingredients,
+      output: r.output,
+      acquisitionType: r.acquisitionType,
+      vendorCost: null,
+      isOoak: false
+    }));
+    if (newJourneymanTsRows.length > 0) {
+      await db.insert(recipesTable).values(newJourneymanTsRows);
+      console.log(`[tradeskills] Seeded ${newJourneymanTsRows.length} journeyman recipes.`);
+    }
+    const newMasterRows = MASTER_RECIPES.filter((r) => !existingNames.has(r.name)).map((r) => ({
+      name: r.name,
+      tradeskillClass: r.tradeskillClass,
+      tier: r.tier,
+      minSkill: r.minSkill,
+      minLevel: r.minLevel,
+      craftTimeSeconds: r.craftTimeSeconds,
+      ingredients: r.ingredients,
+      output: r.output,
+      acquisitionType: r.acquisitionType,
+      vendorCost: null,
+      isOoak: false
+    }));
+    if (newMasterRows.length > 0) {
+      await db.insert(recipesTable).values(newMasterRows);
+      console.log(`[tradeskills] Seeded ${newMasterRows.length} master recipes.`);
+    }
   } catch (err) {
     seeded = false;
     console.error("[tradeskills] Seed error:", err);
   }
 }
 seedRecipesIfNeeded();
-async function getInventoryMap(characterId) {
-  const rows = await db.select({ itemId: inventoryTable.itemId, quantity: inventoryTable.quantity }).from(inventoryTable).where(eq(inventoryTable.characterId, characterId));
+var MASTERWORK_CHANCE_PER_LEVEL = 0.015;
+var MASTERWORK_SUFFIXES = [
+  "of the Fallen",
+  "the Unbroken",
+  "of Ashveil",
+  "the Eternal",
+  "of the Ember Court",
+  "the Relentless",
+  "of Duskmantle",
+  "the Unyielding",
+  "of the Voidborn",
+  "the Ancient",
+  "of the Shattered Keep",
+  "the Undying",
+  "of Grimhallow",
+  "the Forsaken",
+  "of the Iron Pact",
+  "the Resolute",
+  "of Nightfall",
+  "the Immovable",
+  "of the Storm's Eye",
+  "the Boundless",
+  "of the Ashen Vale",
+  "the Inexorable"
+];
+function computeQualityMultiplier(skillLevel) {
+  let min, max;
+  if (skillLevel >= 90) {
+    min = 1;
+    max = 1.2;
+  } else if (skillLevel >= 50) {
+    min = 0.95;
+    max = 1.15;
+  } else {
+    min = 0.85;
+    max = 1.15;
+  }
+  return min + Math.random() * (max - min);
+}
+function qualityLabel(avgMult) {
+  if (avgMult < 0.92) return "poor";
+  if (avgMult < 1.04) return "normal";
+  if (avgMult < 1.12) return "fine";
+  return "excellent";
+}
+async function getTotalItemMap(characterId) {
+  const [invRows, bagRows, bankRows] = await Promise.all([
+    db.select({ itemId: inventoryTable.itemId, quantity: inventoryTable.quantity }).from(inventoryTable).where(eq(inventoryTable.characterId, characterId)),
+    db.select({ itemId: gatheringBagItemsTable.itemId, quantity: gatheringBagItemsTable.quantity }).from(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.characterId, characterId)),
+    db.select({ itemId: bankItemsTable.itemId, quantity: bankItemsTable.quantity }).from(bankItemsTable).where(eq(bankItemsTable.characterId, characterId))
+  ]);
   const map2 = /* @__PURE__ */ new Map();
-  for (const row of rows) {
+  for (const row of [...invRows, ...bagRows, ...bankRows]) {
     map2.set(row.itemId, (map2.get(row.itemId) ?? 0) + row.quantity);
   }
   return map2;
 }
 async function deductIngredients(characterId, ingredients) {
-  const invMap = await getInventoryMap(characterId);
+  const totalMap = await getTotalItemMap(characterId);
   for (const ing of ingredients) {
-    if ((invMap.get(ing.itemId) ?? 0) < ing.quantity) return false;
+    if ((totalMap.get(ing.itemId) ?? 0) < ing.quantity) return false;
   }
   for (const ing of ingredients) {
     let remaining = ing.quantity;
-    const rows = await db.select().from(inventoryTable).where(
-      and(
-        eq(inventoryTable.characterId, characterId),
-        eq(inventoryTable.itemId, ing.itemId)
-      )
-    );
-    for (const row of rows) {
-      if (remaining <= 0) break;
-      if (row.quantity <= remaining) {
-        remaining -= row.quantity;
-        await db.delete(inventoryTable).where(eq(inventoryTable.id, row.id));
-      } else {
-        await db.update(inventoryTable).set({ quantity: row.quantity - remaining }).where(eq(inventoryTable.id, row.id));
-        remaining = 0;
+    if (remaining > 0) {
+      const rows = await db.select().from(inventoryTable).where(and(eq(inventoryTable.characterId, characterId), eq(inventoryTable.itemId, ing.itemId)));
+      for (const row of rows) {
+        if (remaining <= 0) break;
+        if (row.quantity <= remaining) {
+          remaining -= row.quantity;
+          await db.delete(inventoryTable).where(eq(inventoryTable.id, row.id));
+        } else {
+          await db.update(inventoryTable).set({ quantity: row.quantity - remaining }).where(eq(inventoryTable.id, row.id));
+          remaining = 0;
+        }
+      }
+    }
+    if (remaining > 0) {
+      const [bagRow] = await db.select().from(gatheringBagItemsTable).where(and(eq(gatheringBagItemsTable.characterId, characterId), eq(gatheringBagItemsTable.itemId, ing.itemId))).limit(1);
+      if (bagRow) {
+        const take = Math.min(bagRow.quantity, remaining);
+        remaining -= take;
+        if (bagRow.quantity <= take) {
+          await db.delete(gatheringBagItemsTable).where(eq(gatheringBagItemsTable.id, bagRow.id));
+        } else {
+          await db.update(gatheringBagItemsTable).set({ quantity: bagRow.quantity - take }).where(eq(gatheringBagItemsTable.id, bagRow.id));
+        }
+      }
+    }
+    if (remaining > 0) {
+      const [bankRow] = await db.select().from(bankItemsTable).where(and(eq(bankItemsTable.characterId, characterId), eq(bankItemsTable.itemId, ing.itemId))).limit(1);
+      if (bankRow) {
+        const take = Math.min(bankRow.quantity, remaining);
+        remaining -= take;
+        if (bankRow.quantity <= take) {
+          await db.delete(bankItemsTable).where(eq(bankItemsTable.id, bankRow.id));
+        } else {
+          await db.update(bankItemsTable).set({ quantity: bankRow.quantity - take }).where(eq(bankItemsTable.id, bankRow.id));
+        }
       }
     }
   }
@@ -91032,7 +98094,7 @@ async function refundIngredients(characterId, ingredients) {
     }
   }
 }
-async function addCraftedItem(characterId, output, recipeName) {
+async function addCraftedItem(characterId, output, recipeName, meta) {
   const craftedItemId = `crafted_${recipeName.toLowerCase().replace(/\s+/g, "_")}_${Date.now()}`;
   const itemData = {
     id: craftedItemId,
@@ -91046,7 +98108,10 @@ async function addCraftedItem(characterId, output, recipeName) {
     level: 1,
     spriteId: output.spriteId ?? null,
     stackable: output.stackable ?? false,
-    crafted: true
+    crafted: true,
+    quality: meta?.quality ?? "normal",
+    isMasterwork: meta?.isMasterwork ?? false,
+    suffix: meta?.suffix
   };
   if (output.armorType) itemData.armorType = output.armorType;
   if (output.effect) itemData.effect = output.effect;
@@ -91084,10 +98149,10 @@ async function awardTradeskillXp(characterId, tradeskillClass, xpAmount) {
   tradeskills[tradeskillClass] = current + xpAmount;
   await db.update(charactersTable).set({ tradeskills }).where(eq(charactersTable.id, characterId));
 }
-router34.get("/tradeskills/status", async (req, res) => {
+router35.get("/tradeskills/status", async (req, res) => {
   await seedRecipesIfNeeded();
   try {
-    const characterId = req.session.characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
     const char2 = await getOrCreateCharacter(characterId);
     const tradeskills = char2.tradeskills ?? defaultTradeskills();
@@ -91112,9 +98177,9 @@ router34.get("/tradeskills/status", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router34.post("/tradeskills/class", async (req, res) => {
+router35.post("/tradeskills/class", async (req, res) => {
   try {
-    const characterId = req.session.characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
     const { tradeskillClass } = req.body;
     if (!tradeskillClass || !TRADESKILL_CLASSES.includes(tradeskillClass)) {
@@ -91131,9 +98196,9 @@ router34.post("/tradeskills/class", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router34.get("/tradeskills/vendor/materials", async (req, res) => {
+router35.get("/tradeskills/vendor/materials", async (req, res) => {
   try {
-    const characterId = req.session.characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
     const char2 = await getOrCreateCharacter(characterId);
     const tsClass = char2.tradeskillClass;
@@ -91144,9 +98209,9 @@ router34.get("/tradeskills/vendor/materials", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router34.post("/tradeskills/vendor/materials/purchase", async (req, res) => {
+router35.post("/tradeskills/vendor/materials/purchase", async (req, res) => {
   try {
-    const characterId = req.session.characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
     const { itemId, quantity = 1 } = req.body;
     if (!itemId || quantity < 1) return res.status(400).json({ error: "Invalid itemId or quantity" });
@@ -91193,10 +98258,10 @@ router34.post("/tradeskills/vendor/materials/purchase", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router34.get("/tradeskills/vendor/recipes", async (req, res) => {
+router35.get("/tradeskills/vendor/recipes", async (req, res) => {
   await seedRecipesIfNeeded();
   try {
-    const characterId = req.session.characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
     const char2 = await getOrCreateCharacter(characterId);
     if (!char2.tradeskillClass) {
@@ -91212,9 +98277,9 @@ router34.get("/tradeskills/vendor/recipes", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router34.post("/tradeskills/vendor/recipes/purchase", async (req, res) => {
+router35.post("/tradeskills/vendor/recipes/purchase", async (req, res) => {
   try {
-    const characterId = req.session.characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
     const { recipeId } = req.body;
     if (!recipeId) return res.status(400).json({ error: "Missing recipeId" });
@@ -91244,23 +98309,23 @@ router34.post("/tradeskills/vendor/recipes/purchase", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router34.get("/tradeskills/recipes", async (req, res) => {
+router35.get("/tradeskills/recipes", async (req, res) => {
   await seedRecipesIfNeeded();
   try {
-    const characterId = req.session.characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
     const known = await db.select({ recipeId: knownRecipesTable.recipeId, learnedAt: knownRecipesTable.learnedAt }).from(knownRecipesTable).where(eq(knownRecipesTable.characterId, characterId));
     if (known.length === 0) return res.json([]);
     const recipeIds = known.map((k) => Number(k.recipeId)).filter((id) => !isNaN(id));
     if (recipeIds.length === 0) return res.json([]);
     const recipes = await db.select().from(recipesTable).where(inArray(recipesTable.id, recipeIds));
-    const invMap = await getInventoryMap(characterId);
+    const totalItemMap = await getTotalItemMap(characterId);
     const result = recipes.map((recipe) => {
       const ingredients = recipe.ingredients;
       const ingredientsWithCounts = ingredients.map((ing) => ({
         ...ing,
-        have: invMap.get(ing.itemId) ?? 0,
-        canCraft: (invMap.get(ing.itemId) ?? 0) >= ing.quantity
+        have: totalItemMap.get(ing.itemId) ?? 0,
+        canCraft: (totalItemMap.get(ing.itemId) ?? 0) >= ing.quantity
       }));
       const canCraft = ingredientsWithCounts.every((i) => i.canCraft);
       return {
@@ -91275,9 +98340,9 @@ router34.get("/tradeskills/recipes", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router34.post("/tradeskills/queue", async (req, res) => {
+router35.post("/tradeskills/queue", async (req, res) => {
   try {
-    const characterId = req.session.characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
     const { recipeId, quantity = 1 } = req.body;
     if (!recipeId || quantity < 1) return res.status(400).json({ error: "Invalid recipeId or quantity" });
@@ -91323,9 +98388,9 @@ router34.post("/tradeskills/queue", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router34.get("/tradeskills/queue", async (req, res) => {
+router35.get("/tradeskills/queue", async (req, res) => {
   try {
-    const characterId = req.session.characterId;
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
     const char2 = await getOrCreateCharacter(characterId);
     const tsClass = char2.tradeskillClass;
@@ -91353,7 +98418,39 @@ router34.get("/tradeskills/queue", async (req, res) => {
       if (newlyCompleted > 0 && tsClass) {
         const output = recipe.output;
         const outputPerCraft = output.quantity;
-        await addCraftedItem(characterId, { ...output, quantity: outputPerCraft * newlyCompleted }, recipe.name);
+        const char3 = await getOrCreateCharacter(characterId);
+        const tradeskillsMap = char3.tradeskills ?? {};
+        const tsXp = tradeskillsMap[tsClass] ?? 0;
+        const skillLevel = Math.min(100, Math.floor(Math.sqrt(tsXp / 25)));
+        const statMultipliers = [];
+        const variedStats = {};
+        for (const [k, v] of Object.entries(output.stats)) {
+          const mult = computeQualityMultiplier(skillLevel);
+          statMultipliers.push(mult);
+          variedStats[k] = Math.round(v * mult);
+        }
+        const avgMult = statMultipliers.length > 0 ? statMultipliers.reduce((a, b) => a + b, 0) / statMultipliers.length : 1;
+        const quality = qualityLabel(avgMult);
+        let isMasterwork = false;
+        let masterworkSuffix = "";
+        if (skillLevel >= 70 && Math.random() < (skillLevel - 69) * MASTERWORK_CHANCE_PER_LEVEL) {
+          isMasterwork = true;
+          masterworkSuffix = MASTERWORK_SUFFIXES[Math.floor(Math.random() * MASTERWORK_SUFFIXES.length)];
+          for (const k of Object.keys(variedStats)) {
+            variedStats[k] = Math.round(variedStats[k] * 1.1);
+          }
+        }
+        const finalName = isMasterwork ? `${output.name} ${masterworkSuffix}` : output.name;
+        const variedOutput = {
+          ...output,
+          name: finalName,
+          stats: variedStats
+        };
+        await addCraftedItem(characterId, { ...variedOutput, quantity: outputPerCraft * newlyCompleted }, recipe.name, {
+          quality,
+          isMasterwork,
+          suffix: masterworkSuffix || void 0
+        });
         const totalXp = output.xpGained * newlyCompleted;
         await awardTradeskillXp(characterId, tsClass, totalXp);
         if (totalCompleted >= totalQuantity) {
@@ -91387,9 +98484,25 @@ router34.get("/tradeskills/queue", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-router34.delete("/tradeskills/queue/:id", async (req, res) => {
+router35.delete("/tradeskills/class", async (req, res) => {
   try {
-    const characterId = req.session.characterId;
+    const characterId = req.characterId;
+    if (!characterId) return res.status(401).json({ error: "Not authenticated" });
+    await db.delete(knownRecipesTable).where(eq(knownRecipesTable.characterId, characterId));
+    await db.delete(craftQueueTable).where(eq(craftQueueTable.characterId, characterId));
+    await db.update(charactersTable).set({
+      tradeskillClass: null,
+      tradeskills: defaultTradeskills()
+    }).where(eq(charactersTable.id, characterId));
+    return res.json({ success: true });
+  } catch (err) {
+    console.error("[tradeskills] class DELETE error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+router35.delete("/tradeskills/queue/:id", async (req, res) => {
+  try {
+    const characterId = req.characterId;
     if (!characterId) return res.status(401).json({ error: "Not authenticated" });
     const queueId = Number(req.params.id);
     if (isNaN(queueId)) return res.status(400).json({ error: "Invalid queue id" });
@@ -91420,25 +98533,53 @@ router34.delete("/tradeskills/queue/:id", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-var tradeskills_default = router34;
-
-// src/middleware/auth.ts
-function requireAuth(req, res, next) {
-  if (!req.session.userId || !req.session.activeCharacterId) {
-    return res.status(401).json({ error: "Not authenticated" });
+router35.post("/tradeskills/ooak/claim/:recipeId", async (req, res) => {
+  try {
+    const characterId = req.characterId;
+    if (!characterId) return res.status(401).json({ error: "Not authenticated" });
+    const recipeId = Number(req.params.recipeId);
+    if (isNaN(recipeId)) return res.status(400).json({ error: "Invalid recipeId" });
+    const [recipe] = await db.select().from(recipesTable).where(eq(recipesTable.id, recipeId)).limit(1);
+    if (!recipe) return res.status(404).json({ error: "Recipe not found" });
+    if (!recipe.isOoak) return res.status(400).json({ error: "Recipe is not a One-of-a-Kind recipe" });
+    const [updated] = await db.update(recipesTable).set({ claimedBy: String(characterId) }).where(and(eq(recipesTable.id, recipeId), isNull(recipesTable.claimedBy))).returning();
+    if (!updated) {
+      const [current] = await db.select({ claimedBy: recipesTable.claimedBy }).from(recipesTable).where(eq(recipesTable.id, recipeId)).limit(1);
+      return res.status(409).json({ error: "This One-of-a-Kind recipe has already been claimed", claimedBy: current?.claimedBy });
+    }
+    const alreadyKnown = await db.select().from(knownRecipesTable).where(and(eq(knownRecipesTable.characterId, characterId), eq(knownRecipesTable.recipeId, String(recipeId)))).limit(1);
+    if (alreadyKnown.length === 0) {
+      await db.insert(knownRecipesTable).values({ characterId, recipeId: String(recipeId) });
+    }
+    return res.json({
+      success: true,
+      message: `You have claimed the legendary recipe: ${recipe.name}`,
+      recipe: updated
+    });
+  } catch (err) {
+    console.error("[tradeskills] ooak/claim error:", err);
+    return res.status(500).json({ error: "Internal server error" });
   }
-  req.userId = req.session.userId;
-  req.characterId = req.session.activeCharacterId;
-  return next();
-}
+});
+router35.get("/tradeskills/ooak/unclaimed", async (req, res) => {
+  try {
+    const recipes = await db.select().from(recipesTable).where(and(eq(recipesTable.isOoak, true), isNull(recipesTable.claimedBy)));
+    return res.json({ recipes });
+  } catch (err) {
+    console.error("[tradeskills] ooak/unclaimed error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+var tradeskills_default = router35;
 
 // src/routes/index.ts
-var router35 = (0, import_express35.Router)();
-router35.use(health_default);
-router35.use(auth_default);
-router35.use(leaderboard_default);
-router35.use(creation_default);
-var gameRoutes = (0, import_express35.Router)();
+var router36 = (0, import_express36.Router)();
+router36.use(health_default);
+router36.use(auth_default);
+router36.use(leaderboard_default);
+router36.use(worldPublicRouter);
+router36.use(creation_default);
+var gameRoutes = (0, import_express36.Router)();
 gameRoutes.use(requireAuth);
 gameRoutes.use(character_default);
 gameRoutes.use(combat_default);
@@ -91470,8 +98611,9 @@ gameRoutes.use(bestiary_default);
 gameRoutes.use(settings_default);
 gameRoutes.use(gear_sets_default);
 gameRoutes.use(tradeskills_default);
-router35.use(gameRoutes);
-var routes_default = router35;
+gameRoutes.use(guild_default);
+router36.use(gameRoutes);
+var routes_default = router36;
 
 // src/lib/logger.ts
 var import_pino = __toESM(require_pino(), 1);
@@ -91491,11 +98633,145 @@ var logger = (0, import_pino.default)({
   }
 });
 
+// src/lib/guildSeeder.ts
+init_schema2();
+init_drizzle_orm();
+var GHOST_GUILD_SEEDS = [
+  {
+    name: "Lions of Qeynos",
+    tag: "LION",
+    description: "A proud order of knights sworn to uphold law and justice in Norrath.",
+    motto: "Strength through honour.",
+    alignment: "Qeynos"
+  },
+  {
+    name: "Ironheart Vanguard",
+    tag: "IRON",
+    description: "Battle-hardened veterans who have survived the worst Norrath has to offer.",
+    motto: "Steel will outlast flesh.",
+    alignment: "Qeynos"
+  },
+  {
+    name: "Crimson Blades",
+    tag: "CRIM",
+    description: "Ruthless mercenaries loyal only to Freeport's coin and power.",
+    motto: "Gold before glory.",
+    alignment: "Freeport"
+  },
+  {
+    name: "Shadow Syndicate",
+    tag: "SHAD",
+    description: "A web of scouts, rogues and spies operating from the dark alleys of Freeport.",
+    motto: "Strike fast, vanish faster.",
+    alignment: "Freeport"
+  },
+  {
+    name: "Arcane Conclave",
+    tag: "ARCC",
+    description: "Scholars and mages who pursue magical mastery above all allegiances.",
+    motto: "Knowledge is the truest power.",
+    alignment: "Neutral"
+  },
+  {
+    name: "Pathfinders",
+    tag: "PATH",
+    description: "Explorers and rangers who chart every corner of Norrath, belonging to none.",
+    motto: "Every horizon is a new beginning.",
+    alignment: "Neutral"
+  },
+  {
+    name: "Order of the Devout",
+    tag: "DEVT",
+    description: "Priests and paladins united in divine service across all faiths of Norrath.",
+    motto: "The gods wield us as instruments.",
+    alignment: "Neutral"
+  },
+  {
+    name: "Emerald Pact",
+    tag: "EMLD",
+    description: "Druids, rangers and nature-bound warriors who protect the wilds of Norrath.",
+    motto: "Nature endures all things.",
+    alignment: "Qeynos"
+  }
+];
+var ALIGNMENT_PERSONALITIES = {
+  Qeynos: ["Cautious", "Devout", "Scholarly"],
+  Freeport: ["Aggressive", "Greedy"],
+  Neutral: ["Explorer", "Scholarly", "Devout", "Aggressive", "Cautious", "Greedy"]
+};
+function computeGhostContribution(ghost) {
+  return ghost.level * 100 + Math.floor(ghost.killCount * 0.5) + ghost.bossKills * 10;
+}
+async function seedGhostGuilds() {
+  for (const seed of GHOST_GUILD_SEEDS) {
+    const existing = await db.select({ id: guildsTable.id }).from(guildsTable).where(eq(guildsTable.name, seed.name)).limit(1);
+    if (existing.length > 0) continue;
+    await db.insert(guildsTable).values({
+      name: seed.name,
+      tag: seed.tag,
+      description: seed.description,
+      motto: seed.motto,
+      alignment: seed.alignment,
+      leaderId: null,
+      isGhost: true,
+      bankGold: Math.floor(Math.random() * 5e3) + 500
+    }).onConflictDoNothing();
+  }
+  const ghostGuilds = await db.select({ id: guildsTable.id, name: guildsTable.name, alignment: guildsTable.alignment }).from(guildsTable).where(eq(guildsTable.isGhost, true));
+  if (ghostGuilds.length === 0) return;
+  const assignedGhostRows = await db.select({ ghostId: guildMembersTable.ghostId }).from(guildMembersTable).where(isNotNull(guildMembersTable.ghostId));
+  const assignedIds = new Set(assignedGhostRows.map((r) => r.ghostId).filter(Boolean));
+  const allGhosts = await db.select({
+    id: worldPlayersTable.id,
+    alignment: worldPlayersTable.alignment,
+    personality: worldPlayersTable.personality,
+    level: worldPlayersTable.level,
+    killCount: worldPlayersTable.killCount,
+    bossKills: worldPlayersTable.bossKills
+  }).from(worldPlayersTable);
+  const unassigned = allGhosts.filter((g) => !assignedIds.has(g.id));
+  if (unassigned.length === 0) return;
+  for (const guild of ghostGuilds) {
+    const compatiblePersonalities = ALIGNMENT_PERSONALITIES[guild.alignment] ?? ALIGNMENT_PERSONALITIES["Neutral"];
+    const targetSize = Math.floor(Math.random() * 5) + 5;
+    const candidates = unassigned.filter((g) => {
+      if (assignedIds.has(g.id)) return false;
+      const alignmentMatch = g.alignment === guild.alignment || guild.alignment === "Neutral";
+      const personalityMatch = compatiblePersonalities.includes(g.personality);
+      return alignmentMatch && personalityMatch;
+    });
+    let pool2 = candidates.length >= 2 ? candidates : unassigned.filter((g) => !assignedIds.has(g.id));
+    pool2 = pool2.slice(0, targetSize);
+    for (let i = 0; i < pool2.length; i++) {
+      const ghost = pool2[i];
+      const rank = i === 0 ? "officer" : "member";
+      const contribution = computeGhostContribution(ghost);
+      await db.insert(guildMembersTable).values({
+        guildId: guild.id,
+        ghostId: ghost.id,
+        rank,
+        contributionPoints: contribution
+      }).onConflictDoNothing().catch((err) => logger.warn({ err }, "[GuildSeeder] Failed to insert ghost member"));
+      assignedIds.add(ghost.id);
+    }
+  }
+  const existingMembers = await db.select({ id: guildMembersTable.id, ghostId: guildMembersTable.ghostId }).from(guildMembersTable).where(isNotNull(guildMembersTable.ghostId));
+  const ghostIds = existingMembers.map((m) => m.ghostId).filter((id) => id !== null && id !== void 0);
+  if (ghostIds.length > 0) {
+    const ghosts = await db.select({ id: worldPlayersTable.id, level: worldPlayersTable.level, killCount: worldPlayersTable.killCount, bossKills: worldPlayersTable.bossKills }).from(worldPlayersTable).where(inArray(worldPlayersTable.id, ghostIds));
+    for (const ghost of ghosts) {
+      const contribution = computeGhostContribution(ghost);
+      await db.update(guildMembersTable).set({ contributionPoints: contribution }).where(eq(guildMembersTable.ghostId, ghost.id)).catch((err) => logger.warn({ err }, "[GuildSeeder] Failed to update ghost contribution"));
+    }
+  }
+  logger.info("[GuildSeeder] Ghost guilds seeded.");
+}
+
 // src/types/session.ts
 var import_express_session = __toESM(require_express_session(), 1);
 
 // src/app.ts
-var app = (0, import_express36.default)();
+var app = (0, import_express37.default)();
 app.set("trust proxy", 1);
 var allowedOrigins = /* @__PURE__ */ new Set([
   "http://localhost:5173",
@@ -91554,8 +98830,8 @@ var pinoMiddleware = (0, import_pino_http.default)({
   }
 });
 app.use(pinoMiddleware);
-app.use(import_express36.default.json());
-app.use(import_express36.default.urlencoded({ extended: true }));
+app.use(import_express37.default.json());
+app.use(import_express37.default.urlencoded({ extended: true }));
 var SESSION_SECRET = process.env["SESSION_SECRET"] ?? "dev-secret-change-me";
 app.use(
   (0, import_express_session2.default)({
@@ -91573,6 +98849,9 @@ app.use(
   })
 );
 app.use("/api", routes_default);
+seedGhostPlayers().then(() => seedGhostGuilds()).catch(
+  (err) => logger.warn({ err }, "Ghost seed on cold start failed \u2014 will retry on next cold start")
+);
 var app_default = app;
 
 // src/lib/realtimeSetup.ts

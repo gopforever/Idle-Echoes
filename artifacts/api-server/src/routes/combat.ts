@@ -1039,9 +1039,10 @@ router.post("/combat/tick", async (req, res) => {
       const aaXpRatio = Math.max(0, Math.min(100, character.aaXpRatio ?? 0));
       const aaXpDiverted = Math.floor(xpGained * aaXpRatio / 100);
       const levelXpGained = xpGained - aaXpDiverted;
-      // 1 AA point per cost-adjusted XP (aaXpCostReduction reduces the cost per point)
+      // 1 AA point per cost-adjusted XP (aaXpCostReduction reduces the cost per point; guild aaXpBonus adds bonus diverted XP)
       const aaXpCostPerPt = Math.max(1, Math.round(100 * (1 - aaBonuses.aaXpCostReduction / 100)));
-      const aaPtsFromRatio = Math.floor(aaXpDiverted / aaXpCostPerPt);
+      const aaXpWithGuildBonus = Math.floor(aaXpDiverted * (1 + (guildPerks.aaXpBonus ?? 0) / 100));
+      const aaPtsFromRatio = Math.floor(aaXpWithGuildBonus / aaXpCostPerPt);
 
       const xpMsg = aaXpRatio > 0
         ? `✨ Gained ${levelXpGained} XP, ${goldGained}g (+${aaPtsFromRatio > 0 ? aaPtsFromRatio + " AA" : aaXpDiverted + " AA XP"} from ${aaXpRatio}% ratio).`
