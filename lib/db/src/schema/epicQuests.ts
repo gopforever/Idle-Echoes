@@ -37,3 +37,30 @@ export const epicQuestProgressTable = pgTable("epic_quest_progress", {
 
 export type EpicQuestProgress = typeof epicQuestProgressTable.$inferSelect;
 export type NewEpicQuestProgress = typeof epicQuestProgressTable.$inferInsert;
+
+/**
+ * Ghost Epic Quest Progress — mirrors epicQuestProgressTable but keyed by
+ * ghostId (worldPlayersTable.id) instead of characterId.
+ *
+ * Populated by the ghost simulator whenever a ghost satisfies all 5 quest
+ * conditions: level 70, 200 boss kills, clears of Harla Dar, Trakanon, and
+ * Mayong Mistmoore.  mythicalAwarded is set when the ghost has multiple
+ * clears of each required raid boss (clearCount ≥ 3 on all three).
+ */
+export const ghostEpicQuestProgressTable = pgTable("ghost_epic_quest_progress", {
+  id: serial("id").primaryKey(),
+  ghostId: integer("ghost_id").notNull().unique(),
+  /** The ghost's class ID at quest completion, e.g. "guardian" */
+  classId: text("class_id").notNull(),
+  /** Fabled weapon item ID awarded on completion */
+  fabledWeaponId: text("fabled_weapon_id").notNull(),
+  /** Whether the fabled weapon was upgraded to mythical */
+  mythicalAwarded: boolean("mythical_awarded").notNull().default(false),
+  /** Mythical weapon item ID (set when mythicalAwarded is true) */
+  mythicalWeaponId: text("mythical_weapon_id"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export type GhostEpicQuestProgress = typeof ghostEpicQuestProgressTable.$inferSelect;
+export type NewGhostEpicQuestProgress = typeof ghostEpicQuestProgressTable.$inferInsert;

@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
-import { charactersTable, dungeonRunsTable, raidRunsTable, worldPlayersTable, ghostDungeonClearsTable, ghostRaidClearsTable } from "@workspace/db/schema";
+import { charactersTable, dungeonRunsTable, raidRunsTable, worldPlayersTable, ghostDungeonClearsTable, ghostRaidClearsTable, epicQuestProgressTable, ghostEpicQuestProgressTable } from "@workspace/db/schema";
 import { asc, and, eq, sql, desc } from "drizzle-orm";
 import { computeStats, makeZeroAABonuses, computeGearScore } from "../lib/eq2Formulas.js";
 import { getArchetype } from "../lib/ghostPersonalities.js";
@@ -643,6 +643,92 @@ router.get("/leaderboard/ghosts/top-by-role", async (_req, res) => {
   } catch (err) {
     console.error("leaderboard/ghosts/top-by-role error", err);
     return res.status(500).json({ error: "Failed to fetch ghost role leaderboard" });
+  }
+});
+
+/**
+ * GET /leaderboard/epic-completers
+ * Returns all ghost and human players who have completed the epic weapon quest
+ * (fabled tier), with mythical upgrade status.
+ * Sorted: mythical holders first, then fabled-only, each group by level desc.
+ */
+router.get("/leaderboard/epic-completers", async (_req, res) => {
+  try {
+    const [ghostRecords, humanRecords, ghostPlayers, humanPlayers] = await Promise.all([
+      db.select().from(ghostEpicQuestProgressTable),
+      db.select().from(epicQuestProgressTable).where(eq(epicQuestProgressTable.completed, true)),
+      db.select().from(worldPlayersTable),
+      db.select().from(charactersTable),
+    ]);
+
+    const ghostById = new Map(ghostPlayers.map(g => [g.id, g]));
+    const humanById = new Map(humanPlayers.map(p => [p.id, p]));
+
+    type EpicCompleterEntry = {
+      id: string;
+      type: "ghost" | "player";
+      name: string;
+      class: string;
+      classId: string;
+      archetype: string;
+      race: string;
+      level: number;
+      fabledWeaponId: string;
+      mythicalAwarded: boolean;
+      mythicalWeaponId: string | null;
+      completedAt: string;
+    };
+
+    const entries: EpicCompleterEntry[] = [];
+
+    for (const rec of ghostRecords) {
+      const ghost = ghostById.get(rec.ghostId);
+      if (!ghost) continue;
+      entries.push({
+        id: `ghost_${rec.ghostId}`,
+        type: "ghost",
+        name: ghost.name,
+        class: ghost.class,
+        classId: rec.classId,
+        archetype: ghost.archetype,
+        race: ghost.race,
+        level: ghost.level,
+        fabledWeaponId: rec.fabledWeaponId,
+        mythicalAwarded: rec.mythicalAwarded,
+        mythicalWeaponId: rec.mythicalWeaponId ?? null,
+        completedAt: rec.createdAt.toISOString(),
+      });
+    }
+
+    for (const rec of humanRecords) {
+      const char = humanById.get(rec.characterId);
+      if (!char) continue;
+      entries.push({
+        id: `player_${rec.characterId}`,
+        type: "player",
+        name: char.name,
+        class: char.class,
+        classId: rec.classId,
+        archetype: char.archetype ?? "Fighter",
+        race: char.race,
+        level: char.level,
+        fabledWeaponId: rec.fabledWeaponId ?? "",
+        mythicalAwarded: rec.mythicalAwarded,
+        mythicalWeaponId: rec.mythicalWeaponId ?? null,
+        completedAt: rec.createdAt.toISOString(),
+      });
+    }
+
+    // Sort: mythical holders first, then fabled-only; within each group by level desc
+    entries.sort((a, b) => {
+      if (a.mythicalAwarded !== b.mythicalAwarded) return a.mythicalAwarded ? -1 : 1;
+      return b.level - a.level;
+    });
+
+    return res.json({ entries });
+  } catch (err) {
+    console.error("leaderboard/epic-completers error", err);
+    return res.status(500).json({ error: "Failed to fetch epic completers" });
   }
 });
 
