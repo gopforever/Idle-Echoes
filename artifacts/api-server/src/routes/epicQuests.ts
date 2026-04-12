@@ -31,8 +31,14 @@ async function getInventoryQty(characterId: number, itemId: string): Promise<num
 }
 
 /** Consume `qty` of itemId from inventory. Throws if not enough. */
-async function consumeInventoryItem(characterId: number, itemId: string, qty: number): Promise<void> {
-  const [row] = await db
+async function consumeInventoryItem(
+  characterId: number,
+  itemId: string,
+  qty: number,
+  tx?: Parameters<Parameters<typeof db.transaction>[0]>[0],
+): Promise<void> {
+  const qb = tx ?? db;
+  const [row] = await qb
     .select({ id: inventoryTable.id, quantity: inventoryTable.quantity })
     .from(inventoryTable)
     .where(and(eq(inventoryTable.characterId, characterId), eq(inventoryTable.itemId, itemId)))
@@ -41,9 +47,9 @@ async function consumeInventoryItem(characterId: number, itemId: string, qty: nu
     throw new Error(`Insufficient ${itemId}: need ${qty}, have ${row?.quantity ?? 0}`);
   }
   if (row.quantity === qty) {
-    await db.delete(inventoryTable).where(eq(inventoryTable.id, row.id));
+    await qb.delete(inventoryTable).where(eq(inventoryTable.id, row.id));
   } else {
-    await db.update(inventoryTable).set({ quantity: row.quantity - qty }).where(eq(inventoryTable.id, row.id));
+    await qb.update(inventoryTable).set({ quantity: row.quantity - qty }).where(eq(inventoryTable.id, row.id));
   }
 }
 
@@ -375,25 +381,45 @@ router.post("/epic-quest/upgrade", async (req, res) => {
       }
     }
 
-    // All checks passed — consume materials and fabled weapon
-    await consumeInventoryItem(character.id, fabledId, 1);
-    for (const [itemId, qty] of Object.entries(EPIC_UPGRADE_REQUIREMENTS)) {
-      await consumeInventoryItem(character.id, itemId, qty);
-    }
-
-    // Award mythical weapon
+    // All checks passed — perform upgrade atomically
     const epicDef = getEpicWeaponByClass(progress.classId);
     if (!epicDef) return res.status(400).json({ error: "Epic weapon definition not found." });
 
-    await awardItemsToInventory([epicDef.mythicalItemId], character.id);
+    try {
+      await db.transaction(async (tx) => {
+        // Re-select inside the transaction as an optimistic lock
+        const [locked] = await tx.select()
+          .from(epicQuestProgressTable)
+          .where(and(
+            eq(epicQuestProgressTable.characterId, character.id),
+            eq(epicQuestProgressTable.mythicalAwarded, false),
+          ))
+          .limit(1);
 
-    await db.update(epicQuestProgressTable)
-      .set({
-        mythicalAwarded: true,
-        mythicalWeaponId: epicDef.mythicalItemId,
-        updatedAt: new Date(),
-      })
-      .where(eq(epicQuestProgressTable.id, progress.id));
+        if (!locked) throw new Error("already_upgraded");
+
+        // Consume fabled weapon and raid materials
+        await consumeInventoryItem(character.id, fabledId, 1, tx);
+        for (const [itemId, qty] of Object.entries(EPIC_UPGRADE_REQUIREMENTS)) {
+          await consumeInventoryItem(character.id, itemId, qty, tx);
+        }
+
+        // Award mythical weapon and mark complete — all in the same transaction
+        await awardItemsToInventory([epicDef.mythicalItemId], character.id, tx);
+        await tx.update(epicQuestProgressTable)
+          .set({
+            mythicalAwarded: true,
+            mythicalWeaponId: epicDef.mythicalItemId,
+            updatedAt: new Date(),
+          })
+          .where(eq(epicQuestProgressTable.id, locked.id));
+      });
+    } catch (err: any) {
+      if (err?.message === "already_upgraded") {
+        return res.status(409).json({ error: "Mythical upgrade already performed." });
+      }
+      throw err;
+    }
 
     return res.json({
       success: true,
