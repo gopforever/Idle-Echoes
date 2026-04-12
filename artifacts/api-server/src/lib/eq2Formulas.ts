@@ -97,6 +97,10 @@ export interface AABonuses {
   bossXpBonus: number;
   /** Reduces AA XP cost per point by this % (max 15%) */
   aaXpCostReduction: number;
+  /** Reduces cooldown of healing abilities specifically (stacks with cooldownReduction) */
+  healCooldownReduction: number;
+  /** % of heal amount dealt as divine damage on each heal (scales with heal_dmg_proc ranks) */
+  healDmgProcPct: number;
 }
 
 export function makeZeroAABonuses(): AABonuses {
@@ -111,6 +115,7 @@ export function makeZeroAABonuses(): AABonuses {
     wardAbsorb: 0, gatheringSpeed: 0, craftYield: 0,
     craftCostReduction: 0, lifestealPct: 0, hpRegen: 0,
     tradeskillXpBonus: 0, bossXpBonus: 0, aaXpCostReduction: 0,
+    healCooldownReduction: 0, healDmgProcPct: 0,
   };
 }
 
@@ -159,6 +164,8 @@ export function applyAABonuses(nodes: Array<{
       case "tradeskill_xp_bonus":  b.tradeskillXpBonus    += total; break;
       case "boss_xp_bonus":        b.bossXpBonus          += total; break;
       case "aa_xp_cost_reduction": b.aaXpCostReduction    += total; break;
+      case "heal_cooldown_reduction": b.healCooldownReduction += total; break;
+      case "heal_dmg_proc":        b.healDmgProcPct       += total; break;
     }
   }
   return b;

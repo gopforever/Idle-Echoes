@@ -19,7 +19,7 @@ function buildTabs(
   return ALL_AA_TABS
     .filter(tab => {
       if (tab.tabType === "prestige") {
-        // Only show prestige tab for this character's class; locked until 50 spent
+        // Only show prestige tab for this character's class; locked until prestigeMinSpent points spent
         return tab.classId === charClass;
       }
       if (tab.tabType === "class") {
@@ -124,8 +124,6 @@ router.post("/aa/spend", async (req, res) => {
     if (available < foundNode.pointsPerRank) return res.status(400).json({ error: "Not enough AA points" });
 
     // Check prerequisites within the same tab
-    const charClass = (character.class ?? "").toLowerCase();
-    const relevantTabNodes = foundTab.nodes;
     const prereqsMet = foundNode.requires.every(reqId => (spentMap.get(reqId) ?? 0) > 0);
     if (!prereqsMet) return res.status(400).json({ error: "Prerequisites not met" });
 
