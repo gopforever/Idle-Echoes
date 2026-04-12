@@ -17,6 +17,7 @@ export interface ItemStats {
   weaponDamageMax?: number;
   weaponDelay?: number;
   spellDamageBonus?: number;
+  spellCritChance?: number;
   healBonus?: number;
   /** Player-side resistances vs incoming elemental/physical damage (percentage, capped at 50 in formula) */
   resistPierce?: number;

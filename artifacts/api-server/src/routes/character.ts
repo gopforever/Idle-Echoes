@@ -132,7 +132,7 @@ router.get("/character/stats", async (req, res) => {
     const baseStats = character.baseStats as { strength: number; agility: number; stamina: number; intelligence: number; wisdom: number; charisma: number; };
 
     let gearAttackRating = 0, gearDefenseRating = 0, gearMitigation = 0;
-    let gearHaste = 0, gearCritChance = 0, gearCritBonus = 0;
+    let gearHaste = 0, gearCritChance = 0, gearCritBonus = 0, gearSpellCritChance = 0;
     let gearWeaponDamageMin = 0, gearWeaponDamageMax = 0, gearWeaponDelay = 2.0;
     let gearHealth = 0, gearPower = 0;
     let hasWeapon = false;
@@ -157,6 +157,7 @@ router.get("/character/stats", async (req, res) => {
       gearHaste         += s.haste || 0;
       gearCritChance    += s.critChance || 0;
       gearCritBonus     += s.critBonus || 0;
+      gearSpellCritChance += s.spellCritChance || 0;
       gearHealth        += s.health || 0;
       gearPower         += s.power || 0;
       gearStrength      += s.strength     || 0;
@@ -231,7 +232,7 @@ router.get("/character/stats", async (req, res) => {
     const computed = computeStats({
       level: character.level, ...baseStats,
       gearAttackRating, gearDefenseRating, gearMitigation,
-      gearHaste, gearCritChance, gearCritBonus,
+      gearHaste, gearCritChance, gearCritBonus, gearSpellCritChance,
       gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay,
       gearHealth, gearPower,
       gearStrength, gearAgility, gearStamina, gearIntelligence, gearWisdom, gearCharisma,

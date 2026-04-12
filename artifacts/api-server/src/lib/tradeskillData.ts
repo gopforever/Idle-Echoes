@@ -190,7 +190,7 @@ export const APPRENTICE_RECIPES: RecipeSeed[] = [
     output: {
       name: "Mithril Runewand", type: "weapon", slot: "primary", rarity: "rare",
       description: "A wand tipped with mithril that hums with channelled spell energy.",
-      stats: { weaponDamageMin: 28, weaponDamageMax: 46, weaponDelay: 1.4, attackRating: 38, intelligence: 22, wisdom: 14, spellCritChance: 5, spellDamage: 10 },
+      stats: { weaponDamageMin: 28, weaponDamageMax: 46, weaponDelay: 1.4, attackRating: 38, intelligence: 22, wisdom: 14, spellCritChance: 5, spellDamageBonus: 10 },
       sellPrice: 480, quantity: 1, xpGained: 240, spriteId: "weapon_wand",
     },
   },
@@ -201,7 +201,7 @@ export const APPRENTICE_RECIPES: RecipeSeed[] = [
     output: {
       name: "Adamantine Sorcerer's Wand", type: "weapon", slot: "primary", rarity: "legendary",
       description: "A wand forged from adamantine that crackles with barely-contained arcane power.",
-      stats: { weaponDamageMin: 52, weaponDamageMax: 82, weaponDelay: 1.4, attackRating: 70, intelligence: 38, wisdom: 24, spellCritChance: 9, spellDamage: 22 },
+      stats: { weaponDamageMin: 52, weaponDamageMax: 82, weaponDelay: 1.4, attackRating: 70, intelligence: 38, wisdom: 24, spellCritChance: 9, spellDamageBonus: 22 },
       sellPrice: 1600, quantity: 1, xpGained: 400, spriteId: "weapon_wand",
     },
   },
@@ -742,7 +742,7 @@ export const APPRENTICE_RECIPES: RecipeSeed[] = [
     output: {
       name: "Spidersilk Vestments", type: "armor", slot: "chest", rarity: "rare", armorType: "cloth",
       description: "Incredibly strong yet featherlight vestments woven from spider silk.",
-      stats: { intelligence: 32, wisdom: 22, spellCritChance: 6, spellDamage: 12 },
+      stats: { intelligence: 32, wisdom: 22, spellCritChance: 6, spellDamageBonus: 12 },
       sellPrice: 200, quantity: 1, xpGained: 220, spriteId: "chest_cloth",
     },
   },
@@ -764,7 +764,7 @@ export const APPRENTICE_RECIPES: RecipeSeed[] = [
     output: {
       name: "Moonweave Robe", type: "armor", slot: "chest", rarity: "legendary", armorType: "cloth",
       description: "A robe stitched from moonweave, shimmering with lunar energy.",
-      stats: { intelligence: 60, wisdom: 42, spellCritChance: 10, spellDamage: 24 },
+      stats: { intelligence: 60, wisdom: 42, spellCritChance: 10, spellDamageBonus: 24 },
       sellPrice: 480, quantity: 1, xpGained: 400, spriteId: "chest_cloth",
     },
   },
@@ -853,7 +853,7 @@ export const APPRENTICE_RECIPES: RecipeSeed[] = [
     output: {
       name: "Spidersilk Mage Gloves", type: "armor", slot: "hands", rarity: "rare", armorType: "cloth",
       description: "Delicate spidersilk gloves that amplify spell focus and critical chance.",
-      stats: { intelligence: 20, wisdom: 14, spellCritChance: 5, spellDamage: 8 },
+      stats: { intelligence: 20, wisdom: 14, spellCritChance: 5, spellDamageBonus: 8 },
       sellPrice: 510, quantity: 1, xpGained: 212, spriteId: "hands_cloth",
     },
   },
@@ -864,7 +864,7 @@ export const APPRENTICE_RECIPES: RecipeSeed[] = [
     output: {
       name: "Moonweave Arcane Gloves", type: "armor", slot: "hands", rarity: "legendary", armorType: "cloth",
       description: "Moonweave gloves that crackle with trapped arcane energy.",
-      stats: { intelligence: 32, wisdom: 22, spellCritChance: 9, spellDamage: 18 },
+      stats: { intelligence: 32, wisdom: 22, spellCritChance: 9, spellDamageBonus: 18 },
       sellPrice: 1500, quantity: 1, xpGained: 372, spriteId: "hands_cloth",
     },
   },
@@ -1031,7 +1031,7 @@ export const APPRENTICE_RECIPES: RecipeSeed[] = [
     output: {
       name: "Spidersilk Sorcerer Bracers", type: "armor", slot: "wrists", rarity: "rare", armorType: "cloth",
       description: "Arcane bracers of spidersilk that channel excess magical energy safely.",
-      stats: { intelligence: 18, wisdom: 12, spellCritChance: 4, spellDamage: 7 },
+      stats: { intelligence: 18, wisdom: 12, spellCritChance: 4, spellDamageBonus: 7 },
       sellPrice: 514, quantity: 1, xpGained: 216, spriteId: "wrists_cloth",
     },
   },
@@ -1042,7 +1042,7 @@ export const APPRENTICE_RECIPES: RecipeSeed[] = [
     output: {
       name: "Moonweave Mage Bracers", type: "armor", slot: "wrists", rarity: "legendary", armorType: "cloth",
       description: "Moonweave bracers that shimmer with stored arcane energy.",
-      stats: { intelligence: 28, wisdom: 18, spellCritChance: 7, spellDamage: 16 },
+      stats: { intelligence: 28, wisdom: 18, spellCritChance: 7, spellDamageBonus: 16 },
       sellPrice: 1490, quantity: 1, xpGained: 370, spriteId: "wrists_cloth",
     },
   },
@@ -1120,7 +1120,7 @@ export const APPRENTICE_RECIPES: RecipeSeed[] = [
     output: {
       name: "Spidersilk Channeler Sash", type: "armor", slot: "waist", rarity: "rare", armorType: "cloth",
       description: "A spidersilk sash that acts as a magical reservoir for casters.",
-      stats: { intelligence: 16, wisdom: 10, spellDamage: 8, power: 48 },
+      stats: { intelligence: 16, wisdom: 10, spellDamageBonus: 8, power: 48 },
       sellPrice: 512, quantity: 1, xpGained: 214, spriteId: "waist_cloth",
     },
   },
@@ -1131,7 +1131,7 @@ export const APPRENTICE_RECIPES: RecipeSeed[] = [
     output: {
       name: "Moonweave Archmage Sash", type: "armor", slot: "waist", rarity: "legendary", armorType: "cloth",
       description: "A sash of moonweave worn by archmages — it stores and releases magical energy on demand.",
-      stats: { intelligence: 26, wisdom: 16, spellDamage: 20, spellCritChance: 5, power: 85 },
+      stats: { intelligence: 26, wisdom: 16, spellDamageBonus: 20, spellCritChance: 5, power: 85 },
       sellPrice: 1480, quantity: 1, xpGained: 370, spriteId: "waist_cloth",
     },
   },
@@ -1244,7 +1244,7 @@ export const APPRENTICE_RECIPES: RecipeSeed[] = [
     output: {
       name: "Void Crystal Ring", type: "accessory", slot: "ring", rarity: "rare",
       description: "A ring set with a dark crystal that pulses with shadow energy.",
-      stats: { intelligence: 20, spellDamage: 14, spellCritChance: 5 },
+      stats: { intelligence: 20, spellDamageBonus: 14, spellCritChance: 5 },
       sellPrice: 260, quantity: 1, xpGained: 250, spriteId: "ring",
     },
   },
@@ -1266,7 +1266,7 @@ export const APPRENTICE_RECIPES: RecipeSeed[] = [
     output: {
       name: "Moonstone Amulet", type: "accessory", slot: "neck", rarity: "legendary",
       description: "A masterwork amulet combining sapphire clarity with void crystal power.",
-      stats: { intelligence: 38, wisdom: 28, spellCritChance: 9, spellDamage: 22 },
+      stats: { intelligence: 38, wisdom: 28, spellCritChance: 9, spellDamageBonus: 22 },
       sellPrice: 520, quantity: 1, xpGained: 420, spriteId: "necklace",
     },
   },
@@ -1439,7 +1439,7 @@ export const MASTER_RECIPES: MasterRecipeSeed[] = [
     output: {
       name: "Chromatic Dragon Scale Hauberk", type: "armor", slot: "chest", rarity: "legendary",
       description: "A masterwork breastplate fashioned from prismatic dragon scales that cycle through elemental resistances.",
-      stats: { armorClass: 420, stamina: 60, strength: 40, mitigation: 35, avoidance: 18 },
+      stats: { defenseRating: 420, stamina: 60, strength: 40, mitigation: 35, avoidance: 18 },
       sellPrice: 9500, quantity: 1, xpGained: 3000, spriteId: "chest_plate", armorType: "plate",
     },
   },
@@ -1472,7 +1472,7 @@ export const MASTER_RECIPES: MasterRecipeSeed[] = [
     output: {
       name: "Venom-Laced Plague Mantle", type: "armor", slot: "shoulders", rarity: "legendary",
       description: "A hooded mantle woven from plague dragon sinew and spidersilk — toxic to the touch.",
-      stats: { armorClass: 220, intelligence: 60, wisdom: 45, spellDamage: 40, spellCritChance: 14 },
+      stats: { defenseRating: 220, intelligence: 60, wisdom: 45, spellDamageBonus: 40, spellCritChance: 14 },
       sellPrice: 7000, quantity: 1, xpGained: 2000, spriteId: "shoulders_cloth", armorType: "cloth",
     },
   },
@@ -1505,7 +1505,7 @@ export const MASTER_RECIPES: MasterRecipeSeed[] = [
     output: {
       name: "Mistmoore Blood Amulet", type: "accessory", slot: "neck", rarity: "legendary",
       description: "An amulet set with Mayong's fang and void crystals — it pulses with dark life-stealing energy.",
-      stats: { intelligence: 70, wisdom: 55, spellDamage: 55, spellCritChance: 18, stamina: 40 },
+      stats: { intelligence: 70, wisdom: 55, spellDamageBonus: 55, spellCritChance: 18, stamina: 40 },
       sellPrice: 11000, quantity: 1, xpGained: 3500, spriteId: "necklace",
     },
   },
@@ -1540,7 +1540,7 @@ export const MASTER_RECIPES: MasterRecipeSeed[] = [
     output: {
       name: "Prismatic Dragon Eye Wand", type: "weapon", slot: "primary", rarity: "legendary",
       description: "A wand tipped with one of Harla Dar's own eyes — it shifts prismatic spell energies into devastating strikes.",
-      stats: { weaponDamageMin: 180, weaponDamageMax: 300, weaponDelay: 1.4, attackRating: 160, intelligence: 75, wisdom: 40, spellCritChance: 20, spellDamage: 55 },
+      stats: { weaponDamageMin: 180, weaponDamageMax: 300, weaponDelay: 1.4, attackRating: 160, intelligence: 75, wisdom: 40, spellCritChance: 20, spellDamageBonus: 55 },
       sellPrice: 9000, quantity: 1, xpGained: 2800, spriteId: "weapon_wand",
     },
   },
@@ -1668,7 +1668,7 @@ export const JOURNEYMAN_TS_RECIPES: JourneymanRecipeSeed[] = [
     output: {
       name: "Manaweave Sorcerer's Robe", type: "armor", slot: "chest", rarity: "legendary", armorType: "cloth",
       description: "A robe woven from manaweave fiber — it hums with absorbed arcane energy.",
-      stats: { intelligence: 82, wisdom: 58, spellCritChance: 12, spellDamage: 32 },
+      stats: { intelligence: 82, wisdom: 58, spellCritChance: 12, spellDamageBonus: 32 },
       sellPrice: 1000, quantity: 1, xpGained: 850, spriteId: "chest_cloth",
     },
   },
@@ -1691,7 +1691,7 @@ export const JOURNEYMAN_TS_RECIPES: JourneymanRecipeSeed[] = [
     output: {
       name: "Astral Pendant", type: "accessory", slot: "neck", rarity: "legendary",
       description: "A pendant forged from astral ore — it resonates with celestial power.",
-      stats: { intelligence: 52, wisdom: 40, spellDamage: 36, spellCritChance: 12 },
+      stats: { intelligence: 52, wisdom: 40, spellDamageBonus: 36, spellCritChance: 12 },
       sellPrice: 1200, quantity: 1, xpGained: 1000, spriteId: "necklace",
     },
   },
