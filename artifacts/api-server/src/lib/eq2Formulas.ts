@@ -17,6 +17,7 @@ export interface CharacterStats {
   gearHaste: number;
   gearCritChance: number;
   gearCritBonus: number;
+  gearSpellCritChance?: number;
   gearWeaponDamageMin: number;
   gearWeaponDamageMax: number;
   gearWeaponDelay: number;
@@ -245,7 +246,7 @@ export function computeStats(stats: CharacterStats, aa?: AABonuses, skills?: Ski
   const totalPower = Math.floor(basePower * (1 + bonus.maxPowerPercent / 100));
 
   // Spell crit: intelligence + AA bonus
-  const spellCritChance = Math.min(50, Math.floor(intelligence * 0.2 + level * 0.15) + stats.gearCritChance + bonus.spellCritChanceBonus);
+  const spellCritChance = Math.min(50, Math.floor(intelligence * 0.2 + level * 0.15) + stats.gearCritChance + (stats.gearSpellCritChance ?? 0) + bonus.spellCritChanceBonus);
   const spellCritBonus = 30 + Math.floor(wisdom * 0.4) + (stats.gearCritBonus || 0) + bonus.critBonusBonus;
 
   // Combat mitigation

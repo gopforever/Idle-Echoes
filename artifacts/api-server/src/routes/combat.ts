@@ -96,7 +96,7 @@ function getChainForArchetype(archetype: string) {
 
 function computeGearStats(gear: Record<string, unknown>, baseStats: { strength: number; agility: number; stamina: number; intelligence: number; wisdom: number; charisma: number; }, level: number) {
   let gearAttackRating = 0, gearDefenseRating = 0, gearMitigation = 0;
-  let gearHaste = 0, gearCritChance = 0, gearWeaponDamageMin = 0, gearWeaponDamageMax = 0, gearWeaponDelay = 2.0;
+  let gearHaste = 0, gearCritChance = 0, gearSpellCritChance = 0, gearWeaponDamageMin = 0, gearWeaponDamageMax = 0, gearWeaponDelay = 2.0;
   let gearHealth = 0, gearPower = 0, hasWeapon = false;
   let gearStrength = 0, gearAgility = 0, gearStamina = 0;
   let gearIntelligence = 0, gearWisdom = 0, gearCharisma = 0;
@@ -122,6 +122,7 @@ function computeGearStats(gear: Record<string, unknown>, baseStats: { strength: 
     gearMitigation += s.mitigation || 0;
     gearHaste += s.haste || 0;
     gearCritChance += s.critChance || 0;
+    gearSpellCritChance += s.spellCritChance || 0;
     gearHealth += s.health || 0;
     gearPower += s.power || 0;
     gearStrength     += s.strength     || 0;
@@ -148,7 +149,7 @@ function computeGearStats(gear: Record<string, unknown>, baseStats: { strength: 
     gearWeaponDamageMin = baseStats.strength * 0.5 + level;
     gearWeaponDamageMax = baseStats.strength * 1.0 + level * 2;
   }
-  return { gearAttackRating, gearDefenseRating, gearMitigation, gearHaste, gearCritChance, gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay, gearHealth, gearPower, gearStrength, gearAgility, gearStamina, gearIntelligence, gearWisdom, gearCharisma, gearResistPierce, gearResistSlash, gearResistCrush, gearResistHeat, gearResistCold, gearResistDivine, gearResistMagic };
+  return { gearAttackRating, gearDefenseRating, gearMitigation, gearHaste, gearCritChance, gearSpellCritChance, gearWeaponDamageMin, gearWeaponDamageMax, gearWeaponDelay, gearHealth, gearPower, gearStrength, gearAgility, gearStamina, gearIntelligence, gearWisdom, gearCharisma, gearResistPierce, gearResistSlash, gearResistCrush, gearResistHeat, gearResistCold, gearResistDivine, gearResistMagic };
 }
 
 /**
