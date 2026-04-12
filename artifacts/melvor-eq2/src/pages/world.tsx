@@ -27,7 +27,7 @@ import { apiUrl } from "@/lib/api";
 import {
   Globe2, Users, Sword, Coins, Trophy, ScrollText,
   Zap, Crown, Star, Shield, Map as MapIcon, RefreshCw, TrendingUp, Skull, MessageSquare,
-  UserPlus, UserMinus, BookOpen, Loader2, Feather,
+  UserPlus, UserMinus, BookOpen, Loader2, Feather, Sparkles,
 } from "lucide-react";
 import { useRealtimeWorldEvents } from "@/hooks/use-realtime-world";
 import { useToast } from "@/hooks/use-toast";
@@ -1014,6 +1014,185 @@ function PlayerCard({
   );
 }
 
+// ─── Epic Legends Tab ─────────────────────────────────────────────────────────
+
+interface EpicCompleterEntry {
+  id: string;
+  type: "ghost" | "player";
+  name: string;
+  class: string;
+  classId: string;
+  archetype: string;
+  race: string;
+  level: number;
+  fabledWeaponId: string;
+  mythicalAwarded: boolean;
+  mythicalWeaponId: string | null;
+  completedAt: string;
+}
+
+function epicWeaponDisplayName(itemId: string): string {
+  return itemId
+    .replace(/^epic_/, "")
+    .replace(/_fabled$|_mythical$/, "")
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function EpicLegendCard({ entry }: { entry: EpicCompleterEntry }) {
+  const weaponId = entry.mythicalAwarded && entry.mythicalWeaponId
+    ? entry.mythicalWeaponId
+    : entry.fabledWeaponId;
+  const tier = entry.mythicalAwarded ? "mythical" : "fabled";
+
+  const tierBorder = tier === "mythical"
+    ? "border-orange-600/60 bg-orange-950/10"
+    : "border-purple-600/40 bg-purple-950/10";
+  const tierText = tier === "mythical" ? "text-orange-300" : "text-purple-300";
+  const tierBadge = tier === "mythical"
+    ? "border-orange-700/60 text-orange-300 bg-orange-950/30"
+    : "border-purple-700/60 text-purple-300 bg-purple-950/30";
+  const tierIcon = tier === "mythical" ? "⚡" : "✨";
+
+  const archetypeCls = ARCHETYPE_COLORS[entry.archetype] ?? "border-slate-700 text-slate-400";
+
+  return (
+    <div className={cn("rounded-xl border p-4 transition-colors", tierBorder)}>
+      <div className="flex items-start gap-3">
+        {/* Left: type icon */}
+        <div className={cn(
+          "w-9 h-9 rounded-full flex items-center justify-center text-lg shrink-0 border",
+          entry.type === "player"
+            ? "bg-blue-900/40 border-blue-700/60 text-blue-300"
+            : "bg-slate-800/60 border-slate-700 text-slate-400",
+        )}>
+          {entry.type === "player" ? "★" : (ARCHETYPE_SPRITE[entry.archetype] ?? "⚔️")}
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className={cn("text-sm font-bold", tier === "mythical" ? "text-orange-200" : "text-purple-200")}>
+              {entry.name}
+            </span>
+            {entry.type === "player" && (
+              <span className="text-[9px] px-1 py-0 rounded border border-blue-700 text-blue-400 shrink-0">YOU</span>
+            )}
+            <span className={cn("text-[10px] px-1.5 py-0.5 rounded border shrink-0", tierBadge)}>
+              {tierIcon} {tier === "mythical" ? "Mythical" : "Fabled"}
+            </span>
+          </div>
+
+          <div className="flex flex-wrap gap-1 mt-1">
+            <span className={cn("text-[10px] px-1.5 py-0.5 rounded border", archetypeCls)}>
+              {entry.archetype} · {entry.class}
+            </span>
+            <span className="text-[10px] text-slate-500">Lv {entry.level}</span>
+            <span className="text-[10px] text-slate-600">·</span>
+            <span className="text-[10px] text-slate-500">{entry.race}</span>
+          </div>
+
+          <div className={cn("mt-1.5 text-xs font-semibold italic", tierText)}>
+            {tierIcon} {epicWeaponDisplayName(weaponId)}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EpicLegendsTab() {
+  const { data, isLoading } = useQuery<{ entries: EpicCompleterEntry[] }>({
+    queryKey: ["epic-completers"],
+    queryFn: () =>
+      fetch(apiUrl("/api/leaderboard/epic-completers")).then(r => {
+        if (!r.ok) throw new Error(`Failed to fetch epic completers: ${r.status}`);
+        return r.json();
+      }),
+    refetchInterval: 60_000,
+  });
+
+  const entries = data?.entries ?? [];
+  const mythicalCount = entries.filter(e => e.mythicalAwarded).length;
+  const fabledCount = entries.filter(e => !e.mythicalAwarded).length;
+
+  return (
+    <div className="space-y-5">
+      <div>
+        <h2 className="text-lg font-serif font-bold text-slate-100 flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-purple-400" /> Epic Legends of Norrath
+        </h2>
+        <p className="text-sm text-slate-500 mt-1">
+          All adventurers — ghost and human — who have completed an epic weapon quest chain.
+          Mythical holders appear first.
+        </p>
+      </div>
+
+      {/* Summary counts */}
+      {!isLoading && entries.length > 0 && (
+        <div className="grid grid-cols-3 gap-3">
+          <div className="bg-slate-900/40 border border-slate-800 rounded-xl p-4 text-center">
+            <div className="text-2xl font-black text-purple-400">{entries.length}</div>
+            <div className="text-xs text-slate-500 mt-0.5">Total Legends</div>
+          </div>
+          <div className="bg-orange-950/20 border border-orange-700/40 rounded-xl p-4 text-center">
+            <div className="text-2xl font-black text-orange-300">{mythicalCount}</div>
+            <div className="text-xs text-slate-500 mt-0.5">Mythical Wielders</div>
+          </div>
+          <div className="bg-purple-950/20 border border-purple-700/40 rounded-xl p-4 text-center">
+            <div className="text-2xl font-black text-purple-300">{fabledCount}</div>
+            <div className="text-xs text-slate-500 mt-0.5">Fabled Wielders</div>
+          </div>
+        </div>
+      )}
+
+      {isLoading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {[...Array(6)].map((_, i) => (
+            <Skeleton key={i} className="h-28 rounded-xl" />
+          ))}
+        </div>
+      ) : entries.length === 0 ? (
+        <div className="py-16 text-center space-y-3">
+          <div className="text-5xl">⚔️</div>
+          <p className="text-slate-400 text-sm font-semibold">No epic weapons have been claimed yet.</p>
+          <p className="text-slate-600 text-xs">
+            Ghost adventurers earn their epic weapon by reaching level 70, defeating 200 bosses,
+            and clearing Harla Dar, Trakanon, and Mayong Mistmoore.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {mythicalCount > 0 && (
+            <div>
+              <h3 className="text-sm font-semibold text-orange-400 mb-2 flex items-center gap-1.5">
+                <span>⚡</span> Mythical Weapon Wielders
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {entries.filter(e => e.mythicalAwarded).map(entry => (
+                  <EpicLegendCard key={entry.id} entry={entry} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {fabledCount > 0 && (
+            <div>
+              <h3 className="text-sm font-semibold text-purple-400 mb-2 flex items-center gap-1.5">
+                <span>✨</span> Fabled Weapon Wielders
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {entries.filter(e => !e.mythicalAwarded).map(entry => (
+                  <EpicLegendCard key={entry.id} entry={entry} />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Main World Page ──────────────────────────────────────────────────────────
 
 export default function WorldPage() {
@@ -1206,6 +1385,9 @@ export default function WorldPage() {
           <TabsTrigger value="champions" className="data-[state=active]:bg-slate-800 data-[state=active]:text-slate-100 text-slate-400">
             <Trophy className="w-3.5 h-3.5 mr-1.5" /> Champions
           </TabsTrigger>
+          <TabsTrigger value="epic-legends" className="data-[state=active]:bg-slate-800 data-[state=active]:text-slate-100 text-slate-400">
+            <Sparkles className="w-3.5 h-3.5 mr-1.5" /> Epic Legends
+          </TabsTrigger>
         </TabsList>
 
         {/* ── World Tab ── */}
@@ -1395,6 +1577,11 @@ export default function WorldPage() {
         {/* ── Champions Tab ── */}
         <TabsContent value="champions" className="mt-4">
           <ChampionsTab onSelectPlayer={setSelectedPlayer} />
+        </TabsContent>
+
+        {/* ── Epic Legends Tab ── */}
+        <TabsContent value="epic-legends" className="mt-4">
+          <EpicLegendsTab />
         </TabsContent>
       </Tabs>
     </div>

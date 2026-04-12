@@ -26,6 +26,7 @@ import {
   charactersTable,
   ghostDungeonClearsTable,
   ghostRaidClearsTable,
+  ghostEpicQuestProgressTable,
 } from "@workspace/db/schema";
 import { and, desc, eq, gt, lt, sql, inArray, isNull } from "drizzle-orm";
 import { GHOST_SEEDS, type GhostPersonality } from "./ghostSeeds.js";
@@ -54,6 +55,7 @@ import { RAIDS } from "./raidData.js";
 import { generateOoakName, TRADESKILL_CLASSES } from "./tradeskillData.js";
 import type { TradeskillClass } from "./tradeskillData.js";
 import { rollItem, type ProceduralRarity } from "./proceduralItems.js";
+import { getEpicWeaponByClass } from "./epicQuestData.js";
 
 // ─── Simulator version — bump to force a reset of ghost data ─────────────────
 const SIMULATOR_VERSION = 7;
@@ -787,6 +789,7 @@ export async function resetGhostPlayers(): Promise<void> {
   await db.delete(worldPlayersTable);
   await db.delete(worldEventsTable);
   await db.delete(ghostMarketDemandTable);
+  await db.delete(ghostEpicQuestProgressTable);
   for (const category of MARKET_CATEGORIES) {
     await db.insert(ghostMarketDemandTable).values({
       category,
@@ -1022,7 +1025,92 @@ async function ghostDungeonProgressTick(
   }
 }
 
-// ─── Generational ghost system ────────────────────────────────────────────────
+// ─── Ghost Epic Quest Tick ────────────────────────────────────────────────────
+// Runs after each dungeon/raid tick. For every ghost that meets the epic quest
+// conditions (level 70, 200 boss kills, clears of all 3 required raid bosses),
+// insert or update a ghost_epic_quest_progress record.
+// Required raid clears: harla_dar, trakanon, mayong_mistmoore.
+// Mythical is awarded when each of the three required raids has clearCount >= 3.
+
+const EPIC_REQUIRED_RAIDS = ["harla_dar", "trakanon", "mayong_mistmoore"] as const;
+const EPIC_MYTHICAL_CLEARS = 3;
+
+async function ghostEpicQuestTick(
+  players: Array<typeof worldPlayersTable.$inferSelect>,
+): Promise<void> {
+  // Only consider ghosts who could possibly qualify
+  const candidates = players.filter(g => g.level >= 70 && g.bossKills >= 200);
+  if (candidates.length === 0) return;
+
+  // Fetch existing ghost epic quest records for these candidates in one query
+  const candidateIds = candidates.map(g => g.id);
+  const existing = await db
+    .select()
+    .from(ghostEpicQuestProgressTable)
+    .where(inArray(ghostEpicQuestProgressTable.ghostId, candidateIds))
+    .catch(() => [] as Array<typeof ghostEpicQuestProgressTable.$inferSelect>);
+
+  const existingByGhostId = new Map(existing.map(r => [r.ghostId, r]));
+
+  // Fetch all relevant raid clears for candidates in one query
+  const raidClears = await db
+    .select()
+    .from(ghostRaidClearsTable)
+    .where(
+      and(
+        inArray(ghostRaidClearsTable.ghostId, candidateIds),
+        inArray(ghostRaidClearsTable.raidId, [...EPIC_REQUIRED_RAIDS]),
+      ),
+    )
+    .catch(() => [] as Array<typeof ghostRaidClearsTable.$inferSelect>);
+
+  // Group raid clears by ghostId -> raidId -> clearCount
+  const clearsByGhost = new Map<number, Map<string, number>>();
+  for (const rc of raidClears) {
+    let ghostMap = clearsByGhost.get(rc.ghostId);
+    if (!ghostMap) { ghostMap = new Map(); clearsByGhost.set(rc.ghostId, ghostMap); }
+    ghostMap.set(rc.raidId, rc.clearCount);
+  }
+
+  const now = new Date();
+
+  for (const ghost of candidates) {
+    const epicDef = getEpicWeaponByClass(ghost.class);
+    if (!epicDef) continue;
+
+    const clears = clearsByGhost.get(ghost.id) ?? new Map<string, number>();
+    const hasAllRaids = EPIC_REQUIRED_RAIDS.every(raidId => (clears.get(raidId) ?? 0) >= 1);
+    if (!hasAllRaids) continue;
+
+    const mythicalAwarded = EPIC_REQUIRED_RAIDS.every(
+      raidId => (clears.get(raidId) ?? 0) >= EPIC_MYTHICAL_CLEARS,
+    );
+    const mythicalWeaponId = mythicalAwarded ? epicDef.mythicalItemId : null;
+
+    const current = existingByGhostId.get(ghost.id);
+    if (!current) {
+      // First time this ghost qualifies — insert a new record
+      await db
+        .insert(ghostEpicQuestProgressTable)
+        .values({
+          ghostId: ghost.id,
+          classId: epicDef.classId,
+          fabledWeaponId: epicDef.fabledItemId,
+          mythicalAwarded,
+          mythicalWeaponId,
+        })
+        .onConflictDoNothing()
+        .catch(() => {});
+    } else if (mythicalAwarded && !current.mythicalAwarded) {
+      // Ghost already had a record but has now earned enough clears for mythical
+      await db
+        .update(ghostEpicQuestProgressTable)
+        .set({ mythicalAwarded: true, mythicalWeaponId, updatedAt: now })
+        .where(eq(ghostEpicQuestProgressTable.id, current.id))
+        .catch(() => {});
+    }
+  }
+}
 
 const GENERATION_SUFFIX = ["", "Jr.", "II", "III", "IV", "V"];
 
@@ -2190,6 +2278,7 @@ export async function tickGhostSimulation(): Promise<void> {
         await db.delete(worldPlayersTable).where(eq(worldPlayersTable.id, player.id)).catch((e) => { console.error("[Ghost] Failed to delete retired ghost:", e); });
         await db.delete(ghostDungeonClearsTable).where(eq(ghostDungeonClearsTable.ghostId, player.id)).catch((e) => { console.error("[Ghost] Failed to delete dungeon clears for retired ghost:", e); });
         await db.delete(ghostRaidClearsTable).where(eq(ghostRaidClearsTable.ghostId, player.id)).catch((e) => { console.error("[Ghost] Failed to delete raid clears for retired ghost:", e); });
+        await db.delete(ghostEpicQuestProgressTable).where(eq(ghostEpicQuestProgressTable.ghostId, player.id)).catch((e) => { console.error("[Ghost] Failed to delete epic quest progress for retired ghost:", e); });
 
         // ── Phase 3: Ghost Legacy Drop ──────────────────────────────────────
         // Determine what the ghost leaves behind (item, recipe, or OoaK recipe).
@@ -2260,6 +2349,9 @@ export async function tickGhostSimulation(): Promise<void> {
 
   // ── Ghost dungeon/raid progression ──
   await ghostDungeonProgressTick(players, tick).catch(() => {});
+
+  // ── Ghost epic quest progression ──
+  await ghostEpicQuestTick(players).catch(() => {});
 
   // ── Rival detection ──────────────────────────────────────────────────────
   try {
