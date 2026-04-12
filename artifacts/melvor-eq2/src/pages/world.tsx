@@ -50,6 +50,22 @@ const PERSONALITY_STYLES: Record<string, { icon: string; cls: string }> = {
   Devout:     { icon: "✨", cls: "border-amber-600/60 text-amber-300 bg-amber-950/20" },
 };
 
+/**
+ * Resolve personality style from either a personality label ("the Berserker")
+ * or a legacy archetype name ("Aggressive"). Returns undefined if unknown.
+ */
+function getPersonalityStyle(personality?: string, personalityArchetype?: string) {
+  // Prefer the explicit archetype field from the API (resolved server-side)
+  if (personalityArchetype && PERSONALITY_STYLES[personalityArchetype]) {
+    return PERSONALITY_STYLES[personalityArchetype];
+  }
+  // Fallback: direct lookup (works for legacy "Aggressive" etc.)
+  if (personality && PERSONALITY_STYLES[personality]) {
+    return PERSONALITY_STYLES[personality];
+  }
+  return undefined;
+}
+
 const EVENT_ICONS: Record<string, string> = {
   kill:        "⚔️",
   boss_kill:   "💀",
@@ -196,8 +212,8 @@ const PERSONALITY_BORDER: Record<string, string> = {
   Devout:     "border-amber-500/70",
 };
 
-function GhostPortraitAvatar({ playerId, size = 32, personality, className }: {
-  playerId: number; size?: number; personality?: string; className?: string;
+function GhostPortraitAvatar({ playerId, size = 32, personality, personalityArchetype, className }: {
+  playerId: number; size?: number; personality?: string; personalityArchetype?: string; className?: string;
 }) {
   const [src, setSrc] = React.useState<string | null>(portraitCache.get(playerId) ?? null);
   const [loading, setLoading] = React.useState(false);
@@ -229,8 +245,10 @@ function GhostPortraitAvatar({ playerId, size = 32, personality, className }: {
     return () => { active = false; };
   }, [playerId]);
 
-  const borderCls = personality ? (PERSONALITY_BORDER[personality] ?? "border-slate-600/70") : "border-slate-600/70";
-  const fallbackEmoji = personality ? PERSONALITY_STYLES[personality]?.icon : "?";
+  const pStyle = getPersonalityStyle(personality, personalityArchetype);
+  const styleKey = personalityArchetype ?? personality;
+  const borderCls = styleKey ? (PERSONALITY_BORDER[styleKey] ?? "border-slate-600/70") : "border-slate-600/70";
+  const fallbackEmoji = pStyle?.icon ?? "?";
   const style = { width: size, height: size };
 
   if (src) {
@@ -362,13 +380,13 @@ function GhostProfilePanel({ player, rivals, onClose, onToggleRival }: GhostProf
                     alt={player.name}
                     className={cn(
                       "w-24 h-24 rounded-xl object-cover border-2 shadow-lg",
-                      PERSONALITY_BORDER[player.personality] ?? "border-slate-700"
+                      PERSONALITY_BORDER[player.personalityArchetype ?? player.personality ?? ""] ?? "border-slate-700"
                     )}
                   />
                 ) : (
                   <div className={cn(
                     "w-24 h-24 rounded-xl bg-slate-800 border-2 flex items-center justify-center",
-                    PERSONALITY_BORDER[player.personality] ?? "border-slate-700"
+                    PERSONALITY_BORDER[player.personalityArchetype ?? player.personality ?? ""] ?? "border-slate-700"
                   )}>
                     <Loader2 className="w-6 h-6 text-slate-600 animate-spin" />
                   </div>
@@ -379,11 +397,14 @@ function GhostProfilePanel({ player, rivals, onClose, onToggleRival }: GhostProf
                   <span className={cn("text-[10px] px-1.5 py-0.5 rounded border", ARCHETYPE_COLORS[player.archetype] ?? "border-slate-700 text-slate-400")}>
                     {player.archetype} · {player.class}
                   </span>
-                  {player.personality && PERSONALITY_STYLES[player.personality] && (
-                    <span className={cn("text-[10px] px-1.5 py-0.5 rounded border", PERSONALITY_STYLES[player.personality].cls)}>
-                      {PERSONALITY_STYLES[player.personality].icon} {player.personality}
-                    </span>
-                  )}
+                  {(() => {
+                    const pStyle = getPersonalityStyle(player.personality, player.personalityArchetype);
+                    return pStyle && player.personality ? (
+                      <span className={cn("text-[10px] px-1.5 py-0.5 rounded border", pStyle.cls)}>
+                        {pStyle.icon} {player.personality}
+                      </span>
+                    ) : null;
+                  })()}
                   <span className="text-[10px] px-1.5 py-0.5 rounded border border-slate-700 text-slate-400">
                     {ALIGNMENT_ICON[player.alignment]} {player.alignment}
                   </span>
@@ -578,7 +599,7 @@ function LeaderboardRow({ entry, onSelect }: { entry: any; onSelect?: () => void
         {entry.rank === 1 ? "👑" : entry.rank === 2 ? "🥈" : entry.rank === 3 ? "🥉" : entry.rank}
       </span>
       {!entry.isRealPlayer ? (
-        <GhostPortraitAvatar playerId={entry.id} size={28} personality={entry.personality} />
+        <GhostPortraitAvatar playerId={entry.id} size={28} personality={entry.personality} personalityArchetype={entry.personalityArchetype} />
       ) : (
         <div className="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-sm shrink-0">
           {ARCHETYPE_SPRITE[entry.archetype] ?? "⚔️"}
@@ -593,11 +614,14 @@ function LeaderboardRow({ entry, onSelect }: { entry: any; onSelect?: () => void
           <span className={cn("text-[10px] px-1.5 py-0.5 rounded border shrink-0", ARCHETYPE_COLORS[entry.archetype] ?? "border-slate-700 text-slate-400")}>
             {entry.archetype}
           </span>
-          {entry.personality && PERSONALITY_STYLES[entry.personality] && (
-            <span className={cn("text-[9px] px-1.5 py-0.5 rounded border shrink-0", PERSONALITY_STYLES[entry.personality].cls)}>
-              {PERSONALITY_STYLES[entry.personality].icon} {entry.personality}
-            </span>
-          )}
+          {(() => {
+              const pStyle = getPersonalityStyle(entry.personality, entry.personalityArchetype);
+              return pStyle && entry.personality ? (
+                <span className={cn("text-[9px] px-1.5 py-0.5 rounded border shrink-0", pStyle.cls)}>
+                  {pStyle.icon} {entry.personality}
+                </span>
+              ) : null;
+            })()}
         </div>
         <div className="text-[10px] text-slate-500 truncate">
           Lv {entry.level} {entry.race} {entry.class} · {entry.zone}
@@ -677,6 +701,7 @@ interface GhostRoleEntry {
   gearScore: number;
   dungeonClears: number;
   personality: string;
+  personalityArchetype?: string;
   role: string;
   generation: number;
 }
@@ -707,7 +732,7 @@ function ChampionGhostCard({
       : rank === 3
       ? "text-amber-700 font-bold"
       : "text-slate-500";
-  const ps = PERSONALITY_STYLES[ghost.personality];
+  const ps = getPersonalityStyle(ghost.personality, ghost.personalityArchetype);
 
   return (
     <div
@@ -898,7 +923,7 @@ function PlayerCard({
     >
       <div className="flex items-start gap-3">
         {!player.isRealPlayer ? (
-          <GhostPortraitAvatar playerId={player.id} size={40} personality={player.personality} className="rounded-xl mt-0.5" />
+          <GhostPortraitAvatar playerId={player.id} size={40} personality={player.personality} personalityArchetype={player.personalityArchetype} className="rounded-xl mt-0.5" />
         ) : (
           <div className="w-10 h-10 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-xl shrink-0">
             {ARCHETYPE_SPRITE[player.archetype] ?? "⚔️"}
@@ -925,11 +950,14 @@ function PlayerCard({
                 <span className="text-[10px] text-slate-500">
                   {ALIGNMENT_ICON[(player.alignment as string)] ?? ""} {player.alignment}
                 </span>
-                {player.personality && PERSONALITY_STYLES[player.personality] && (
-                  <span className={cn("text-[9px] px-1 py-0 rounded border", PERSONALITY_STYLES[player.personality].cls)}>
-                    {PERSONALITY_STYLES[player.personality].icon} {player.personality}
-                  </span>
-                )}
+                {(() => {
+                    const pStyle = getPersonalityStyle(player.personality, player.personalityArchetype);
+                    return pStyle && player.personality ? (
+                      <span className={cn("text-[9px] px-1 py-0 rounded border", pStyle.cls)}>
+                        {pStyle.icon} {player.personality}
+                      </span>
+                    ) : null;
+                  })()}
               </div>
             </div>
             <span className="text-xs font-black text-amber-400 shrink-0">Lv {player.level}</span>

@@ -876,6 +876,16 @@ export interface WorldPlayer {
   stats: WorldPlayerStats;
   lastTickAt: string;
   createdAt: string;
+  /** One of the 300 named personality labels (e.g. "the Berserker") or legacy archetype name */
+  personality?: string;
+  /** Resolved behavioral archetype for UI styling: Aggressive | Cautious | Explorer | Greedy | Scholarly | Devout */
+  personalityArchetype?: string;
+  isRealPlayer?: boolean;
+  generation?: number;
+  parentId?: number | null;
+  inheritedTraits?: string[];
+  activeHoursStart?: number;
+  activeHoursEnd?: number;
 }
 
 export interface WorldEvent {

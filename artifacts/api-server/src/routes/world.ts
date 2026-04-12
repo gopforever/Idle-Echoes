@@ -11,6 +11,7 @@ import { desc, eq, sql } from "drizzle-orm";
 import { generateImageBuffer } from "@workspace/integrations-openai-ai-server/image";
 import { openai } from "@workspace/integrations-openai-ai-server";
 import { resetGhostPlayers } from "../lib/ghostSimulator.js";
+import { getArchetype } from "../lib/ghostPersonalities.js";
 import { getOrCreateCharacter } from "./character.js";
 
 // ─── AI Helper ───────────────────────────────────────────────────────────────
@@ -114,28 +115,35 @@ worldPublicRouter.get("/world/players", async (_req, res, next) => {
     // Fetch the real player character (first row in characters table)
     const [char] = await db.select().from(charactersTable).limit(1);
 
-    const all: unknown[] = [...ghosts];
+    // Enrich ghost rows with the resolved personality archetype for frontend styling
+    const enrichedGhosts = ghosts.map(g => ({
+      ...g,
+      personalityArchetype: getArchetype(g.personality ?? "Aggressive"),
+    }));
+
+    const all: unknown[] = [...enrichedGhosts];
     if (char) {
       all.push({
-        id:              -1,
-        name:            char.name,
-        race:            char.race,
-        class:           char.class,
-        archetype:       char.archetype,
-        alignment:       char.alignment,
-        level:           char.level,
-        xp:              char.xp,
-        xpToNextLevel:   char.xpToNextLevel,
-        gold:            char.gold,
-        zone:            char.zone,
-        killCount:       char.killCount,
-        deathCount:      char.deathCount,
-        bossKills:       0,
-        totalGoldEarned: char.totalGoldEarned,
-        stats:           char.baseStats,
-        lastTickAt:      char.updatedAt,
-        createdAt:       char.createdAt,
-        isRealPlayer:    true,
+        id:                  -1,
+        name:                char.name,
+        race:                char.race,
+        class:               char.class,
+        archetype:           char.archetype,
+        alignment:           char.alignment,
+        level:               char.level,
+        xp:                  char.xp,
+        xpToNextLevel:       char.xpToNextLevel,
+        gold:                char.gold,
+        zone:                char.zone,
+        killCount:           char.killCount,
+        deathCount:          char.deathCount,
+        bossKills:           0,
+        totalGoldEarned:     char.totalGoldEarned,
+        stats:               char.baseStats,
+        lastTickAt:          char.updatedAt,
+        createdAt:           char.createdAt,
+        isRealPlayer:        true,
+        personalityArchetype: undefined,
       });
     }
 
@@ -370,7 +378,8 @@ worldPublicRouter.get("/world/player/:id/portrait", async (req, res, next) => {
 
     const raceDesc  = GHOST_RACE_VISUALS[player.race] ?? `${player.race} NPC adventurer`;
     const poseDesc  = GHOST_CLASS_POSE[player.archetype] ?? "in an adventuring stance";
-    const toneDesc  = GHOST_PERSONALITY_TONE[player.personality] ?? "determined adventurer expression";
+    // Resolve from the 300-label personality to the 6-archetype key for the tone map
+    const toneDesc  = GHOST_PERSONALITY_TONE[getArchetype(player.personality)] ?? "determined adventurer expression";
     const alignTone = player.alignment === "Freeport" ? "slightly menacing dark tone" :
                       player.alignment === "Qeynos"   ? "noble heroic light tone" : "neutral adventurer tone";
 
