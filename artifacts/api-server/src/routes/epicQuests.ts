@@ -320,7 +320,7 @@ router.post("/epic-quest/advance", async (req, res) => {
       advanced: changed,
       newlyCompleted,
       awardedWeaponId,
-      awardedWeaponName: awardedWeaponId ? (getEpicWeaponByItemId(awardedWeaponId)?.className + " Epic Weapon") ?? null : null,
+      awardedWeaponName: awardedWeaponId ? (getEpicWeaponByItemId(awardedWeaponId)?.className ?? null)?.concat(" Epic Weapon") ?? null : null,
       completed: allDone,
       currentStep,
       steps,
