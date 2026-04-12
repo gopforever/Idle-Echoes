@@ -23,6 +23,7 @@ import { getOrCreateCharacter } from "./character.js";
 import { checkAndUnlockAchievements } from "./achievements.js";
 import { applyAABonuses } from "../lib/eq2Formulas.js";
 import { ALL_AA_TABS } from "../lib/eq2Data.js";
+import { getGuildPerksForCharacter } from "../lib/guildPerks.js";
 
 const router: IRouter = Router();
 
@@ -207,6 +208,7 @@ router.post("/crafting/craft", async (req, res) => {
       return { effect: def.effect, currentRank: r.rank, effectValue: def.effectValue, effectPerRank: def.effectPerRank };
     }).filter((n): n is NonNullable<typeof n> => n !== null);
     const aaBonuses = applyAABonuses(aaInvested);
+    const guildPerks = await getGuildPerksForCharacter(character.id);
 
     const knownIds = new Set(JOURNEYMAN_RECIPE_IDS);
     const learnedRows = await db
@@ -351,8 +353,9 @@ router.post("/crafting/craft", async (req, res) => {
 
     const craftedItemId = `crafted_${recipe.resultItemId}_${Date.now()}`;
 
-    // Apply craftYield AA bonus: each 100% of craftYield = +1 guaranteed item; remainder = probabilistic
-    const craftYieldBonus = aaBonuses.craftYield / 100;
+    // Apply craftYield bonus from AA + guild perk (stacked)
+    const totalCraftYieldPct = aaBonuses.craftYield + guildPerks.craftYieldBonus;
+    const craftYieldBonus = totalCraftYieldPct / 100;
     const extraWholeItems = Math.floor(craftYieldBonus);
     const extraFractional = craftYieldBonus - extraWholeItems;
     const bonusItems = extraWholeItems + (Math.random() < extraFractional ? 1 : 0);
