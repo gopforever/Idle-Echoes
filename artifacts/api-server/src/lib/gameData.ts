@@ -1796,6 +1796,74 @@ export const ITEMS: Item[] = [
     stats: { defenseRating: 22, mitigation: 12, stamina: 5, agility: 5 },
     sellPrice: 85, spriteId: "chest_leather",
   },
+
+  // ── LEATHER HEALER ARMOR (Warden — wisdom/nature) ─────────────────────────
+  {
+    id: "leather_druid_hood",
+    name: "Druid's Leather Hood",
+    description: "A supple leather hood favoured by druid healers — etched with nature runes",
+    type: "armor", slot: "head", rarity: "uncommon", level: 16, armorType: "leather",
+    stats: { wisdom: 8, intelligence: 5, defenseRating: 26, mitigation: 15, spellCritChance: 2 },
+    sellPrice: 80, spriteId: "helm_leather",
+  },
+  {
+    id: "leather_druid_vest",
+    name: "Druid's Bark-Woven Vest",
+    description: "Leather interwoven with bark-cloth — provides natural protection and enhances healing",
+    type: "armor", slot: "chest", rarity: "rare", level: 22, armorType: "leather",
+    stats: { wisdom: 14, health: 55, defenseRating: 62, mitigation: 42, intelligence: 8, spellCritChance: 3 },
+    sellPrice: 420, spriteId: "chest_leather",
+  },
+  {
+    id: "leather_druid_leggings",
+    name: "Druid's Leaf-Woven Leggings",
+    description: "Leather leggings threaded with enchanted leaves — a druid's complement to their healing arts",
+    type: "armor", slot: "legs", rarity: "rare", level: 22, armorType: "leather",
+    stats: { wisdom: 12, health: 48, defenseRating: 54, mitigation: 36, spellCritChance: 2 },
+    sellPrice: 380, spriteId: "legs_leather",
+  },
+  {
+    id: "leather_warden_boots",
+    name: "Warden's Nature-Tread Boots",
+    description: "Boots of nature-blessed leather — the Warden moves silently through any terrain",
+    type: "armor", slot: "feet", rarity: "uncommon", level: 18, armorType: "leather",
+    stats: { wisdom: 8, avoidance: 3, haste: 2, defenseRating: 28 },
+    sellPrice: 110, spriteId: "feet_leather",
+  },
+
+  // ── LEATHER CASTER ARMOR (Fury — intelligence/storm) ──────────────────────
+  {
+    id: "leather_storm_hood",
+    name: "Storm Caller's Leather Hood",
+    description: "A leather hood crackling with latent lightning — worn by druid storm callers",
+    type: "armor", slot: "head", rarity: "uncommon", level: 16, armorType: "leather",
+    stats: { intelligence: 8, wisdom: 5, defenseRating: 26, mitigation: 15, spellCritChance: 2 },
+    sellPrice: 80, spriteId: "helm_leather",
+  },
+  {
+    id: "leather_storm_vest",
+    name: "Storm Caller's Leather Tunic",
+    description: "Leather tunic etched with storm runes — amplifies elemental spells",
+    type: "armor", slot: "chest", rarity: "rare", level: 22, armorType: "leather",
+    stats: { intelligence: 14, wisdom: 9, defenseRating: 62, mitigation: 42, spellCritChance: 3 },
+    sellPrice: 420, spriteId: "chest_leather",
+  },
+  {
+    id: "leather_storm_leggings",
+    name: "Storm Caller's Leather Leggings",
+    description: "Leather leggings threaded with conductive sinew — channel storm power into spells",
+    type: "armor", slot: "legs", rarity: "rare", level: 22, armorType: "leather",
+    stats: { intelligence: 12, wisdom: 8, defenseRating: 54, mitigation: 36, spellCritChance: 2 },
+    sellPrice: 380, spriteId: "legs_leather",
+  },
+  {
+    id: "leather_fury_boots",
+    name: "Fury's Storm-Tread Boots",
+    description: "Boots crackling with bound lightning — the Fury moves like a stormfront",
+    type: "armor", slot: "feet", rarity: "uncommon", level: 18, armorType: "leather",
+    stats: { intelligence: 8, wisdom: 4, avoidance: 3, haste: 2, defenseRating: 28 },
+    sellPrice: 110, spriteId: "feet_leather",
+  },
 ];
 
 /**
@@ -4468,6 +4536,18 @@ ITEMS.push(
   { id: "raid_harla_dar_feet_scout", name: "Boots of the Chromatic Hunter", description: "Swift boots of prismatic dragon-leather — the wearer moves with elemental speed", type: "armor", slot: "feet", rarity: "mythical", level: 56, armorType: "leather",
     stats: { agility: 88, stamina: 40, defenseRating: 300, mitigation: 190, haste: 14, avoidance: 20 }, sellPrice: 36000, spriteId: "feet_leather" },
 
+  // Armor — Leather (Warden)
+  { id: "raid_harla_dar_legs_warden", name: "Prismatic Warden's Legwraps", description: "Nature-blessed leather leggings threaded with Harla Dar's prismatic scales — amplify healing in all elements", type: "armor", slot: "legs", rarity: "mythical", level: 57, armorType: "leather",
+    stats: { wisdom: 92, health: 260, spellCritChance: 10, intelligence: 58, defenseRating: 260, mitigation: 165 }, sellPrice: 44000, spriteId: "legs_leather" },
+  { id: "raid_harla_dar_feet_warden", name: "Treads of the Chromatic Grove", description: "Leather boots grown from Harla Dar's rootbound membrane — the Warden dances between all elements", type: "armor", slot: "feet", rarity: "mythical", level: 56, armorType: "leather",
+    stats: { wisdom: 78, spellCritChance: 9, haste: 10, avoidance: 16, defenseRating: 215 }, sellPrice: 36000, spriteId: "feet_leather" },
+
+  // Armor — Leather (Fury)
+  { id: "raid_harla_dar_legs_fury", name: "Chromatic Storm Caller's Leggings", description: "Elemental-leather leggings crackling with prismatic lightning — the Fury's storm magic reaches new heights", type: "armor", slot: "legs", rarity: "mythical", level: 57, armorType: "leather",
+    stats: { intelligence: 100, wisdom: 62, spellDamageBonus: 65, spellCritChance: 12, defenseRating: 240, mitigation: 150 }, sellPrice: 44000, spriteId: "legs_leather" },
+  { id: "raid_harla_dar_feet_fury", name: "Boots of the Prismatic Tempest", description: "Storm-leather boots woven from Harla Dar's wing-hide — the Fury surges forward like a living lightning bolt", type: "armor", slot: "feet", rarity: "mythical", level: 56, armorType: "leather",
+    stats: { intelligence: 84, wisdom: 52, spellCritChance: 11, haste: 12, defenseRating: 200, avoidance: 14 }, sellPrice: 36000, spriteId: "feet_leather" },
+
   // Accessories
   { id: "raid_harla_dar_ring1", name: "Band of Prismatic Scales", description: "A ring set with a Harla Dar scale chip — glows with all elemental colours", type: "accessory", slot: "ringLeft", rarity: "mythical", level: 56,
     stats: { strength: 45, agility: 30, stamina: 40, attackRating: 160, critChance: 12 }, sellPrice: 38000, spriteId: "ring_fabled" },
@@ -4533,6 +4613,18 @@ ITEMS.push(
   { id: "raid_trakanon_feet_scout", name: "Venom-Treader Boots", description: "Boots of plague-dragon hide — the wearer moves swiftly even through poisoned terrain", type: "armor", slot: "feet", rarity: "mythical", level: 60, armorType: "leather",
     stats: { agility: 96, stamina: 44, defenseRating: 328, mitigation: 208, haste: 15, avoidance: 22 }, sellPrice: 38000, spriteId: "feet_leather" },
 
+  // Armor — Leather (Warden)
+  { id: "raid_trakanon_legs_warden", name: "Plague-Ward Warden's Leggings", description: "Leather treated with Trakanon's neutralised venom — the Warden's nature magic purges all plague", type: "armor", slot: "legs", rarity: "mythical", level: 61, armorType: "leather",
+    stats: { wisdom: 102, health: 290, spellCritChance: 11, intelligence: 64, defenseRating: 288, mitigation: 182 }, sellPrice: 47000, spriteId: "legs_leather" },
+  { id: "raid_trakanon_feet_warden", name: "Boots of the Plague Grove", description: "Boots of plague-dragon leather purified by Warden rites — allow movement through toxic terrain unharmed", type: "armor", slot: "feet", rarity: "mythical", level: 60, armorType: "leather",
+    stats: { wisdom: 86, spellCritChance: 10, haste: 11, avoidance: 18, defenseRating: 238 }, sellPrice: 38000, spriteId: "feet_leather" },
+
+  // Armor — Leather (Fury)
+  { id: "raid_trakanon_legs_fury", name: "Pestilent Stormcaller's Leggings", description: "Leather infused with Trakanon's corrupted lightning — the Fury's storms carry a virulent charge", type: "armor", slot: "legs", rarity: "mythical", level: 61, armorType: "leather",
+    stats: { intelligence: 110, wisdom: 68, spellDamageBonus: 72, spellCritChance: 13, defenseRating: 265, mitigation: 168 }, sellPrice: 47000, spriteId: "legs_leather" },
+  { id: "raid_trakanon_feet_fury", name: "Boots of the Necrotic Tempest", description: "Plague-leather boots thrumming with dark lightning — the Fury's steps leave scorched earth", type: "armor", slot: "feet", rarity: "mythical", level: 60, armorType: "leather",
+    stats: { intelligence: 94, wisdom: 58, spellCritChance: 12, haste: 13, defenseRating: 224, avoidance: 16 }, sellPrice: 38000, spriteId: "feet_leather" },
+
   // Accessories
   { id: "raid_trakanon_ring1", name: "Band of the Undying Plague", description: "A ring of plague-dragon bone — the wearer resists all disease and venom", type: "accessory", slot: "ringLeft", rarity: "mythical", level: 60,
     stats: { strength: 50, agility: 35, stamina: 45, attackRating: 175, critChance: 13 }, sellPrice: 42000, spriteId: "ring_dark" },
@@ -4597,6 +4689,18 @@ ITEMS.push(
     stats: { agility: 130, stamina: 65, defenseRating: 440, mitigation: 285, haste: 16, critChance: 18 }, sellPrice: 62000, spriteId: "legs_leather" },
   { id: "raid_mayong_mistmoore_feet_scout", name: "Boots of the Eternal Dark", description: "Shadow-leather boots forged in Mayong's personal armory — the fastest boots in all of Norrath", type: "armor", slot: "feet", rarity: "mythical", level: 65, armorType: "leather",
     stats: { agility: 118, stamina: 52, defenseRating: 395, mitigation: 252, haste: 18, avoidance: 26 }, sellPrice: 52000, spriteId: "feet_leather" },
+
+  // Armor — Leather (Warden)
+  { id: "raid_mayong_mistmoore_legs_warden", name: "Shadowgrove Warden's Legwraps", description: "Shadow-leather leggings blessed by the ancient groves — the Warden draws life from the eternal dark", type: "armor", slot: "legs", rarity: "mythical", level: 66, armorType: "leather",
+    stats: { wisdom: 120, health: 345, spellCritChance: 13, intelligence: 74, defenseRating: 338, mitigation: 212 }, sellPrice: 62000, spriteId: "legs_leather" },
+  { id: "raid_mayong_mistmoore_feet_warden", name: "Boots of the Shadowgrove", description: "Shadow-leather boots grown from Mayong's deepest vault — the Warden walks through shadow and emerges healed", type: "armor", slot: "feet", rarity: "mythical", level: 65, armorType: "leather",
+    stats: { wisdom: 104, spellCritChance: 12, haste: 14, avoidance: 22, defenseRating: 280 }, sellPrice: 52000, spriteId: "feet_leather" },
+
+  // Armor — Leather (Fury)
+  { id: "raid_mayong_mistmoore_legs_fury", name: "Void-Storm Caller's Legwraps", description: "Shadow-leather leggings crackling with void lightning — the Fury commands storms that drain the very soul", type: "armor", slot: "legs", rarity: "mythical", level: 66, armorType: "leather",
+    stats: { intelligence: 130, wisdom: 80, spellDamageBonus: 88, spellCritChance: 16, defenseRating: 312, mitigation: 198 }, sellPrice: 62000, spriteId: "legs_leather" },
+  { id: "raid_mayong_mistmoore_feet_fury", name: "Boots of the Eternal Tempest", description: "Shadow-leather boots inscribed with Mayong's lightning sigils — the Fury moves through the battlefield like a storm god", type: "armor", slot: "feet", rarity: "mythical", level: 65, armorType: "leather",
+    stats: { intelligence: 112, wisdom: 68, spellCritChance: 14, haste: 16, defenseRating: 264, avoidance: 20 }, sellPrice: 52000, spriteId: "feet_leather" },
 
   // Accessories
   { id: "raid_mayong_mistmoore_ring1", name: "Signet of the Vampire Sovereign", description: "Mayong's personal signet ring — the most feared piece of jewelry in all of Norrath", type: "accessory", slot: "ringLeft", rarity: "mythical", level: 65,

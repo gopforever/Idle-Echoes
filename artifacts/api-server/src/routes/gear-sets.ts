@@ -18,7 +18,13 @@ router.get("/gear-sets", async (req, res) => {
     const character = await getOrCreateCharacter(req.characterId);
     const equippedGear = (character.gear as Record<string, unknown>) ?? {};
     const charClass = (character.class ?? "Fighter") as string;
-    const setArchetype: GearSetArchetype = charClass === "Priest" ? "healer" : charClass === "Mage" ? "caster" : "fighter";
+    const charArchetype = (character.archetype ?? "Fighter") as string;
+    // Fury is a caster-type Priest (intelligence primary); all other Priests are healers.
+    const setArchetype: GearSetArchetype =
+      charClass === "Fury" ? "caster" :
+      charArchetype === "Priest" ? "healer" :
+      charArchetype === "Mage" ? "caster" :
+      "fighter";
     const archetypeSets = GEAR_SETS.filter(s => s.archetype === setArchetype);
 
     // Collect all set piece itemIds from inventory
