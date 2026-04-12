@@ -1098,8 +1098,6 @@ async function ghostEpicQuestTick(
           fabledWeaponId: epicDef.fabledItemId,
           mythicalAwarded,
           mythicalWeaponId,
-          createdAt: now,
-          updatedAt: now,
         })
         .onConflictDoNothing()
         .catch(() => {});

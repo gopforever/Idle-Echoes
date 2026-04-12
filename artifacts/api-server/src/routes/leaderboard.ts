@@ -9,6 +9,8 @@ import { getDungeonById } from "../lib/dungeonData.js";
 
 const router: IRouter = Router();
 
+const DEFAULT_ARCHETYPE = "Fighter" as const;
+
 /** Compute derived gear stats (attack, defense, mitigation, etc.) from a gear object */
 function resolveGearStats(gear: Record<string, unknown>, level: number, baseStats: { strength: number; agility: number; stamina: number; intelligence: number; wisdom: number; charisma: number }) {
   let gearAttackRating = 0, gearDefenseRating = 0, gearMitigation = 0;
@@ -709,7 +711,7 @@ router.get("/leaderboard/epic-completers", async (_req, res) => {
         name: char.name,
         class: char.class,
         classId: rec.classId,
-        archetype: char.archetype ?? "Fighter",
+        archetype: char.archetype ?? DEFAULT_ARCHETYPE,
         race: char.race,
         level: char.level,
         fabledWeaponId: rec.fabledWeaponId ?? "",
