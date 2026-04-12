@@ -103,6 +103,8 @@ export interface TickResponse {
   combatState?: { activeAABonuses?: string[]; totalPlayerDamage?: number; combatStartMs?: number | null; fightDps?: number };
   /** Per-tick damage breakdown keyed by source ID */
   damageBySource?: Record<string, number>;
+  /** Per-tick heal breakdown keyed by source ID */
+  healBySource?: Record<string, number>;
   autoLoopStarted?: boolean;
 }
 
@@ -573,24 +575,36 @@ const SOURCE_LABELS: Record<string, { label: string; icon: string; color: string
   party_bonus:   { label: "Party Bonus",   icon: "👥", color: "bg-sky-700/80" },
 };
 
+/** Human-readable labels for built-in heal sources */
+const HEAL_SOURCE_LABELS: Record<string, { label: string; icon: string; color: string }> = {
+  lifesteal:   { label: "Lifesteal",   icon: "🩸", color: "bg-rose-700/80" },
+  party_heal:  { label: "Party Heal",  icon: "✨", color: "bg-emerald-700/80" },
+  auto_heal:   { label: "Auto-Heal",   icon: "💊", color: "bg-emerald-600/80" },
+  hp_regen:    { label: "HP Regen",    icon: "💚", color: "bg-green-700/80" },
+  auto_potion: { label: "Auto-Potion", icon: "🧪", color: "bg-teal-700/80" },
+};
+
 interface DpsMeterProps {
   damageBySource: Record<string, number>;
+  healBySource: Record<string, number>;
   abilities: ClassAbility[];
   combatStartMs?: number | null;
 }
 
-function DpsMeter({ damageBySource, abilities, combatStartMs }: DpsMeterProps) {
-  const [expanded, setExpanded] = React.useState(true);
+function DpsMeter({ damageBySource, healBySource, abilities, combatStartMs }: DpsMeterProps) {
+  const dmgEntries = Object.entries(damageBySource);
+  const healEntries = Object.entries(healBySource);
 
-  const entries = Object.entries(damageBySource);
-  if (entries.length === 0) return null;
+  if (dmgEntries.length === 0 && healEntries.length === 0) return null;
 
-  const totalDamage = entries.reduce((sum, [, v]) => sum + v, 0);
-  if (totalDamage === 0) return null;
+  const totalDamage = dmgEntries.reduce((sum, [, v]) => sum + v, 0);
+  const totalHeal = healEntries.reduce((sum, [, v]) => sum + v, 0);
+
+  if (totalDamage === 0 && totalHeal === 0) return null;
 
   const elapsedSec = combatStartMs ? Math.max(1, (Date.now() - combatStartMs) / 1000) : null;
 
-  const sorted = entries
+  const sortedDmg = dmgEntries
     .map(([sourceId, damage]) => {
       const builtIn = SOURCE_LABELS[sourceId];
       const ability = abilities.find(a => a.id === sourceId);
@@ -599,12 +613,28 @@ function DpsMeter({ damageBySource, abilities, combatStartMs }: DpsMeterProps) {
         label: builtIn?.label ?? ability?.name ?? sourceId,
         icon: builtIn?.icon ?? ability?.icon ?? "✨",
         color: builtIn?.color ?? "bg-orange-700/80",
-        damage,
-        pct: Math.round((damage / totalDamage) * 100),
-        dps: elapsedSec !== null ? Math.round((damage / elapsedSec) * 10) / 10 : null,
+        value: damage,
+        pct: totalDamage > 0 ? Math.round((damage / totalDamage) * 100) : 0,
+        rate: elapsedSec !== null ? Math.round((damage / elapsedSec) * 10) / 10 : null,
       };
     })
-    .sort((a, b) => b.damage - a.damage);
+    .sort((a, b) => b.value - a.value);
+
+  const sortedHeal = healEntries
+    .map(([sourceId, heal]) => {
+      const builtIn = HEAL_SOURCE_LABELS[sourceId];
+      const ability = abilities.find(a => a.id === sourceId);
+      return {
+        id: sourceId,
+        label: builtIn?.label ?? ability?.name ?? sourceId,
+        icon: builtIn?.icon ?? ability?.icon ?? "💚",
+        color: builtIn?.color ?? "bg-emerald-700/80",
+        value: heal,
+        pct: totalHeal > 0 ? Math.round((heal / totalHeal) * 100) : 0,
+        rate: elapsedSec !== null ? Math.round((heal / elapsedSec) * 10) / 10 : null,
+      };
+    })
+    .sort((a, b) => b.value - a.value);
 
   return (
     <motion.div
@@ -612,54 +642,79 @@ function DpsMeter({ damageBySource, abilities, combatStartMs }: DpsMeterProps) {
       animate={{ opacity: 1, y: 0 }}
       className="relative z-10 px-4 py-2 border-t border-slate-800/60 bg-slate-950/80 shrink-0"
     >
-      <button
-        onClick={() => setExpanded(e => !e)}
-        className="flex items-center gap-2 w-full"
-      >
+      {/* Header */}
+      <div className="flex items-center gap-2">
         <Activity className="w-3 h-3 text-orange-400" />
-        <span className="text-[9px] text-slate-500 uppercase tracking-widest font-semibold flex-1 text-left">DPS Meter</span>
-        <span className="text-[9px] text-orange-400 tabular-nums font-bold mr-1">
-          {totalDamage.toLocaleString()} dmg
-        </span>
-        {expanded ? <ChevronUp className="w-3 h-3 text-slate-600" /> : <ChevronDown className="w-3 h-3 text-slate-600" />}
-      </button>
-      <AnimatePresence>
-        {expanded && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            <div className="mt-1.5 space-y-1">
-              {sorted.map(entry => (
-                <div key={entry.id} className="flex items-center gap-1.5">
-                  <span className="text-[11px] w-4 text-center shrink-0 leading-none">{entry.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between text-[10px] mb-0.5">
-                      <span className="text-slate-300 truncate">{entry.label}</span>
-                      <span className="tabular-nums text-slate-400 shrink-0 ml-2">
-                        {entry.damage.toLocaleString()}
-                        {entry.dps !== null && (
-                          <span className="text-slate-600 ml-1">{entry.dps}/s</span>
-                        )}
-                      </span>
-                    </div>
-                    <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
-                      <div
-                        className={cn("h-full rounded-full transition-all duration-300", entry.color)}
-                        style={{ width: `${entry.pct}%` }}
-                      />
-                    </div>
-                  </div>
-                  <span className="text-[9px] text-slate-600 tabular-nums w-7 text-right shrink-0">{entry.pct}%</span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+        <span className="text-[9px] text-slate-500 uppercase tracking-widest font-semibold flex-1">DPS Meter</span>
+        {totalDamage > 0 && (
+          <span className="text-[9px] text-orange-400 tabular-nums font-bold">
+            {totalDamage.toLocaleString()} dmg
+          </span>
         )}
-      </AnimatePresence>
+        {totalHeal > 0 && (
+          <span className="text-[9px] text-emerald-400 tabular-nums font-bold ml-2">
+            +{totalHeal.toLocaleString()} heal
+          </span>
+        )}
+      </div>
+
+      {/* Damage rows */}
+      {sortedDmg.length > 0 && (
+        <div className="mt-1.5 space-y-1">
+          {sortedDmg.map(entry => (
+            <div key={entry.id} className="flex items-center gap-1.5">
+              <span className="text-[11px] w-4 text-center shrink-0 leading-none">{entry.icon}</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between text-[10px] mb-0.5">
+                  <span className="text-slate-300 truncate">{entry.label}</span>
+                  <span className="tabular-nums text-slate-400 shrink-0 ml-2">
+                    {entry.value.toLocaleString()}
+                    {entry.rate !== null && (
+                      <span className="text-slate-600 ml-1">{entry.rate}/s</span>
+                    )}
+                  </span>
+                </div>
+                <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
+                  <div
+                    className={cn("h-full rounded-full transition-all duration-300", entry.color)}
+                    style={{ width: `${entry.pct}%` }}
+                  />
+                </div>
+              </div>
+              <span className="text-[9px] text-slate-600 tabular-nums w-7 text-right shrink-0">{entry.pct}%</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Heal rows */}
+      {sortedHeal.length > 0 && (
+        <div className={cn("space-y-1", sortedDmg.length > 0 ? "mt-2 pt-1.5 border-t border-slate-800/60" : "mt-1.5")}>
+          {sortedHeal.map(entry => (
+            <div key={entry.id} className="flex items-center gap-1.5">
+              <span className="text-[11px] w-4 text-center shrink-0 leading-none">{entry.icon}</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between text-[10px] mb-0.5">
+                  <span className="text-emerald-300 truncate">{entry.label}</span>
+                  <span className="tabular-nums text-emerald-400 shrink-0 ml-2">
+                    +{entry.value.toLocaleString()}
+                    {entry.rate !== null && (
+                      <span className="text-slate-600 ml-1">{entry.rate}/s</span>
+                    )}
+                  </span>
+                </div>
+                <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
+                  <div
+                    className={cn("h-full rounded-full transition-all duration-300", entry.color)}
+                    style={{ width: `${entry.pct}%` }}
+                  />
+                </div>
+              </div>
+              <span className="text-[9px] text-slate-600 tabular-nums w-7 text-right shrink-0">{entry.pct}%</span>
+            </div>
+          ))}
+        </div>
+      )}
     </motion.div>
   );
 }
@@ -701,8 +756,7 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
   const [bossClosingLine, setBossClosingLine] = React.useState<{ text: string; outcome: "playerWon" | "bossWon" } | null>(null);
   const closingLineTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const [fightDamageBySource, setFightDamageBySource] = React.useState<Record<string, number>>({});
-  /** Ref to detect when a new fight begins (combatStartMs changes to a new non-null value) */
-  const prevCombatStartMsRef = React.useRef<number | null | undefined>(undefined);
+  const [fightHealBySource, setFightHealBySource] = React.useState<Record<string, number>>({});
 
   const [localAutoPotions, setLocalAutoPotions] = React.useState<boolean | null>(null);
   const [localMeditating, setLocalMeditating] = React.useState<boolean | null>(null);
@@ -767,13 +821,20 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
     }
     if (data.playerDied) addFloat("💀", "miss", "player");
 
-    // Accumulate per-source damage into fight-level totals; reset on auto-loop
-    if (data.autoLoopStarted) {
-      setFightDamageBySource({});
-    } else if (data.damageBySource) {
+    // Accumulate per-source damage and healing into session-level totals (persistent across enemies)
+    if (data.damageBySource) {
       setFightDamageBySource(prev => {
         const next = { ...prev };
         for (const [k, v] of Object.entries(data.damageBySource!)) {
+          next[k] = (next[k] ?? 0) + v;
+        }
+        return next;
+      });
+    }
+    if (data.healBySource) {
+      setFightHealBySource(prev => {
+        const next = { ...prev };
+        for (const [k, v] of Object.entries(data.healBySource!)) {
           next[k] = (next[k] ?? 0) + v;
         }
         return next;
@@ -855,22 +916,13 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
     return () => clearTimeout(timer);
   }, [disableAutoEngage, autoCombat, combatState?.active, combatState?.enemy, startCombat]);
 
-  // Reset DPS meter when a new fight begins (combatStartMs changes to a new non-null value)
-  React.useEffect(() => {
-    const ms = (combatState as any)?.combatStartMs as number | null | undefined;
-    if (ms && ms !== prevCombatStartMsRef.current) {
-      prevCombatStartMsRef.current = ms;
-      setFightDamageBySource({});
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [(combatState as any)?.combatStartMs]);
-
   const handleStop = () => {
     stopCombat.mutate(undefined, {
       onSuccess: () => {
         setLastTickData(null);
         setLastAaProcs([]);
         setFightDamageBySource({});
+        setFightHealBySource({});
         queryClient.invalidateQueries({ queryKey: getGetCombatStateQueryKey() });
       },
     });
@@ -903,7 +955,7 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
   return (
     <div className="flex flex-col h-full min-h-0 gap-0 overflow-hidden">
       {/* ── Arena Card ── */}
-      <Card className="shrink-0 bg-slate-950/80 border-slate-800 overflow-hidden relative flex flex-col">
+      <Card className="shrink-0 bg-slate-950/80 border-slate-800 overflow-y-auto relative flex flex-col max-h-[calc(100%-6rem)]">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(30,30,50,0.8),rgba(5,5,15,1))]" />
 
         {/* Header */}
@@ -1021,7 +1073,6 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
                       <div className="absolute -top-2 left-1/2 -translate-x-1/2 text-[10px] px-2 py-0.5 rounded-full bg-purple-900 border border-purple-700 text-purple-300 font-bold whitespace-nowrap">BOSS</div>
                     )}
                   </div>
-                  {activeEnemy.isBoss && <BossNarrationBanner bossId={activeEnemy.id} enemyHpPct={enemyHpPct} />}
                   <AnimatePresence>
                     {floatingNums.filter(f => f.side === "enemy").map(fn => (
                       <FloatingNumber key={fn.id} fn={fn} onDone={() => removeFloat(fn.id)} />
@@ -1052,6 +1103,13 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
           </div>
         </div>
 
+        {/* Boss narration banner — full-width strip below the battle field */}
+        {activeEnemy?.isBoss && (
+          <div className="relative z-10 px-4 pb-1 shrink-0">
+            <BossNarrationBanner bossId={activeEnemy.id} enemyHpPct={enemyHpPct} />
+          </div>
+        )}
+
         {/* Live stat panel */}
         {combatState.active && (
           <LiveStatPanel
@@ -1062,10 +1120,11 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
           />
         )}
 
-        {/* DPS Meter — shows per-source damage breakdown for the current/last fight */}
-        {Object.keys(fightDamageBySource).length > 0 && (
+        {/* DPS Meter — shows per-source damage and heal breakdown across the session */}
+        {(Object.keys(fightDamageBySource).length > 0 || Object.keys(fightHealBySource).length > 0) && (
           <DpsMeter
             damageBySource={fightDamageBySource}
+            healBySource={fightHealBySource}
             abilities={(abilities as ClassAbility[]) ?? []}
             combatStartMs={(combatState as any).combatStartMs as number | null | undefined}
           />

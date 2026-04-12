@@ -492,6 +492,8 @@ router.post("/combat/tick", async (req, res) => {
     let lastEnemyAbilityUsedId: string | null = null; // tracks the last special ability the boss used (for encounter recording)
     /** Per-tick damage breakdown keyed by source ID (ability id, "auto_attack", "double_attack", "extra_attack", "divine_wrath", "party_bonus") */
     const damageBySource: Record<string, number> = {};
+    /** Per-tick healing breakdown keyed by source ID (ability id, "lifesteal", "party_heal", "auto_heal", "hp_regen", "auto_potion") */
+    const healBySource: Record<string, number> = {};
 
     // ── Load active party (dungeon or raid run) ───────────────────────────────
     let activeParty: PartyMember[] = [];
@@ -629,6 +631,7 @@ router.post("/combat/tick", async (req, res) => {
           const healBonus = 1 + aaBonuses.healAmountBonus / 100;
           const healAmt = Math.floor(baseHeal * healBonus);
           playerHp = Math.min(maxHp, playerHp + healAmt);
+          healBySource[ability.id] = (healBySource[ability.id] ?? 0) + healAmt;
           const healMsg = `✨ ${ability.name}: Healed ${healAmt} HP!`;
           combatMessages.push(healMsg);
           await db.insert(combatLogTable).values({ characterId, tick: newTick, message: healMsg, type: "heal", value: healAmt });
@@ -791,6 +794,7 @@ router.post("/combat/tick", async (req, res) => {
       const lifestealAmt = Math.floor(playerDamageDealt * aaBonuses.lifestealPct / 100);
       if (lifestealAmt > 0) {
         playerHp = Math.min(maxHp, playerHp + lifestealAmt);
+        healBySource["lifesteal"] = (healBySource["lifesteal"] ?? 0) + lifestealAmt;
         floatEvents.push({ value: lifestealAmt, type: "heal" });
         await db.insert(combatLogTable).values({ characterId, tick: newTick, message: `🩸 Life Drain: +${lifestealAmt} HP`, type: "heal", value: lifestealAmt });
       }
@@ -1160,7 +1164,7 @@ router.post("/combat/tick", async (req, res) => {
           playerHpAfter: playerHp, enemyHpAfter: 0,
           isCrit, isEnemyCrit: false, heroicTriggered: false, autoLoopStarted: true,
           aaProcs, powerRegen, powerAfter: Math.floor(playerPower),
-          playerStatusEffects, enemyStatusEffects, abilityUsedId, floatEvents, damageBySource,
+          playerStatusEffects, enemyStatusEffects, abilityUsedId, floatEvents, damageBySource, healBySource,
           playerStatsSnapshot: { attackRating: playerStats.attackRating, defenseRating: playerStats.defenseRating, mitigation: playerStats.mitigation, avoidance: playerStats.avoidance, critChance: playerStats.critChance, powerRegen },
         });
       }
@@ -1186,7 +1190,7 @@ router.post("/combat/tick", async (req, res) => {
         playerHpAfter: playerHp, enemyHpAfter: 0,
         isCrit, isEnemyCrit: false, heroicTriggered: false, autoLoopStarted: false,
         aaProcs, powerRegen, powerAfter: Math.floor(playerPower),
-        playerStatusEffects, enemyStatusEffects, abilityUsedId, floatEvents, damageBySource,
+        playerStatusEffects, enemyStatusEffects, abilityUsedId, floatEvents, damageBySource, healBySource,
         playerStatsSnapshot: { attackRating: playerStats.attackRating, defenseRating: playerStats.defenseRating, mitigation: playerStats.mitigation, avoidance: playerStats.avoidance, critChance: playerStats.critChance, powerRegen },
       });
     }
@@ -1545,6 +1549,7 @@ router.post("/combat/tick", async (req, res) => {
     if (partyContrib.healingAmount > 0 && playerHp > 0 && playerHp < maxHp) {
       const healActual = Math.min(partyContrib.healingAmount, maxHp - playerHp);
       playerHp = Math.min(maxHp, playerHp + healActual);
+      healBySource["party_heal"] = (healBySource["party_heal"] ?? 0) + healActual;
       floatEvents.push({ value: healActual, type: "heal" });
       const priestHealMsg = `✨ Party heals you for ${healActual} HP!`;
       combatMessages.push(priestHealMsg);
@@ -1567,6 +1572,7 @@ router.post("/combat/tick", async (req, res) => {
       const healAmt = Math.floor(baseHeal * healBonus);
       playerHp = Math.min(maxHp, playerHp + healAmt);
       playerPower = Math.max(0, playerPower - 20);
+      healBySource["auto_heal"] = (healBySource["auto_heal"] ?? 0) + healAmt;
       floatEvents.push({ value: healAmt, type: "heal" });
       const healMsg = `💊 Auto-heal: +${healAmt} HP (20 power)`;
       combatMessages.push(healMsg);
@@ -1578,6 +1584,7 @@ router.post("/combat/tick", async (req, res) => {
       const regenAmt = Math.min(aaBonuses.hpRegen, maxHp - playerHp);
       if (regenAmt > 0) {
         playerHp = Math.min(maxHp, playerHp + regenAmt);
+        healBySource["hp_regen"] = (healBySource["hp_regen"] ?? 0) + regenAmt;
         floatEvents.push({ value: regenAmt, type: "heal" });
         await db.insert(combatLogTable).values({ characterId, tick: newTick, message: `💚 HP Regen: +${regenAmt} HP`, type: "heal", value: regenAmt });
       }
@@ -1612,6 +1619,7 @@ router.post("/combat/tick", async (req, res) => {
         const potName = (potionItem.itemData as Record<string,unknown>).name as string || potionItem.itemId;
         const potMsg = `🧪 Auto-potion (${potName}): +${potHeal} HP${potPwr ? ` +${potPwr} Power` : ""}`;
         combatMessages.push(potMsg);
+        healBySource["auto_potion"] = (healBySource["auto_potion"] ?? 0) + potHeal;
         floatEvents.push({ value: potHeal, type: "heal" });
         await db.insert(combatLogTable).values({ characterId, tick: newTick, message: potMsg, type: "heal", value: potHeal });
       }
@@ -1694,7 +1702,7 @@ router.post("/combat/tick", async (req, res) => {
         playerHpAfter: respawnHp, enemyHpAfter: enemyHp,
         isCrit, isEnemyCrit, heroicTriggered: false, autoLoopStarted: false,
         aaProcs, powerRegen, powerAfter: Math.floor(playerPower),
-        playerStatusEffects: [], enemyStatusEffects: [], abilityUsedId, floatEvents, damageBySource,
+        playerStatusEffects: [], enemyStatusEffects: [], abilityUsedId, floatEvents, damageBySource, healBySource,
         playerStatsSnapshot: { attackRating: playerStats.attackRating, defenseRating: playerStats.defenseRating, mitigation: playerStats.mitigation, avoidance: playerStats.avoidance, critChance: playerStats.critChance, powerRegen },
       });
     }
@@ -1748,7 +1756,7 @@ router.post("/combat/tick", async (req, res) => {
       playerHpAfter: playerHp, enemyHpAfter: enemyHp,
       isCrit, isEnemyCrit, heroicTriggered: false, autoLoopStarted: false,
       aaProcs, powerRegen, powerAfter: Math.floor(playerPower),
-      playerStatusEffects, enemyStatusEffects, abilityUsedId, floatEvents, damageBySource,
+      playerStatusEffects, enemyStatusEffects, abilityUsedId, floatEvents, damageBySource, healBySource,
       playerStatsSnapshot: { attackRating: playerStats.attackRating, defenseRating: playerStats.defenseRating, mitigation: playerStats.mitigation, avoidance: playerStats.avoidance, critChance: playerStats.critChance, powerRegen },
     });
     return;
