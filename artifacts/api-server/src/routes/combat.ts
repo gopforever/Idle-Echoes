@@ -417,15 +417,21 @@ router.post("/combat/tick", async (req, res) => {
     // ── Guild perks ──────────────────────────────────────────────────────────
     const guildPerks = await getGuildPerksForCharacter(characterId);
 
+    // Backstab damage bonus applies to Scout-archetype characters' melee damage
+    const effectiveMeleeDmgBonus = aaBonuses.meleeDamageBonus +
+      ((character.archetype ?? "Fighter") === "Scout" ? aaBonuses.backstabDamageBonus : 0);
+    // Ward absorb stacks with mitigation-based damage reduction on all incoming hits
+    const totalDmgReduction = aaBonuses.dmgReduction + aaBonuses.wardAbsorb;
+
     // Active AA bonus labels for the front-end to display
     const activeAALabels: string[] = [];
     if (aaBonuses.critChanceBonus > 0)    activeAALabels.push(`+${aaBonuses.critChanceBonus}% Crit`);
     if (aaBonuses.avoidanceBonus > 0)     activeAALabels.push(`+${aaBonuses.avoidanceBonus}% Avoidance`);
     if (aaBonuses.mitigationBonus > 0)    activeAALabels.push(`+${aaBonuses.mitigationBonus} Mitigation`);
     if (aaBonuses.doubleAttackChance > 0) activeAALabels.push(`${aaBonuses.doubleAttackChance}% Double Attack`);
-    if (aaBonuses.meleeDamageBonus > 0)   activeAALabels.push(`+${aaBonuses.meleeDamageBonus}% Melee Dmg`);
+    if (effectiveMeleeDmgBonus > 0)       activeAALabels.push(`+${effectiveMeleeDmgBonus}% Melee Dmg`);
     if (aaBonuses.spellDamageBonus > 0)   activeAALabels.push(`+${aaBonuses.spellDamageBonus}% Spell Dmg`);
-    if (aaBonuses.dmgReduction > 0)       activeAALabels.push(`-${aaBonuses.dmgReduction}% Dmg Taken`);
+    if (totalDmgReduction > 0)            activeAALabels.push(`-${totalDmgReduction}% Dmg Taken`);
 
     // ── Gear + stats ─────────────────────────────────────────────────────────
     const gearData = computeGearStats(gear, baseStats, character.level);
@@ -607,9 +613,10 @@ router.post("/combat/tick", async (req, res) => {
 
         if (ability.damage) {
           abilityBonusDamage = Math.floor((ability.damage + (ability.damageScale || 1) * character.level * 1.5) * spellBonus * spellCritMult);
-          // Apply elemental resistance if ability has damage type
+          // Apply elemental resistance if ability has damage type; spellPiercing reduces effective resistance
           const dmgType = ability.damageType || "magic";
-          const resist = Math.min(50, enemy.resistances?.[dmgType as keyof typeof enemy.resistances] ?? 0);
+          const rawResist = Math.min(50, enemy.resistances?.[dmgType as keyof typeof enemy.resistances] ?? 0);
+          const resist = Math.max(0, rawResist - aaBonuses.spellPiercing);
           const resistedAmt = Math.floor(abilityBonusDamage * resist / 100);
           if (resistedAmt > 0 && resist > 0) abilityBonusDamage = Math.max(1, abilityBonusDamage - resistedAmt);
 
@@ -636,9 +643,9 @@ router.post("/combat/tick", async (req, res) => {
           combatMessages.push(healMsg);
           await db.insert(combatLogTable).values({ characterId, tick: newTick, message: healMsg, type: "heal", value: healAmt });
 
-          // Divine wrath AA: when heal fires, deal divine damage
-          if (aaBonuses.divineDamageBonus > 0) {
-            const divineDmg = Math.floor(healAmt * 0.2 * (1 + aaBonuses.divineDamageBonus / 100));
+          // Divine Wrath AA: when heal fires, deal divine damage scaled by heal_dmg_proc investment
+          if (aaBonuses.healDmgProcPct > 0) {
+            const divineDmg = Math.floor(healAmt * aaBonuses.healDmgProcPct / 100 * (1 + aaBonuses.divineDamageBonus / 100));
             enemyHp = Math.max(0, enemyHp - divineDmg);
             playerSoloDamage += divineDmg;
             damageBySource["divine_wrath"] = (damageBySource["divine_wrath"] ?? 0) + divineDmg;
@@ -648,8 +655,12 @@ router.post("/combat/tick", async (req, res) => {
           }
         }
 
-        // Set per-ability cooldown (in ticks ≈ seconds) with AA reduction applied
-        const abilityCooldownTicks = Math.max(1, Math.ceil(ability.cooldown * cooldownReductionFactor));
+        // Set per-ability cooldown (in ticks ≈ seconds) with AA reduction applied.
+        // Healing abilities additionally benefit from healCooldownReduction.
+        const abilityCooldownFactor = ability.healAmount
+          ? Math.max(0, 1 - (aaBonuses.cooldownReduction + aaBonuses.healCooldownReduction) / 100)
+          : cooldownReductionFactor;
+        const abilityCooldownTicks = Math.max(1, Math.ceil(ability.cooldown * abilityCooldownFactor));
         playerAbilityCooldowns[ability.id] = abilityCooldownTicks;
 
         if (aaBonuses.cooldownReduction > 0) {
@@ -682,7 +693,7 @@ router.post("/combat/tick", async (req, res) => {
       isCrit = Math.random() * 100 < playerStats.critChance;
       const playerAttack = calculatePlayerDamage(
         playerStats, effectiveEnemyMitigation, enemy.defenseRating, effectiveEnemyAvoidance, isCrit,
-        autoAttackDmgType, enemy.resistances, aaBonuses.meleeDamageBonus
+        autoAttackDmgType, enemy.resistances, effectiveMeleeDmgBonus
       );
       playerAttacked = true;
 
@@ -734,7 +745,7 @@ router.post("/combat/tick", async (req, res) => {
         // Double-attack AA proc
         if (aaBonuses.doubleAttackChance > 0 && Math.random() * 100 < aaBonuses.doubleAttackChance && enemyHp > 0) {
           const isCrit2 = Math.random() * 100 < playerStats.critChance;
-          const pa2 = calculatePlayerDamage(playerStats, effectiveEnemyMitigation, enemy.defenseRating, effectiveEnemyAvoidance, isCrit2, autoAttackDmgType, enemy.resistances, aaBonuses.meleeDamageBonus);
+          const pa2 = calculatePlayerDamage(playerStats, effectiveEnemyMitigation, enemy.defenseRating, effectiveEnemyAvoidance, isCrit2, autoAttackDmgType, enemy.resistances, effectiveMeleeDmgBonus);
           if (!pa2.avoided) {
             let dmg2 = pa2.damage;
             const absorb2 = enemyStatusEffects.find(e => e.type === "shield");
@@ -759,7 +770,7 @@ router.post("/combat/tick", async (req, res) => {
         // Extra attack AA proc
         if (aaBonuses.extraAttackChance > 0 && Math.random() * 100 < aaBonuses.extraAttackChance && enemyHp > 0) {
           const isCrit3 = Math.random() * 100 < playerStats.critChance;
-          const pa3 = calculatePlayerDamage(playerStats, effectiveEnemyMitigation, enemy.defenseRating, effectiveEnemyAvoidance, isCrit3, autoAttackDmgType, enemy.resistances, aaBonuses.meleeDamageBonus);
+          const pa3 = calculatePlayerDamage(playerStats, effectiveEnemyMitigation, enemy.defenseRating, effectiveEnemyAvoidance, isCrit3, autoAttackDmgType, enemy.resistances, effectiveMeleeDmgBonus);
           if (!pa3.avoided) {
             let dmg3 = pa3.damage;
             const absorb3 = enemyStatusEffects.find(e => e.type === "shield");
@@ -1239,7 +1250,7 @@ router.post("/combat/tick", async (req, res) => {
           let dmg = baseDmg;
           // Apply player mitigation if not unavoidable
           if (!ability.unavoidable) {
-            const mitigMod = 1 - Math.min(0.75, (playerStats.mitigation + aaBonuses.dmgReduction) / 100);
+            const mitigMod = 1 - Math.min(0.75, (playerStats.mitigation + totalDmgReduction) / 100);
             const avoidRoll = Math.random() * 100;
             if (avoidRoll < playerStats.avoidance) {
               abilityLogMsg = `💨 You evade ${enemy.name}'s ${ability.name}!`;
@@ -1250,7 +1261,7 @@ router.post("/combat/tick", async (req, res) => {
             dmg = Math.max(1, Math.floor(baseDmg * mitigMod));
           } else {
             // Unavoidable but mitigation still applies partially (50%)
-            const mitigMod = 1 - Math.min(0.5, (playerStats.mitigation + aaBonuses.dmgReduction) / 200);
+            const mitigMod = 1 - Math.min(0.5, (playerStats.mitigation + totalDmgReduction) / 200);
             dmg = Math.max(1, Math.floor(baseDmg * mitigMod));
           }
           // Apply elemental/physical resistance (capped at 50%)
@@ -1288,7 +1299,7 @@ router.post("/combat/tick", async (req, res) => {
           break;
         }
         case "life_drain": {
-          const mitigMod = 1 - Math.min(0.5, (playerStats.mitigation + aaBonuses.dmgReduction) / 200);
+          const mitigMod = 1 - Math.min(0.5, (playerStats.mitigation + totalDmgReduction) / 200);
           const drainAmt = Math.max(1, Math.floor(ability.effectValue * mitigMod));
           const drainHpBefore = playerHp;
           playerHp = Math.max(0, playerHp - drainAmt);
@@ -1408,8 +1419,8 @@ router.post("/combat/tick", async (req, res) => {
       const slowEffect = playerStatusEffects.find(e => e.type === "slow");
       const effectivePlayerAvoidance = Math.max(0, playerStats.avoidance - (slowEffect?.value ?? 0));
 
-      // Fighter ghosts reduce incoming damage by up to 30%
-      const effectiveDmgReduction = aaBonuses.dmgReduction + Math.round(partyContrib.damageReduction * 100);
+      // Fighter ghosts reduce incoming damage by up to 30%; wardAbsorb stacks with dmgReduction
+      const effectiveDmgReduction = totalDmgReduction + Math.round(partyContrib.damageReduction * 100);
 
       const enemyAttack = calculateEnemyDamage(
         effectiveEnemyDmgMin, effectiveEnemyDmgMax, enemy.attackRating,
@@ -1499,7 +1510,7 @@ router.post("/combat/tick", async (req, res) => {
               procMsg = `💫 ${enemy.name} procs ${ability.name}! You are stunned!`;
             }
           } else if (ability.effectType === "damage_burst") {
-            let burstDmg = Math.max(1, Math.floor(ability.effectValue * (1 - Math.min(0.75, (playerStats.mitigation + aaBonuses.dmgReduction) / 100))));
+            let burstDmg = Math.max(1, Math.floor(ability.effectValue * (1 - Math.min(0.75, (playerStats.mitigation + totalDmgReduction) / 100))));
             // Apply player resistance for this damage type (capped at 50%), mirroring the scheduled damage_burst path
             const burstDmgType = ability.damageType ?? "slash";
             const burstResistPct = Math.min(50, playerStats.resistances[burstDmgType] ?? 0);
@@ -1532,7 +1543,7 @@ router.post("/combat/tick", async (req, res) => {
         Math.floor(enemy.damageMax * (1 + frenzyDmgBonus)),
         enemy.attackRating, playerStats.defenseRating, playerStats.mitigation,
         Math.max(0, playerStats.avoidance - 10), // reduced avoidance for the speed attack
-        aaBonuses.dmgReduction, getEnemyAutoAttackDamageType(enemy), playerStats.resistances,
+        totalDmgReduction, getEnemyAutoAttackDamageType(enemy), playerStats.resistances,
       );
       if (!enrageExtraAttack.avoided) {
         enemyDamageDealt += enrageExtraAttack.damage;

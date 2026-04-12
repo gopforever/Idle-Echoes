@@ -12,4 +12,8 @@ export interface AATree {
   spentPoints: number;
   availablePoints: number;
   tabs: AATab[];
+  /** Current AA XP diversion ratio (0–100%) */
+  aaXpRatio?: number;
+  /** Whether the character has already used their free respec */
+  aaRespecUsed?: boolean;
 }

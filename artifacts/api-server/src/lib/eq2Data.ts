@@ -2372,7 +2372,7 @@ export const TRADESKILL_TAB: AATabDefinition = {
     { id: "ts_quick_craft", name: "Quick Craft", description: "Reduces crafting material cost by 3% per rank", maxRank: 5, pointsPerRank: 1, effect: "craft_cost_reduction", effectValue: 3, effectPerRank: 3, requires: ["ts_master_crafter"], row: 3, col: 2, icon: "⚡" },
     { id: "ts_skill_mastery", name: "Skill Mastery", description: "Increases tradeskill XP earned by 10% per rank", maxRank: 3, pointsPerRank: 1, effect: "tradeskill_xp_bonus", effectValue: 10, effectPerRank: 10, requires: ["ts_golden_hands"], row: 3, col: 3, icon: "📖" },
     { id: "ts_bounty", name: "Bounty Harvest", description: "Increases crafting yield by an additional 5% per rank", maxRank: 3, pointsPerRank: 1, effect: "craft_yield", effectValue: 5, effectPerRank: 5, requires: ["ts_grandmaster", "ts_quick_craft"], row: 4, col: 1, icon: "🌾" },
-    { id: "ts_artisan_legend", name: "Artisan's Legend", description: "Legendary mastery: increases gathering speed, craft yield, and reduces material cost by 10%", maxRank: 1, pointsPerRank: 5, effect: "gathering_and_craft", effectValue: 10, effectPerRank: 0, requires: ["ts_bounty", "ts_skill_mastery"], row: 4, col: 2, icon: "🏆" },
+    { id: "ts_artisan_legend", name: "Artisan's Legend", description: "Legendary mastery: increases gathering speed and craft yield by 10%", maxRank: 1, pointsPerRank: 5, effect: "gathering_and_craft", effectValue: 10, effectPerRank: 0, requires: ["ts_bounty", "ts_skill_mastery"], row: 4, col: 2, icon: "🏆" },
   ],
 };
 

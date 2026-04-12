@@ -11,4 +11,11 @@ export interface AATab {
   id: string;
   name: string;
   nodes: AANode[];
+  tabType?: "archetype" | "class" | "prestige" | "tradeskill";
+  classId?: string;
+  isLocked?: boolean;
+  prestigeMinSpent?: number;
+  prestigeLeftName?: string;
+  prestigeRightName?: string;
+  chosenPrestigePath?: "left" | "right" | null;
 }

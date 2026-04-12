@@ -263,7 +263,14 @@ router.post("/crafting/craft", async (req, res) => {
     const bagMap = new Map(bagItems.map(i => [i.itemId, i]));
     const bankMap = new Map(bankItems.map(i => [i.itemId, i]));
 
-    for (const ingredient of recipe.ingredients) {
+    // Apply craft cost reduction AA bonus: reduces each ingredient's required quantity (floor at 1)
+    const costReductionFactor = Math.max(0, 1 - aaBonuses.craftCostReduction / 100);
+    const effectiveIngredients = recipe.ingredients.map(ing => ({
+      ...ing,
+      quantity: Math.max(1, Math.floor(ing.quantity * costReductionFactor)),
+    }));
+
+    for (const ingredient of effectiveIngredients) {
       const invQty = inventoryMap.get(ingredient.itemId)?.quantity ?? 0;
       const bagQty = bagMap.get(ingredient.itemId)?.quantity ?? 0;
       const bankQty = bankMap.get(ingredient.itemId)?.quantity ?? 0;
@@ -279,7 +286,7 @@ router.post("/crafting/craft", async (req, res) => {
     }
 
     const qualityScores: number[] = [];
-    for (const ingredient of recipe.ingredients) {
+    for (const ingredient of effectiveIngredients) {
       let remaining = ingredient.quantity;
       const invRow = inventoryMap.get(ingredient.itemId);
       if (invRow && invRow.quantity > 0) {
@@ -373,7 +380,7 @@ router.post("/crafting/craft", async (req, res) => {
         });
       }
 
-      for (const ingredient of recipe.ingredients) {
+      for (const ingredient of effectiveIngredients) {
         let remaining = ingredient.quantity;
 
         // Consume from inventory first

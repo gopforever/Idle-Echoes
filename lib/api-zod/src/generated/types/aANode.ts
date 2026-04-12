@@ -20,4 +20,5 @@ export interface AANode {
   row: number;
   col: number;
   icon: string;
+  prestigePath?: "left" | "right";
 }
