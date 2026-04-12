@@ -166,7 +166,12 @@ export function generateDungeonLoot(
   return [...loot, ...adornmentLoot];
 }
 
-export async function awardItemsToInventory(itemIds: string[], characterId: number): Promise<void> {
+export async function awardItemsToInventory(
+  itemIds: string[],
+  characterId: number,
+  tx?: Parameters<Parameters<typeof db.transaction>[0]>[0],
+): Promise<void> {
+  const qb = tx ?? db;
   for (const itemId of itemIds) {
     const item = getItemById(itemId);
 
@@ -174,7 +179,7 @@ export async function awardItemsToInventory(itemIds: string[], characterId: numb
     // route (which looks up by itemId) can find them correctly.
     if (!item) {
       if (ADORNMENTS.some(a => a.id === itemId)) {
-        await db.insert(inventoryTable).values({
+        await qb.insert(inventoryTable).values({
           characterId,
           itemId,
           itemData: { type: "adornment", id: itemId } as unknown as Record<string, unknown>,
@@ -185,18 +190,18 @@ export async function awardItemsToInventory(itemIds: string[], characterId: numb
     }
 
     if (item.stackable) {
-      const [existing] = await db.select().from(inventoryTable)
+      const [existing] = await qb.select().from(inventoryTable)
         .where(and(eq(inventoryTable.characterId, characterId), eq(inventoryTable.itemId, itemId)))
         .limit(1);
       if (existing) {
-        await db.update(inventoryTable)
+        await qb.update(inventoryTable)
           .set({ quantity: existing.quantity + 1 })
           .where(eq(inventoryTable.id, existing.id));
         continue;
       }
     }
 
-    await db.insert(inventoryTable).values({
+    await qb.insert(inventoryTable).values({
       characterId,
       itemId,
       itemData: item as unknown as Record<string, unknown>,

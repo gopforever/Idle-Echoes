@@ -269,16 +269,6 @@ router.post("/epic-quest/advance", async (req, res) => {
       : !stepData.step5Done ? 5
       : 5;
 
-    let awardedWeaponId: string | null = null;
-
-    if (newlyCompleted) {
-      const epicDef = getEpicWeaponByClass(progress.classId);
-      if (epicDef) {
-        await awardItemsToInventory([epicDef.fabledItemId], character.id);
-        awardedWeaponId = epicDef.fabledItemId;
-      }
-    }
-
     // Only write to DB if something changed
     const changed = prev.step1Done !== stepData.step1Done
       || prev.step2Done !== stepData.step2Done
@@ -286,19 +276,38 @@ router.post("/epic-quest/advance", async (req, res) => {
       || prev.step4Done !== stepData.step4Done
       || prev.step5Done !== stepData.step5Done;
 
-    if (changed || newlyCompleted) {
-      await db.update(epicQuestProgressTable)
-        .set({
-          stepData,
-          currentStep,
-          completed: allDone,
-          fabledWeaponId: awardedWeaponId ?? progress.fabledWeaponId,
-          updatedAt: new Date(),
-        })
-        .where(eq(epicQuestProgressTable.id, progress.id));
+    // Pre-compute the epic weapon definition so we can write fabledWeaponId in the
+    // same UPDATE that acts as the optimistic lock, avoiding a second round-trip.
+    const epicDef = getEpicWeaponByClass(progress.classId);
+    const pendingFabledId = allDone ? (epicDef?.fabledItemId ?? null) : null;
+
+    let awardedWeaponId: string | null = null;
+
+    if (changed || allDone) {
+      await db.transaction(async (tx) => {
+        const updated = await tx.update(epicQuestProgressTable)
+          .set({
+            stepData,
+            currentStep,
+            completed: allDone,
+            fabledWeaponId: pendingFabledId ?? progress.fabledWeaponId,
+            updatedAt: new Date(),
+          })
+          .where(
+            allDone
+              ? and(eq(epicQuestProgressTable.id, progress.id), eq(epicQuestProgressTable.completed, false))
+              : eq(epicQuestProgressTable.id, progress.id)
+          )
+          .returning();
+
+        if (allDone && updated.length > 0 && epicDef) {
+          // Exactly one request wins the race — award inside the same transaction
+          await awardItemsToInventory([epicDef.fabledItemId], character.id, tx);
+          awardedWeaponId = epicDef.fabledItemId;
+        }
+      });
     }
 
-    const epicDef = getEpicWeaponByClass(progress.classId);
     const steps = buildStepSummary(stepData, character);
 
     return res.json({
@@ -310,7 +319,7 @@ router.post("/epic-quest/advance", async (req, res) => {
       currentStep,
       steps,
       epicDef: epicDef ?? null,
-      message: newlyCompleted
+      message: awardedWeaponId !== null
         ? `🏆 EPIC QUEST COMPLETE! Your class epic weapon has been added to your inventory!`
         : changed
         ? "Progress updated."
