@@ -4751,6 +4751,205 @@ ITEMS.push(
     type: "material", slot: "none", rarity: "legendary", level: 50,
     stats: {}, sellPrice: 2000, stackable: true, spriteId: "gem_dark",
   },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // EPIC WEAPONS — Level 70 class-specific weapons, one per class.
+  // Fabled tier awarded via the 5-step epic quest chain.
+  // Mythical tier obtained by upgrading with 3x each raid material.
+  // EQ2-inspired legendary names.
+  // ══════════════════════════════════════════════════════════════════════════
+
+  // ── GUARDIAN ────────────────────────────────────────────────────────────────
+  { id: "epic_guardian_fabled", name: "The Protector's Realm", description: "A greatsword forged from the fallen shields of ten generations of Guardians. Its edge never dulls and its wielder never retreats.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { strength: 130, stamina: 80, attackRating: 780, critChance: 20, defenseRating: 200, mitigation: 100, weaponDamageMin: 290, weaponDamageMax: 450, weaponDelay: 1.9 }, sellPrice: 150000, spriteId: "sword_fabled" },
+  { id: "epic_guardian_mythical", name: "The Protector's Realm, Shield of Ancient Norrath", description: "The fully awakened Guardian's Epic — a weapon that stands as an immovable bastion. The very ground shakes before it.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { strength: 185, stamina: 115, attackRating: 1100, critChance: 28, defenseRating: 320, mitigation: 150, avoidance: 20, weaponDamageMin: 420, weaponDamageMax: 660, weaponDelay: 1.9 }, sellPrice: 250000, spriteId: "sword_fabled" },
+
+  // ── BERSERKER ────────────────────────────────────────────────────────────────
+  { id: "epic_berserker_fabled", name: "Soulcrusher", description: "An axe that drinks the essence of the fallen, growing stronger with each kill. Forged from the shattered bones of the first true Berserker.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { strength: 160, stamina: 50, attackRating: 880, critChance: 26, haste: 18, weaponDamageMin: 370, weaponDamageMax: 580, weaponDelay: 2.1 }, sellPrice: 150000, spriteId: "weapon_axe" },
+  { id: "epic_berserker_mythical", name: "Soulcrusher, Incarnation of Rage", description: "The fully awakened Berserker's Epic — pure berserker fury incarnate. Every swing shakes the earth and silences armies.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { strength: 230, stamina: 70, attackRating: 1250, critChance: 36, haste: 26, weaponDamageMin: 540, weaponDamageMax: 850, weaponDelay: 2.1 }, sellPrice: 250000, spriteId: "weapon_axe" },
+
+  // ── PALADIN ───────────────────────────────────────────────────────────────
+  { id: "epic_paladin_fabled", name: "Soulfire", description: "The legendary holy blade, first wielded by the High Priest of Mithaniel Marr. Its flame burns only evil, never wavering in the hand of the truly righteous.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { strength: 140, wisdom: 60, attackRating: 820, critChance: 22, weaponDamageMin: 310, weaponDamageMax: 490, weaponDelay: 1.8, spellDamageBonus: 80, healBonus: 60, resistDivine: 20 }, sellPrice: 150000, spriteId: "sword_fabled" },
+  { id: "epic_paladin_mythical", name: "Soulfire, Blade of the Holy Light", description: "The fully awakened Paladin's Epic — the flame of Soulfire engulfs all evil and lights the darkest night in Norrath.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { strength: 200, wisdom: 90, attackRating: 1150, critChance: 30, weaponDamageMin: 450, weaponDamageMax: 710, weaponDelay: 1.8, spellDamageBonus: 130, healBonus: 100, resistDivine: 35 }, sellPrice: 250000, spriteId: "sword_fabled" },
+
+  // ── SHADOWKNIGHT ─────────────────────────────────────────────────────────
+  { id: "epic_shadowknight_fabled", name: "Lifebane", description: "A blade of shadow-steel that drains the life force of any it strikes, feeding the power of its wielder. It has toppled kings and brought nations to their knees.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { strength: 150, intelligence: 50, attackRating: 850, critChance: 24, weaponDamageMin: 340, weaponDamageMax: 540, weaponDelay: 1.9, spellDamageBonus: 100 }, sellPrice: 150000, spriteId: "sword_dark" },
+  { id: "epic_shadowknight_mythical", name: "Lifebane, Harbinger of Eternal Dark", description: "The fully awakened Shadowknight's Epic — the darkness itself becomes a weapon in the hands of its wielder.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { strength: 215, intelligence: 75, attackRating: 1200, critChance: 33, weaponDamageMin: 490, weaponDamageMax: 780, weaponDelay: 1.9, spellDamageBonus: 160 }, sellPrice: 250000, spriteId: "sword_dark" },
+
+  // ── MONK ─────────────────────────────────────────────────────────────────
+  { id: "epic_monk_fabled", name: "Ashenhand", description: "Fist weapons of hardened iron, their knuckles carved from the bones of celestial beings. Each strike channels a hundred thousand hours of perfect discipline.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { agility: 120, strength: 60, attackRating: 800, critChance: 26, haste: 20, weaponDamageMin: 270, weaponDamageMax: 420, weaponDelay: 1.5 }, sellPrice: 150000, spriteId: "weapon_fist" },
+  { id: "epic_monk_mythical", name: "Ashenhand, Fists of the Celestial Gale", description: "The fully awakened Monk's Epic — strikes that defy gravity itself, moving faster than the eye can see.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { agility: 175, strength: 90, attackRating: 1140, critChance: 36, haste: 30, weaponDamageMin: 390, weaponDamageMax: 620, weaponDelay: 1.5 }, sellPrice: 250000, spriteId: "weapon_fist" },
+
+  // ── BRUISER ───────────────────────────────────────────────────────────────
+  { id: "epic_bruiser_fabled", name: "Kraytoc's Fist of Iceflame", description: "Cestus gauntlets crackling with both fire and frost, forged by the legendary Bruiser Kraytoc in his final battle against a god of war.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { strength: 150, stamina: 60, attackRating: 840, critChance: 24, haste: 16, weaponDamageMin: 340, weaponDamageMax: 530, weaponDelay: 1.7, resistHeat: 15, resistCold: 15 }, sellPrice: 150000, spriteId: "weapon_fist" },
+  { id: "epic_bruiser_mythical", name: "Kraytoc's Fist of Eternal Fury", description: "The fully awakened Bruiser's Epic — Kraytoc's legendary gauntlets burn with the combined fury of ice and flame unleashed.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { strength: 215, stamina: 90, attackRating: 1190, critChance: 33, haste: 24, weaponDamageMin: 490, weaponDamageMax: 775, weaponDelay: 1.7, resistHeat: 25, resistCold: 25 }, sellPrice: 250000, spriteId: "weapon_fist" },
+
+  // ── RANGER ────────────────────────────────────────────────────────────────
+  { id: "epic_ranger_fabled", name: "Windtalker", description: "A longbow carved from the heartwood of the oldest Faydark tree. Its arrows fly on the wind itself, striking targets as if guided by the forest's ancient will.",
+    type: "weapon", slot: "ranged", rarity: "fabled", level: 70,
+    stats: { agility: 150, critChance: 30, attackRating: 860, weaponDamageMin: 290, weaponDamageMax: 460, weaponDelay: 2.4, haste: 20 }, sellPrice: 150000, spriteId: "weapon_bow" },
+  { id: "epic_ranger_mythical", name: "Windtalker, Bow of the Ancient Sylvan", description: "The fully awakened Ranger's Epic — arrows that follow the wind to any target in Norrath, unstoppable and unerring.",
+    type: "weapon", slot: "ranged", rarity: "mythical", level: 70,
+    stats: { agility: 215, critChance: 42, attackRating: 1220, weaponDamageMin: 420, weaponDamageMax: 670, weaponDelay: 2.4, haste: 30 }, sellPrice: 250000, spriteId: "weapon_bow" },
+
+  // ── ASSASSIN ──────────────────────────────────────────────────────────────
+  { id: "epic_assassin_fabled", name: "Banisher", description: "Twin daggers of shadow-glass, each inscribed with the name of a target that can never escape once marked. Forged as a gift to death itself.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { agility: 160, strength: 40, attackRating: 880, critChance: 30, weaponDamageMin: 300, weaponDamageMax: 470, weaponDelay: 1.4, haste: 22 }, sellPrice: 150000, spriteId: "weapon_dagger" },
+  { id: "epic_assassin_mythical", name: "Banisher, Blade of the Black Rose", description: "The fully awakened Assassin's Epic — once marked by Banisher, there is nowhere to run, nowhere to hide.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { agility: 230, strength: 60, attackRating: 1250, critChance: 42, weaponDamageMin: 435, weaponDamageMax: 685, weaponDelay: 1.4, haste: 32 }, sellPrice: 250000, spriteId: "weapon_dagger" },
+
+  // ── SWASHBUCKLER ──────────────────────────────────────────────────────────
+  { id: "epic_swashbuckler_fabled", name: "Swashbuckler's Rapier of the Seven Seas", description: "A rapier of sea-blue steel that moves like a tidal wave, impossible to parry and quicker than thought. Its former owner won a duel against the god of the ocean.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { agility: 150, strength: 50, attackRating: 860, critChance: 28, weaponDamageMin: 290, weaponDamageMax: 460, weaponDelay: 1.5, haste: 20 }, sellPrice: 150000, spriteId: "weapon_rapier" },
+  { id: "epic_swashbuckler_mythical", name: "Swashbuckler's Pride, Legend of the Seas", description: "The fully awakened Swashbuckler's Epic — the blade that commands the ocean, feared by gods and monsters alike.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { agility: 215, strength: 75, attackRating: 1220, critChance: 39, weaponDamageMin: 420, weaponDamageMax: 670, weaponDelay: 1.5, haste: 29 }, sellPrice: 250000, spriteId: "weapon_rapier" },
+
+  // ── BRIGAND ───────────────────────────────────────────────────────────────
+  { id: "epic_brigand_fabled", name: "Slanderous Tongue of the Tribunals", description: "Razor-edged blades once used by the most feared brigand in the Tribunal's employ. They cut through armor and reputation with equal ease.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { agility: 150, charisma: 40, attackRating: 840, critChance: 28, weaponDamageMin: 285, weaponDamageMax: 445, weaponDelay: 1.6, haste: 18 }, sellPrice: 150000, spriteId: "weapon_dagger" },
+  { id: "epic_brigand_mythical", name: "The Dark Claw of the Underking", description: "The fully awakened Brigand's Epic — the Underking's own weapon, stolen and upgraded by the greatest criminal in Norrath.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { agility: 215, charisma: 60, attackRating: 1190, critChance: 39, weaponDamageMin: 415, weaponDamageMax: 650, weaponDelay: 1.6, haste: 26 }, sellPrice: 250000, spriteId: "weapon_dagger" },
+
+  // ── TROUBADOR ─────────────────────────────────────────────────────────────
+  { id: "epic_troubador_fabled", name: "Mystical Lute of the Endless Melody", description: "A lute carved from starwood that plays a melody remembered from before the Age of War. Its song can inspire armies, silence gods, and make the dead weep.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { agility: 100, charisma: 80, attackRating: 700, critChance: 20, weaponDamageMin: 220, weaponDamageMax: 350, weaponDelay: 1.7, haste: 25 }, sellPrice: 150000, spriteId: "weapon_instrument" },
+  { id: "epic_troubador_mythical", name: "Lute of the Eternal Wanderer", description: "The fully awakened Troubador's Epic — the song it plays has no end and no beginning, carrying the voices of all who ever fought for Norrath.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { agility: 145, charisma: 120, attackRating: 1000, critChance: 28, weaponDamageMin: 320, weaponDamageMax: 510, weaponDelay: 1.7, haste: 36 }, sellPrice: 250000, spriteId: "weapon_instrument" },
+
+  // ── DIRGE ─────────────────────────────────────────────────────────────────
+  { id: "epic_dirge_fabled", name: "Lute of the Howling Caress", description: "An instrument of mourning and terror, its strings woven from the hair of a thousand fallen heroes. The sound it makes drives enemies mad with grief.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { agility: 105, charisma: 75, attackRating: 720, critChance: 20, weaponDamageMin: 225, weaponDamageMax: 355, weaponDelay: 1.7, haste: 23 }, sellPrice: 150000, spriteId: "weapon_instrument" },
+  { id: "epic_dirge_mythical", name: "Dirge of the Fallen Age", description: "The fully awakened Dirge's Epic — its mournful song destroys the will of enemies and heals the broken hearts of allies.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { agility: 152, charisma: 112, attackRating: 1025, critChance: 28, weaponDamageMin: 325, weaponDamageMax: 515, weaponDelay: 1.7, haste: 33 }, sellPrice: 250000, spriteId: "weapon_instrument" },
+
+  // ── WIZARD ────────────────────────────────────────────────────────────────
+  { id: "epic_wizard_fabled", name: "Cane of Transvection", description: "A rod of impossibly dense arcane crystal that bends the laws of physics with each incantation, allowing spells to be cast faster, farther, and more devastatingly than should be possible.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { intelligence: 170, wisdom: 60, power: 900, critChance: 28, attackRating: 700, spellDamageBonus: 240, weaponDamageMin: 230, weaponDamageMax: 370, weaponDelay: 2.1 }, sellPrice: 150000, spriteId: "weapon_staff" },
+  { id: "epic_wizard_mythical", name: "Cane of Transvection, Staff of the Arcane Ascendant", description: "The fully awakened Wizard's Epic — reality warps around this staff; its bearer transcends the laws of arcane physics.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { intelligence: 245, wisdom: 90, power: 1300, critChance: 38, attackRating: 1000, spellDamageBonus: 360, weaponDamageMin: 335, weaponDamageMax: 540, weaponDelay: 2.1 }, sellPrice: 250000, spriteId: "weapon_staff" },
+
+  // ── WARLOCK ───────────────────────────────────────────────────────────────
+  { id: "epic_warlock_fabled", name: "Abashi's Rod of Disempowerment", description: "The former rod of the Warlock-God Abashi, capable of stripping power from any being. Shattered when its wielder fought the gods and forged anew in darkness.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { intelligence: 165, wisdom: 60, power: 880, critChance: 28, attackRating: 690, spellDamageBonus: 250, weaponDamageMin: 225, weaponDamageMax: 365, weaponDelay: 2.1 }, sellPrice: 150000, spriteId: "weapon_staff" },
+  { id: "epic_warlock_mythical", name: "Abashi's Rod of Eternal Darkness", description: "The fully awakened Warlock's Epic — darkness itself obeys the will of the one who holds this rod. Power flows from all it touches into the wielder.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { intelligence: 238, wisdom: 90, power: 1260, critChance: 38, attackRating: 980, spellDamageBonus: 375, weaponDamageMin: 325, weaponDamageMax: 530, weaponDelay: 2.1 }, sellPrice: 250000, spriteId: "weapon_staff" },
+
+  // ── CONJUROR ──────────────────────────────────────────────────────────────
+  { id: "epic_conjuror_fabled", name: "Staff of Crystalline Storms", description: "A staff topped with a living storm-crystal that allows the Conjuror to summon elemental servants of unprecedented power and fury.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { intelligence: 160, wisdom: 65, power: 860, critChance: 26, attackRating: 680, spellDamageBonus: 230, weaponDamageMin: 220, weaponDamageMax: 355, weaponDelay: 2.2 }, sellPrice: 150000, spriteId: "weapon_staff" },
+  { id: "epic_conjuror_mythical", name: "Staff of the Elemental Tempest", description: "The fully awakened Conjuror's Epic — a storm-crystal of god-tier power, capable of summoning the elemental lords themselves.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { intelligence: 230, wisdom: 95, power: 1230, critChance: 36, attackRating: 970, spellDamageBonus: 345, weaponDamageMin: 320, weaponDamageMax: 520, weaponDelay: 2.2 }, sellPrice: 250000, spriteId: "weapon_staff" },
+
+  // ── NECROMANCER ───────────────────────────────────────────────────────────
+  { id: "epic_necromancer_fabled", name: "Staff of the Lich Lord", description: "A staff carved from the spine of a lich-king, topped with a skull that whispers the names of the dead. Its wielder commands undead armies of terrifying scale.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { intelligence: 160, wisdom: 55, power: 840, critChance: 26, attackRating: 680, spellDamageBonus: 240, weaponDamageMin: 220, weaponDamageMax: 355, weaponDelay: 2.2 }, sellPrice: 150000, spriteId: "weapon_staff" },
+  { id: "epic_necromancer_mythical", name: "Grasp of the Lich King, Staff of Undeath", description: "The fully awakened Necromancer's Epic — the Lich King's own scepter, now commanding armies of undead without limit.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { intelligence: 230, wisdom: 80, power: 1200, critChance: 36, attackRating: 970, spellDamageBonus: 360, weaponDamageMin: 320, weaponDamageMax: 520, weaponDelay: 2.2 }, sellPrice: 250000, spriteId: "weapon_staff" },
+
+  // ── COERCER ───────────────────────────────────────────────────────────────
+  { id: "epic_coercer_fabled", name: "Scepter of the Hive", description: "A scepter that connects the wielder's mind to every consciousness within miles. Created by a Coercer who sought to become the mind of an entire world.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { intelligence: 155, wisdom: 75, power: 870, critChance: 24, attackRating: 660, spellDamageBonus: 210, weaponDamageMin: 210, weaponDamageMax: 340, weaponDelay: 2.0 }, sellPrice: 150000, spriteId: "weapon_scepter" },
+  { id: "epic_coercer_mythical", name: "Scepter of the Mindbreaker, Dominion of the Hive", description: "The fully awakened Coercer's Epic — the ultimate instrument of mental domination, capable of bending gods to the wielder's will.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { intelligence: 222, wisdom: 110, power: 1245, critChance: 33, attackRating: 940, spellDamageBonus: 315, weaponDamageMin: 305, weaponDamageMax: 495, weaponDelay: 2.0 }, sellPrice: 250000, spriteId: "weapon_scepter" },
+
+  // ── ILLUSIONIST ───────────────────────────────────────────────────────────
+  { id: "epic_illusionist_fabled", name: "Staff of the Observers", description: "A staff that exists in multiple dimensions simultaneously. Looking into its crystal reveals the true form of all things and lets the Illusionist reshape them at will.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { intelligence: 150, wisdom: 80, power: 880, critChance: 24, attackRating: 660, spellDamageBonus: 200, weaponDamageMin: 210, weaponDamageMax: 340, weaponDelay: 2.0 }, sellPrice: 150000, spriteId: "weapon_staff" },
+  { id: "epic_illusionist_mythical", name: "Staff of the Weaver of Dreams", description: "The fully awakened Illusionist's Epic — reality itself becomes the Illusionist's canvas; there is no difference between what is and what they imagine.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { intelligence: 215, wisdom: 118, power: 1258, critChance: 33, attackRating: 940, spellDamageBonus: 300, weaponDamageMin: 305, weaponDamageMax: 495, weaponDelay: 2.0 }, sellPrice: 250000, spriteId: "weapon_staff" },
+
+  // ── TEMPLAR ───────────────────────────────────────────────────────────────
+  { id: "epic_templar_fabled", name: "Wand of the Soulfire", description: "A divine scepter crafted by Rodcet Nife himself. Its light heals all wounds and burns all evil. Not seen since the last Templar who wielded it sacrificed themselves to hold back an invasion of the underworld.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { wisdom: 175, intelligence: 60, power: 950, critChance: 22, attackRating: 680, healBonus: 240, weaponDamageMin: 210, weaponDamageMax: 340, weaponDelay: 1.8, resistDivine: 15 }, sellPrice: 150000, spriteId: "weapon_scepter" },
+  { id: "epic_templar_mythical", name: "Soulfire Mace of Rodcet Nife", description: "The fully awakened Templar's Epic — Rodcet Nife's divine power flows through this mace; it heals the living and destroys the undead with equal fury.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { wisdom: 252, intelligence: 90, power: 1365, critChance: 31, attackRating: 975, healBonus: 360, weaponDamageMin: 305, weaponDamageMax: 495, weaponDelay: 1.8, resistDivine: 25 }, sellPrice: 250000, spriteId: "weapon_scepter" },
+
+  // ── INQUISITOR ────────────────────────────────────────────────────────────
+  { id: "epic_inquisitor_fabled", name: "Instrument of Nife", description: "A sacred flail whose chains were forged from the tears of heretics. The Inquisition's supreme tool of judgment — it burns brightest in the presence of evil.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { wisdom: 165, intelligence: 65, power: 920, critChance: 24, attackRating: 700, healBonus: 210, weaponDamageMin: 215, weaponDamageMax: 345, weaponDelay: 1.8 }, sellPrice: 150000, spriteId: "weapon_scepter" },
+  { id: "epic_inquisitor_mythical", name: "Instrument of Nife, Sacred Flail of Judgment", description: "The fully awakened Inquisitor's Epic — the divine flail of the Inquisition, capable of judging and condemning even gods.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { wisdom: 237, intelligence: 96, power: 1318, critChance: 33, attackRating: 1000, healBonus: 315, weaponDamageMin: 310, weaponDamageMax: 500, weaponDelay: 1.8 }, sellPrice: 250000, spriteId: "weapon_scepter" },
+
+  // ── MYSTIC ────────────────────────────────────────────────────────────────
+  { id: "epic_mystic_fabled", name: "Hierophant's Crook", description: "The staff of the Highest Mystic, used to speak directly with the spirits of the ancient world. Its silver tip channels the accumulated wisdom of ten thousand spirit voices.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { wisdom: 160, intelligence: 65, power: 900, critChance: 22, attackRating: 670, healBonus: 230, weaponDamageMin: 205, weaponDamageMax: 330, weaponDelay: 2.0 }, sellPrice: 150000, spriteId: "weapon_staff" },
+  { id: "epic_mystic_mythical", name: "Hierophant's Crook of the Ancient Spirits", description: "The fully awakened Mystic's Epic — ten thousand spirit voices channel through the crook, healing, protecting, and devastating in one.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { wisdom: 230, intelligence: 96, power: 1290, critChance: 31, attackRating: 960, healBonus: 345, weaponDamageMin: 298, weaponDamageMax: 483, weaponDelay: 2.0 }, sellPrice: 250000, spriteId: "weapon_staff" },
+
+  // ── DEFILER ───────────────────────────────────────────────────────────────
+  { id: "epic_defiler_fabled", name: "Pact of the Shadow Serpent", description: "A totem bound by an ancient dark covenant, channeling the power of shadow serpents who have guarded the Defiler's dark secrets since the world was young.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { wisdom: 155, intelligence: 70, power: 880, critChance: 22, attackRating: 660, healBonus: 210, weaponDamageMin: 200, weaponDamageMax: 325, weaponDelay: 2.0 }, sellPrice: 150000, spriteId: "weapon_totem" },
+  { id: "epic_defiler_mythical", name: "Pact of the Shadow Serpent, Dark Totem of the Ancient Covenant", description: "The fully awakened Defiler's Epic — the shadow serpents obey without question, answering the Defiler's every call.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { wisdom: 222, intelligence: 104, power: 1258, critChance: 31, attackRating: 944, healBonus: 315, weaponDamageMin: 290, weaponDamageMax: 473, weaponDelay: 2.0 }, sellPrice: 250000, spriteId: "weapon_totem" },
+
+  // ── WARDEN ────────────────────────────────────────────────────────────────
+  { id: "epic_warden_fabled", name: "Staff of the Zephyr", description: "A living branch from the World Tree, tipped with the feather of the last great zephyr-bird. It carries the breath of the forest itself, healing those near it with every swing.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { wisdom: 155, intelligence: 65, power: 880, critChance: 24, attackRating: 680, healBonus: 220, weaponDamageMin: 205, weaponDamageMax: 330, weaponDelay: 2.1 }, sellPrice: 150000, spriteId: "weapon_staff" },
+  { id: "epic_warden_mythical", name: "Staff of the Eternal Grove", description: "The fully awakened Warden's Epic — the World Tree itself speaks through this staff, and all of Norrath's forests answer its call.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { wisdom: 222, intelligence: 96, power: 1258, critChance: 33, attackRating: 974, healBonus: 330, weaponDamageMin: 298, weaponDamageMax: 483, weaponDelay: 2.1 }, sellPrice: 250000, spriteId: "weapon_staff" },
+
+  // ── FURY ─────────────────────────────────────────────────────────────────
+  { id: "epic_fury_fabled", name: "Scimitar of the Emerald Rains", description: "A curved blade of living emerald, its edge honed by a thousand storm-seasons. The Fury who wields it commands the weather itself and their spells become elemental forces of nature.",
+    type: "weapon", slot: "primary", rarity: "fabled", level: 70,
+    stats: { wisdom: 140, intelligence: 80, agility: 40, power: 860, critChance: 26, attackRating: 700, spellDamageBonus: 140, healBonus: 160, weaponDamageMin: 215, weaponDamageMax: 345, weaponDelay: 1.8 }, sellPrice: 150000, spriteId: "weapon_scimitar" },
+  { id: "epic_fury_mythical", name: "Scimitar of the Raging Tempest", description: "The fully awakened Fury's Epic — the storms of Norrath itself answer the call of the Fury who wields this blade.",
+    type: "weapon", slot: "primary", rarity: "mythical", level: 70,
+    stats: { wisdom: 200, intelligence: 118, agility: 60, power: 1232, critChance: 36, attackRating: 1000, spellDamageBonus: 210, healBonus: 240, weaponDamageMin: 312, weaponDamageMax: 503, weaponDelay: 1.8 }, sellPrice: 250000, spriteId: "weapon_scimitar" },
 );
 
 export const CRAFTING_RECIPES: CraftingRecipe[] = [

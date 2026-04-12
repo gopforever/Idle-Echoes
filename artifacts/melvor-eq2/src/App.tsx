@@ -29,6 +29,7 @@ import RaidsRunPage from "@/pages/raids-run";
 import BestiaryPage from "@/pages/bestiary";
 import GuildPage from "@/pages/guild";
 import TradeskillsPage from "@/pages/tradeskills";
+import EpicQuestPage from "@/pages/epic-quest";
 import SettingsPage from "@/pages/settings";
 import NotFound from "@/pages/not-found";
 import LoginPage from "@/pages/login";
@@ -131,6 +132,7 @@ function Router() {
                 <Route path="/guild" component={GuildPage} />
                 <Route path="/settings" component={SettingsPage} />
                 <Route path="/tradeskills" component={TradeskillsPage} />
+                <Route path="/epic-quest" component={EpicQuestPage} />
                 <Route path="/dungeons/run" component={DungeonsRunPage} />
                 <Route path="/dungeons/raids/run" component={RaidsRunPage} />
                 <Route path="/dungeons/raids" component={RaidsPage} />

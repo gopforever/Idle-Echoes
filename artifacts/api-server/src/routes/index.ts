@@ -34,6 +34,7 @@ import settingsRouter from "./settings.js";
 import gearSetsRouter from "./gear-sets.js";
 import guildRouter from "./guild.js";
 import tradeskillsRouter from "./tradeskills.js";
+import epicQuestsRouter from "./epicQuests.js";
 import { requireAuth } from "../middleware/auth.js";
 
 const router: IRouter = Router();
@@ -82,6 +83,7 @@ gameRoutes.use(settingsRouter);
 gameRoutes.use(gearSetsRouter);
 gameRoutes.use(tradeskillsRouter);
 gameRoutes.use(guildRouter);
+gameRoutes.use(epicQuestsRouter);
 
 router.use(gameRoutes);
 
