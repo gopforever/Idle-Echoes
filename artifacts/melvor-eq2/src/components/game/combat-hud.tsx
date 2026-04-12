@@ -755,6 +755,7 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
   const [lastTickData, setLastTickData] = React.useState<TickResponse | null>(null);
   const [bossClosingLine, setBossClosingLine] = React.useState<{ text: string; outcome: "playerWon" | "bossWon" } | null>(null);
   const closingLineTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastEnemyIdRef = React.useRef<string | null>(null);
   const [fightDamageBySource, setFightDamageBySource] = React.useState<Record<string, number>>({});
   const [fightHealBySource, setFightHealBySource] = React.useState<Record<string, number>>({});
 
@@ -797,6 +798,14 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
   }, [character, lastTickData?.playerStatsSnapshot]);
 
   const activeEnemy = combatState?.enemy as EnemyData | undefined;
+
+  // Keep lastEnemyIdRef updated while in combat so the auto-reengage effect
+  // can re-engage the same enemy after the kill clears combatState.enemy.
+  React.useEffect(() => {
+    if (activeEnemy?.id) {
+      lastEnemyIdRef.current = activeEnemy.id;
+    }
+  }, [activeEnemy?.id]);
 
   const addFloat = React.useCallback((value: number | string, type: FloatNumber["type"], side: FloatNumber["side"]) => {
     const id = String(fnIdRef.current++);
@@ -905,11 +914,15 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
   // Auto-reengage: re-fight same enemy (disabled in dungeon context where parent controls enemies)
   React.useEffect(() => {
     if (disableAutoEngage) return;
-    if (!autoCombat || combatState?.active || !combatState?.enemy || startCombat.isPending) return;
+    if (!autoCombat || combatState?.active || startCombat.isPending) return;
+    // Use current enemy or fall back to last known enemy (enemy is cleared post-kill)
+    const enemyId = (combatState.enemy as EnemyData | undefined)?.id ?? lastEnemyIdRef.current;
+    if (!enemyId) return;
     const timer = setTimeout(() => {
-      const enemyId = (combatState.enemy as EnemyData | undefined)?.id;
-      if (!enemyId) return;
-      startCombat.mutate({ data: { enemyId } }, {
+      // Re-validate inside the callback in case state changed during the delay
+      const id = (combatState.enemy as EnemyData | undefined)?.id ?? lastEnemyIdRef.current;
+      if (!id) return;
+      startCombat.mutate({ data: { enemyId: id } }, {
         onSuccess: () => queryClient.invalidateQueries({ queryKey: getGetCombatStateQueryKey() }),
       });
     }, 1500);
