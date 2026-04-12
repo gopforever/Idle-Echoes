@@ -1105,51 +1105,81 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
               <span className="text-[10px] text-slate-600 uppercase tracking-widest font-semibold">Class Abilities</span>
             </div>
             <div className="flex gap-1.5 flex-wrap">
-              {(abilities as ClassAbility[]).slice(0, 6).map((ability) => {
-                const currentTick = (combatState.active && (lastTickData?.combatState as { tick?: number } | undefined)?.tick) ? (lastTickData!.combatState as { tick?: number }).tick! : 0;
-                const lastUsedTick = abilityLastUsedTick[ability.id];
-                const cooldownTicks = Math.max(1, Math.ceil(ability.cooldown / 2));
-                const ticksElapsed = lastUsedTick !== undefined ? currentTick - lastUsedTick : cooldownTicks;
-                const cdProgress = Math.min(1, ticksElapsed / cooldownTicks);
-                const isOnCooldown = combatState.active && cdProgress < 1 && lastUsedTick !== undefined;
-                const R = 10; const CIRC = 2 * Math.PI * R;
-                const sweepOffset = CIRC * cdProgress;
+              {(() => {
+                const charLevel = character?.level ?? 1;
+                const allAbilities = abilities as ClassAbility[];
+                const unlocked = allAbilities.filter(a => a.levelRequired <= charLevel);
+                const nextLocked = allAbilities.filter(a => a.levelRequired > charLevel).sort((a, b) => a.levelRequired - b.levelRequired)[0];
                 return (
-                  <div
-                    key={ability.id}
-                    className={cn(
-                      "group relative flex items-center gap-1.5 px-2 py-1.5 rounded-lg border transition-all cursor-default",
-                      isOnCooldown
-                        ? "border-purple-600/60 bg-purple-950/30 shadow-[0_0_8px_rgba(168,85,247,0.3)]"
-                        : "border-slate-800 bg-slate-900/60 hover:border-purple-800/60"
-                    )}
-                    title={`${ability.name}: ${ability.description}`}
-                  >
-                    {isOnCooldown && (
-                      <svg className="absolute top-0.5 right-0.5 w-4 h-4 -rotate-90 opacity-80 pointer-events-none" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r={R} fill="none" stroke="rgba(168,85,247,0.2)" strokeWidth="3" />
-                        <circle cx="12" cy="12" r={R} fill="none" stroke="rgb(168,85,247)" strokeWidth="3"
-                          strokeDasharray={`${CIRC}`} strokeDashoffset={sweepOffset} strokeLinecap="round"
-                          style={{ transition: "stroke-dashoffset 0.4s linear" }} />
-                      </svg>
-                    )}
-                    <span className="text-sm">{ability.icon ?? "✨"}</span>
-                    <div>
-                      <div className="text-[10px] font-medium text-slate-300 leading-none">{ability.name}</div>
-                      <div className="flex items-center gap-1 mt-0.5">
-                        <span className="text-[9px] text-slate-600">{ability.cooldown}s</span>
-                        {ability.powerCost > 0 && <span className="text-[9px] text-blue-600">{ability.powerCost}⚡</span>}
-                        {isOnCooldown && <span className="text-[9px] text-purple-500">{Math.max(0, cooldownTicks - ticksElapsed)}t</span>}
+                  <>
+                    {unlocked.map((ability) => {
+                      const currentTick = (combatState.active && (lastTickData?.combatState as { tick?: number } | undefined)?.tick) ? (lastTickData!.combatState as { tick?: number }).tick! : 0;
+                      const lastUsedTick = abilityLastUsedTick[ability.id];
+                      const cooldownTicks = Math.max(1, Math.ceil(ability.cooldown / 2));
+                      const ticksElapsed = lastUsedTick !== undefined ? currentTick - lastUsedTick : cooldownTicks;
+                      const cdProgress = Math.min(1, ticksElapsed / cooldownTicks);
+                      const isOnCooldown = combatState.active && cdProgress < 1 && lastUsedTick !== undefined;
+                      const R = 10; const CIRC = 2 * Math.PI * R;
+                      const sweepOffset = CIRC * cdProgress;
+                      return (
+                        <div
+                          key={ability.id}
+                          className={cn(
+                            "group relative flex items-center gap-1.5 px-2 py-1.5 rounded-lg border transition-all cursor-default",
+                            isOnCooldown
+                              ? "border-purple-600/60 bg-purple-950/30 shadow-[0_0_8px_rgba(168,85,247,0.3)]"
+                              : "border-slate-800 bg-slate-900/60 hover:border-purple-800/60"
+                          )}
+                          title={`${ability.name}: ${ability.description}`}
+                        >
+                          {isOnCooldown && (
+                            <svg className="absolute top-0.5 right-0.5 w-4 h-4 -rotate-90 opacity-80 pointer-events-none" viewBox="0 0 24 24">
+                              <circle cx="12" cy="12" r={R} fill="none" stroke="rgba(168,85,247,0.2)" strokeWidth="3" />
+                              <circle cx="12" cy="12" r={R} fill="none" stroke="rgb(168,85,247)" strokeWidth="3"
+                                strokeDasharray={`${CIRC}`} strokeDashoffset={sweepOffset} strokeLinecap="round"
+                                style={{ transition: "stroke-dashoffset 0.4s linear" }} />
+                            </svg>
+                          )}
+                          <span className="text-sm">{ability.icon ?? "✨"}</span>
+                          <div>
+                            <div className="text-[10px] font-medium text-slate-300 leading-none">{ability.name}</div>
+                            <div className="flex items-center gap-1 mt-0.5">
+                              <span className="text-[9px] text-slate-600">{ability.cooldown}s</span>
+                              {ability.powerCost > 0 && <span className="text-[9px] text-blue-600">{ability.powerCost}⚡</span>}
+                              {isOnCooldown && <span className="text-[9px] text-purple-500">{Math.max(0, cooldownTicks - ticksElapsed)}t</span>}
+                            </div>
+                          </div>
+                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 w-44 p-2 rounded-lg bg-slate-900 border border-slate-700 shadow-xl text-xs text-slate-400">
+                            <div className="font-bold text-slate-200 mb-1">{ability.name}</div>
+                            <div>{ability.description}</div>
+                            {ability.powerCost > 0 && <div className="text-blue-400 mt-1">Power: {ability.powerCost}</div>}
+                          </div>
+                        </div>
+                      );
+                    })}
+                    {nextLocked && (
+                      <div
+                        key={nextLocked.id}
+                        className="group relative flex items-center gap-1.5 px-2 py-1.5 rounded-lg border border-slate-800/50 bg-slate-900/30 opacity-40 cursor-default"
+                        title={`Unlocks at level ${nextLocked.levelRequired}: ${nextLocked.name}`}
+                      >
+                        <span className="text-sm grayscale">{nextLocked.icon ?? "✨"}</span>
+                        <div>
+                          <div className="text-[10px] font-medium text-slate-500 leading-none">{nextLocked.name}</div>
+                          <div className="flex items-center gap-1 mt-0.5">
+                            <span className="text-[9px] text-amber-700">🔒 Lvl {nextLocked.levelRequired}</span>
+                          </div>
+                        </div>
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 w-44 p-2 rounded-lg bg-slate-900 border border-slate-700 shadow-xl text-xs text-slate-400">
+                          <div className="font-bold text-slate-400 mb-1">🔒 {nextLocked.name}</div>
+                          <div>{nextLocked.description}</div>
+                          <div className="text-amber-600 mt-1">Unlocks at level {nextLocked.levelRequired}</div>
+                        </div>
                       </div>
-                    </div>
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 w-44 p-2 rounded-lg bg-slate-900 border border-slate-700 shadow-xl text-xs text-slate-400">
-                      <div className="font-bold text-slate-200 mb-1">{ability.name}</div>
-                      <div>{ability.description}</div>
-                      {ability.powerCost > 0 && <div className="text-blue-400 mt-1">Power: {ability.powerCost}</div>}
-                    </div>
-                  </div>
+                    )}
+                  </>
                 );
-              })}
+              })()}
             </div>
           </div>
         )}

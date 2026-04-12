@@ -671,13 +671,14 @@ function StatBreakdownRow({ stat, p }: { stat: string; p: Profile }) {
   );
 }
 
-function AbilityCard({ ab }: { ab: ClassAbility }) {
+function AbilityCard({ ab, characterLevel }: { ab: ClassAbility; characterLevel: number }) {
+  const locked = ab.levelRequired > characterLevel;
   const typeStyle = ABILITY_TYPE_STYLE[ab.type] ?? "text-slate-300 border-slate-700 bg-slate-800/20";
   const typeLabel = ab.type === "combatArt" ? "Combat Art" : ab.type === "heroicArt" ? "Heroic Art" : ab.type === "proc" ? "Proc" : "Spell";
   return (
-    <div className="flex gap-3 p-3 rounded-lg border border-slate-800 bg-slate-900/40 hover:bg-slate-800/40 transition-colors">
+    <div className={cn("flex gap-3 p-3 rounded-lg border border-slate-800 bg-slate-900/40 hover:bg-slate-800/40 transition-colors", locked && "opacity-40")}>
       <div className="text-2xl shrink-0 w-10 h-10 flex items-center justify-center rounded-md bg-slate-800/60 border border-slate-700">
-        {ab.icon}
+        {locked ? "🔒" : ab.icon}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex flex-wrap items-center gap-1.5 mb-0.5">
@@ -688,8 +689,12 @@ function AbilityCard({ ab }: { ab: ClassAbility }) {
               {ab.damageType}
             </span>
           )}
-          {ab.levelRequired > 1 && (
-            <span className="text-[10px] text-slate-600 ml-auto">Lvl {ab.levelRequired}</span>
+          {locked ? (
+            <span className="text-[10px] text-amber-600 font-semibold ml-auto">🔒 Lvl {ab.levelRequired}</span>
+          ) : (
+            ab.levelRequired > 1 && (
+              <span className="text-[10px] text-slate-600 ml-auto">Lvl {ab.levelRequired}</span>
+            )
           )}
         </div>
         <p className="text-xs text-slate-400 mb-1.5">{ab.description}</p>
@@ -1416,9 +1421,14 @@ export default function CharacterSheet() {
                 <div>
                   <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Class Abilities</h4>
                   <div className="h-[360px] overflow-y-scroll space-y-2 pr-1 scrollbar-thin">
-                    {p.classDef.abilities.map(ab => (
-                      <AbilityCard key={ab.id} ab={ab} />
-                    ))}
+                    {[...p.classDef.abilities]
+                      .sort((a, b) =>
+                        (a.levelRequired <= p.level ? 0 : 1) - (b.levelRequired <= p.level ? 0 : 1) ||
+                        a.levelRequired - b.levelRequired
+                      )
+                      .map(ab => (
+                        <AbilityCard key={ab.id} ab={ab} characterLevel={p.level} />
+                      ))}
                   </div>
                 </div>
               </CardContent>
