@@ -7,7 +7,7 @@ interface SpriteRendererProps {
   className?: string;
   characterClass?: string;
   enemyType?: string;
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: "sm" | "md" | "combat" | "lg" | "xl";
 }
 
 function classToColor(characterClass?: string): string {
@@ -24,6 +24,7 @@ export function SpriteRenderer({ id, type = "player", className, characterClass,
   const sizeClasses: Record<string, string> = {
     sm: "w-8 h-8",
     md: "w-16 h-16",
+    combat: "w-20 h-20",
     lg: "w-32 h-32",
     xl: "w-48 h-48",
   };

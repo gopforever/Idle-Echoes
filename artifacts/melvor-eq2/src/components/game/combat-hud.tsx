@@ -968,7 +968,7 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
   return (
     <div className="flex flex-col h-full min-h-0 gap-0 overflow-hidden">
       {/* ── Arena Card ── */}
-      <Card className="shrink-0 bg-slate-950/80 border-slate-800 overflow-y-auto relative flex flex-col max-h-[calc(100%-6rem)]">
+      <Card className="shrink-0 bg-slate-950/80 border-slate-800 overflow-hidden relative flex flex-col max-h-[calc(100%-6rem)]">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(30,30,50,0.8),rgba(5,5,15,1))]" />
 
         {/* Header */}
@@ -999,12 +999,12 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
         </div>
 
         {/* Battle field */}
-        <div className="relative z-10 flex items-center justify-around px-4 py-3 min-h-0">
+        <div className="relative z-10 flex items-center justify-around px-4 py-3 shrink-0">
           {/* Player side */}
           <div className="flex flex-col items-center gap-1.5 w-36">
             <div className="relative">
               <div className={cn("relative p-2 rounded-xl border border-slate-800/60 bg-slate-900/30", combatState.active && "shadow-[0_0_20px_rgba(239,68,68,0.12)]")}>
-                <SpriteRenderer characterClass={character.class} size="lg" className={combatState.active ? "animate-pulse" : ""} />
+                <SpriteRenderer characterClass={character.class} size="combat" className={combatState.active ? "animate-pulse" : ""} />
               </div>
               <AnimatePresence>
                 {floatingNums.filter(f => f.side === "player").map(fn => (
@@ -1081,7 +1081,7 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
                   <div className={cn("relative p-2 rounded-xl border bg-slate-900/30",
                     activeEnemy.isBoss ? "border-purple-800/60 shadow-[0_0_20px_rgba(168,85,247,0.12)]" : "border-slate-800/60"
                   )}>
-                    <SpriteRenderer enemyType={activeEnemy.type} size="lg" type="enemy" className={combatState.active ? "animate-pulse" : "opacity-70"} />
+                    <SpriteRenderer enemyType={activeEnemy.type} size="combat" type="enemy" className={combatState.active ? "animate-pulse" : "opacity-70"} />
                     {activeEnemy.isBoss && (
                       <div className="absolute -top-2 left-1/2 -translate-x-1/2 text-[10px] px-2 py-0.5 rounded-full bg-purple-900 border border-purple-700 text-purple-300 font-bold whitespace-nowrap">BOSS</div>
                     )}
@@ -1115,6 +1115,9 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
             )}
           </div>
         </div>
+
+        {/* Scrollable secondary content — live stats, DPS, heroic, ability bar */}
+        <div className="relative z-10 overflow-y-auto flex-1 min-h-0">
 
         {/* Boss narration banner — full-width strip below the battle field */}
         {activeEnemy?.isBoss && (
@@ -1255,6 +1258,7 @@ export function CombatHud({ autoCombat, onToggleAutoCombat, locationLabel, disab
             </div>
           </div>
         )}
+        </div>{/* end scrollable secondary content */}
       </Card>
 
       {/* ── Combat Log ── */}
