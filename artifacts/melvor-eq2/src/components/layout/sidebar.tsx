@@ -35,6 +35,7 @@ const NAV_EQ2 = [
   { href: "/world", label: "Living World", icon: Globe2 },
   { href: "/guild", label: "Guild", icon: Users },
   { href: "/quests", label: "Quests (GM)", icon: ScrollText },
+  { href: "/epic-quest", label: "Epic Weapon", icon: Star },
   { href: "/bestiary", label: "Bestiary", icon: BookOpen },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
